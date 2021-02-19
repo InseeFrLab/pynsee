@@ -22,7 +22,7 @@ This package is a contribution to reproducible research and public data  transpa
 
 ```
 # Get the development version from GitHub
-pip install git+https://github.com/hadrilec/py-inseeMacroData.git#egg=insee_macrodata
+pip install git+https://github.com/hadrilec/py-insee_macrodata.git#egg=insee_macrodata
 
 # Get the PyPi version
 
