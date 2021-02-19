@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Feb 10 17:57:41 2021
+
+@author: XLAPDO
+"""
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def _download_idbank_list():
+    
+    import requests
+    import zipfile
+    import tempfile
+    import pandas as pd
+    import os
+    
+    file_to_dwn = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
+    idbank_file_csv = "2020_correspondances_idbank_dimension.csv"
+    
+    #download file
+    proxies = {
+      'http': os.environ.get('http'),
+      'https': os.environ.get('https'),
+    }     
+    
+    results = requests.get(file_to_dwn, proxies = proxies)
+    
+    if results.status_code != 200:
+        print(results.text)
+    
+    # create temporary directory
+    dirpath = tempfile.mkdtemp()
+    
+    idbank_zip_file = dirpath + '\\idbank_list.zip'
+    
+    with open(idbank_zip_file, 'wb') as f:
+        f.write(results.content)
+    
+    with zipfile.ZipFile(idbank_zip_file, 'r') as zip_ref:
+        zip_ref.extractall(dirpath)
+            
+    data = pd.read_csv(dirpath + "\\" + idbank_file_csv, dtype = 'str')
+    
+    return data

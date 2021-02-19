@@ -1,0 +1,58 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Feb 15 11:51:36 2021
+
+@author: XLAPDO
+"""
+
+def get_column_title(dataset = None):
+    
+    import pandas as pd
+    from .get_dataset_list import get_dataset_list 
+    from ._get_dataset_dimension import _get_dataset_dimension
+    from ._get_dimension_values import _get_dimension_values
+    
+    insee_dataset = get_dataset_list()    
+    insee_dataset_list = insee_dataset['id'].to_list()
+    
+    if dataset is None:
+        dataset_list = insee_dataset_list
+    else: 
+        if len([dataset]) != 1:
+            raise ValueError("Please provide only one dataset name")
+        if not dataset in insee_dataset_list:               
+            raise ValueError("%s is not a dataset from INSEE" % dataset)
+        dataset_list = [dataset]
+    
+    #make a list of all columns
+    list_column = []
+    
+    for dt in dataset_list:
+        dataset_dimension = _get_dataset_dimension(dt)
+        dataset_dimension = dataset_dimension[["dimension","local_representation"]]
+        list_column.append(dataset_dimension)
+            
+    df_column = pd.concat(list_column)
+    df_column = df_column.drop_duplicates()
+    
+    list_column = []
+    n_dimensions = len(df_column.index)
+            
+    for irow in range(n_dimensions):            
+        dim_id = df_column['dimension'].iloc[irow]
+        dim_id = str(dim_id).replace("-", "_")
+        dim_local_rep = df_column['local_representation'].iloc[irow]
+         
+        dim_values = _get_dimension_values(dim_local_rep)
+            
+        # drop dimension label
+        dim_values = dim_values[dim_values["id"] == dim_local_rep]
+        
+        #new column with the dimension id
+        dim_values = dim_values.assign(column = pd.Series(dim_id * len(dim_values.index), index=dim_values.index).values)
+        dim_values = dim_values[["column","name_fr", "name_en"]]
+        list_column.append(dim_values)          
+              
+    df_column_final = pd.concat(list_column)
+    return(df_column_final)
+    
