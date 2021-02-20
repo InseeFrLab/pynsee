@@ -26,7 +26,8 @@ def _get_insee(api_query, sdmx_query):
     results = _request_insee(api_url=api_query, sdmx_url=sdmx_query)
 
     if results.status_code != 200:
-        print(results.text)     
+        print(results.text) 
+        print(api_query)    
         
     raw_data_file = dirpath + '\\' + "raw_data_file"
         
