@@ -15,7 +15,7 @@ def get_insee_dataset(dataset,
                       updatedAfter = None):
     
     from ._paste import _paste 
-    from .get_insee import get_insee 
+    from ._get_insee import _get_insee 
     from .get_dataset_list import get_dataset_list 
     
     insee_dataset = get_dataset_list()    
@@ -26,11 +26,14 @@ def get_insee_dataset(dataset,
         raise ValueError("%s is not a dataset from INSEE" % dataset)    
             
     INSEE_sdmx_link_idbank = "https://bdm.insee.fr/series/sdmx/data/"
-        
-    query = INSEE_sdmx_link_idbank + dataset
+    INSEE_api_link_idbank = "https://bdm.insee.fr/series/sdmx/data/"
+       
+    sdmx_query = INSEE_sdmx_link_idbank + dataset
+    api_query = INSEE_api_link_idbank + dataset
     
     if filter is not None:
-        query = query + "/" + str(filter)
+        sdmx_query = sdmx_query + "/" + str(filter)
+        api_query = api_query + "/" + str(filter)
     
     parameters = ["startPeriod", "endPeriod",
                   "firstNObservations", "lastNObservations", "updatedAfter"]
@@ -43,8 +46,9 @@ def get_insee_dataset(dataset,
     added_param_string = ""
     if len(list_addded_param) > 0:
         added_param_string = "?" + _paste(list_addded_param, collapse = '&')
-        query = query + added_param_string            
+        sdmx_query = sdmx_query + added_param_string 
+        api_query = api_query + added_param_string            
     
-    data = get_insee(query)
+    data = _get_insee(query)
     
     return data;

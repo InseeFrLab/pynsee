@@ -8,8 +8,7 @@ Created on Sat Dec 26 17:56:28 2020
 
 # @lru_cache(maxsize=None)
 def _get_dataset_dimension(dataset) :
-    
-    import requests     
+             
     import tempfile
     import xml.etree.ElementTree as ET
     import pandas as pd
@@ -18,10 +17,13 @@ def _get_dataset_dimension(dataset) :
     
     from ._create_insee_folder import _create_insee_folder
     from ._hash import _hash
+    from ._request_insee import _request_insee    
     
     INSEE_sdmx_link_datastructure = "https://www.bdm.insee.fr/series/sdmx/datastructure/FR1"
+    INSEE_api_link_datastructure = "https://api.insee.fr/series/BDM/V1/datastructure/FR1"
         
     INSEE_sdmx_link_datastructure_dataset = INSEE_sdmx_link_datastructure + '/' + dataset
+    INSEE_api_link_datastructure_dataset = INSEE_api_link_datastructure + '/' + dataset
     
     insee_folder = _create_insee_folder()
     file = insee_folder + "/" + _hash(INSEE_sdmx_link_datastructure_dataset)
@@ -46,12 +48,11 @@ def _get_dataset_dimension(dataset) :
             trigger_update = True   
 
     if trigger_update :
-        proxies = {'http': os.environ.get('http'),
-               'https': os.environ.get('https')}
-    
-        #download file    
-        results = requests.get(INSEE_sdmx_link_datastructure_dataset, proxies = proxies)
-        
+       
+        results = _request_insee(
+           sdmx_url = INSEE_sdmx_link_datastructure_dataset,
+           api_url = INSEE_api_link_datastructure_dataset)
+
         # create temporary directory
         dirpath = tempfile.mkdtemp()
         
@@ -74,7 +75,7 @@ def _get_dataset_dimension(dataset) :
             except:
                 local_rep = None
             finally:
-                return(local_rep);
+                return(local_rep)
             
         def extract_id(data, i):
             try:
@@ -82,7 +83,7 @@ def _get_dataset_dimension(dataset) :
             except:
                 id_val = None
             finally:
-                return(id_val);
+                return(id_val)
         
         for i in range(0, n_dimension):
             
@@ -108,4 +109,4 @@ def _get_dataset_dimension(dataset) :
     else:          
         dimension_df_all = pd.read_pickle(file)     
     
-    return dimension_df_all;
+    return dimension_df_all

@@ -16,10 +16,11 @@ def get_insee_idbank(*idbanks,
     import pandas
     import math
     
-    from .get_insee import get_insee  
+    from ._get_insee import _get_insee  
     from ._paste import _paste  
             
     INSEE_sdmx_link_idbank = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/"
+    INSEE_api_link_idbank = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/"
         
     # 
     # create the parameters to be added to the query
@@ -71,12 +72,14 @@ def get_insee_idbank(*idbanks,
         
         list_idbank_q = list_idbank[min_range:max_range]  
          
-        query = INSEE_sdmx_link_idbank + _paste(list_idbank_q, collapse = '+')  
+        sdmx_query = INSEE_sdmx_link_idbank + _paste(list_idbank_q, collapse = '+') 
+        api_query = INSEE_api_link_idbank + _paste(list_idbank_q, collapse = '+')  
         
         if len(list_addded_param) > 0:
-             query = query + added_param_string
+             sdmx_query = sdmx_query + added_param_string
+             api_query = api_query + added_param_string
              
-        list_data.append(get_insee(query))
+        list_data.append(_get_insee(api_query=api_query, sdmx_query=sdmx_query))
     
     data = pandas.concat(list_data)
     
