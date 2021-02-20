@@ -34,11 +34,11 @@ class TestFunction(TestCase):
         self.assertTrue(isinstance(data, pd.DataFrame))
     
     def test_get_insee_1(self):
-        data = imac.get_insee("https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001769682")
+        data = imac._get_insee("https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001769682")
         self.assertTrue(isinstance(data, pd.DataFrame))
         
     def test_get_insee_2(self):
-        data = imac.get_insee("https://bdm.insee.fr/series/sdmx/data/BALANCE-PAIEMENTS")
+        data = imac._get_insee("https://bdm.insee.fr/series/sdmx/data/BALANCE-PAIEMENTS")
         self.assertTrue(isinstance(data, pd.DataFrame))
         
     def test_get_insee_dataset_1(self):
