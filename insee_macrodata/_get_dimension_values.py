@@ -125,4 +125,4 @@ def _get_dimension_values(cl_dimension):
     else:
         df_dimension_values = pd.read_pickle(file)
     
-    return df_dimension_values;
+    return df_dimension_values
