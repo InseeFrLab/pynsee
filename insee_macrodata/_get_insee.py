@@ -12,13 +12,14 @@ def _get_insee(api_query, sdmx_query):
     import tempfile
     import pandas as pd
     import os
-    import xml
+    import xml.dom.minidom
     
     from ._get_date import _get_date
     from ._request_insee import _request_insee
     
     # "001694056", "001691912", "001580062", "001688370", "010565692"
-    # query = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
+    # sdmx_query = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
+    # api_query = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
     # create temporary directory
     dirpath = tempfile.mkdtemp()
                         
