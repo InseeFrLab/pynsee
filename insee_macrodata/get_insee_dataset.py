@@ -49,6 +49,6 @@ def get_insee_dataset(dataset,
         sdmx_query = sdmx_query + added_param_string 
         api_query = api_query + added_param_string            
     
-    data = _get_insee(query)
+    data = _get_insee(api_query=api_query, sdmx_query=sdmx_query)
     
-    return data;
+    return data
