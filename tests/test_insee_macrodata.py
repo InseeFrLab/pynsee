@@ -21,6 +21,10 @@ import insee_macrodata as imac
 
 class TestFunction(TestCase):
     
+    def test_get_dataset_list(self):
+        data = imac.get_dataset_list()
+        self.assertTrue(isinstance(data, pd.DataFrame))
+    
     def test_get_column_title(self):
         imac._clean_insee_folder()
         data = imac.get_column_title()
@@ -28,6 +32,11 @@ class TestFunction(TestCase):
     
     def test_get_idbank_list(self):
         data = imac.get_idbank_list('CLIMAT-AFFAIRES')
+        self.assertTrue(isinstance(data, pd.DataFrame))
+        
+    def test_get_insee_idbank_1(self):
+        idbank_list = imac.get_idbank_list('IPC-2015').iloc[:900]
+        data = imac.get_insee_idbank(idbank_list.idbank)
         self.assertTrue(isinstance(data, pd.DataFrame))
         
     def test_get_insee_idbank(self):
@@ -66,5 +75,16 @@ class TestFunction(TestCase):
     def test_split_title(self):
         data = imac.get_insee_idbank("001769682", "001769683")   
         df = imac.split_title(data)
+        self.assertTrue(isinstance(df, pd.DataFrame))
+        
+    def test_get_geo_list(self):
+        list_available_geo = ['communes', 'regions', 'departements',
+                          'arrondissements', 'arrondissementsMunicipaux']        
+        list_geo_data = []
+        for geo in list_available_geo:
+            list_geo_data.append(imac.get_geo_list(geo))
+            
+        df = pd.concat(list_geo_data)
+        
         self.assertTrue(isinstance(df, pd.DataFrame))
         
