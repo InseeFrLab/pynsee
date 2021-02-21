@@ -1,11 +1,8 @@
----
-title: inseeMacroData python package
-output: 
-  github_document
----
+insee-macrodata python package
+=======
 
 **Work in progress**
-=======
+
 
 # Overview
 
