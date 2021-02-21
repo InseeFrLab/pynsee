@@ -4,34 +4,29 @@ Created on Sat Feb 20 15:16:17 2021
 
 @author: eurhope
 """
+from functools import lru_cache
 
-def get_geo_list(geo):
-    
-    import requests
+@lru_cache(maxsize=None)
+def get_geo_list(geo):    
+   
     import tempfile
     import pandas as pd
     import xml.etree.ElementTree as ET
-    import os
     from tqdm import trange
     
-    from ._get_token import _get_token
+    from ._request_insee import _request_insee
+    from ._paste import _paste
     
-    try:
-        proxies = {'http': os.environ['http'],
-                   'https': os.environ['https']}
-    except:
-        proxies = {'http': '','https': ''}
+    list_available_geo = ['communes', 'regions', 'departements',
+                          'arrondissements', 'arrondissementsMunicipaux']
+    geo_string = _paste(list_available_geo, collapse = " ")
     
-    try:
-        token = os.environ['insee_token']
-    except:
-        token = _get_token()
-    
-    headers = {'Accept': 'application/xml',
-           'Authorization': 'Bearer ' + token}
-    #geo = communes  arrondissementsMunicipaux arrondissements regions departements
+    if not geo in list_available_geo:
+        msg = "!!! geo is not available\nPlease choose geo among:\n%s" % geo_string
+        raise ValueError(msg)
+     
     api_url = 'https://api.insee.fr/metadonnees/V1/geo/' + geo
-    results = requests.get(api_url, proxies = proxies, headers=headers)
+    results = _request_insee(api_url=api_url, sdmx_url=None)
         
     dirpath = tempfile.mkdtemp()
                             
@@ -46,7 +41,7 @@ def get_geo_list(geo):
     
     list_data_geo = []
         
-    for igeo in trange(n_variable):
+    for igeo in trange(n_variable, desc = "Getting %s" % geo):
         dict_geo = {'Intitule':root[igeo][0].text, #root[igeo][0].tag
                     'Type':root[igeo][1].text, #root[igeo][1].tag
                     'DateCreation':root[igeo][2].text, #root[igeo][2].tag
