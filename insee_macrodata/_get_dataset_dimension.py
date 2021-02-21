@@ -45,8 +45,8 @@ def _get_dataset_dimension(dataset) :
         day_lapse = (insee_date_time_now - file_date_last_modif).days
         
         if day_lapse > 90:
-            trigger_update = True   
-
+            trigger_update = True 
+        
     if trigger_update :
        
         results = _request_insee(
@@ -106,7 +106,14 @@ def _get_dataset_dimension(dataset) :
         # save data
         dimension_df_all.to_pickle(file)
     
-    else:          
-        dimension_df_all = pd.read_pickle(file)     
+    else:   
+        # pickle format depends on python version
+        # then read_pickle can fail, if so
+        # the file is removed and the function is launched again
+        try:
+            dimension_df_all = pd.read_pickle(file)  
+        except:
+            os.remove(file)
+            dimension_df_all = _get_dataset_dimension(dataset)
     
     return dimension_df_all

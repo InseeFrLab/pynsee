@@ -89,7 +89,15 @@ def _get_dataset_metadata(dataset, update=False):
             idbank_list_dataset.to_pickle(file_dataset_metadata)
             
         else:
-            idbank_list_dataset = pd.read_pickle(file_dataset_metadata)        
+            # pickle format depends on python version
+            # then read_pickle can fail, if so
+            # the file is removed and the function is launched again
+            try:
+                idbank_list_dataset = pd.read_pickle(file_dataset_metadata) 
+            except:
+                os.remove(file_dataset_metadata)
+                idbank_list_dataset = _get_dataset_metadata(dataset, update=update)               
+                   
             # print("Cached data has been used")
     except:
         # if the download of the idbank file and the build of the metadata fail

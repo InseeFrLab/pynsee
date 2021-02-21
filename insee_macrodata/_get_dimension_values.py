@@ -123,6 +123,13 @@ def _get_dimension_values(cl_dimension):
         #save data
         df_dimension_values.to_pickle(file)
     else:
-        df_dimension_values = pd.read_pickle(file)
+        # pickle format depends on python version
+        # then read_pickle can fail, if so
+        # the file is removed and the function is launched again
+        try:
+            df_dimension_values = pd.read_pickle(file)
+        except:
+            os.remove(file)
+            df_dimension_values = _get_dimension_values(cl_dimension)
     
     return df_dimension_values
