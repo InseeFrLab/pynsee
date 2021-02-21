@@ -52,7 +52,7 @@ def _get_insee(api_query, sdmx_query):
     
     list_series = []
         
-    for j in trange(n_series, desc = "1st loop - Collecting series"):
+    for j in trange(n_series, desc = "1st loop - Getting series"):
         
         data = root.getElementsByTagName("Series")[j]        
             
@@ -64,7 +64,7 @@ def _get_insee(api_query, sdmx_query):
         
         list_obs = []
         #trange(n_obs, desc = "2nd loop - Collecting observations")
-        for i in range(n_obs):
+        for i in trange(n_obs, desc = "2nd loop - Getting values"):
         
             obs = data.getElementsByTagName("Obs")[i]._attrs
                     

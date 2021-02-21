@@ -32,7 +32,7 @@ def get_column_title(dataset = None):
     n_dataset = len(dataset_list)
     
     for idt in trange(n_dataset,
-                     desc="Step 1/2 - Collecting dimensions list "):
+                     desc="1/2 - Getting columns list "):
         dt = dataset_list[idt]
         dataset_dimension = _get_dataset_dimension(dt)
         dataset_dimension = dataset_dimension[["dimension","local_representation"]]
@@ -46,7 +46,7 @@ def get_column_title(dataset = None):
     n_dimensions = len(df_column.index)
     
     for irow in trange(n_dimensions,
-                       desc="Step 2/2 - Collecting dimensions values "):            
+                       desc="2/2 - Getting values "):            
         dim_id = df_column['dimension'].iloc[irow]
         dim_id = str(dim_id).replace("-", "_")
         dim_local_rep = df_column['local_representation'].iloc[irow]
