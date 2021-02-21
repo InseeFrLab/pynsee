@@ -7,9 +7,12 @@ Created on Mon Dec 28 00:53:10 2020
 
 
 from .get_idbank_list import get_idbank_list
+from .get_dataset_list import get_dataset_list
+from .get_geo_list import get_geo_list
+
 from .get_insee_idbank import get_insee_idbank
 from .get_insee_dataset import get_insee_dataset
-from .get_dataset_list import get_dataset_list
+
 from .get_column_title import get_column_title
 from .split_title import split_title
 from .search_insee import search_insee

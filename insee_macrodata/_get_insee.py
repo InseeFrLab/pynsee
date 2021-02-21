@@ -7,7 +7,7 @@ Created on Sat Dec 26 20:06:49 2020
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
-def _get_insee(api_query, sdmx_query):
+def _get_insee(api_query, sdmx_query, step = "1/1"):
     
     import tempfile
     import pandas as pd
@@ -26,10 +26,6 @@ def _get_insee(api_query, sdmx_query):
                         
     # results = requests.get(query, proxies = proxies) 
     results = _request_insee(api_url=api_query, sdmx_url=sdmx_query)
-
-    if results.status_code != 200:
-        print(results.text) 
-        print(api_query)    
         
     raw_data_file = dirpath + '\\' + "raw_data_file"
         
@@ -52,7 +48,7 @@ def _get_insee(api_query, sdmx_query):
     
     list_series = []
         
-    for j in trange(n_series, desc = "1st loop - Getting series"):
+    for j in trange(n_series, desc = "%s - Getting series" % step):
         
         data = root.getElementsByTagName("Series")[j]        
             
@@ -64,7 +60,8 @@ def _get_insee(api_query, sdmx_query):
         
         list_obs = []
         #trange(n_obs, desc = "2nd loop - Collecting observations")
-        for i in trange(n_obs, desc = "2nd loop - Getting values"):
+        #range(n_obs)
+        for i in range(n_obs):
         
             obs = data.getElementsByTagName("Obs")[i]._attrs
                     
@@ -125,6 +122,6 @@ def _get_insee(api_query, sdmx_query):
     
     data_final["OBS_VALUE"] = data_final["OBS_VALUE"].apply(pd.to_numeric, errors='coerce')
     
-    print('Data has been cached')  
+    print('Data has been cached\n')  
         
     return data_final
