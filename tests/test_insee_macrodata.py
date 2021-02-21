@@ -87,4 +87,3 @@ class TestFunction(TestCase):
         df = pd.concat(list_geo_data)
         
         self.assertTrue(isinstance(df, pd.DataFrame))
-        
