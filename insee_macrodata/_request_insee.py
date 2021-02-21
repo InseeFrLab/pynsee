@@ -6,14 +6,14 @@ def _warning_api_success():
 
 @lru_cache(maxsize=None)
 def _warning_api_failure():
-    msg1 = "!!! Warning : check your subscription to api.insee.fr"
-    msg2 = "Due to an error the sdmx service is used instead of the api!!!"
+    msg1 = "\n!!! Warning : check your subscription to api.insee.fr"
+    msg2 = "Due to an error the sdmx service is used instead of the api!!!\n"
     print(msg1 + "\n" + msg2)
 
 @lru_cache(maxsize=None)
 def _warning_no_token():
-    msg1 = "!!! Warning : check your subscription to api.insee.fr"
-    msg2 = "The sdmx service you are using may be deprecated !!!"
+    msg1 = "\n!!! Warning : check your subscription to api.insee.fr"
+    msg2 = "The sdmx service you are using may be deprecated !!!\n"
     print(msg1 + "\n" + msg2)   
 
 def _request_insee(api_url, sdmx_url=None):

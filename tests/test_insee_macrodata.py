@@ -5,7 +5,7 @@ Created on Fri Feb  5 11:51:33 2021
 @author: XLAPDO
 """
 #proxy
-proxy_file_folder = 'C:/Users/XLAPDO/Desktop/insee_pylib'
+proxy_file_folder = 'C:/Users/eurhope/Desktop/insee_pylib/insee_pylib'
 proxy_file = proxy_file_folder + '/proxy.py'
 try:
     f = open(proxy_file)
@@ -22,6 +22,7 @@ import insee_macrodata as imac
 class TestFunction(TestCase):
     
     def test_get_column_title(self):
+        imac._clean_insee_folder()
         data = imac.get_column_title()
         self.assertTrue(isinstance(data, pd.DataFrame))
     
@@ -34,11 +35,15 @@ class TestFunction(TestCase):
         self.assertTrue(isinstance(data, pd.DataFrame))
     
     def test_get_insee_1(self):
-        data = imac._get_insee("https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001769682")
+        data = imac._get_insee(
+            api_query = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001769682",
+            sdmx_query = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001769682")
         self.assertTrue(isinstance(data, pd.DataFrame))
         
     def test_get_insee_2(self):
-        data = imac._get_insee("https://bdm.insee.fr/series/sdmx/data/BALANCE-PAIEMENTS")
+        data = imac._get_insee(
+            api_query = "https://api.insee.fr/series/BDM/V1/data/BALANCE-PAIEMENTS",
+            sdmx_query = "https://bdm.insee.fr/series/sdmx/data/BALANCE-PAIEMENTS")
         self.assertTrue(isinstance(data, pd.DataFrame))
         
     def test_get_insee_dataset_1(self):
