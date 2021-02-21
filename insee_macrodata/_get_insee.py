@@ -13,6 +13,7 @@ def _get_insee(api_query, sdmx_query):
     import pandas as pd
     import os
     import xml.dom.minidom
+    from tqdm import trange
     
     from ._get_date import _get_date
     from ._request_insee import _request_insee
@@ -51,7 +52,7 @@ def _get_insee(api_query, sdmx_query):
     
     list_series = []
         
-    for j in range(n_series):
+    for j in trange(n_series, desc = "1st loop - Collecting series"):
         
         data = root.getElementsByTagName("Series")[j]        
             
@@ -62,7 +63,7 @@ def _get_insee(api_query, sdmx_query):
         # 
         
         list_obs = []
-        
+        #trange(n_obs, desc = "2nd loop - Collecting observations")
         for i in range(n_obs):
         
             obs = data.getElementsByTagName("Obs")[i]._attrs
