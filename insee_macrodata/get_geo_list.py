@@ -5,7 +5,7 @@ Created on Sat Feb 20 15:16:17 2021
 @author: eurhope
 """
 
-def _get_list_geo(geo):
+def get_geo_list(geo):
     
     import requests
     import tempfile
