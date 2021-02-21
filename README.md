@@ -4,6 +4,10 @@ insee-macrodata python package
 **Work in progress**
 
 
+[![CircleCI](https://circleci.com/gh/hadrilec/py-insee_macrodata.svg?style=shield)](https://circleci.com/gh/hadrilec/py-insee_macrodata)
+
+
+
 # Overview
 
 The insee package contains tools to easily download data and metadata from INSEE API. 
