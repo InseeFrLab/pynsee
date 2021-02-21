@@ -13,7 +13,7 @@ def _clean_insee_folder():
     insee_folder = local_appdata_folder + '/insee' + '/py_insee'
     
     # delete all files in the folder
-    if not os.path.exists(insee_folder):
+    if os.path.exists(insee_folder):
         list_file_insee = os.listdir(insee_folder)
         if len(list_file_insee) > 0:
             for f in list_file_insee:
