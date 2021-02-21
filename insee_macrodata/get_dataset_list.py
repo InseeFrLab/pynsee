@@ -9,20 +9,16 @@ from functools import lru_cache
 @lru_cache(maxsize=None)
 def get_dataset_list() :
     
-    import requests
     import tempfile
     import xml.etree.ElementTree as ET
     import pandas as pd
-    import os
+    from tqdm import trange
+    
+    from ._request_insee import _request_insee
     
     INSEE_sdmx_link_dataflow = "https://bdm.insee.fr/series/sdmx/dataflow"
-    
-    proxies = {
-     'http': os.environ.get('http'),
-     'https': os.environ.get('https'),
-    }
-    
-    results = requests.get(INSEE_sdmx_link_dataflow, proxies = proxies)
+        
+    results = _request_insee(sdmx_url=INSEE_sdmx_link_dataflow)
     
     # create temporary directory
     dirpath = tempfile.mkdtemp()
@@ -40,7 +36,9 @@ def get_dataset_list() :
     
     list_df = []
     
-    for i in range(0, n_dataflow):
+    #range(0, n_dataflow)
+    
+    for i in trange(n_dataflow, desc = "Getting datasets list"):
             
         dataset = {'id': [next(iter(data[i].attrib.values()))],
                    'Name.fr': [data[i][1].text],
@@ -70,4 +68,4 @@ def get_dataset_list() :
     df = df[df["Name.en"] != ""]
     df = df[df["Name.fr"] != ""]
     
-    return df;
+    return df
