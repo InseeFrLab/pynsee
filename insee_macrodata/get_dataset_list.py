@@ -60,13 +60,13 @@ def get_dataset_list() :
     # clean up columns
     df = df.astype(str)
     
-    df['n_series'] = df['n_series'].str.replace('\D', '', regex=True)
+    df['n_series'] = df['n_series'].str.replace('\\D', '', regex=True)
     df['n_series'] = df['n_series'].astype('int')
     
     df = df[df["id"] != "SERIES_BDM"]
     
-    df["Name.en"] = df["Name.en"].str.replace('^\\n\s{0,}', '', regex=True)
-    df["Name.fr"] = df["Name.fr"].str.replace('^\\n\s{0,}', '', regex=True)
+    df["Name.en"] = df["Name.en"].str.replace('^\\n\\s{0,}', '', regex=True)
+    df["Name.fr"] = df["Name.fr"].str.replace('^\\n\\s{0,}', '', regex=True)
     df = df[df["Name.en"] != ""]
     df = df[df["Name.fr"] != ""]
     
