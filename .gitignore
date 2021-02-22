@@ -2,6 +2,7 @@ build
 dist
 insee_macrodata.egg-info
 insee_macrodata/tests/__pycache__/
+tests/__pycache__/
 insee_macrodata/__pycache__/
 .coverage
 .venv/
