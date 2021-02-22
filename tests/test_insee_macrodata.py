@@ -17,7 +17,7 @@ except IOError:
 from unittest import TestCase
 from pandas import pandas as pd
 
-from insee_macrodata import insee_macrodata as imac
+import insee_macrodata as imac
 
 class TestFunction(TestCase):
     
