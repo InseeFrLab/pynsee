@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Dec 26 15:42:56 2020
-
-@author: eurhope
-"""
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def get_dataset_list() :
-    
+    """Download a full INSEE's datasets list
+
+    Returns:
+        DataFrame: contains 5 columns - idm Name.fr, Name.en, url, n_series
+
+    Example:
+    --------
+    >>> insee_dataset = get_dataset_list()
+    """    
     import tempfile
     import xml.etree.ElementTree as ET
     import pandas as pd
@@ -64,7 +67,6 @@ def get_dataset_list() :
     
     df["Name.en"] = df["Name.en"].str.replace('^\\n\s{0,}', '', regex=True)
     df["Name.fr"] = df["Name.fr"].str.replace('^\\n\s{0,}', '', regex=True)
-    
     df = df[df["Name.en"] != ""]
     df = df[df["Name.fr"] != ""]
     

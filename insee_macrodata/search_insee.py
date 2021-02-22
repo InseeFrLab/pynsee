@@ -1,14 +1,23 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Feb 15 14:51:04 2021
-
-@author: XLAPDO
-"""
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def search_insee(pattern = ".*"):
-    
+    """Search a pattern among insee series (idbanks)
+
+    Notes: this function uses package's internal data which might not be the most up-to-date.
+
+    Args:
+        pattern (str, optional): String used to filter the idbank list. Defaults to ".*", returns all series.
+
+    Examples:
+    ---------
+    >>> from insee_macrodata import search_insee 
+    >>> search_all = search_insee()
+    >>> search_paper = search_insee("pâte à papier")
+    >>> search_paris = search_insee("PARIS")
+    >>> search_survey_gdp = search_insee("Survey|GDP")
+    """    
     from ._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
     from ._get_idbank_internal_data import _get_idbank_internal_data
     

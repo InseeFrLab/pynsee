@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Dec 27 23:36:31 2020
-
-@author: eurhope
-"""
 
 def get_insee_dataset(dataset,
                       filter = None,
@@ -13,7 +8,37 @@ def get_insee_dataset(dataset,
                       lastNObservations = None,
                       includeHistory = None,
                       updatedAfter = None):
+    """Get dataset's data from INSEE BDM database
+
+    Args:
+        dataset (str): an INSEE dataset included in the list provided by get_dataset_list()
+        filter (str, optional): Use the filter to choose only some values in a dimension.
+         It is recommended to use it for big datasets. A dimension left empty means 
+         all values are selected. To select multiple values in one dimension put a "+" 
+         between those values.
+        startPeriod (str, optional): start date of the data. 
+        endPeriod (str, optional): end date of the data. 
+        firstNObservations (int, optional): get the first N observations for each key series (idbank). 
+        lastNObservations (int, optional): get the last N observations for each key series (idbank). 
+        includeHistory (boolean, optional): boolean to access the previous releases (not available on all series). 
+        updatedAfter (str, optional): starting point for querying the previous releases (format yyyy-mm-ddThh:mm:ss)
+
+    Raises:
+        ValueError: dataset should be in INSEE's datasets list
+
+    Returns:
+        DataFrame: contains the data
     
+    Examples:
+    ---------
+    ipc_data = 
+        get_insee_dataset("IPC-2015", 
+            filter = "M......ENSEMBLE...CVS.2015",
+            includeHistory = True, updatedAfter = "2017-07-11T08:45:00")
+
+    business_climate = get_insee_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
+
+    """    
     from ._paste import _paste 
     from ._get_insee import _get_insee 
     from .get_dataset_list import get_dataset_list 

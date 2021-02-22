@@ -1,14 +1,24 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Feb 20 15:16:17 2021
 
-@author: eurhope
-"""
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def get_geo_list(geo):    
-   
+    """Get a list of French geographic areas (communes, departements, regions ...)
+
+    Args:
+        geo (str): choose among : 'communes', 'regions', 'departements',
+                          'arrondissements', 'arrondissementsMunicipaux'
+
+    Raises:
+        ValueError: geo should be among the geographic area list
+    
+    Examples:
+    ---------
+    >>> city_list = get_geo_list('communes')
+    >>> region_list = get_geo_list('regions')
+    >>> departement_list = get_geo_list('departements')
+    """   
     import tempfile
     import pandas as pd
     import xml.etree.ElementTree as ET

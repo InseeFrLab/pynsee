@@ -1,13 +1,19 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Feb 15 16:29:34 2021
-
-@author: XLAPDO
-"""
 
 def split_title(df, title_col_name = ["TITLE_EN", "TITLE_FR"],
                 pattern = " – | — | - ", n_split = -1):
-    
+    """Split the title columns
+
+    Args:
+        df DataFrame: a DataFrame created by get_insee_idbank or get_insee_dataset
+        title_col_name (list, optional): Names of the title columns. Defaults to ["TITLE_EN", "TITLE_FR"].
+        pattern (str, optional): Separator string. Defaults to " – | — | - ".
+        n_split (int, optional): Number of split, 1 corresponds to 2 columns. Defaults to -1, i.e. the maximun.
+    Example:
+    --------
+    >>> data_raw = get_insee_idbank("001577236")
+    >>> data = split_title(data_raw)
+    """    
     import pandas as pd
             
     if isinstance(df, pd.DataFrame):        

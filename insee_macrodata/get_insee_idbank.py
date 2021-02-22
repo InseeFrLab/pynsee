@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Dec 27 23:36:31 2020
-
-@author: eurhope
-"""
 
 def get_insee_idbank(*idbanks,
                      startPeriod = None,
@@ -12,7 +7,35 @@ def get_insee_idbank(*idbanks,
                      lastNObservations = None,
                      includeHistory = None,
                      updatedAfter = None):
-    
+    """Get data from INSEE series idbank
+
+    Args:
+        ... (idbanks, str or list or pd.series) : some idbanks provided bu get_idbank_list()
+        startPeriod (str, optional): start date of the data. 
+        endPeriod (str, optional): end date of the data. 
+        firstNObservations (int, optional): get the first N observations for each key series (idbank). 
+        lastNObservations (int, optional): get the last N observations for each key series (idbank). 
+        includeHistory (boolean, optional): boolean to access the previous releases (not available on all series). 
+        updatedAfter (str, optional): starting point for querying the previous releases (format yyyy-mm-ddThh:mm:ss)
+
+    Returns:
+        DataFrame: contains the data, indexed by DATE and sorted by IDBANK
+
+    Examples:
+    ---------
+    # inflation figures in France
+    df_idbank = get_idbank_list("IPC-2015")
+
+    df_idbank = df_idbank.loc[
+                        (df_idbank.FREQ == "M") & # monthly
+                        (df_idbank.NATURE == "INDICE") & # index
+                        (df_idbank.MENAGES_IPC == "ENSEMBLE") & # all kinds of household
+                        (df_idbank.REF_AREA == "FE") & # all France including overseas departements
+                        (df_idbank.COICOP2016.str.match("^[0-9]{2}$"))] # coicop aggregation level
+
+    # get data
+    data = get_insee_idbank(df_idbank.idbank)
+    """    
     import pandas
     import math
     

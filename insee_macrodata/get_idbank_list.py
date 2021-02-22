@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Dec 26 14:11:47 2020
-
-@author: eurhope
-"""
-# from functools import lru_cache
-
-# @lru_cache(maxsize=None)
 def get_idbank_list(*datasets, update = False):
-    
+    """Download an INSEE's series key list for one or several datasets
+    Notes: Some metadata is stored for 3 months locally on the computer. It is updated automatically.
+    Args:        
+        update (bool, optional): Set to True, to update manually the metadata stored
+         locally on the computer. Defaults to False.
+
+    Raises:
+        ValueError: datasets should be among the datasets list provided by get_dataset_list()
+
+    Returns:
+        DataFrame: contains dimension columns, series keys, dataset name 
+    """    
     import pandas as pd
     import re
     
@@ -41,4 +44,4 @@ def get_idbank_list(*datasets, update = False):
     
     idbank_list = pd.DataFrame(idbank_list, columns = new_column_order)
         
-    return idbank_list;
+    return idbank_list

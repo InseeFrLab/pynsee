@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Feb 15 11:51:36 2021
-
-@author: XLAPDO
-"""
-
 def get_column_title(dataset = None):
+    """Get the title of a dataset's columns
+
+    Args:
+        dataset (DataFrame, optional): An INSEE dataset. Defaults to None, this returns all columns.
+
+    Raises:
+        ValueError: Only one string (length one)
+        ValueError: Dataset must belong to INSEE datasets list
     
+    Examples
+    --------
+    >>> insee_all_columns = get_column_title()
+    >>> balance_paiements_columns = get_column_title("BALANCE-PAIEMENTS")
+    """    
     import pandas as pd
     from tqdm import trange
     
