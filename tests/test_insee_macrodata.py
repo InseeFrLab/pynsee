@@ -87,3 +87,14 @@ class TestFunction(TestCase):
         df = pd.concat(list_geo_data)
         
         self.assertTrue(isinstance(df, pd.DataFrame))
+    
+    def test_search_insee(self):
+        search_all = imac.search_insee()
+        search_paris = imac.search_insee("PARIS")
+        test1 = isinstance(search_all, pd.DataFrame)
+        test2 = isinstance(search_paris, pd.DataFrame)
+        self.assertTrue(test1 & test2)
+
+    def test__download_idbank_list(self):
+        df= imac._download_idbank_list()
+        self.assertTrue(isinstance(df, pd.DataFrame))
