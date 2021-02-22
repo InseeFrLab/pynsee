@@ -14,6 +14,7 @@ def _download_idbank_list():
     import tempfile
     import pandas as pd
     import os
+    import re
     
     file_to_dwn = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
     idbank_file_csv = "2020_correspondances_idbank_dimension.csv"
@@ -46,7 +47,12 @@ def _download_idbank_list():
     
     with zipfile.ZipFile(idbank_zip_file, 'r') as zip_ref:
         zip_ref.extractall(dirpath)
-            
-    data = pd.read_csv(dirpath + "\\" + idbank_file_csv, dtype = 'str')
+    
+    file_to_read = [f for f in os.listdir(dirpath) if not re.match('.*.zip$', f)]
+    
+    if len(file_to_read) != 0:
+        data = pd.read_csv(dirpath + "\\" + file_to_read[0], dtype = 'str')
+    else:
+        ValueError('!!! idbank file missing after unzipping !!!')
     
     return data
