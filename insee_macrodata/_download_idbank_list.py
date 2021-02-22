@@ -19,9 +19,16 @@ def _download_idbank_list():
     idbank_file_csv = "2020_correspondances_idbank_dimension.csv"
     
     #download file
+    http_proxy = os.environ.get('http')
+    https_proxy = os.environ.get('http')
+
+    if (http_proxy is None) | (https_proxy is None):
+        http_proxy = ''
+        https_proxy = ''
+
     proxies = {
-      'http': os.environ.get('http'),
-      'https': os.environ.get('https'),
+      'http': http_proxy,
+      'https': https_proxy
     }     
     
     results = requests.get(file_to_dwn, proxies = proxies)
