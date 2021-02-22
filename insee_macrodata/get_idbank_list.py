@@ -2,7 +2,8 @@
 def get_idbank_list(*datasets, update = False):
     """Download an INSEE's series key list for one or several datasets
     Notes: Some metadata is stored for 3 months locally on the computer. It is updated automatically.
-    Args:        
+    Args:       
+        ... (datasets, str) :  datasets should be among the datasets list provided by get_dataset_list()
         update (bool, optional): Set to True, to update manually the metadata stored
          locally on the computer. Defaults to False.
 
@@ -11,6 +12,10 @@ def get_idbank_list(*datasets, update = False):
 
     Returns:
         DataFrame: contains dimension columns, series keys, dataset name 
+    
+    Examples:
+    ---------
+    >>> idbank_ipc = get_idbank_list('IPC-2015', 'CLIMAT-AFFAIRES')
     """    
     import pandas as pd
     import re

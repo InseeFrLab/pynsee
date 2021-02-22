@@ -23,18 +23,16 @@ def get_insee_idbank(*idbanks,
 
     Examples:
     ---------
-    # inflation figures in France
-    df_idbank = get_idbank_list("IPC-2015")
-
-    df_idbank = df_idbank.loc[
+    >>> # inflation figures in France
+    >>> df_idbank = get_idbank_list("IPC-2015")
+    >>> df_idbank = df_idbank.loc[
                         (df_idbank.FREQ == "M") & # monthly
                         (df_idbank.NATURE == "INDICE") & # index
                         (df_idbank.MENAGES_IPC == "ENSEMBLE") & # all kinds of household
                         (df_idbank.REF_AREA == "FE") & # all France including overseas departements
                         (df_idbank.COICOP2016.str.match("^[0-9]{2}$"))] # coicop aggregation level
-
-    # get data
-    data = get_insee_idbank(df_idbank.idbank)
+    >>> # get data
+    >>> data = get_insee_idbank(df_idbank.idbank)
     """    
     import pandas
     import math

@@ -31,12 +31,12 @@ def get_insee_dataset(dataset,
     
     Examples:
     ---------
-    ipc_data = 
+    >>> ipc_data = 
         get_insee_dataset("IPC-2015", 
             filter = "M......ENSEMBLE...CVS.2015",
             includeHistory = True, updatedAfter = "2017-07-11T08:45:00")
 
-    business_climate = get_insee_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
+    >>> business_climate = get_insee_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
 
     """    
     from ._paste import _paste 
