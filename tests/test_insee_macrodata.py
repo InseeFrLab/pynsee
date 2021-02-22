@@ -15,7 +15,7 @@ except IOError:
     print("Proxy file not accessible")
 
 from unittest import TestCase
-import pandas as pd
+from pandas import pandas as pd
 
 import insee_macrodata as imac
 
