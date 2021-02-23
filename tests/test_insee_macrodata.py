@@ -95,6 +95,11 @@ class TestFunction(TestCase):
         test2 = isinstance(search_paris, pd.DataFrame)
         self.assertTrue(test1 & test2)
 
+    def test__get_idbank_internal_data_harmonized(self):
+        search_all = imac._get_idbank_internal_data_harmonized()        
+        test = isinstance(search_all, pd.DataFrame)
+        self.assertTrue(test)
+
     def test__download_idbank_list(self):
         df= imac._download_idbank_list()
         self.assertTrue(isinstance(df, pd.DataFrame))

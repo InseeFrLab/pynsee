@@ -28,6 +28,7 @@ from ._download_idbank_list import _download_idbank_list
 from ._get_dataset_metadata import _get_dataset_metadata
 from ._create_insee_folder import _create_insee_folder
 from ._get_idbank_internal_data import _get_idbank_internal_data
+from ._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
 from ._get_token import _get_token
 from ._request_insee import _request_insee
 from ._download_idbank_list import _download_idbank_list
