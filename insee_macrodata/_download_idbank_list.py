@@ -44,7 +44,7 @@ def _download_idbank_list():
     
     file_to_read = [f for f in os.listdir(dirpath) if not re.match('.*.zip$', f)]
     
-    if len(file_to_read) != 0:
+    if idbank_file_csv == file_to_read[0]:
         data = pd.read_csv(dirpath + "/" + file_to_read[0], dtype = 'str')
     else:
         ValueError('!!! idbank file missing after unzipping !!!')
