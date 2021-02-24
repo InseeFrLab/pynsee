@@ -77,7 +77,7 @@ class TestFunction(TestCase):
         df = imac.split_title(data)
         self.assertTrue(isinstance(df, pd.DataFrame))
         
-    def test_get_geo_list(self):
+    def test__get_geo_list(self):
         list_available_geo = ['communes', 'regions', 'departements',
                           'arrondissements', 'arrondissementsMunicipaux']        
         list_geo_data = []
