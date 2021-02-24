@@ -23,9 +23,10 @@ class TestFunction(TestCase):
 
     def test__get_token(self):
         token = imac._get_token()
-        self.assertTrue(not token is None)
+        self.assertTrue(token is not None)
 
      def test__get_geo_list(self):
+
         list_available_geo = ['communes', 'regions', 'departements',
                           'arrondissements', 'arrondissementsMunicipaux']        
         list_geo_data = []
