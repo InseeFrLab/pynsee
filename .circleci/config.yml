@@ -21,7 +21,8 @@ jobs:
       - run:
           name: run tests
           command: |
-            . venv/bin/activate
             echo "this is a test"
             echo "${insee_key}"
+            echo $insee_key
+            . venv/bin/activate
           # pytest -v --cov=insee_macrodata
