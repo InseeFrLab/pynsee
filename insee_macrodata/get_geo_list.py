@@ -52,20 +52,32 @@ def get_geo_list(geo):
     list_data_geo = []
         
     for igeo in trange(n_variable, desc = "Getting %s" % geo):
-        dict_geo = {'Intitule':root[igeo][0].text, #root[igeo][0].tag
-                    'Type':root[igeo][1].text, #root[igeo][1].tag
-                    'DateCreation':root[igeo][2].text, #root[igeo][2].tag
-                    'IntituleSansArticle':root[igeo][3].text,#root[igeo][3].tag
-                    }
-        data_attrib = pd.DataFrame(root[igeo].attrib, index = [0])
+
+        n_var = len(root[igeo])
         
-        data_geo = pd.DataFrame(dict_geo, index = [0],
-                                    columns = ['Intitule', 'Type',
-                                               'DateCreation', 'IntituleSansArticle'])
+        dict_geo = {}
         
-        data_geo_all = pd.concat([data_geo, data_attrib], axis=1)
+        for ivar in range(n_var):
+            dict_geo[root[igeo][ivar].tag] = root[igeo][ivar].text
+       
+
+        # dict_geo = {'Intitule':root[igeo][0].text, #root[igeo][0].tag
+        #             'Type':root[igeo][1].text, #root[igeo][1].tag
+        #             'DateCreation':root[igeo][2].text, #root[igeo][2].tag
+        #             'IntituleSansArticle':root[igeo][3].text,#root[igeo][3].tag
+        #             }
+        # data_attrib = pd.DataFrame(root[igeo].attrib, index = [0])
         
-        list_data_geo.append(data_geo_all)
+        dict_geo = {**dict_geo, **root[igeo].attrib}
+
+        data_geo = pd.DataFrame(dict_geo, index = [0])
+        # data_geo = pd.DataFrame(dict_geo, index = [0],
+        #                             columns = ['Intitule', 'Type',
+        #                                        'DateCreation', 'IntituleSansArticle'])
+        
+        # data_geo_all = pd.concat([data_geo, data_attrib], axis=1)
+        
+        list_data_geo.append(data_geo)
         
     
     df_geo = pd.concat(list_data_geo)     
