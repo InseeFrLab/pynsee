@@ -34,7 +34,7 @@ class TestFunction(TestCase):
             list_geo_data.append(imac.get_geo_list(geo))
             
         df = pd.concat(list_geo_data)
-        
+        df = imac.get_geo_list('communes')
         self.assertTrue(isinstance(df, pd.DataFrame))
     
     # def test_get_dataset_list(self):
