@@ -27,13 +27,13 @@ class TestFunction(TestCase):
 
     def test__get_geo_list(self):
 
-        list_available_geo = ['communes', 'regions', 'departements',
-                          'arrondissements', 'arrondissementsMunicipaux']        
-        list_geo_data = []
-        for geo in list_available_geo:
-            list_geo_data.append(imac.get_geo_list(geo))
+        # list_available_geo = ['communes', 'regions', 'departements',
+        #                   'arrondissements', 'arrondissementsMunicipaux']        
+        # list_geo_data = []
+        # for geo in list_available_geo:
+        #     list_geo_data.append(imac.get_geo_list(geo))
             
-        df = pd.concat(list_geo_data)
+        # df = pd.concat(list_geo_data)
         df = imac.get_geo_list('communes')
         self.assertTrue(isinstance(df, pd.DataFrame))
     
