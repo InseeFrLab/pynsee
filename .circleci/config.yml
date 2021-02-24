@@ -2,9 +2,8 @@
 version: 2
 jobs:
   build:
-    context: env_var_context
-    #docker:
-    #  - image: circleci/python:3.7
+    docker:
+      - image: circleci/python:3.7
 
     working_directory: ~/repo
 
