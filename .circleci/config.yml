@@ -23,5 +23,5 @@ jobs:
           command: |
             . venv/bin/activate
             echo "this is a test"
-            echo "$insee_key"
+            echo "${insee_key}"
           # pytest -v --cov=insee_macrodata
