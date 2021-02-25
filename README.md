@@ -6,6 +6,8 @@ insee-macrodata python package
 
 [![CircleCI](https://circleci.com/gh/hadrilec/py-insee_macrodata.svg?style=shield)](https://circleci.com/gh/hadrilec/py-insee_macrodata)
 
+ [![Build Status](https://travis-ci.org/hadrilec/py-insee_macrodata.svg?branch=master)](https://travis-ci.org/hadrilec/py-insee_macrodata) 
+
 
 
 # Overview
