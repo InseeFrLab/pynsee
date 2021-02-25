@@ -8,7 +8,8 @@ insee-macrodata python package
 
  [![Build Status](https://travis-ci.org/hadrilec/py-insee_macrodata.svg?branch=master)](https://travis-ci.org/hadrilec/py-insee_macrodata) 
 
-
+[![Codecov test coverage](https://codecov.io/gh/hadrilec/py-insee_macrodata/branch/master/graph/badge.svg)](https://codecov.io/gh/hadrilec/py-insee_macrodata?branch=master) 
+ 
 
 # Overview
 
