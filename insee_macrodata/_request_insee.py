@@ -28,8 +28,8 @@ def _request_insee(api_url=None, sdmx_url=None):
 
 
     try:
-        proxies = {'http': os.environ['http'],
-                   'https': os.environ['https']}
+        proxies = {'http': os.environ['http_proxy'],
+                   'https': os.environ['http_proxy']}
     except:
         proxies = {'http': '','https': ''}
 

@@ -39,8 +39,8 @@ os.environ['insee_secret'] = "my_secret_key"
 
 ```
 import os 
-os.environ['http'] = 'http://my_proxy_server:port'
-os.environ['https'] = 'http://my_proxy_server:port'
+os.environ['http_proxy'] = 'http://my_proxy_server:port'
+os.environ['https_proxy'] = 'http://my_proxy_server:port'
 ```
 
 ## Support
