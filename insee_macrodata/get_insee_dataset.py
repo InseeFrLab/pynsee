@@ -51,7 +51,7 @@ def get_insee_dataset(dataset,
         raise ValueError("%s is not a dataset from INSEE" % dataset)    
             
     INSEE_sdmx_link_idbank = "https://bdm.insee.fr/series/sdmx/data/"
-    INSEE_api_link_idbank = "https://bdm.insee.fr/series/sdmx/data/"
+    INSEE_api_link_idbank = "https://api.insee.fr/series/BDM/V1/data/"
        
     sdmx_query = INSEE_sdmx_link_idbank + dataset
     api_query = INSEE_api_link_idbank + dataset
