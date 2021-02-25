@@ -42,16 +42,7 @@ def _request_insee(api_url=None, sdmx_url=None):
 
     if not api_url is None:
 
-        try:
-            token = os.environ['insee_token']
-            headers = {'Accept': 'application/xml',
-                        'Authorization': 'Bearer ' + token}
-            url_test = "https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES"
-            request_test = requests.get(url_test, proxies = proxies, headers=headers)
-            if request_test.status_code != 200:
-                    raise ValueError("Token from python environment is not working")            
-        except:
-            token = _get_token()
+        token = _get_token()
 
         if not token is None:
             headers = {'Accept': 'application/xml',
