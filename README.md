@@ -5,10 +5,7 @@ insee-macrodata python package
 
 <br> 
 
-[![CircleCI](https://circleci.com/gh/hadrilec/py-insee_macrodata.svg?style=shield)](https://circleci.com/gh/hadrilec/py-insee_macrodata)
-
  [![Build Status](https://travis-ci.org/hadrilec/py-insee_macrodata.svg?branch=master)](https://travis-ci.org/hadrilec/py-insee_macrodata) 
-
 [![Codecov test coverage](https://codecov.io/gh/hadrilec/py-insee_macrodata/branch/master/graph/badge.svg)](https://codecov.io/gh/hadrilec/py-insee_macrodata?branch=master) 
  
 <br> 
