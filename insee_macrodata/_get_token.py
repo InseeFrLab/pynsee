@@ -1,4 +1,6 @@
+from functools import lru_cache
 
+@lru_cache(maxsize=None)
 def _get_token():
     import os
     from api_insee import ApiInsee
