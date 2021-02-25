@@ -3,6 +3,7 @@ insee-macrodata python package
 
 **Work in progress**
 
+<br> 
 
 [![CircleCI](https://circleci.com/gh/hadrilec/py-insee_macrodata.svg?style=shield)](https://circleci.com/gh/hadrilec/py-insee_macrodata)
 
@@ -10,6 +11,7 @@ insee-macrodata python package
 
 [![Codecov test coverage](https://codecov.io/gh/hadrilec/py-insee_macrodata/branch/master/graph/badge.svg)](https://codecov.io/gh/hadrilec/py-insee_macrodata?branch=master) 
  
+<br> 
 
 # Overview
 
