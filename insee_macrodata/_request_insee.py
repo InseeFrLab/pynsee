@@ -1,21 +1,21 @@
-from functools import lru_cache
+# from functools import lru_cache
 
-@lru_cache(maxsize=None)
-def _warning_api_success():
-    print("Insee API used")
+# @lru_cache(maxsize=None)
+# def _warning_api_success():
+#     print("Insee API used")
 
-@lru_cache(maxsize=None)
-def _warning_api_failure():
-    msg1 = "\n!!! Error : check your subscription to api.insee.fr"
-    #msg2 = "Due to an error the sdmx service is used instead of the api!!!\n"
-    #print(msg1 + "\n" + msg2)
-    print(msg1 + "\n" )
+# @lru_cache(maxsize=None)
+# def _warning_api_failure():
+#     msg1 = "\n!!! Error : check your subscription to api.insee.fr"
+#     #msg2 = "Due to an error the sdmx service is used instead of the api!!!\n"
+#     #print(msg1 + "\n" + msg2)
+#     print(msg1 + "\n" )
 
-@lru_cache(maxsize=None)
-def _warning_no_token():
-    msg1 = "\n!!! Warning : check your subscription to api.insee.fr"
-    msg2 = "The sdmx service you are using may be deprecated !!!\n"
-    print(msg1 + "\n" + msg2)
+# @lru_cache(maxsize=None)
+# def _warning_no_token():
+#     msg1 = "\n!!! Warning : check your subscription to api.insee.fr"
+#     msg2 = "The sdmx service you are using may be deprecated !!!\n"
+#     print(msg1 + "\n" + msg2)
 
 def _request_insee(api_url=None, sdmx_url=None):
 
