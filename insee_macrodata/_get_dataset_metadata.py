@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 11 12:50:07 2021
-
-@author: XLAPDO
-"""
 
 def _get_dataset_metadata(dataset, update=False):
     
@@ -30,9 +25,11 @@ def _get_dataset_metadata(dataset, update=False):
             print("%s : metadata update triggered because a file is missing" % dataset)
         else:
            
-            # from datetime import timedelta 
-            # insee_date_time_now = datetime.now() + timedelta(days=91)
-            insee_date_time_now = datetime.now()
+            try:
+                # only used for testing purposes
+                insee_date_time_now = os.environ['insee_date_test']
+            except:
+                insee_date_time_now = datetime.now()
              
             # file date creation
             file_date_last_modif =  datetime.fromtimestamp(os.path.getmtime(file_dataset_metadata))
