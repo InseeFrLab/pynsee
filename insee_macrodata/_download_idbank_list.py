@@ -16,9 +16,16 @@ def _download_idbank_list():
     import os
     import re
     
-    file_to_dwn = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
-    idbank_file_csv = "2020_correspondances_idbank_dimension.csv"
+    file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
+    idbank_file_csv_default = "2020_correspondances_idbank_dimension.csv"
     
+    try:
+        file_to_dwn = os.environ['insee_idbank_file_to_dwn']
+        idbank_file_csv = os.environ['insee_idbank_file_csv']
+    except:
+        file_to_dwn = file_to_dwn_default
+        idbank_file_csv = idbank_file_csv_default
+
     #download file
     try:
         proxies = {'http': os.environ['http'],
@@ -30,6 +37,7 @@ def _download_idbank_list():
     
     if results.status_code != 200:
         print(results.text)
+        ValueError("!!! Idbank zip file not found !!!\nPlease change the value of  os.environ['insee_idbank_file_to_dwn']")
     
     # create temporary directory
     dirpath = tempfile.mkdtemp()
@@ -47,6 +55,6 @@ def _download_idbank_list():
     if idbank_file_csv == file_to_read[0]:
         data = pd.read_csv(dirpath + "/" + file_to_read[0], dtype = 'str')
     else:
-        ValueError('!!! idbank file missing after unzipping !!!')
+        ValueError("!!! Idbank file missing after unzipping \nPlease change the value of os.environ['insee_idbank_file_csv']!!!")
     
     return data
