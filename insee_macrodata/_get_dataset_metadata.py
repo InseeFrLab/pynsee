@@ -28,6 +28,7 @@ def _get_dataset_metadata(dataset, update=False):
             try:
                 # only used for testing purposes
                 insee_date_time_now = os.environ['insee_date_test']
+                insee_date_time_now = datetime.strptime(insee_date_time_now, '%Y-%m-%d %H:%M:%S.%f')
             except:
                 insee_date_time_now = datetime.now()
              
