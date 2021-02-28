@@ -147,8 +147,12 @@ class TestFunction(TestCase):
         test = isinstance(df, pd.DataFrame)
         self.assertTrue(test)
 
-    def test_get_dataset_metadata(self):    
-        os.environ['insee_date_test'] = datetime.now() + timedelta(days=91)
+    def test_get_dataset_metadata(self):  
+        from datetime import datetime
+        from datetime import timedelta
+        
+        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))
+        
         df = _get_dataset_metadata('CLIMAT-AFFAIRES')
         test1 = isinstance(df, pd.DataFrame)
 
