@@ -69,6 +69,7 @@ class TestFunction(TestCase):
     def test_get_column_title_1(self):     
         _clean_insee_folder()
         data = get_column_title()
+        _clean_insee_folder()
         self.assertTrue(isinstance(data, pd.DataFrame))
 
     def test_get_column_title_2(self):   
@@ -189,16 +190,16 @@ class TestFunction(TestCase):
 
     def test_get_envir_token(self):
         # if credentials are not well provided but sdmx url works
-        _get_envir_token.clear_cache()
+        # _get_envir_token.clear_cache()
         os.environ['insee_token'] = "a"        
         self.assertRaises(ValueError, _get_envir_token())
     
     def test_download_idbank_list_1(self):
-        _download_idbank_list.clear_cache()       
+        # _download_idbank_list.clear_cache()       
         os.environ['insee_idbank_file_csv'] = "test_file"
         self.assertRaises(ValueError, _download_idbank_list())
 
-    def test_download_idbank_list_2(self):
+    # def test_download_idbank_list_2(self):
         _download_idbank_list.clear_cache()   
         os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/test"
         self.assertRaises(ValueError, _download_idbank_list())
