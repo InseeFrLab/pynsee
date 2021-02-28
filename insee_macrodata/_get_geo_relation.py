@@ -19,18 +19,12 @@ def _get_geo_relation(geo, code, relation):
     import pandas as pd
     import xml.etree.ElementTree as ET
     from tqdm import trange
-    
-    proxies = {'http': '','https': ''}  
-   
-    token = os.environ['insee_token']
-    
-    headers = {'Accept': 'application/xml',
-                        'Authorization': 'Bearer ' + token}
+
+    from ._request_insee import _request_insee
 
     api_url = 'https://api.insee.fr/metadonnees/V1/geo/' + geo + '/' + code + '/' + relation
     
-    results = requests.get(api_url, proxies = proxies, headers=headers)
-
+    results = _request_insee(api_url = api_url)
     
     dirpath = tempfile.mkdtemp()
                             
