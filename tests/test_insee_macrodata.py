@@ -16,6 +16,7 @@ from datetime import *
 import os
 
 from insee_macrodata._get_token import _get_token
+from insee_macrodata._get_envir_token import _get_envir_token
 from insee_macrodata._get_insee import _get_insee
 from insee_macrodata._clean_insee_folder import _clean_insee_folder
 from insee_macrodata._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
@@ -23,6 +24,7 @@ from insee_macrodata._get_idbank_internal_data import _get_idbank_internal_data
 from insee_macrodata._get_dataset_metadata import _get_dataset_metadata
 from insee_macrodata._get_geo_relation import _get_geo_relation
 from insee_macrodata._request_insee import _request_insee
+from insee_macrodata._download_idbank_list import _download_idbank_list
 
 from insee_macrodata.get_column_title import get_column_title
 from insee_macrodata.search_insee import search_insee
@@ -41,7 +43,7 @@ class TestFunction(TestCase):
         token = _get_token()
         self.assertTrue((token is not None))
 
-    def test_get_geo_list(self):        
+    def test_get_geo_list_1(self):        
         list_available_geo = ['communes', 'regions', 'departements',
                           'arrondissements', 'arrondissementsMunicipaux']        
         list_geo_data = []
@@ -50,39 +52,48 @@ class TestFunction(TestCase):
         df = pd.concat(list_geo_data)
 
         self.assertTrue(isinstance(df, pd.DataFrame))
+    
+    def test_get_geo_list_2(self):   
+        self.assertRaises(ValueError, get_geo_list('a')) 
 
-    def test_get_geo_relation(self):    
+    def test_get_geo_relation_1(self):    
         df1 = _get_geo_relation('region', "11", 'descendants')
         df2 = _get_geo_relation('departement', "91", 'ascendants')
         test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
-        self.assertTrue(test)
-        
+        self.assertTrue(test)        
     
     def test_get_dataset_list(self):        
         data = get_dataset_list()
         self.assertTrue(isinstance(data, pd.DataFrame))
     
-    def test_get_column_title(self):     
+    def test_get_column_title_1(self):     
         _clean_insee_folder()
         data = get_column_title()
         self.assertTrue(isinstance(data, pd.DataFrame))
+
+    def test_get_column_title_2(self):   
+        self.assertRaises(ValueError, get_column_title(dataset = ['a','b']))  
+    def test_get_column_title_3(self):   
+        self.assertRaises(ValueError, get_column_title(dataset = ['a'])) 
     
-    def test_get_idbank_list(self):        
+    def test_get_idbank_list_1(self):        
         data = get_idbank_list('CLIMAT-AFFAIRES')
         self.assertTrue(isinstance(data, pd.DataFrame))
+    def test_get_idbank_list_2(self):   
+        self.assertRaises(ValueError, get_idbank_list('a'))    
         
     def test_get_insee_idbank_1(self):
         idbank_list = get_idbank_list('IPC-2015').iloc[:900]
         data = get_insee_idbank(idbank_list.idbank)
         self.assertTrue(isinstance(data, pd.DataFrame))
         
-    def test_get_insee_idbank(self):
+    def test_get_insee_idbank_2(self):
         data = get_insee_idbank("001769682", "001769683")
         self.assertTrue(isinstance(data, pd.DataFrame))
 
     def test_get_date(self):
         data = get_insee_idbank("001694056", "001691912",
-         "001580062", "001688370", "010565692")
+         "001580062", "001688370", "010565692", "001580394")
         self.assertTrue(isinstance(data, pd.DataFrame))
     
     def test_get_insee(self):
@@ -114,6 +125,9 @@ class TestFunction(TestCase):
                    includeHistory = True,
                    updatedAfter = "2017-07-11T08:45:00")        
         self.assertTrue(len(data1.index) < len(data2.index))
+    
+    def test_get_insee_dataset_4(self):   
+        self.assertRaises(ValueError, get_insee_dataset('a'))   
         
     def test_split_title(self):
         data = get_insee_idbank("001769682", "001769683")   
@@ -123,12 +137,14 @@ class TestFunction(TestCase):
         # test is object is dataframe
         test2 = (split_title(1) == 1)
         # test if title column exists
-        df2 = split_title(data, title_col_name=['ABC'])
-        test3 = (len(df2.columns) < len(df1.columns))
+        df3 = split_title(data, title_col_name=['ABC'])
+        test3 = (len(df3.columns) < len(df1.columns))
         # test if n_split is not doable
-        df3 = split_title(data, n_split=100)
-        test4 = isinstance(df3, pd.DataFrame)
-        self.assertTrue(test1 & test2 & test3 & test4)
+        df4 = split_title(data, n_split=100)
+        test4 = isinstance(df4, pd.DataFrame)
+        df5 = split_title(data, n_split=-10)
+        test5 = isinstance(df5, pd.DataFrame)
+        self.assertTrue(test1 & test2 & test3 & test4 & test5)
        
     def test_search_insee(self):
         search_all = search_insee()
@@ -171,5 +187,20 @@ class TestFunction(TestCase):
         test = (results.status_code == 200)
         self.assertTrue(test)
 
+    def test_get_envir_token(self):
+        # if credentials are not well provided but sdmx url works
+        _get_envir_token.clear_cache()
+        os.environ['insee_token'] = "a"        
+        self.assertRaises(ValueError, _get_envir_token())
+    
+    def test_download_idbank_list_1(self):
+        _download_idbank_list.clear_cache()       
+        os.environ['insee_idbank_file_csv'] = "test_file"
+        self.assertRaises(ValueError, _download_idbank_list())
+
+    def test_download_idbank_list_2(self):
+        _download_idbank_list.clear_cache()   
+        os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/test"
+        self.assertRaises(ValueError, _download_idbank_list())
 
 
