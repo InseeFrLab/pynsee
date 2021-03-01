@@ -69,13 +69,14 @@ class TestFunction(TestCase):
     
     def test_get_column_title_1(self):     
         _clean_insee_folder()
-        data = get_column_title()
-        _clean_insee_folder()
-        self.assertTrue(isinstance(data, pd.DataFrame))
+        data1 = get_column_title()
+        test1 = isinstance(data1, pd.DataFrame)
+
+        data2 = get_column_title(['CLIMAT-AFFAIRES', 'IPC-2015'])
+        test2 = isinstance(data2, pd.DataFrame)
+        self.assertTrue(test1 & test2)
 
     def test_get_column_title_2(self):   
-        self.assertRaises(ValueError, get_column_title, dataset = ['a','b'])  
-    def test_get_column_title_3(self):   
         self.assertRaises(ValueError, get_column_title, dataset = ['a']) 
     
     def test_get_idbank_list_1(self):        
@@ -174,7 +175,7 @@ class TestFunction(TestCase):
     def test_get_dataset_metadata(self):  
         from datetime import datetime
         from datetime import timedelta
-        
+        _clean_insee_folder()
         os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))
         
         df = _get_dataset_metadata('CLIMAT-AFFAIRES')
@@ -201,7 +202,12 @@ class TestFunction(TestCase):
         token = _get_envir_token()  
         test = (token is None)  
         self.assertTrue(test)
-    
+
+    def test_download_idbank_list_0(self):   
+        df = _download_idbank_list
+        test = isinstance(df, pd.DataFrame)
+        self.assertTrue(test)
+
     def test_download_idbank_list_1(self):   
         os.environ['insee_idbank_file_csv'] = "test_file"
         self.assertRaises(ValueError, _download_idbank_list)
