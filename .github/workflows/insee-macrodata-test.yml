@@ -31,6 +31,5 @@ jobs:
       env:
         INSEE_KEY: ${{ secrets.INSEE_KEY }}
         INSEE_SECRET: ${{ secrets.INSEE_SECRET }}
-      run: |
-        echo "insee_key : $insee_key / $INSEE_KEY / env.INSEE_KEY / $env.INSEE_KEY / ${{ env.INSEE_KEY }} "
-      # pytest -v --cov
+      run: |     
+        pytest -v --cov
