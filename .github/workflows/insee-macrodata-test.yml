@@ -1,6 +1,7 @@
 name: insee-macrodata package
 
 on: [push]
+env: insee-macrodata-test
 
 jobs:
   build:
@@ -33,4 +34,4 @@ jobs:
         insee_secret: ${{ env.INSEE_SECRET }}
       run: |
         echo "insee_key : $insee_key"
-        pytest -v --cov
+      # pytest -v --cov
