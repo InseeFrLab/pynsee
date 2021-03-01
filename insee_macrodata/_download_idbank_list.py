@@ -31,22 +31,21 @@ def _download_idbank_list():
     except:
         proxies = {'http': '','https': ''}
     
-    results = requests.get(file_to_dwn, proxies = proxies)
-    
-    if results.status_code != 200:
-        print(results.text)
+    try:
+        results = requests.get(file_to_dwn, proxies = proxies)
+        
+        # create temporary directory
+        dirpath = tempfile.mkdtemp()
+        
+        idbank_zip_file = dirpath + '\\idbank_list.zip'
+        
+        with open(idbank_zip_file, 'wb') as f:
+            f.write(results.content)
+        
+        with zipfile.ZipFile(idbank_zip_file, 'r') as zip_ref:
+            zip_ref.extractall(dirpath)
+    except:
         ValueError("!!! Idbank zip file not found !!!\nPlease change the value of  os.environ['insee_idbank_file_to_dwn']")
-    
-    # create temporary directory
-    dirpath = tempfile.mkdtemp()
-    
-    idbank_zip_file = dirpath + '\\idbank_list.zip'
-    
-    with open(idbank_zip_file, 'wb') as f:
-        f.write(results.content)
-    
-    with zipfile.ZipFile(idbank_zip_file, 'r') as zip_ref:
-        zip_ref.extractall(dirpath)
     
     file_to_read = [f for f in os.listdir(dirpath) if not re.match('.*.zip$', f)]
     
