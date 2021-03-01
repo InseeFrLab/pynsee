@@ -4,7 +4,9 @@ on: [push]
 
 jobs:
   build:
-
+    env:
+        INSEE_KEY: ${{ secrets.INSEE_KEY }}
+        INSEE_SECRET: ${{ secrets.INSEE_SECRET }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -28,8 +30,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         #flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
-      env:
-        INSEE_KEY: ${{ secrets.INSEE_KEY }}
-        INSEE_SECRET: ${{ secrets.INSEE_SECRET }}
+      
       run: |     
-        pytest -v --cov
+        echo "key $INSEE_KEY"
+      #pytest -v --cov
