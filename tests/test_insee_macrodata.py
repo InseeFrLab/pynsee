@@ -70,14 +70,14 @@ class TestFunction(TestCase):
     #     data = get_dataset_list()
     #     self.assertTrue(isinstance(data, pd.DataFrame))
     
-    def test_get_column_title_1(self):     
-        _clean_insee_folder()
-        data1 = get_column_title()
-        test1 = isinstance(data1, pd.DataFrame)
+    # def test_get_column_title_1(self):     
+    #     _clean_insee_folder()
+    #     data1 = get_column_title()
+    #     test1 = isinstance(data1, pd.DataFrame)
 
-        data2 = get_column_title(['CLIMAT-AFFAIRES', 'IPC-2015'])
-        test2 = isinstance(data2, pd.DataFrame)
-        self.assertTrue(test1 & test2)
+    #     data2 = get_column_title(['CLIMAT-AFFAIRES', 'IPC-2015'])
+    #     test2 = isinstance(data2, pd.DataFrame)
+    #     self.assertTrue(test1 & test2)
 
     # def test_get_column_title_2(self):   
     #     self.assertRaises(ValueError, get_column_title, dataset = ['a']) 
