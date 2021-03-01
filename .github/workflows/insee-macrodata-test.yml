@@ -32,5 +32,5 @@ jobs:
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |
-        echo "insee_key : $insee_key"
+        echo "insee_key : $insee_key / $INSEE_KEY"
       # pytest -v --cov
