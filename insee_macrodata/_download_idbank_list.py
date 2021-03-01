@@ -21,9 +21,11 @@ def _download_idbank_list():
     
     try:
         file_to_dwn = os.environ['insee_idbank_file_to_dwn']
-        idbank_file_csv = os.environ['insee_idbank_file_csv']
     except:
         file_to_dwn = file_to_dwn_default
+    try:
+        idbank_file_csv = os.environ['insee_idbank_file_csv']
+    except:
         idbank_file_csv = idbank_file_csv_default
 
     #download file
