@@ -9,10 +9,9 @@ def _create_insee_folder():
     import os 
     import tempfile
     import appdirs
-    
-    from ._hash import _hash
-    
+        
     try:
+        from ._hash import _hash
         #find local folder
         local_appdata_folder = appdirs.user_cache_dir()      
         insee_folder = local_appdata_folder + '/insee'
@@ -32,7 +31,7 @@ def _create_insee_folder():
         with open(test_file, 'w') as f:
             f.write('')
         
-    except IOError:
+    except:
         #if error temporary folder is returned
         insee_folder = tempfile.mkdtemp()
     finally:
