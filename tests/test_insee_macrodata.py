@@ -180,10 +180,11 @@ class TestFunction(TestCase):
     def test_get_dataset_metadata(self):  
         from datetime import datetime
         from datetime import timedelta
-        _clean_insee_folder()
-        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))
         
         df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
+        df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+
         test1 = isinstance(df, pd.DataFrame)
 
         df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
@@ -193,20 +194,22 @@ class TestFunction(TestCase):
     def test_get_dataset_dimension(self):  
         from datetime import datetime
         from datetime import timedelta
-        _clean_insee_folder()
-        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))
-        
+
         df = _get_dataset_dimension('CLIMAT-AFFAIRES')
+        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
+        df = _get_dataset_dimension('CLIMAT-AFFAIRES')
+
         test1 = isinstance(df, pd.DataFrame)
         self.assertTrue(test1)
     
     def test_get_dimension_values(self):  
         from datetime import datetime
         from datetime import timedelta
-        _clean_insee_folder()
-        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))
-        
+
         df = _get_dimension_values('CL_PERIODICITE')
+        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
+        df = _get_dimension_values('CL_PERIODICITE')
+
         test1 = isinstance(df, pd.DataFrame)
         self.assertTrue(test1)
     
@@ -232,12 +235,24 @@ class TestFunction(TestCase):
         df = _download_idbank_list()
         test = isinstance(df, pd.DataFrame)
         self.assertTrue(test)
+    
+    def test_download_idbank_list_1(self):  
+        from datetime import datetime
+        from datetime import timedelta
+     
+        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
+        df = _download_idbank_list()
 
-    def test_download_idbank_list_1(self):   
+        test1 = isinstance(df, pd.DataFrame)
+        self.assertTrue(test1)
+
+    def test_download_idbank_list_2(self):  
+        _clean_insee_folder() 
         os.environ['insee_idbank_file_csv'] = "test_file"
         self.assertRaises(ValueError, _download_idbank_list)
 
-    def test_download_idbank_list_2(self):
+    def test_download_idbank_list_3(self):
+        _clean_insee_folder()
         os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/test"
         self.assertRaises(ValueError, _download_idbank_list)
 
