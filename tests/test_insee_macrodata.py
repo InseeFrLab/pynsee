@@ -202,15 +202,11 @@ class TestFunction(TestCase):
         test = (token is None)  
         self.assertTrue(test)
     
-    def test_download_idbank_list_1(self):
-        df = _download_idbank_list()
-        _download_idbank_list.clear_cache()       
+    def test_download_idbank_list_1(self):   
         os.environ['insee_idbank_file_csv'] = "test_file"
         self.assertRaises(ValueError, _download_idbank_list)
 
     def test_download_idbank_list_2(self):
-        df = _download_idbank_list()
-        _download_idbank_list.clear_cache()    
         os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/test"
         self.assertRaises(ValueError, _download_idbank_list)
 
