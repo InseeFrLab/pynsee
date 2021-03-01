@@ -14,7 +14,7 @@ from pandas import pandas as pd
 # from datetime import timedelta 
 from datetime import *
 import os
-from functools import lru_cache
+#from functools import lru_cache
 
 from insee_macrodata._get_token import _get_token
 from insee_macrodata._get_envir_token import _get_envir_token
