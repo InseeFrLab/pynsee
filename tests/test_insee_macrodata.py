@@ -196,10 +196,11 @@ class TestFunction(TestCase):
         self.assertTrue(test)
 
     def test_get_envir_token(self):
-        # if credentials are not well provided but sdmx url works
-        #_get_envir_token.clear_cache()
-        os.environ['insee_token'] = "a"        
-        self.assertRaises(ValueError, _get_envir_token)
+        # if credentials are not well provided but sdmx url works       
+        os.environ['insee_token'] = "a"    
+        token = _get_envir_token()  
+        test = (token is None)  
+        self.assertTrue(test)
     
     def test_download_idbank_list_1(self):
         df = _download_idbank_list()
