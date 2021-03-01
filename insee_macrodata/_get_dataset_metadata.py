@@ -4,6 +4,7 @@ def _get_dataset_metadata(dataset, update=False):
     
     import pandas as pd
     import os
+    import warnings
     
     from datetime import datetime    
         
@@ -100,7 +101,7 @@ def _get_dataset_metadata(dataset, update=False):
     except:
         # if the download of the idbank file and the build of the metadata fail
         # package's internal data is provided to the user, should be exceptional, used as a backup
-        print("!!! Warning: Package's internal data has been used !!!")
+        warnings.warn("!!! Warning: Package's internal data has been used !!!")
         idbank_list_dataset = _get_idbank_internal_data()
         idbank_list_dataset = idbank_list_dataset[idbank_list_dataset["nomflow"] == dataset]
         # drop the columns where all elements are NaN
