@@ -80,7 +80,13 @@ def _download_idbank_list():
         file_to_read = [f for f in os.listdir(dirpath) if not re.match('.*.zip$', f)]
         
         if idbank_file_csv == file_to_read[0]:
-            data = pd.read_csv(dirpath + "/" + file_to_read[0], dtype = 'str')    
+            
+            file2load = dirpath + "/" + file_to_read[0]
+            data = pd.read_csv(file2load, dtype = 'str') 
+
+            if os.path.exists(file2load):
+                os.remove(file2load)   
+
             data.to_pickle(file)    
         else:
             raise ValueError("!!! Idbank file missing after unzipping \nPlease change the value of os.environ['insee_idbank_file_csv']!!!")
