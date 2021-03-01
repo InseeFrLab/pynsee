@@ -46,7 +46,11 @@ class TestFunction(TestCase):
     def test_get_dataset_metadata(self):  
         from datetime import datetime
         from datetime import timedelta
-        
+
+        os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
+        os.environ['insee_idbank_file_csv'] = "2020_correspondances_idbank_dimension.csv"
+        os.environ['insee_date_test'] = 'a'   
+
         df = _get_dataset_metadata('CLIMAT-AFFAIRES')
         os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
         df = _get_dataset_metadata('CLIMAT-AFFAIRES')
