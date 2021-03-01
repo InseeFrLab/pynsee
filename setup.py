@@ -15,7 +15,7 @@ setuptools.setup(
     version="0.0.1",
     author="Hadrien Leclerc",
     author_email="leclerc.hadrien@gmail.com",
-    description="Tools to Download Easily Data and Metadata from INSEE BDM Database",
+    description="Tools to Download Easily Data and Metadata from INSEE",
     url="",
     packages=setuptools.find_packages(),
     classifiers=[
