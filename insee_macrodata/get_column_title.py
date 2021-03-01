@@ -27,8 +27,9 @@ def get_column_title(dataset = None):
     if dataset is None:
         dataset_list = insee_dataset_list
     else: 
-        if not dataset in insee_dataset_list:               
-            raise ValueError("%s is not a dataset from INSEE" % dataset)
+        for dt in dataset:
+            if not dt in insee_dataset_list:               
+                raise ValueError("%s is not a dataset from INSEE" % dt)
         dataset_list = dataset
     
     #make a list of all columns
