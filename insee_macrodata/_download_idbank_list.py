@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Feb 10 17:57:41 2021
 
-@author: XLAPDO
-"""
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
@@ -56,7 +52,8 @@ def _download_idbank_list():
     
     if idbank_file_csv == file_to_read[0]:
         data = pd.read_csv(dirpath + "/" + file_to_read[0], dtype = 'str')
+        return data
     else:
         ValueError("!!! Idbank file missing after unzipping \nPlease change the value of os.environ['insee_idbank_file_csv']!!!")
     
-    return data
+    
