@@ -29,8 +29,8 @@ jobs:
         #flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       env:
-        insee_key: "$INSEE_KEY"
-        insee_secret: "$INSEE_SECRET"
+        insee_key: ${{ insee-macrodata-test.INSEE_KEY }}
+        insee_secret: ${{ insee-macrodata-test.INSEE_SECRET }}
       run: |
-        echo "insee_key : $INSEE_KEY"
+        echo "insee_key : $insee_key"
         pytest -v --cov
