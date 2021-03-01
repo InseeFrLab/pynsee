@@ -34,9 +34,13 @@ def _get_dimension_values(cl_dimension):
     if not os.path.exists(file): 
         trigger_update = True
     else:       
-        # from datetime import timedelta 
-        # insee_date_time_now = datetime.now() + timedelta(days=91)
-        insee_date_time_now = datetime.now()
+       
+        try:
+            # only used for testing purposes
+            insee_date_time_now = os.environ['insee_date_test']
+            insee_date_time_now = datetime.strptime(insee_date_time_now, '%Y-%m-%d %H:%M:%S.%f')
+        except:
+            insee_date_time_now = datetime.now()
          
         # file date creation
         file_date_last_modif =  datetime.fromtimestamp(os.path.getmtime(file))
