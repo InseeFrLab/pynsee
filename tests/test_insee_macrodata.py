@@ -184,12 +184,16 @@ class TestFunction(TestCase):
         df = _get_dataset_metadata('CLIMAT-AFFAIRES')
         os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
         df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-
         test1 = isinstance(df, pd.DataFrame)
 
         df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
         test2 = isinstance(df, pd.DataFrame)
-        self.assertTrue(test1 & test2)
+
+        _clean_insee_folder()
+        os.environ['insee_date_test'] = ""
+        df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+        test3 = isinstance(df, pd.DataFrame)
+        self.assertTrue(test1 & test2 & test3)
 
     def test_get_dataset_dimension(self):  
         from datetime import datetime
@@ -198,9 +202,14 @@ class TestFunction(TestCase):
         df = _get_dataset_dimension('CLIMAT-AFFAIRES')
         os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
         df = _get_dataset_dimension('CLIMAT-AFFAIRES')
-
         test1 = isinstance(df, pd.DataFrame)
-        self.assertTrue(test1)
+
+        _clean_insee_folder()
+        os.environ['insee_date_test'] = '' 
+        df = _get_dataset_dimension('CLIMAT-AFFAIRES')
+        test2 = isinstance(df, pd.DataFrame)
+
+        self.assertTrue(test1 & test2)
     
     def test_get_dimension_values(self):  
         from datetime import datetime
