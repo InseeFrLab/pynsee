@@ -32,4 +32,5 @@ jobs:
         insee_key: "$insee_key"
         insee_secret: "$insee_secret"
       run: |
+        echo "insee_key : $insee_key"
         pytest -v --cov
