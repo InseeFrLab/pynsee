@@ -43,6 +43,24 @@ from insee_macrodata.split_title import split_title
 
 class TestFunction(TestCase):
 
+    def test_get_dataset_metadata(self):  
+        from datetime import datetime
+        from datetime import timedelta
+        
+        df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
+        df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+        test1 = isinstance(df, pd.DataFrame)
+
+        df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
+        test2 = isinstance(df, pd.DataFrame)
+
+        _clean_insee_folder()
+        os.environ['insee_date_test'] = ""
+        df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+        test3 = isinstance(df, pd.DataFrame)
+        self.assertTrue(test1 & test2 & test3)
+
     def test_get_token(self):        
         token = _get_token()
         self.assertTrue((token is not None))
@@ -177,23 +195,7 @@ class TestFunction(TestCase):
         test = isinstance(df, pd.DataFrame)
         self.assertTrue(test)
 
-    def test_get_dataset_metadata(self):  
-        from datetime import datetime
-        from datetime import timedelta
-        
-        df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
-        df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-        test1 = isinstance(df, pd.DataFrame)
-
-        df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
-        test2 = isinstance(df, pd.DataFrame)
-
-        _clean_insee_folder()
-        os.environ['insee_date_test'] = ""
-        df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-        test3 = isinstance(df, pd.DataFrame)
-        self.assertTrue(test1 & test2 & test3)
+   
 
     def test_get_dataset_dimension(self):  
         from datetime import datetime
