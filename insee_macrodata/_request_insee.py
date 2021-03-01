@@ -19,7 +19,7 @@
 
 def _request_insee(api_url=None, sdmx_url=None):
 
-    import os
+    import os, re
     import requests
     from ._get_token import _get_token
 
@@ -51,7 +51,7 @@ def _request_insee(api_url=None, sdmx_url=None):
             results = requests.get(api_url, proxies = proxies, headers=headers)
 
             if results.status_code != 200:
-
+                    
                 print("!!! Wrong query or api.insee.fr error\n Please check credentials")
 
                 if not sdmx_url is None:
@@ -61,6 +61,14 @@ def _request_insee(api_url=None, sdmx_url=None):
 
                     if results.status_code != 200:
                         raise ValueError(results.text + '\n' + sdmx_url)
+                else:
+                    print("Error %s" % results.status_code)
+                    
+                    m = re.search("ams\\:description\\>.*\\<\\/ams\\:description", results.text)
+                    if m:
+                        found = m.group(0)
+                        found2 = found.replace("description", "").replace("ams", "")
+                        print(found2)
 
         else:
             # token is None
