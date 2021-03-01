@@ -27,11 +27,9 @@ def get_column_title(dataset = None):
     if dataset is None:
         dataset_list = insee_dataset_list
     else: 
-        if len([dataset]) != 1:
-            raise ValueError("Please provide only one dataset name")
         if not dataset in insee_dataset_list:               
             raise ValueError("%s is not a dataset from INSEE" % dataset)
-        dataset_list = [dataset]
+        dataset_list = dataset
     
     #make a list of all columns
     list_column = []
