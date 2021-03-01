@@ -1,16 +1,16 @@
-language: python
-python:
-  - "3.6"
-  - "3.7"
-  - "3.8"
-  - "3.9"
-install:
-  - pip install -r requirements.txt
-  - pip install codecov
-  - pip install pytest-cov
-  - pip install .
-script:
-  - pytest --cov-report=xml --cov=insee_macrodata tests/
+# language: python
+# python:
+#   - "3.6"
+#   - "3.7"
+#   - "3.8"
+#   - "3.9"
+# install:
+#   - pip install -r requirements.txt
+#   - pip install codecov
+#   - pip install pytest-cov
+#   - pip install .
+# script:
+#   - pytest --cov-report=xml --cov=insee_macrodata tests/
 
-after_success:
-  - codecov
+# after_success:
+#   - codecov
