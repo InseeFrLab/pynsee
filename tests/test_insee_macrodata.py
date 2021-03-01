@@ -81,6 +81,7 @@ class TestFunction(TestCase):
     def test_get_idbank_list_1(self):        
         data = get_idbank_list('CLIMAT-AFFAIRES')
         self.assertTrue(isinstance(data, pd.DataFrame))
+        
     def test_get_idbank_list_2(self):   
         self.assertRaises(ValueError, get_idbank_list, dataset = 'a')    
         
@@ -201,7 +202,7 @@ class TestFunction(TestCase):
         self.assertRaises(ValueError, _get_envir_token)
     
     def test_download_idbank_list_1(self):
-        # _download_idbank_list.clear_cache()       
+        _download_idbank_list.clear_cache()       
         os.environ['insee_idbank_file_csv'] = "test_file"
         self.assertRaises(ValueError, _download_idbank_list)
 
