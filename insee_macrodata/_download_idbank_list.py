@@ -26,8 +26,8 @@ def _download_idbank_list():
 
     #download file
     try:
-        proxies = {'http': os.environ['http'],
-                   'https': os.environ['https']}
+        proxies = {'http': os.environ['http_proxy'],
+                   'https': os.environ['https_proxy']}
     except:
         proxies = {'http': '','https': ''}
     
