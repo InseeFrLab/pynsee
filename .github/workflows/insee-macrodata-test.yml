@@ -32,4 +32,4 @@ jobs:
         INSEE_SECRET: ${{ secrets.INSEE_SECRET }}
       run: |     
         echo "key $INSEE_KEY"
-      #pytest -v --cov
+        pytest -v --cov
