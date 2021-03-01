@@ -16,6 +16,7 @@ from datetime import *
 import os
 #from functools import lru_cache
 
+from insee_macrodata._get_date import _get_date
 from insee_macrodata._get_token import _get_token
 from insee_macrodata._get_envir_token import _get_envir_token
 from insee_macrodata._get_insee import _get_insee
@@ -23,6 +24,8 @@ from insee_macrodata._clean_insee_folder import _clean_insee_folder
 from insee_macrodata._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
 from insee_macrodata._get_idbank_internal_data import _get_idbank_internal_data
 from insee_macrodata._get_dataset_metadata import _get_dataset_metadata
+from insee_macrodata._get_dataset_dimension import _get_dataset_dimension
+from insee_macrodata._get_dimension_values import _get_dimension_values
 from insee_macrodata._get_geo_relation import _get_geo_relation
 from insee_macrodata._request_insee import _request_insee
 from insee_macrodata._download_idbank_list import _download_idbank_list
@@ -103,7 +106,9 @@ class TestFunction(TestCase):
     def test_get_date(self):
         data = get_insee_idbank("001694056", "001691912",
          "001580062", "001688370", "010565692", "001580394")
-        self.assertTrue(isinstance(data, pd.DataFrame))
+        test1 = isinstance(data, pd.DataFrame)
+        test2 = (_get_date(freq = 'TEST', time_period = 3) == 3)
+        self.assertTrue(test1 & test2)
     
     def test_get_insee(self):
         data = _get_insee(
@@ -184,6 +189,26 @@ class TestFunction(TestCase):
         df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
         test2 = isinstance(df, pd.DataFrame)
         self.assertTrue(test1 & test2)
+
+    def test_get_dataset_dimension(self):  
+        from datetime import datetime
+        from datetime import timedelta
+        _clean_insee_folder()
+        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))
+        
+        df = _get_dataset_dimension('CLIMAT-AFFAIRES')
+        test1 = isinstance(df, pd.DataFrame)
+        self.assertTrue(test1)
+    
+    def test_get_dimension_values(self):  
+        from datetime import datetime
+        from datetime import timedelta
+        _clean_insee_folder()
+        os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))
+        
+        df = _get_dimension_values('FREQ')
+        test1 = isinstance(df, pd.DataFrame)
+        self.assertTrue(test1)
     
     def test_request_insee(self):
         # if credentials are not well provided but sdmx url works
@@ -204,7 +229,7 @@ class TestFunction(TestCase):
         self.assertTrue(test)
 
     def test_download_idbank_list_0(self):   
-        df = _download_idbank_list
+        df = _download_idbank_list()
         test = isinstance(df, pd.DataFrame)
         self.assertTrue(test)
 
