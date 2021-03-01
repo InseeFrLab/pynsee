@@ -208,6 +208,6 @@ class TestFunction(TestCase):
 
     def test_download_idbank_list_2(self):
         os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/test"
-        self.assertRaises(ValueError, _download_idbank_list)
+        self.assertRaises(OSError, _download_idbank_list)
 
 
