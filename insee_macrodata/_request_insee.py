@@ -1,4 +1,5 @@
-# from functools import lru_cache
+from functools import lru_cache
+import warnings
 
 # @lru_cache(maxsize=None)
 # def _warning_api_success():
@@ -11,11 +12,9 @@
 #     #print(msg1 + "\n" + msg2)
 #     print(msg1 + "\n" )
 
-# @lru_cache(maxsize=None)
-# def _warning_no_token():
-#     msg1 = "\n!!! Warning : check your subscription to api.insee.fr"
-#     msg2 = "The sdmx service you are using may be deprecated !!!\n"
-#     print(msg1 + "\n" + msg2)
+@lru_cache(maxsize=None)
+def _warning_no_token(msg):
+    warnings.warn(msg)
 
 def _request_insee(api_url=None, sdmx_url=None):
 
@@ -75,13 +74,12 @@ def _request_insee(api_url=None, sdmx_url=None):
 
             msg = "!!! Token missing, please check your keys on api.insee.fr\n"
             if not sdmx_url is None:
-                #_warning_no_token()
-                print(msg)
+                msg2 = "SDMX web service used instead of API"
+                print(msg + msg2)
+                # _warning_no_token(msg + msg2)
                 results = requests.get(sdmx_url, proxies = proxies)
-                print("SDMX web service used instead of API")
                 if results.status_code != 200:
                     raise ValueError(results.text + '\n' + sdmx_url)
-
             else:
                 ValueError(msg)
     else:
