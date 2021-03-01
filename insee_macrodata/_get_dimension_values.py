@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Dec 26 18:42:01 2020
 
-@author: eurhope
-"""
-# from functools import lru_cache
-
-# @lru_cache(maxsize=None)
 def _get_dimension_values(cl_dimension):    
     
     import requests
@@ -17,11 +10,14 @@ def _get_dimension_values(cl_dimension):
     from datetime import datetime 
     
     from ._create_insee_folder import _create_insee_folder
+    from ._request_insee import _request_insee
     from ._hash import _hash
     
     INSEE_sdmx_link_codelist = "https://www.bdm.insee.fr/series/sdmx/codelist/FR1"
-        
+    INSEE_api_link_codelist = "https://api.insee.fr/series/BDM/V1/codelist/FR1"
+       
     INSEE_sdmx_link_codelist_dimension = INSEE_sdmx_link_codelist + '/' + cl_dimension
+    INSEE_api_link_codelist_dimension = INSEE_api_link_codelist + '/' + cl_dimension
         
     insee_folder = _create_insee_folder()
     file = insee_folder + "/" + _hash(INSEE_sdmx_link_codelist_dimension)
@@ -50,11 +46,9 @@ def _get_dimension_values(cl_dimension):
             trigger_update = True           
     
     if trigger_update:    
-    
-        proxies = {'http': os.environ.get('http'),
-                   'https': os.environ.get('https')}
-        
-        results = requests.get(INSEE_sdmx_link_codelist_dimension, proxies = proxies)
+           
+        results = _request_insee(sdmx_url = INSEE_sdmx_link_codelist_dimension, 
+                                 api_url = INSEE_api_link_codelist_dimension)
         
         # create temporary directory
         dirpath = tempfile.mkdtemp()
