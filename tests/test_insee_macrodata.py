@@ -12,7 +12,7 @@ except IOError:
 from unittest import TestCase
 from pandas import pandas as pd
 # from datetime import timedelta 
-from datetime import *
+# from datetime import *
 import os
 #from functools import lru_cache
 
@@ -240,6 +240,7 @@ class TestFunction(TestCase):
         from datetime import datetime
         from datetime import timedelta
      
+        df = _download_idbank_list()
         os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
         df = _download_idbank_list()
 
