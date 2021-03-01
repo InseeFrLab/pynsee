@@ -206,7 +206,7 @@ class TestFunction(TestCase):
         _clean_insee_folder()
         os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))
         
-        df = _get_dimension_values('FREQ')
+        df = _get_dimension_values('CL_PERIODICITE')
         test1 = isinstance(df, pd.DataFrame)
         self.assertTrue(test1)
     
