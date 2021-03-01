@@ -4,9 +4,6 @@ on: [push]
 
 jobs:
   build:
-    env:
-        INSEE_KEY: ${{ secrets.INSEE_KEY }}
-        INSEE_SECRET: ${{ secrets.INSEE_SECRET }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
