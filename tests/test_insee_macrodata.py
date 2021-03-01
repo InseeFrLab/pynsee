@@ -14,6 +14,7 @@ from pandas import pandas as pd
 # from datetime import timedelta 
 from datetime import *
 import os
+from functools import lru_cache
 
 from insee_macrodata._get_token import _get_token
 from insee_macrodata._get_envir_token import _get_envir_token
@@ -54,7 +55,7 @@ class TestFunction(TestCase):
         self.assertTrue(isinstance(df, pd.DataFrame))
     
     def test_get_geo_list_2(self):   
-        self.assertRaises(ValueError, get_geo_list('a')) 
+        self.assertRaises(ValueError, get_geo_list, 'a') 
 
     def test_get_geo_relation_1(self):    
         df1 = _get_geo_relation('region', "11", 'descendants')
@@ -73,16 +74,17 @@ class TestFunction(TestCase):
         self.assertTrue(isinstance(data, pd.DataFrame))
 
     def test_get_column_title_2(self):   
-        self.assertRaises(ValueError, get_column_title(dataset = ['a','b']))  
+        self.assertRaises(ValueError, get_column_title, dataset = ['a','b'])  
     def test_get_column_title_3(self):   
-        self.assertRaises(ValueError, get_column_title(dataset = ['a'])) 
+        self.assertRaises(ValueError, get_column_title, dataset = ['a']) 
     
     def test_get_idbank_list_1(self):        
         data = get_idbank_list('CLIMAT-AFFAIRES')
         self.assertTrue(isinstance(data, pd.DataFrame))
     def test_get_idbank_list_2(self):   
-        self.assertRaises(ValueError, get_idbank_list('a'))    
+        self.assertRaises(ValueError, get_idbank_list, dataset = 'a')    
         
+
     def test_get_insee_idbank_1(self):
         idbank_list = get_idbank_list('IPC-2015').iloc[:900]
         data = get_insee_idbank(idbank_list.idbank)
@@ -91,7 +93,11 @@ class TestFunction(TestCase):
     def test_get_insee_idbank_2(self):
         data = get_insee_idbank("001769682", "001769683")
         self.assertTrue(isinstance(data, pd.DataFrame))
-
+    
+    def test_get_insee_idbank_3(self):
+        data = get_insee_idbank(["001769683", "001769682"], lastNObservations=1)
+        self.assertTrue(isinstance(data, pd.DataFrame))
+    
     def test_get_date(self):
         data = get_insee_idbank("001694056", "001691912",
          "001580062", "001688370", "010565692", "001580394")
@@ -128,7 +134,7 @@ class TestFunction(TestCase):
         self.assertTrue(len(data1.index) < len(data2.index))
     
     def test_get_insee_dataset_4(self):   
-        self.assertRaises(ValueError, get_insee_dataset('a'))   
+        self.assertRaises(ValueError, get_insee_dataset, 'a')   
         
     def test_split_title(self):
         data = get_insee_idbank("001769682", "001769683")   
@@ -190,18 +196,18 @@ class TestFunction(TestCase):
 
     def test_get_envir_token(self):
         # if credentials are not well provided but sdmx url works
-        # _get_envir_token.clear_cache()
+        _get_envir_token.clear_cache()
         os.environ['insee_token'] = "a"        
-        self.assertRaises(ValueError, _get_envir_token())
+        self.assertRaises(ValueError, _get_envir_token
     
     def test_download_idbank_list_1(self):
         # _download_idbank_list.clear_cache()       
         os.environ['insee_idbank_file_csv'] = "test_file"
-        self.assertRaises(ValueError, _download_idbank_list())
+        self.assertRaises(ValueError, _download_idbank_list
 
     # def test_download_idbank_list_2(self):
         _download_idbank_list.clear_cache()   
         os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/test"
-        self.assertRaises(ValueError, _download_idbank_list())
+        self.assertRaises(ValueError, _download_idbank_list
 
 
