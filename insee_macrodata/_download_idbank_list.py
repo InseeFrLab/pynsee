@@ -94,6 +94,7 @@ def _download_idbank_list():
         # pickle format depends on python version
         # then read_pickle can fail, if so
         # the file is removed and the function is launched again
+        # testing requires multiple python versions
         try:
             data = pd.read_pickle(file)  
         except:

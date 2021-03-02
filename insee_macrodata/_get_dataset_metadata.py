@@ -91,6 +91,7 @@ def _get_dataset_metadata(dataset, update=False):
             # pickle format depends on python version
             # then read_pickle can fail, if so
             # the file is removed and the function is launched again
+            # testing requires multiple python versions
             try:
                 idbank_list_dataset = pd.read_pickle(file_dataset_metadata) 
             except:

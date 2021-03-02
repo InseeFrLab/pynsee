@@ -34,7 +34,11 @@ def _get_idbank_internal_data():
         
         os.remove(data_file)
         idbank_list.to_pickle(data_final_file)
-    else:        
+    else:  
+        # pickle format depends on python version
+        # then read_pickle can fail, if so
+        # the file is removed and the function is launched again
+        # testing requires multiple python versions      
         try:            
             idbank_list = pd.read_pickle(data_final_file)
         except:

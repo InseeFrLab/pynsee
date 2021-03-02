@@ -124,6 +124,7 @@ def _get_dimension_values(cl_dimension):
         # pickle format depends on python version
         # then read_pickle can fail, if so
         # the file is removed and the function is launched again
+        # testing requires multiple python versions
         try:
             df_dimension_values = pd.read_pickle(file)
         except:

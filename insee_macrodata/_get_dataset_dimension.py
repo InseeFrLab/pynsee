@@ -113,6 +113,7 @@ def _get_dataset_dimension(dataset) :
         # pickle format depends on python version
         # then read_pickle can fail, if so
         # the file is removed and the function is launched again
+        # testing requires multiple python versions
         try:
             dimension_df_all = pd.read_pickle(file)  
         except:
