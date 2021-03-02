@@ -43,27 +43,40 @@ from insee_macrodata.split_title import split_title
 
 class TestFunction(TestCase):
 
-    def test_get_dataset_metadata(self):  
+    def test_get_dataset_metadata_1(self):  
         from datetime import datetime
         from datetime import timedelta
 
         os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
         os.environ['insee_idbank_file_csv'] = "2020_correspondances_idbank_dimension.csv"
-        os.environ['insee_date_test'] = 'a'   
 
+        # test automatic update of metadata, when older than 3 months
         df = _get_dataset_metadata('CLIMAT-AFFAIRES')
         os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
         df = _get_dataset_metadata('CLIMAT-AFFAIRES')
         test1 = isinstance(df, pd.DataFrame)
 
+        # test manual update of metadata
         df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
         test2 = isinstance(df, pd.DataFrame)
 
-        _clean_insee_folder()
-        os.environ['insee_date_test'] = ""
+        # test date provided manually error and switch to today
+        os.environ['insee_date_test'] = "a"
         df = _get_dataset_metadata('CLIMAT-AFFAIRES')
         test3 = isinstance(df, pd.DataFrame)
+
         self.assertTrue(test1 & test2 & test3)
+    
+    def test_get_dataset_metadata_2(self):  
+        from datetime import datetime
+        from datetime import timedelta
+        # crash download_idbank_list and test the result on get_dataset_metadata
+        os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/test"
+        os.environ['insee_idbank_file_csv'] = "test"
+        _clean_insee_folder()
+        df = _get_dataset_metadata('CLIMAT-AFFAIRES')        
+        test1 = isinstance(df, pd.DataFrame)
+        self.assertTrue(test1)
 
     def test_get_token(self):        
         token = _get_token()
@@ -228,7 +241,13 @@ class TestFunction(TestCase):
         test1 = isinstance(df, pd.DataFrame)
         self.assertTrue(test1)
     
-    def test_request_insee(self):
+    def test_request_insee_1(self):
+        # test both api and sdmx queries fail but token is not none        
+        sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
+        api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
+        self.assertRaises(_request_insee, sdmx_url=sdmx_url, api_url=api_url)
+
+    def test_request_insee_2(self):
         # if credentials are not well provided but sdmx url works
         _get_token.cache_clear()
         _get_envir_token.cache_clear() 
@@ -242,6 +261,39 @@ class TestFunction(TestCase):
         results = _request_insee(api_url=api_url, sdmx_url=sdmx_url)
         test = (results.status_code == 200)
         self.assertTrue(test)
+    
+    def test_request_insee_3(self):
+        # token is none and sdmx query fails
+        _get_token.cache_clear()
+        _get_envir_token.cache_clear() 
+
+        os.environ['insee_token'] = "test"
+        os.environ['insee_key'] = "key"
+        os.environ['insee_secret'] = "secret"
+        sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
+        api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
+
+        self.assertRaises(_request_insee, sdmx_url=sdmx_url, api_url=api_url)
+    
+    def test_request_insee_4(self):
+        # token is none and sdmx query is None
+        _get_token.cache_clear()
+        _get_envir_token.cache_clear() 
+
+        os.environ['insee_token'] = "test"
+        os.environ['insee_key'] = "key"
+        os.environ['insee_secret'] = "secret"
+        api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
+        self.assertRaises(_request_insee, api_url=api_url)
+    
+    def test_request_insee_5(self):
+        # api query is none and sdmx query fails 
+        sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
+        self.assertRaises(_request_insee, sdmx_url=sdmx_url)
+    
+    def test_request_insee_6(self):
+        # api and sdmx queries are none
+        self.assertRaises(_request_insee)
 
     def test_get_envir_token(self):
         # if credentials are not well provided but sdmx url works   
