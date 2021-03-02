@@ -245,7 +245,11 @@ class TestFunction(TestCase):
         # test both api and sdmx queries fail but token is not none        
         sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
         api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
-        self.assertRaises(_request_insee, sdmx_url=sdmx_url, api_url=api_url)
+       
+        def request_insee_test(sdmx_url=sdmx_url, api_url=api_url):
+            _request_insee(sdmx_url=sdmx_url, api_url=api_url)
+
+        self.assertRaises(request_insee_test)
 
     def test_request_insee_2(self):
         # if credentials are not well provided but sdmx url works
@@ -273,7 +277,10 @@ class TestFunction(TestCase):
         sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
         api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
 
-        self.assertRaises(_request_insee, sdmx_url=sdmx_url, api_url=api_url)
+        def request_insee_test(sdmx_url=sdmx_url, api_url=api_url):
+            _request_insee(sdmx_url=sdmx_url, api_url=api_url)
+
+        self.assertRaises(request_insee_test)   
     
     def test_request_insee_4(self):
         # token is none and sdmx query is None
@@ -284,15 +291,26 @@ class TestFunction(TestCase):
         os.environ['insee_key'] = "key"
         os.environ['insee_secret'] = "secret"
         api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
-        self.assertRaises(_request_insee, api_url=api_url)
+
+        def request_insee_test(sdmx_url=None, api_url=api_url):
+            _request_insee(sdmx_url=sdmx_url, api_url=api_url)
+
+        self.assertRaises(request_insee_test)
     
     def test_request_insee_5(self):
         # api query is none and sdmx query fails 
         sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
-        self.assertRaises(_request_insee, sdmx_url=sdmx_url)
+
+        def request_insee_test(sdmx_url=sdmx_url, api_url=None):
+            _request_insee(sdmx_url=sdmx_url, api_url=api_url)
+
+        self.assertRaises(request_insee_test)
     
     def test_request_insee_6(self):
         # api and sdmx queries are none
+        def request_insee_test(sdmx_url=None, api_url=None):
+            _request_insee(sdmx_url=sdmx_url, api_url=api_url)
+
         self.assertRaises(_request_insee)
 
     def test_get_envir_token(self):
