@@ -81,7 +81,7 @@ def _request_insee(api_url=None, sdmx_url=None):
                 if results.status_code != 200:
                     raise ValueError(results.text + '\n' + sdmx_url)
             else:
-                ValueError(msg)
+                raise ValueError(msg)
     else:
         #api_url is None
         if not sdmx_url is None:
