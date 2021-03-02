@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Feb  7 22:52:53 2021
-
-@author: XLAPDO
-"""
 
 def _create_insee_folder():
     import os 
@@ -30,7 +25,7 @@ def _create_insee_folder():
         test_file = insee_folder + '/' + _hash('test_file')
         with open(test_file, 'w') as f:
             f.write('')
-        
+        # testing requires restricted rights on the machine
     except:
         #if error temporary folder is returned
         insee_folder = tempfile.mkdtemp()
