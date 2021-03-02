@@ -249,7 +249,7 @@ class TestFunction(TestCase):
         def request_insee_test(sdmx_url=sdmx_url, api_url=api_url):
             _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-        self.assertRaises(request_insee_test)
+        self.assertRaises(ValueError, request_insee_test)
 
     def test_request_insee_2(self):
         # if credentials are not well provided but sdmx url works
@@ -280,7 +280,7 @@ class TestFunction(TestCase):
         def request_insee_test(sdmx_url=sdmx_url, api_url=api_url):
             _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-        self.assertRaises(request_insee_test)   
+        self.assertRaises(ValueError, request_insee_test)   
     
     def test_request_insee_4(self):
         # token is none and sdmx query is None
@@ -295,7 +295,7 @@ class TestFunction(TestCase):
         def request_insee_test(sdmx_url=None, api_url=api_url):
             _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-        self.assertRaises(request_insee_test)
+        self.assertRaises(ValueError, request_insee_test)
     
     def test_request_insee_5(self):
         # api query is none and sdmx query fails 
@@ -304,14 +304,14 @@ class TestFunction(TestCase):
         def request_insee_test(sdmx_url=sdmx_url, api_url=None):
             _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-        self.assertRaises(request_insee_test)
+        self.assertRaises(ValueError, request_insee_test)
     
     def test_request_insee_6(self):
         # api and sdmx queries are none
-        def request_insee_test(sdmx_url=None, api_url=None):
-            _request_insee(sdmx_url=sdmx_url, api_url=api_url)
+        # def request_insee_test(sdmx_url=None, api_url=None):
+        #     _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-        self.assertRaises(_request_insee)
+        self.assertRaises(ValueError, _request_insee)
 
     def test_get_envir_token(self):
         # if credentials are not well provided but sdmx url works   
