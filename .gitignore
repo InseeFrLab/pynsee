@@ -6,3 +6,4 @@ tests/__pycache__/
 insee_macrodata/__pycache__/
 .coverage
 .venv/
+*.html
