@@ -32,10 +32,37 @@ os.environ['insee_key'] = "my_key"
 os.environ['insee_secret'] = "my_secret_key"
 
 ```
-## Examples & Tutorial
-
 ## French GDP growth rate
 
+```
+
+from insee_macrodata import * 
+import plotly.express as px
+from plotly.offline import plot
+
+import os 
+# Beware : any change to the keys should be test in a new python session
+os.environ['insee_key'] = "my_insee_key"
+os.environ['insee_secret'] = "my_insee_secret"
+
+# get series key (idbank), for Gross domestic product balance
+id = get_idbank_list("CNT-2014-PIB-EQB-RF")
+
+id = id.loc[(id.FREQ == "T") &
+            (id.OPERATION == "PIB") &
+            (id.NATURE == "TAUX") &
+            (id.CORRECTION == "CVS-CJO")]
+
+data = get_insee_idbank(id.idbank)
+
+# plot with plotly
+fig = px.bar(data, x = data.index, y = "OBS_VALUE",
+             facet_col = "TITLE_EN", facet_col_wrap=5)
+fig.update_yaxes(matches=None)
+plot(fig)
+
+```
+![](examples/example_gdp_picture.png)
 ## Population Map
 
 ## How to avoid proxy issues ?
