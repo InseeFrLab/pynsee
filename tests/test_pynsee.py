@@ -16,30 +16,29 @@ from pandas import pandas as pd
 import os
 #from functools import lru_cache
 
-from insee_macrodata._get_date import _get_date
-from insee_macrodata._get_token import _get_token
-from insee_macrodata._get_envir_token import _get_envir_token
-from insee_macrodata._get_insee import _get_insee
-from insee_macrodata._clean_insee_folder import _clean_insee_folder
-from insee_macrodata._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
-from insee_macrodata._get_idbank_internal_data import _get_idbank_internal_data
-from insee_macrodata._get_dataset_metadata import _get_dataset_metadata
-from insee_macrodata._get_dataset_dimension import _get_dataset_dimension
-from insee_macrodata._get_dimension_values import _get_dimension_values
-from insee_macrodata._get_geo_relation import _get_geo_relation
-from insee_macrodata._request_insee import _request_insee
-from insee_macrodata._download_idbank_list import _download_idbank_list
+from pynsee.utils._get_token import _get_token
+from pynsee.utils._get_envir_token import _get_envir_token
+from pynsee.utils._clean_insee_folder import _clean_insee_folder
 
-from insee_macrodata.get_column_title import get_column_title
-from insee_macrodata.search_insee import search_insee
+from pynsee.macro._get_insee import _get_insee
+from pynsee.macro._get_date import _get_date
+from pynsee.macro._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
+from pynsee.macro._get_idbank_internal_data import _get_idbank_internal_data
+from pynsee.macro._get_dataset_metadata import _get_dataset_metadata
+from pynsee.macro._get_dataset_dimension import _get_dataset_dimension
+from pynsee.macro._get_dimension_values import _get_dimension_values
+from pynsee.macro._request_insee import _request_insee
+from pynsee.macro._download_idbank_list import _download_idbank_list
+from pynsee.macro.get_column_title import get_column_title
+from pynsee.macro.search_insee import search_insee
+from pynsee.macro.get_dataset_list import get_dataset_list
+from pynsee.macro.get_idbank_list import get_idbank_list
+from pynsee.macro.get_insee_dataset import get_insee_dataset
+from pynsee.macro.get_insee_idbank import get_insee_idbank
+from pynsee.macro.split_title import split_title
 
-from insee_macrodata.get_dataset_list import get_dataset_list
-from insee_macrodata.get_geo_list import get_geo_list
-from insee_macrodata.get_idbank_list import get_idbank_list
-
-from insee_macrodata.get_insee_dataset import get_insee_dataset
-from insee_macrodata.get_insee_idbank import get_insee_idbank
-from insee_macrodata.split_title import split_title
+from pynsee.local._get_geo_relation import _get_geo_relation
+from pynsee.local.get_geo_list import get_geo_list
 
 class TestFunction(TestCase):
 
