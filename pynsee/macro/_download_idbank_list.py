@@ -9,8 +9,8 @@ def _download_idbank_list():
     import os
     import re
     
-    from ._hash import _hash
-    from ._create_insee_folder import _create_insee_folder 
+    from pynsee.utils import _hash
+    from pynsee.utils import _create_insee_folder 
     from datetime import datetime
 
     file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
