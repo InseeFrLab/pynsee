@@ -31,7 +31,7 @@ os.environ['insee_secret'] = "my_secret_key"
 ## French GDP growth rate
 
 ```
-from insee_macrodata import * 
+from pynsee import * 
 import plotly.express as px
 from plotly.offline import plot
 
@@ -69,4 +69,4 @@ os.environ['https_proxy'] = 'http://my_proxy_server:port'
 ```
 
 ## Support
-Feel free to contact me with any question about this package using this [e-mail address](mailto:hadrien.leclerc@insee.fr?subject=[py-package][inseeMacroData]).
+Feel free to contact me with any question about this package using this [e-mail address](mailto:hadrien.leclerc@insee.fr?subject=[pynsee]).
