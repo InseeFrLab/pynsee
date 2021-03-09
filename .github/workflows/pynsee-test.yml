@@ -1,4 +1,4 @@
-name: insee-macrodata package
+name: pynsee package
 
 on: [push]
 
