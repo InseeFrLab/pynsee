@@ -5,8 +5,8 @@ Pynsee package
 
 <br> 
 
- [![Build Status](https://github.com/hadrilec/pynsee/actions/workflows/insee-macrodata-test.yml/badge.svg)](https://github.com/hadrilec/py-insee_macrodata/actions) 
-[![Codecov test coverage](https://codecov.io/gh/hadrilec/py-insee_macrodata/branch/master/graph/badge.svg)](https://codecov.io/gh/hadrilec/py-insee_macrodata?branch=master) 
+ [![Build Status](https://github.com/hadrilec/pynsee/actions/workflows/pynsee-test.yml/badge.svg)](https://github.com/hadrilec/pynsee/actions) 
+[![Codecov test coverage](https://codecov.io/gh/hadrilec/pynsee/branch/master/graph/badge.svg)](https://codecov.io/gh/hadrilec/pynsee?branch=master) 
  
 <br> 
 
