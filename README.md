@@ -5,7 +5,7 @@ Pynsee package
 
 <br> 
 
- [![Build Status](https://github.com/hadrilec/py-insee_macrodata/actions/workflows/insee-macrodata-test.yml/badge.svg)](https://github.com/hadrilec/py-insee_macrodata/actions) 
+ [![Build Status](https://github.com/hadrilec/pynsee/actions/workflows/insee-macrodata-test.yml/badge.svg)](https://github.com/hadrilec/py-insee_macrodata/actions) 
 [![Codecov test coverage](https://codecov.io/gh/hadrilec/py-insee_macrodata/branch/master/graph/badge.svg)](https://codecov.io/gh/hadrilec/py-insee_macrodata?branch=master) 
  
 <br> 
@@ -21,7 +21,7 @@ This package is a contribution to reproducible research and public data transpar
 
 ```
 # Get the development version from GitHub
-pip install git+https://github.com/hadrilec/py-insee_macrodata.git#egg=pynsee
+pip install git+https://github.com/hadrilec/pynsee.git#egg=pynsee
 
 # Subscribe to api.insee.fr and get your credentials
 # Beware : any change to the keys should be test in a new python session
