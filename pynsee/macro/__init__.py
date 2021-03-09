@@ -11,12 +11,10 @@ from .get_column_title import get_column_title
 from .split_title import split_title
 from .search_insee import search_insee
 
-__all__ = ['get_idbank_list', 'get_dataset_list', 'get_geo_list',
+__all__ = ['get_idbank_list', 'get_dataset_list', 
            'get_insee_dataset', 'get_insee_idbank', 'get_column_title',
            'split_title', 'search_insee']
-
 # from ._clean_insee_folder import _clean_insee_folder
-
 # =============================================================================
 # to be deleted at the end
 # =============================================================================
