@@ -1,4 +1,4 @@
-insee-macrodata python package
+Pynsee package
 =======
 
 **Work in progress**
@@ -21,7 +21,7 @@ This package is a contribution to reproducible research and public data transpar
 
 ```
 # Get the development version from GitHub
-pip install git+https://github.com/hadrilec/py-insee_macrodata.git#egg=insee_macrodata
+pip install git+https://github.com/hadrilec/py-insee_macrodata.git#egg=pynsee
 
 # Subscribe to api.insee.fr and get your credentials
 # Beware : any change to the keys should be test in a new python session
