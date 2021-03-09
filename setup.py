@@ -11,7 +11,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="insee-macrodata", 
+    name="pynsee", 
     version="0.0.1",
     author="Hadrien Leclerc",
     author_email="leclerc.hadrien@gmail.com",
