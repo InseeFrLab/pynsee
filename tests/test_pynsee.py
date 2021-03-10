@@ -19,6 +19,7 @@ import os
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_envir_token import _get_envir_token
 from pynsee.utils._clean_insee_folder import _clean_insee_folder
+from pynsee.utils._request_insee import _request_insee
 
 from pynsee.macro._get_insee import _get_insee
 from pynsee.macro._get_date import _get_date
@@ -27,7 +28,6 @@ from pynsee.macro._get_idbank_internal_data import _get_idbank_internal_data
 from pynsee.macro._get_dataset_metadata import _get_dataset_metadata
 from pynsee.macro._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macro._get_dimension_values import _get_dimension_values
-from pynsee.macro._request_insee import _request_insee
 from pynsee.macro._download_idbank_list import _download_idbank_list
 from pynsee.macro.get_column_title import get_column_title
 from pynsee.macro.search_insee import search_insee
