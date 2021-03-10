@@ -94,4 +94,4 @@ def _request_insee(api_url=None, sdmx_url=None):
     try:
         return(results)
     except:
-        ValueError("Error")
+        raise ValueError("Error")
