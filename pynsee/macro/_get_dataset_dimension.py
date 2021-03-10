@@ -17,7 +17,7 @@ def _get_dataset_dimension(dataset) :
     
     from pynsee.utils import _create_insee_folder
     from pynsee.utils import _hash
-    from ._request_insee import _request_insee    
+    from pynsee.utils import _request_insee    
     
     INSEE_sdmx_link_datastructure = "https://www.bdm.insee.fr/series/sdmx/datastructure/FR1"
     INSEE_api_link_datastructure = "https://api.insee.fr/series/BDM/V1/datastructure/FR1"

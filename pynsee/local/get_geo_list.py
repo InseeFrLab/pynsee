@@ -24,8 +24,8 @@ def get_geo_list(geo):
     import xml.etree.ElementTree as ET
     from tqdm import trange
     
-    from ._request_insee import _request_insee
-    from ._paste import _paste
+    from pynsee.utils import _request_insee
+    from pynsee.utils import _paste
     
     list_available_geo = ['communes', 'regions', 'departements',
                           'arrondissements', 'arrondissementsMunicipaux']

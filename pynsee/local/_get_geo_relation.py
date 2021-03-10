@@ -20,7 +20,8 @@ def _get_geo_relation(geo, code, relation):
     import xml.etree.ElementTree as ET
     from tqdm import trange
 
-    from pynsee.utils._request_insee import _request_insee
+
+    from pynsee.utils import _request_insee
 
     api_url = 'https://api.insee.fr/metadonnees/V1/geo/' + geo + '/' + code + '/' + relation
     

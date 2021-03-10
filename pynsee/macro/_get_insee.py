@@ -16,7 +16,7 @@ def _get_insee(api_query, sdmx_query, step = "1/1"):
     from tqdm import trange
     
     from ._get_date import _get_date
-    from ._request_insee import _request_insee
+    from pynsee.utils import _request_insee
     
     # "001694056", "001691912", "001580062", "001688370", "010565692"
     # sdmx_query = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
