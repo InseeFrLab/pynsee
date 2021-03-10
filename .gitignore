@@ -4,6 +4,9 @@ pynsee.egg-info
 pynsee/tests/__pycache__/
 tests/__pycache__/
 pynsee/__pycache__/
+pynsee/macro/__pycache__/
+pynsee/utils/__pycache__/
+pynsee/local/__pycache__/
 .coverage
 .venv/
 *.html
