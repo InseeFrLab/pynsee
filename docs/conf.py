@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'insee_macrodata'
+project = 'pynsee'
 copyright = '2021, hadrilec'
 author = 'hadrilec'
 
