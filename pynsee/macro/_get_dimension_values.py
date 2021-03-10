@@ -10,7 +10,7 @@ def _get_dimension_values(cl_dimension):
     from datetime import datetime 
     
     from pynsee.utils import _create_insee_folder
-    from ._request_insee import _request_insee
+    from pynsee.utils import _request_insee
     from pynsee.utils import _hash
     
     INSEE_sdmx_link_codelist = "https://www.bdm.insee.fr/series/sdmx/codelist/FR1"
