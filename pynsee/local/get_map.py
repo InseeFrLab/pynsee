@@ -7,7 +7,7 @@ def get_map(geo):
     import zipfile
     import pkg_resources
     
-    from pynsee.local import _get_maps_list
+    from pynsee.local import get_map_list
     #from ._get_internal_maps import _get_internal_maps
     #from ._get_maps_list import _get_maps_list
     from pynsee.utils import _create_insee_folder
@@ -18,7 +18,7 @@ def get_map(geo):
     if not os.path.exists(insee_folder_map):
         os.mkdir(insee_folder_map)        
         
-    maps_list = _get_maps_list()
+    maps_list = get_map_list()
     
     if geo in maps_list['name_fr']:     
         
