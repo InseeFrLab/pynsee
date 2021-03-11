@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-def _get_maps_list():
+def get_map_list():
     
     maps_list = {
             'name_fr':['arrondissements',
