@@ -11,7 +11,7 @@ except IOError:
 
 from unittest import TestCase
 from pandas import pandas as pd
-from geopandas import geopandas as gpd
+import geopandas as gpd
 
 # from datetime import timedelta 
 # from datetime import *
