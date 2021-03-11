@@ -11,6 +11,8 @@ except IOError:
 
 from unittest import TestCase
 from pandas import pandas as pd
+from geopandas import geopandas as gpd
+
 # from datetime import timedelta 
 # from datetime import *
 import os
@@ -39,6 +41,7 @@ from pynsee.macro.split_title import split_title
 
 from pynsee.local._get_geo_relation import _get_geo_relation
 from pynsee.local.get_geo_list import get_geo_list
+from pynsee.local.get_map import get_map
 
 class TestFunction(TestCase):
 
@@ -346,4 +349,6 @@ class TestFunction(TestCase):
         os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/test"
         self.assertRaises(ValueError, _download_idbank_list)
 
-
+    def test_get_map(self):
+        map = get_map('communes')
+        self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
