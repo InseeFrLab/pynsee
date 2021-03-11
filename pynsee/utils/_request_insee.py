@@ -72,7 +72,7 @@ def _request_insee(api_url=None, sdmx_url=None):
         else:
             # token is None
 
-            msg = "!!! Token missing, please check your keys on api.insee.fr\n"
+            msg = "!!! Token missing, please check your credentials on api.insee.fr !!!\n"
             if not sdmx_url is None:
                 msg2 = "SDMX web service used instead of API"
                 print(msg + msg2)
