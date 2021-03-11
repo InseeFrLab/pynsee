@@ -2,7 +2,7 @@
 
 def get_map(geo):
     
-    import geopandas as gpd
+    #import geopandas as gpd
     import os
     import zipfile
     import pkg_resources
@@ -20,8 +20,8 @@ def get_map(geo):
         
         geo_file = insee_folder_map + '/' + geo + '.geojson'
         if os.path.exists(geo_file):
-            map = gpd.read_file(geo_file)
-            return(map)
+            #map = gpd.read_file(geo_file)
+            return(geo_file)
         else:
             # unzip files stored in package
             zip_file = pkg_resources.resource_stream(__name__, 'data/maps.zip')
@@ -30,8 +30,8 @@ def get_map(geo):
                 zip_ref.extractall(insee_folder_map)    
             
             if os.path.exists(geo_file):
-                map = gpd.read_file(geo_file)
-                return(map)
+                #map = gpd.read_file(geo_file)
+                return(geo_file)
             else:
                 raise ValueError('Package error : %s is missing' % geo_file)
     else:

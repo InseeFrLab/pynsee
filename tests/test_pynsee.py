@@ -350,5 +350,6 @@ class TestFunction(TestCase):
         self.assertRaises(ValueError, _download_idbank_list)
 
     def test_get_map(self):
-        map = get_map('communes')
+        map_file = get_map('communes')
+        map = gpd.read_file(map_file)
         self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
