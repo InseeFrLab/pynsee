@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-def _create_insee_folder():
+def _create_insee_folder(folder=None):
     import os 
     import tempfile
     import appdirs
@@ -20,6 +20,12 @@ def _create_insee_folder():
         #create insee folder
         if not os.path.exists(insee_folder):
             os.mkdir(insee_folder)
+
+        #create internal folder
+        if folder is not None:  
+            insee_folder_new = insee_folder + '/' + folder
+            if not os.path.exists(insee_folder_new):
+                os.mkdir(insee_folder_new)
         
         #test if saving a file is possible
         test_file = insee_folder + '/' + _hash('test_file')
