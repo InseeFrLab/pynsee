@@ -12,7 +12,11 @@ def get_map(geo):
     #from ._get_maps_list import _get_maps_list
     from pynsee.utils import _create_insee_folder
     
-    insee_folder_map = _create_insee_folder(folder='maps')
+    insee_folder = _create_insee_folder()
+
+    insee_folder_map = insee_folder + '/' + 'maps'
+    if not os.path.exists(insee_folder_map):
+        os.mkdir(insee_folder_map)        
         
     maps_list = _get_maps_list()
     
@@ -27,7 +31,7 @@ def get_map(geo):
             zip_file = pkg_resources.resource_stream(__name__, 'data/maps.zip')
     
             with zipfile.ZipFile(zip_file, 'r') as zip_ref:
-                zip_ref.extractall(insee_folder_map)    
+                zip_ref.extractall(insee_folder)    
             
             if os.path.exists(geo_file):
                 #map = gpd.read_file(geo_file)
