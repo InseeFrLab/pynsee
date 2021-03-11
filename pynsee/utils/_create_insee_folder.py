@@ -23,9 +23,9 @@ def _create_insee_folder(folder=None):
 
         #create internal folder
         if folder is not None:  
-            insee_folder_new = insee_folder + '/' + folder
-            if not os.path.exists(insee_folder_new):
-                os.mkdir(insee_folder_new)
+            insee_folder = insee_folder + '/' + folder
+            if not os.path.exists(insee_folder):
+                os.mkdir(insee_folder)
         
         #test if saving a file is possible
         test_file = insee_folder + '/' + _hash('test_file')
