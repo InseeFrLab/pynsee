@@ -7,7 +7,7 @@ Pynsee package
 
  [![Build Status](https://github.com/hadrilec/pynsee/actions/workflows/pynsee-test.yml/badge.svg)](https://github.com/hadrilec/pynsee/actions) 
 [![Codecov test coverage](https://codecov.io/gh/hadrilec/pynsee/branch/master/graph/badge.svg)](https://codecov.io/gh/hadrilec/pynsee?branch=master) 
- 
+ [![Documentation Status](https://readthedocs.org/projects/py-insee-macrodata/badge/?version=latest)](https://py-insee-macrodata.readthedocs.io/en/latest/?badge=latest)
 <br> 
 
 # Overview
