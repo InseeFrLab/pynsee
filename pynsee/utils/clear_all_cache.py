@@ -1,0 +1,13 @@
+# -*- coding: utf-8 -*-
+
+def clear_all_cache():
+    import functools
+    import gc
+
+    gc.collect()
+    wrappers = [
+        a for a in gc.get_objects() 
+        if isinstance(a, functools._lru_cache_wrapper)]
+    
+    for wrapper in wrappers:
+        wrapper.cache_clear()
