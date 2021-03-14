@@ -20,7 +20,7 @@ def _request_insee(api_url=None, sdmx_url=None):
 
     import os, re
     import requests
-    from pynsee.utils import _get_token
+    from ._get_token import _get_token
 
     # sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
