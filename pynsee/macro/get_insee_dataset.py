@@ -39,7 +39,7 @@ def get_insee_dataset(dataset,
     >>> business_climate = get_insee_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
 
     """    
-    from pynsee.utils import _paste 
+    from pynsee.utils._paste import _paste 
     from ._get_insee import _get_insee
     from .get_dataset_list import get_dataset_list 
     

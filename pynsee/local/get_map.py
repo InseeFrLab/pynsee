@@ -10,7 +10,7 @@ def get_map(geo):
     from pynsee.local import get_map_list
     #from ._get_internal_maps import _get_internal_maps
     #from ._get_maps_list import _get_maps_list
-    from pynsee.utils import _create_insee_folder
+    from pynsee.utils._create_insee_folder import _create_insee_folder
     
     insee_folder = _create_insee_folder()
 

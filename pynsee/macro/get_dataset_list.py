@@ -17,7 +17,7 @@ def get_dataset_list() :
     import pandas as pd
     from tqdm import trange
     
-    from pynsee.utils import _request_insee
+    from pynsee.utils._request_insee import _request_insee
     
     INSEE_sdmx_link_dataflow = "https://bdm.insee.fr/series/sdmx/dataflow"
         

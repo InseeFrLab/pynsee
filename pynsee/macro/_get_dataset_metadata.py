@@ -12,8 +12,8 @@ def _get_dataset_metadata(dataset, update=False):
     from ._get_dataset_dimension import _get_dataset_dimension
     from ._get_dimension_values import _get_dimension_values    
     from ._get_idbank_internal_data import _get_idbank_internal_data
-    from pynsee.utils import _hash  
-    from pynsee.utils import _create_insee_folder
+    from pynsee.utils._hash import _hash  
+    from pynsee.utils._create_insee_folder import _create_insee_folder
     
     try:        
         insee_folder = _create_insee_folder()
