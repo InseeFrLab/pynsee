@@ -51,7 +51,7 @@ def _request_insee(api_url=None, sdmx_url=None):
 
             if results.status_code != 200:
                     
-                print("!!! Wrong query or api.insee.fr error\n Please check credentials")
+                print("!!! Wrong query or api.insee.fr error !!!\n!!! Please check your credentials ans subscriptions !!!")
 
                 if not sdmx_url is None:
 
