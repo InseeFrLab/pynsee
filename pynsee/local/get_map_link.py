@@ -8,8 +8,6 @@ def get_map_link(geo):
     import pkg_resources
     
     from pynsee.local import get_map_list
-    #from ._get_internal_maps import _get_internal_maps
-    #from ._get_maps_list import _get_maps_list
     from pynsee.utils._create_insee_folder import _create_insee_folder
     
     insee_folder = _create_insee_folder()
@@ -24,7 +22,6 @@ def get_map_link(geo):
         
         geo_file = insee_folder_map + '/' + geo + '.geojson'
         if os.path.exists(geo_file):
-            #map = gpd.read_file(geo_file)
             return(geo_file)
         else:
             # unzip files stored in package
@@ -34,7 +31,6 @@ def get_map_link(geo):
                 zip_ref.extractall(insee_folder)    
             
             if os.path.exists(geo_file):
-                #map = gpd.read_file(geo_file)
                 return(geo_file)
             else:
                 raise ValueError('Package error : %s is missing' % geo_file)
