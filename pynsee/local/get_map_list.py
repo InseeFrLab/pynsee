@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 def get_map_list():
-    
+    import pandas as pd
     maps_list = {
             'name_fr':['arrondissements',
                     'arrondissements-avec-outre-mer',
@@ -42,4 +42,5 @@ def get_map_list():
                     'regions-with-overseas',
                     'regions-version-simplified']
             }
+    maps_list = pd.DataFrame(maps_list)
     return(maps_list)
