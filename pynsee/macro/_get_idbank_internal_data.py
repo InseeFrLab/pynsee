@@ -15,8 +15,8 @@ import os
 #@lru_cache(maxsize=None)
 def _get_idbank_internal_data():
     
-    from pynsee.utils import _create_insee_folder
-    from pynsee.utils import _hash
+    from pynsee.utils._create_insee_folder import _create_insee_folder
+    from pynsee.utils._hash import _hash
     
     insee_folder = _create_insee_folder()
     
