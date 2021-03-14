@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-def get_map(geo):
+def get_map_link(geo):
     
     #import geopandas as gpd
     import os
@@ -20,7 +20,7 @@ def get_map(geo):
         
     maps_list = get_map_list()
     
-    if geo in maps_list['name_fr']:     
+    if geo in list(maps_list['name_fr']):     
         
         geo_file = insee_folder_map + '/' + geo + '.geojson'
         if os.path.exists(geo_file):

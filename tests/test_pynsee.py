@@ -43,7 +43,7 @@ from pynsee.macro.split_title import split_title
 
 from pynsee.local._get_geo_relation import _get_geo_relation
 from pynsee.local.get_geo_list import get_geo_list
-from pynsee.local.get_map import get_map
+from pynsee.local.get_map_link import get_map_link
 
 class TestFunction(TestCase):
 
@@ -351,8 +351,8 @@ class TestFunction(TestCase):
         os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/test"
         self.assertRaises(ValueError, _download_idbank_list)
 
-    def test_get_map(self):
-        map_file = get_map('communes')
+    def test_get_map_link(self):
+        map_file = get_map_link('communes')
         map = gpd.read_file(map_file)
         self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
     
