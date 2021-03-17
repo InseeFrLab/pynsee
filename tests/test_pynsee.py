@@ -42,8 +42,15 @@ from pynsee.macro.get_insee_idbank import get_insee_idbank
 from pynsee.macro.split_title import split_title
 
 from pynsee.local._get_geo_relation import _get_geo_relation
+from pynsee.local._get_insee_local import _get_insee_local
+from pynsee.local._get_nivgeo import _get_nivgeo
+from pynsee.local._get_local_metadata import _get_local_metadata
+
 from pynsee.local.get_geo_list import get_geo_list
 from pynsee.local.get_map_link import get_map_link
+from pynsee.local.get_map_list import get_map_list
+from pynsee.local.get_map import get_map
+
 
 class TestFunction(TestCase):
 
@@ -355,6 +362,22 @@ class TestFunction(TestCase):
         map_file = get_map_link('communes')
         map = gpd.read_file(map_file)
         self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
+    
+    def test_get_nivgeo(self):
+        data = _get_nivgeo()
+        self.assertTrue(isinstance(data, pd.DataFrame))
+    
+    def test_get_local_metadata(self):
+        data = _get_local_metadata()
+        self.assertTrue(isinstance(data, pd.DataFrame))
+
+    def test_get_insee_local(self):            
+        variables = 'AGESCOL-SEXE-ETUD'
+        dataset = 'GEO2019RP2011'
+        codegeo = '91'
+        geo = 'DEP'
+        data = _get_insee_local(variables, dataset, codegeo, geo)
+        self.assertTrue(isinstance(data, pd.DataFrame))
     
     def test_clear_all_cache(self):
         test = True
