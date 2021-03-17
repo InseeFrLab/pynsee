@@ -16,11 +16,11 @@ import warnings
 def _warning_no_token(msg):
     warnings.warn(msg)
 
-def _request_insee(api_url=None, sdmx_url=None):
+def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
 
     import os, re
     import requests
-    from ._get_token import _get_token
+    from pynsee.utils._get_token import _get_token
 
     # sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
@@ -44,8 +44,8 @@ def _request_insee(api_url=None, sdmx_url=None):
         token = _get_token()
 
         if not token is None:
-            headers = {'Accept': 'application/xml',
-                        'Authorization': 'Bearer ' + token}
+            headers = {'Accept': file_format,
+                       'Authorization': 'Bearer ' + token}
 
             results = requests.get(api_url, proxies = proxies, headers=headers)
 
