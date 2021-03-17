@@ -332,11 +332,6 @@ class TestFunction(TestCase):
         test = (token is None)  
         self.assertTrue(test)
 
-    def test_download_idbank_list_0(self):   
-        df = _download_idbank_list()
-        test = isinstance(df, pd.DataFrame)
-        self.assertTrue(test)
-    
     def test_download_idbank_list_1(self):  
         from datetime import datetime
         from datetime import timedelta
