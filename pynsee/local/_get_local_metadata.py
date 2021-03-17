@@ -105,11 +105,11 @@ def _get_local_metadata():
     
     var_modalite = pd.concat([var_modalite, var_modalite2])
 
-    var_label = var_modalite[['var', 'lib_var']].drop_duplicates()
+    var_label = var_modalite[['var', 'lib_var']].drop_duplicates(subset='var', keep='first')
     var_label.columns = ['croisement', 'variable_label']
     
     variables = mesure_croisement[['croisement', 'mesure', 'dataset_value', 'dataset']]
-    
+#    variables = variables.drop_duplicates()
     variables_splitted = variables['croisement'].str.split('-').tolist()
                     
     variables_splitted = pd.DataFrame(variables_splitted, index = variables.index)
@@ -118,11 +118,11 @@ def _get_local_metadata():
     
     for icol in range(len(variables_splitted.columns)):
         var_label_icol = var_label
-        var_label_icol.columns = ['croisement', 'var_label' + str(icol)]
-        variables_splitted = variables_splitted.merge(var_label_icol,
+        var_label_icol.columns = [icol, 'var_label' + str(icol)]
+        
+        variables_splitted = pd.merge(variables_splitted,var_label_icol,
                                                       how='left',
-                                                      left_on=icol,
-                                                      right_on='croisement')
+                                                      on = icol)
     
     var_labels = variables_splitted.filter(regex= 'var_label')
     var_labels = var_labels.assign(variables_label = "")
@@ -138,8 +138,8 @@ def _get_local_metadata():
                     var_labels.iloc[irow, icol_var_label] = str(val)
                     
     var_labels = var_labels[['variables_label']]
-           
     variables = pd.concat([variables.reset_index(), var_labels], axis=1)
+        
     del variables['index']
         
     lib_mesure = extract_data_from_excel_sheet(sheet_name='lib_mesure',
@@ -172,5 +172,7 @@ def _get_local_metadata():
                    'dataset_label':dataset_label}
     datasets = pd.DataFrame(dataset_dict)
     variables = variables.merge(datasets, on = 'dataset', how='left')
-
+    variables.columns = ['variables', 'unit', 'dataset_version', 'dataset',
+                         'variables_label', 'unit_label', 'geo_date', 'data_date', 'dataset_label']
+    
     return(variables)
