@@ -5,7 +5,7 @@ def _get_token():
     import os
     from api_insee import ApiInsee
     
-    from ._get_envir_token import _get_envir_token
+    from pynsee.utils._get_envir_token import _get_envir_token
 
     token_envir = _get_envir_token()
 
