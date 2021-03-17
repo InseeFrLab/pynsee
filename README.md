@@ -19,7 +19,7 @@ This package is a contribution to reproducible research and public data transpar
 
 ## Installation & Loading
 
-```
+```python
 # Get the development version from GitHub
 pip install git+https://github.com/hadrilec/pynsee.git#egg=pynsee
 
@@ -32,7 +32,7 @@ os.environ['insee_secret'] = "my_secret_key"
 
 ![](examples/example_gdp_picture.png)
 
-```
+```python
 from pynsee import * 
 import plotly.express as px
 from plotly.offline import plot
@@ -62,7 +62,7 @@ plot(fig)
 
 ![](examples/example_pop_map.png)
 
-```
+```python
 from pynsee.local import get_map
 from pynsee.macro import *
 import geopandas as gpd
@@ -120,12 +120,12 @@ map.plot(column='range', cmap=cm.viridis,
                  'title':'density per km2'})
 ax.set_axis_off()
 ax.set(title='Distribution of population in metropolitan France')
-plt.show()
+plt.show()python
 ```
 
 ## How to avoid proxy issues ?
 
-```
+```python
 import os 
 os.environ['http_proxy'] = 'http://my_proxy_server:port'
 os.environ['https_proxy'] = 'http://my_proxy_server:port'
