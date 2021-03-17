@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from functools import lru_cache
 
+@lru_cache(maxsize=None)
 def _get_local_metadata():
     
     #import geopandas as gpd
@@ -47,7 +49,7 @@ def _get_local_metadata():
                                       list_files = all_files,                                  
                                       folder = insee_folder_local_metadata):
         import pandas as pd
-        
+      
         if reshape == True:
             list_col = ['var' if x=='variable' else x for x in list_col]
             list_col_new = list_col + ['dataset_value']
@@ -85,14 +87,23 @@ def _get_local_metadata():
         var_data = pd.concat(list_var_data)
         return(var_data)  
     
+    #
+    # get all variables from all datasets
+    #
+    
     list_col_mesure_croisement = ['mesure', 'croisement',
                                   'filtre_stat', 'filtre_geo',
                                   'nom_tab', 'filtre_geo_avt_2017', 'type_exploitation']
-    
+        
     mesure_croisement = extract_data_from_excel_sheet(sheet_name='mesure_croisement',
                                                       list_col = list_col_mesure_croisement,
                                                       reshape=True)
+    
+    variables = mesure_croisement[['croisement', 'mesure', 'dataset_value', 'dataset']]
 
+    #
+    # get variables labels
+    #
     list_col_var_modalite = ['variable', 'lib_var', 'modalite', 'lib_modalite']
     
     var_modalite = extract_data_from_excel_sheet(sheet_name='var_modalite',
@@ -108,13 +119,12 @@ def _get_local_metadata():
     var_label = var_modalite[['var', 'lib_var']].drop_duplicates(subset='var', keep='first')
     var_label.columns = ['croisement', 'variable_label']
     
-    variables = mesure_croisement[['croisement', 'mesure', 'dataset_value', 'dataset']]
-#    variables = variables.drop_duplicates()
+    #
+    # add variable labels to variables list
+    #
     variables_splitted = variables['croisement'].str.split('-').tolist()
                     
     variables_splitted = pd.DataFrame(variables_splitted, index = variables.index)
-#    variables_splitted = pd.concat([variables['croisement'], variables_splitted], axis=1)
-#    variables_splitted = variables_splitted.rename(columns = {'croisement': 'croismnt'})
     
     for icol in range(len(variables_splitted.columns)):
         var_label_icol = var_label
@@ -141,7 +151,10 @@ def _get_local_metadata():
     variables = pd.concat([variables.reset_index(), var_labels], axis=1)
         
     del variables['index']
-        
+    
+    #
+    # add metadata on unit (labels) to variables list
+    #
     lib_mesure = extract_data_from_excel_sheet(sheet_name='lib_mesure',
                                                list_col=['mesure','lib_mesure'])
     
@@ -159,6 +172,9 @@ def _get_local_metadata():
     #lib_filtre_geo = extract_data_from_excel_sheet(sheet_name='lib_filtre_geo',
     #                                           list_col=['filtre_geo','lib_filtre_geo'])
     
+    #
+    # add metadata on millesime to variables list: geo data date and data date
+    #
     millesime = extract_data_from_excel_sheet(sheet_name='millesime',
                                                list_col=['jeu_donnees','millesime_donnees','millesime_geo'])
     
@@ -172,6 +188,8 @@ def _get_local_metadata():
                    'dataset_label':dataset_label}
     datasets = pd.DataFrame(dataset_dict)
     variables = variables.merge(datasets, on = 'dataset', how='left')
+    
+    
     variables.columns = ['variables', 'unit', 'dataset_version', 'dataset',
                          'variables_label', 'unit_label', 'geo_date', 'data_date', 'dataset_label']
     
