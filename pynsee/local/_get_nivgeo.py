@@ -1,5 +1,5 @@
 
-def _get_niv_geo():
+def _get_nivgeo():
     import pandas as pd
     dict_ng = {
             'nivgeo':['COM',
