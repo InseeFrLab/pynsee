@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-def _get_local(variables, dataset, codegeo, geo):
+def _get_insee_local(variables, dataset, codegeo, geo):
     
     from pynsee.utils._request_insee import _request_insee
     from pynsee.utils._paste import _paste
