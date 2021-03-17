@@ -1,4 +1,4 @@
-Pynsee package
+pynsee package
 =======
 
 **Work in progress**
