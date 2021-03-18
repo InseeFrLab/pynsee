@@ -89,7 +89,7 @@ def _get_local_metadata():
                 list_var_data.append(df)
             except:
                 pass
-                #print('error {} {}'.format(list_files[f], sheet_name))
+                #print('error {} {}'.format(list_files[f], var))
         
         var_data = pd.concat(list_var_data)
         return(var_data)  
@@ -113,7 +113,7 @@ def _get_local_metadata():
     #
     list_col_var_modalite = ['variable', 'lib_var', 'modalite', 'lib_modalite']
     
-    var_modalite = extract_data_from_excel_sheet(sheet_name='var_modalite',
+    var_modalite = extract_data_from_excel_sheet(var='var_modalite',
                                                  list_col = list_col_var_modalite,
                                                  reshape=True)
 
@@ -156,7 +156,7 @@ def _get_local_metadata():
     #
     # add metadata on unit (labels) to variables list
     #
-    lib_mesure = extract_data_from_excel_sheet(sheet_name='lib_mesure',
+    lib_mesure = extract_data_from_excel_sheet(var='lib_mesure',
                                                list_col=['mesure','lib_mesure'])
     
     lib_mesure = lib_mesure[['mesure', 'lib_mesure']]
@@ -164,19 +164,19 @@ def _get_local_metadata():
     variables = variables.merge(lib_mesure, on = 'mesure', how='left')
     
     
-    #lib_tableau = extract_data_from_excel_sheet(sheet_name='lib_tableau',
+    #lib_tableau = extract_data_from_excel_sheet(var='lib_tableau',
     #                                           list_col=['nom_tab','lib_tab'])
     #
-    #lib_filtre_stat = extract_data_from_excel_sheet(sheet_name='lib_filtre_stat',
+    #lib_filtre_stat = extract_data_from_excel_sheet(var='lib_filtre_stat',
     #                                           list_col=['filtre_stat','lib_filtre_stat'])
     #
-    #lib_filtre_geo = extract_data_from_excel_sheet(sheet_name='lib_filtre_geo',
+    #lib_filtre_geo = extract_data_from_excel_sheet(var='lib_filtre_geo',
     #                                           list_col=['filtre_geo','lib_filtre_geo'])
     
     #
     # add metadata on millesime to variables list: geo data date and data date
     #
-    millesime = extract_data_from_excel_sheet(sheet_name='millesime',
+    millesime = extract_data_from_excel_sheet(var='millesime',
                                                list_col=['jeu_donnees','millesime_donnees','millesime_geo'])
     
     millesime = millesime[['jeu_donnees', 'millesime_geo', 'millesime_donnees']]
