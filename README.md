@@ -30,7 +30,7 @@ os.environ['insee_secret'] = "my_secret_key"
 ```
 ## French GDP growth rate
 
-![](examples/example_gdp_picture.png)
+![](examples/pictures/example_gdp_picture.png)
 
 ```python
 from pynsee import * 
@@ -60,7 +60,7 @@ plot(fig)
 ```
 ## Population Map
 
-![](examples/example_pop_map.png)
+![](examples/pictures/example_pop_map.png)
 
 ```python
 from pynsee.local import get_map
