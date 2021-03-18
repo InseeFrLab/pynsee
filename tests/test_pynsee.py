@@ -39,6 +39,7 @@ from pynsee.macro.get_dataset_list import get_dataset_list
 from pynsee.macro.get_idbank_list import get_idbank_list
 from pynsee.macro.get_insee_dataset import get_insee_dataset
 from pynsee.macro.get_insee_idbank import get_insee_idbank
+from pynsee.macro.get_last_release import get_last_release
 from pynsee.macro.split_title import split_title
 
 from pynsee.local._get_geo_relation import _get_geo_relation
@@ -393,6 +394,10 @@ class TestFunction(TestCase):
 
     def test_get_insee_definition_(self):
         data = get_insee_definition(ids=['c1020', 'c1601'])
+        self.assertTrue(isinstance(data, pd.DataFrame))
+    
+    def test_get_last_release(self):
+        data = get_last_release()
         self.assertTrue(isinstance(data, pd.DataFrame))
         
         
