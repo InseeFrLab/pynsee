@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Dec 27 14:41:14 2020
-
-@author: eurhope
-"""
 
 import setuptools
 
@@ -14,7 +9,7 @@ setuptools.setup(
     name="pynsee", 
     version="0.0.1",
     author="Hadrien Leclerc",
-    author_email="leclerc.hadrien@gmail.com",
+    author_email="hadrien.leclerc@insee.fr",
     description="Tools to Download Easily Data and Metadata from INSEE",
     url="",
     packages=setuptools.find_packages(),
