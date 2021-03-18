@@ -51,6 +51,8 @@ from pynsee.local.get_map_link import get_map_link
 from pynsee.local.get_map_list import get_map_list
 from pynsee.local.get_map import get_map
 
+from pynsee.metadata.get_definition_list import get_definition_list
+from pynsee.metadata.get_insee_definition import get_insee_definition
 
 class TestFunction(TestCase):
 
@@ -385,7 +387,13 @@ class TestFunction(TestCase):
             test = False
         self.assertTrue(test)
             
-            
+    def test_get_definition_list(self):
+        data = get_definition_list()
+        self.assertTrue(isinstance(data, pd.DataFrame))
+
+    def test_get_insee_definition_(self):
+        data = get_insee_definition(ids=['c1020', 'c1601'])
+        self.assertTrue(isinstance(data, pd.DataFrame))
         
         
         
