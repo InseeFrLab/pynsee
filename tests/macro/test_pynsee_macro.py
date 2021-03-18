@@ -36,6 +36,8 @@ from pynsee.macro.get_insee_idbank import get_insee_idbank
 from pynsee.macro.get_last_release import get_last_release
 from pynsee.macro.split_title import split_title
 
+from pynsee.utils._clean_insee_folder import _clean_insee_folder
+
 class TestFunction(TestCase):
 
     def test_get_dataset_metadata_1(self):  
