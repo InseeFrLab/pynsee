@@ -16,9 +16,10 @@ def get_definition_list():
     
     for i in range(len(data_request)):      
         df = pd.DataFrame(data_request[i], index=[0])
-        df = df[['id', 'uri', 'intitule']]
+        df = df[['id', 'uri', 'intitule']]        
         list_data.append(df)
         
-    data = pd.concat(list_data)            
+    data = pd.concat(list_data)  
+    data.columns = ['ID', 'URI', 'TITLE_FR']          
      
     return(data)           
