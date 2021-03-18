@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Feb 15 14:51:04 2021
-
-@author: XLAPDO
-"""
 
 def _clean_insee_folder():
     import appdirs
@@ -15,6 +10,9 @@ def _clean_insee_folder():
     # delete all files in the folder
     if os.path.exists(insee_folder):
         list_file_insee = os.listdir(insee_folder)
+        #exclude directories
+        list_file_insee = [file for file in list_file_insee if os.path.isfile(os.path.join(insee_folder, file))]
+
         if len(list_file_insee) > 0:
             for f in list_file_insee:
                 os.remove(insee_folder + '/' + f)    
