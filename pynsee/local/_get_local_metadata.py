@@ -29,11 +29,15 @@ def _get_local_metadata():
                     "Tourisme (offre d'hébergement)"
                     ]
     
+    all_files = []
     name_dataset = ['RP', 'BDCOM', 'Popleg', 'RFD', 'REE', 'FILOSOFI',  'Flores', 'TOUR']
-    all_files = ['doc_' + name + '.xlsx' for name in name_dataset]
-    
+    var_name = ['var_modalite', 'mesure_croisement', 'lib_mesure', 'millesime']
+    for var in var_name:
+        for dt in name_dataset:
+            all_files.append('doc_' + dt + '_' + var + '.csv')    
+
     list_files = os.listdir(insee_folder_local_metadata)
-    list_files = [f for f in list_files if re.search('^doc_.*xlsx$', f)]
+    list_files = [f for f in list_files if re.search('^doc_.*csv$', f)]
     
     test_file_available = [not f in list_files for f in all_files]
     
@@ -43,12 +47,15 @@ def _get_local_metadata():
         with zipfile.ZipFile(zip_file, 'r') as zip_ref:
             zip_ref.extractall(insee_folder)          
     
-    def extract_data_from_excel_sheet(sheet_name,
+    def extract_data_from_excel_sheet(var,
                                       list_col,
                                       reshape = False,
                                       list_files = all_files,                                  
                                       folder = insee_folder_local_metadata):
         import pandas as pd
+        import re
+        
+        list_files = [f for f in list_files if re.search('.*' + var + '.*', f)]
       
         if reshape == True:
             list_col = ['var' if x=='variable' else x for x in list_col]
@@ -59,7 +66,7 @@ def _get_local_metadata():
         for f in range(len(list_files)):    
             try :
                 file2load = folder + '/' + list_files[f]
-                df = pd.read_excel(file2load, sheet_name = sheet_name)
+                df = pd.read_csv(file2load)
                 
                 if reshape == True:
                     df.columns = ['var' if x == 'variable' else x for x in df.columns]
@@ -77,7 +84,7 @@ def _get_local_metadata():
                 
                 #add column to reference
                 file_id = list_files[f].replace("doc_", "").replace(".xlsx", "")
-                df = df.assign(dataset = file_id, tab = sheet_name)
+                df = df.assign(dataset = file_id, tab = var)
                 
                 list_var_data.append(df)
             except:
@@ -95,7 +102,7 @@ def _get_local_metadata():
                                   'filtre_stat', 'filtre_geo',
                                   'nom_tab', 'filtre_geo_avt_2017', 'type_exploitation']
         
-    mesure_croisement = extract_data_from_excel_sheet(sheet_name='mesure_croisement',
+    mesure_croisement = extract_data_from_excel_sheet(var='mesure_croisement',
                                                       list_col = list_col_mesure_croisement,
                                                       reshape=True)
     
