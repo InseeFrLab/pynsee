@@ -86,15 +86,15 @@ def get_insee_definition(ids):
             pass
         
         df = pd.DataFrame(
-                {'id':id,
-                 'title_fr':title_fr,
-                 'title_en':title_en,                
-                 'def_short_fr':def_short_fr,
-                 'def_short_en':def_short_en,
-                 'def_fr':def_fr,
-                 'def_en':def_en,
-                 'update':update, 
-                 'uri':uri}, index=[0])
+                {'ID':id,
+                 'TITLE_FR':title_fr,
+                 'TITLE_EN':title_en,                
+                 'DEFINITION_SHORT_FR':def_short_fr,
+                 'DEFINITION_SHORT_EN':def_short_en,
+                 'DEFINITION_FR':def_fr,
+                 'DEFINITION_EN':def_en,
+                 'UPDATE':update, 
+                 'URI':uri}, index=[0])
         
         list_data.append(df)
        
