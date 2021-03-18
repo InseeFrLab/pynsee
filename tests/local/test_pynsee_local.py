@@ -51,3 +51,8 @@ class TestFunction(TestCase):
         geo = 'DEP'
         data = _get_insee_local(variables, dataset, codegeo, geo)
         self.assertTrue(isinstance(data, pd.DataFrame))
+
+    def test_get_map_link(self):
+        map_file = get_map_link('communes')
+        map = gpd.read_file(map_file)
+        self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
