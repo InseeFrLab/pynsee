@@ -116,12 +116,6 @@ def _get_local_metadata():
     var_modalite = extract_data_from_excel_sheet(sheet_name='var_modalite',
                                                  list_col = list_col_var_modalite,
                                                  reshape=True)
-    
-    var_modalite2 = extract_data_from_excel_sheet(sheet_name='modalite',
-                                                 list_col = list_col_var_modalite,
-                                                 reshape=True)
-    
-    var_modalite = pd.concat([var_modalite, var_modalite2])
 
     var_label = var_modalite[['var', 'lib_var']].drop_duplicates(subset='var', keep='first')
     var_label.columns = ['croisement', 'variable_label']
