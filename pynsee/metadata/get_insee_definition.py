@@ -40,50 +40,32 @@ def get_insee_definition(ids):
         title_fr = None
         title_en = None
         
-        try:
-            if data['intitule'][0]['langue'] == 'fr':
-                title_fr = extract_data(data, item1='intitule', i=0, item2='contenu')            
-                title_en = extract_data(data, item1='intitule', i=1, item2='contenu')
-        except:
-            pass
-       
+        if data['intitule'][0]['langue'] == 'fr':
+            title_fr = extract_data(data, item1='intitule', i=0, item2='contenu')            
+            title_en = extract_data(data, item1='intitule', i=1, item2='contenu')
+               
         def_fr = None
         def_en = None
         
-        try:
-            if data['definition'][0]['langue'] == 'fr':
-                def_fr = extract_data(data, item1='definition', i=0, item2='contenu')
-                def_en = extract_data(data, item1='definition', i=1, item2='contenu')                
-                def_fr = clean_definition(def_fr)
-                def_en = clean_definition(def_en)
-        except:
-            pass
-        
+        if data['definition'][0]['langue'] == 'fr':
+            def_fr = extract_data(data, item1='definition', i=0, item2='contenu')
+            def_en = extract_data(data, item1='definition', i=1, item2='contenu')                
+            def_fr = clean_definition(def_fr)
+            def_en = clean_definition(def_en)
+                
         def_short_fr = None
-        def_short_en = None
+        def_short_en = None        
         
-        try:
-            if data['definitionCourte'][0]['langue'] == 'fr':
-                def_short_fr = extract_data(data, item1='definitionCourte', i=0, item2='contenu')
-                def_short_en = extract_data(data, item1='definitionCourte', i=1, item2='contenu')
-                def_short_fr = clean_definition(def_fr)
-                def_short_en = clean_definition(def_en)
-        except:
-            pass
+        if data['definitionCourte'][0]['langue'] == 'fr':
+            def_short_fr = extract_data(data, item1='definitionCourte', i=0, item2='contenu')
+            def_short_en = extract_data(data, item1='definitionCourte', i=1, item2='contenu')
+            def_short_fr = clean_definition(def_fr)
+            def_short_en = clean_definition(def_en)
         
-        update = None
-        
-        try:
-            update = data['dateMiseAJour']
-        except:
-            pass
-        
-        uri = None
-        
-        try:
-            uri = data['uri']
-        except:
-            pass
+               
+        update = data['dateMiseAJour']
+                        
+        uri = data['uri']        
         
         df = pd.DataFrame(
                 {'ID':id,
