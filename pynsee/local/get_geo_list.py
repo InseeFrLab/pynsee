@@ -66,6 +66,30 @@ def get_geo_list(geo):
         
         list_data_geo.append(data_geo)        
     
-    df_geo = pd.concat(list_data_geo)     
+    df_geo = pd.concat(list_data_geo)   
+    df_geo.columns = ['TITLE', 'TYPE', 'DATECREATION', 'TITLE_SHORT', 'CODE', 'URI']
+    
+    if geo in ['communes', 'arrondissements', 'arrondissementsMunicipaux']:
+        dep = get_geo_list('departements')
+        dep_short = dep[['CODE', 'TITLE']]
+        dep_short.columns = ['CODE', 'TITLE_DEP1']
+        
+        dep_short2 = dep[['CODE', 'TITLE']]
+        dep_short2.columns = ['CODE', 'TITLE_DEP2']
+        
+        df_geo = df_geo.assign(code_dep1 = df_geo['code'].str[:2],
+                               code_dep2 = df_geo['code'].str[:3])
+        
+        df_geo = df_geo.merge(dep_short, how = 'left', left_on = 'code_dep1', right_on = 'CODE')
+        df_geo = df_geo.merge(dep_short2, how = 'left', left_on = 'code_dep2', right_on = 'CODE')
+        
+        for i in range(len(df_geo.index)):  
+            if pd.isna(df_geo.loc[i, 'TITLE_DEP1']):
+                df_geo.loc[i, 'CODE_DEP'] = df_geo.loc[i, 'code_dep2']
+                df_geo.loc[i, 'TITLE_DEP'] = df_geo.loc[i, 'TITLE_DEP2']
+            else:
+                df_geo.loc[i, 'CODE_DEP'] = df_geo.loc[i, 'code_dep1']
+                df_geo.loc[i, 'TITLE_DEP'] = df_geo.loc[i, 'TITLE_DEP1']    
+      
     
     return(df_geo)
