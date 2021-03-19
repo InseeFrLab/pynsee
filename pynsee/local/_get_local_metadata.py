@@ -73,17 +73,18 @@ def _get_local_metadata():
                     
                     list_other_col = [col for col in df.columns if not col in list_col]       
                     
-                    #reshape dataframe
-                    df = pd.melt(df, id_vars = list_col, value_vars = list_other_col)
-                    #rename col variable into dataset_value
-                    df.columns = ['dataset_value' if x == 'variable' else x for x in df.columns]
-                    #drop nan in value col
-                    df = df[df['value'].notna()]
-                    #drop value column
-                    df = df[list_col_new]
+                    if len(list_other_col) > 0:
+                        #reshape dataframe
+                        df = pd.melt(df, id_vars = list_col, value_vars = list_other_col)
+                        #rename col variable into dataset_value
+                        df.columns = ['dataset_value' if x == 'variable' else x for x in df.columns]
+                        #drop nan in value col
+                        df = df[df['value'].notna()]
+                        #drop value column
+                        df = df[list_col_new]
                 
                 #add column to reference
-                file_id = list_files[f].replace("doc_", "").replace(".xlsx", "")
+                file_id = list_files[f].replace("doc_", "").replace(".csv", "")
                 df = df.assign(dataset = file_id, tab = var)
                 
                 list_var_data.append(df)
