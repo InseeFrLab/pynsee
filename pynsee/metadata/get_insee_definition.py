@@ -53,14 +53,16 @@ def get_insee_definition(ids):
             def_fr = clean_definition(def_fr)
             def_en = clean_definition(def_en)
                 
-        def_short_fr = None
-        def_short_en = None        
-        
-        if data['definitionCourte'][0]['langue'] == 'fr':
-            def_short_fr = extract_data(data, item1='definitionCourte', i=0, item2='contenu')
-            def_short_en = extract_data(data, item1='definitionCourte', i=1, item2='contenu')
-            def_short_fr = clean_definition(def_fr)
-            def_short_en = clean_definition(def_en)
+               
+        try:
+            if data['definitionCourte'][0]['langue'] == 'fr':
+                def_short_fr = extract_data(data, item1='definitionCourte', i=0, item2='contenu')
+                def_short_en = extract_data(data, item1='definitionCourte', i=1, item2='contenu')
+                def_short_fr = clean_definition(def_fr)
+                def_short_en = clean_definition(def_en)
+        except:
+             def_short_fr = None
+             def_short_en = None
         
                
         update = data['dateMiseAJour']
