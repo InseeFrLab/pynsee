@@ -19,7 +19,9 @@ class TestFunction(TestCase):
 
     def test_get_geo_list_1(self):        
         list_available_geo = ['communes', 'regions', 'departements',
-                          'arrondissements', 'arrondissementsMunicipaux']        
+                            'communesDeleguees', 'communesAssociees',
+                          'arrondissements', 'arrondissementsMunicipaux']   
+  
         list_geo_data = []
         for geo in list_available_geo:
             list_geo_data.append(get_geo_list(geo))            
