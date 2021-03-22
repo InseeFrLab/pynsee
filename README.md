@@ -12,7 +12,7 @@ pynsee package
 
 # Overview
 
-The insee package contains tools to easily download data and metadata from INSEE API.
+The pynsee package contains tools to easily download data and metadata from INSEE API.
 Using the API or the SDMX queries, get the data of more than 150 000 INSEE series.
 Have a look at the detailed API page with the following [link](https://api.insee.fr/catalogue/).
 This package is a contribution to reproducible research and public data transparency.
@@ -23,8 +23,10 @@ This package is a contribution to reproducible research and public data transpar
 # Get the development version from GitHub
 pip install git+https://github.com/hadrilec/pynsee.git#egg=pynsee
 
-# Subscribe to api.insee.fr and get your credentials
-# Beware : any change to the keys should be tested in a new python session
+# Subscribe to api.insee.fr and get your credentials!
+# Beware : any change to the keys should be tested after having cleared the cache
+# Please use : pynsee.utils.clear_all_cache to do so
+import os
 os.environ['insee_key'] = "my_key"
 os.environ['insee_secret'] = "my_secret_key"
 ```
@@ -37,8 +39,10 @@ from pynsee import *
 import plotly.express as px
 from plotly.offline import plot
 
-import os 
-# Beware : any change to the keys should be test in a new python session
+# Subscribe to api.insee.fr and get your credentials!
+# Beware : any change to the keys should be tested after having cleared the cache
+# Please use : pynsee.utils.clear_all_cache to do so
+import os
 os.environ['insee_key'] = "my_insee_key"
 os.environ['insee_secret'] = "my_insee_secret"
 
