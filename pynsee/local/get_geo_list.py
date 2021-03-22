@@ -19,77 +19,84 @@ def get_geo_list(geo):
     >>> region_list = get_geo_list('regions')
     >>> departement_list = get_geo_list('departements')
     """   
-    import tempfile
     import pandas as pd
-    import xml.etree.ElementTree as ET
     from tqdm import trange
     
-    from pynsee.utils._request_insee import _request_insee
     from pynsee.utils._paste import _paste
+    from pynsee.local._get_geo_relation import _get_geo_relation
+    from pynsee.local._get_geo_list_simple import _get_geo_list_simple
     
-    list_available_geo = ['communes', 'regions', 'departements',
+    list_available_geo = ['communes', 'communesDeleguees', 'communesAssociees',
+                          'regions', 'departements',
                           'arrondissements', 'arrondissementsMunicipaux']
     geo_string = _paste(list_available_geo, collapse = " ")
     
     if not geo in list_available_geo:
-        msg = "!!! geo is not available\nPlease choose geo among:\n%s" % geo_string
+        msg = "!!! {} is not available\nPlease choose geo among:\n{}".format(geo, geo_string)
         raise ValueError(msg)
-     
-    api_url = 'https://api.insee.fr/metadonnees/V1/geo/' + geo
-    results = _request_insee(api_url=api_url, sdmx_url=None)
         
-    dirpath = tempfile.mkdtemp()
-                            
-    raw_data_file = dirpath + '\\' + "raw_data_file"
-        
-    with open(raw_data_file, 'wb') as f:
-        f.write(results.content)
+    reg = _get_geo_list_simple('regions', progress_bar=True)
+    reg.columns = ['TITLE', 'TYPE', 'DATECREATION',
+                          'TITLE_SHORT', 'CHEFLIEU', 'CODE', 'URI']
     
-    root = ET.parse(raw_data_file).getroot()
+    if geo != 'regions':  
+        list_reg = list(reg.CODE)
+        list_data_reg = []
         
-    n_variable = len(root)
+        for r in trange(len(list_reg), desc = 'Getting {}'.format(geo)):
+            list_data_reg.append(_get_geo_relation('region', list_reg[r], 'descendants'))
+            
+        data_all = pd.concat(list_data_reg)
+        data_all.columns = ['TITLE', 'TYPE', 'DATECREATION',
+                            'TITLE_SHORT', 'CHEFLIEU', 'CODE', 'URI', 'geo_init']
+        reg_short = reg[['TITLE', 'CODE']]
+        reg_short.columns = ['TITLE_REG', 'CODE_REG']
+        data_all = data_all.merge(reg_short, how = 'left', 
+                                  left_on = 'geo_init', right_on = 'CODE_REG')
     
-    list_data_geo = []
+        if geo == 'communes':
+            data_all = data_all.loc[data_all['TYPE'].str.match('^Commune$')]
+        if geo == 'communesDeleguees':
+            data_all = data_all.loc[data_all['TYPE'].str.match('^CommuneDeleguee$')]
+        if geo == 'communesAssociees':
+            data_all = data_all.loc[data_all['TYPE'].str.match('^CommuneAssociee$')]
+        if geo == 'arrondissements':
+            data_all = data_all.loc[data_all['TYPE'].str.match('^Arrondissement$')]
+        if geo == 'arrondissementsMunicipaux':
+            data_all = data_all.loc[data_all['TYPE'].str.match('^ArrondissementMunicipal$')]
+        if geo == 'departements':
+            data_all = data_all.loc[data_all['TYPE'].str.match('^Departement$')]
         
-    for igeo in trange(n_variable, desc = "Getting %s" % geo):
-
-        n_var = len(root[igeo])
+        if geo != 'departements':
+            dep = _get_geo_list_simple('departements', progress_bar=True)
+            dep.columns = ['TITLE', 'TYPE', 'DATECREATION',
+                              'TITLE_SHORT', 'CHEFLIEU', 'CODE', 'URI']
+            dep_short = dep[['CODE', 'TITLE']]
+            dep_short.columns = ['CODE_dep', 'TITLE_DEP1']
+            
+            dep_short2 = dep[['CODE', 'TITLE']]
+            dep_short2.columns = ['CODE_dep', 'TITLE_DEP2']
+                        
+            data_all = data_all.assign(code_dep1 = data_all['CODE'].str[:2],
+                                       code_dep2 = data_all['CODE'].str[:3])
+            
+            data_all = data_all.merge(dep_short, how = 'left', left_on = 'code_dep1', right_on = 'CODE_dep')
+            data_all = data_all.merge(dep_short2, how = 'left', left_on = 'code_dep2', right_on = 'CODE_dep')
+            
+            for i in range(len(data_all.index)):  
+                if pd.isna(data_all.loc[i, 'TITLE_DEP1']):
+                    data_all.loc[i, 'CODE_DEP'] = data_all.loc[i, 'code_dep2']
+                    data_all.loc[i, 'TITLE_DEP'] = data_all.loc[i, 'TITLE_DEP2']
+                else:
+                    data_all.loc[i, 'CODE_DEP'] = data_all.loc[i, 'code_dep1']
+                    data_all.loc[i, 'TITLE_DEP'] = data_all.loc[i, 'TITLE_DEP1']  
+                
+            
+            data_all = data_all[['TITLE', 'TYPE', 'DATECREATION',
+                              'TITLE_SHORT', 'CODE', 'URI',
+                              'CODE_DEP', 'TITLE_DEP', 'CODE_REG', 'TITLE_REG']]
         
-        dict_geo = {}
-        
-        for ivar in range(n_var):
-            dict_geo[root[igeo][ivar].tag] = root[igeo][ivar].text
-               
-        dict_geo = {**dict_geo, **root[igeo].attrib}
-
-        data_geo = pd.DataFrame(dict_geo, index = [0])
-        
-        list_data_geo.append(data_geo)        
-    
-    df_geo = pd.concat(list_data_geo)   
-    df_geo.columns = ['TITLE', 'TYPE', 'DATECREATION', 'TITLE_SHORT', 'CODE', 'URI']
-    
-    if geo in ['communes', 'arrondissements', 'arrondissementsMunicipaux']:
-        dep = get_geo_list('departements')
-        dep_short = dep[['CODE', 'TITLE']]
-        dep_short.columns = ['CODE', 'TITLE_DEP1']
-        
-        dep_short2 = dep[['CODE', 'TITLE']]
-        dep_short2.columns = ['CODE', 'TITLE_DEP2']
-        
-        df_geo = df_geo.assign(code_dep1 = df_geo['code'].str[:2],
-                               code_dep2 = df_geo['code'].str[:3])
-        
-        df_geo = df_geo.merge(dep_short, how = 'left', left_on = 'code_dep1', right_on = 'CODE')
-        df_geo = df_geo.merge(dep_short2, how = 'left', left_on = 'code_dep2', right_on = 'CODE')
-        
-        for i in range(len(df_geo.index)):  
-            if pd.isna(df_geo.loc[i, 'TITLE_DEP1']):
-                df_geo.loc[i, 'CODE_DEP'] = df_geo.loc[i, 'code_dep2']
-                df_geo.loc[i, 'TITLE_DEP'] = df_geo.loc[i, 'TITLE_DEP2']
-            else:
-                df_geo.loc[i, 'CODE_DEP'] = df_geo.loc[i, 'code_dep1']
-                df_geo.loc[i, 'TITLE_DEP'] = df_geo.loc[i, 'TITLE_DEP1']    
-      
-    
+        df_geo = data_all        
+    else:
+        df_geo = reg
     return(df_geo)

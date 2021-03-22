@@ -14,11 +14,11 @@ def _get_geo_relation(geo, code, relation):
 
     #idf = _get_geo_relation('region', "11", 'descendants')
     #essonne = _get_geo_relation('region', "11", 'ascendants')
-    import os, requests
+    import os
     import tempfile
     import pandas as pd
     import xml.etree.ElementTree as ET
-    from tqdm import trange
+#    from tqdm import trange
 
 
     from pynsee.utils._request_insee import _request_insee
@@ -36,11 +36,14 @@ def _get_geo_relation(geo, code, relation):
     
     root = ET.parse(raw_data_file).getroot()
     
+    if os.path.exists(raw_data_file):
+        os.remove(raw_data_file)
+    
     n_geo = len(root)
     
     list_geo_relation = []
     
-    for igeo in trange(n_geo):
+    for igeo in range(n_geo):
         n_var = len(root[igeo])
         
         dict_var = {}
