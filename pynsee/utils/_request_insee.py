@@ -1,5 +1,5 @@
 from functools import lru_cache
-import warnings
+#import warnings
 
 # @lru_cache(maxsize=None)
 # def _warning_api_success():
@@ -12,9 +12,9 @@ import warnings
 #     #print(msg1 + "\n" + msg2)
 #     print(msg1 + "\n" )
 
-@lru_cache(maxsize=None)
-def _warning_no_token(msg):
-    warnings.warn(msg)
+#@lru_cache(maxsize=None)
+#def _warning_no_token(msg):
+#    warnings.warn(msg)
 
 def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
 
@@ -50,8 +50,10 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
             results = requests.get(api_url, proxies = proxies, headers=headers)
 
             if results.status_code != 200:
-                    
-                print("!!! Wrong query or api.insee.fr error !!!\n!!! Please check your credentials and subscribe to all APIs!!!")
+                msg1 = "!!! Wrong query or api.insee.fr error !!!"
+                msg2 = "\n!!! Please check your credentials and subscribe to all APIs!!!"
+                msg3 = "\n!!! If your token still don't work, please try to use pynsee.utils.clear_all_cache !!!"
+                print("{}{}{}".format(msg1, msg2, msg3))
 
                 if not sdmx_url is None:
 
@@ -71,17 +73,20 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
 
         else:
             # token is None
-
-            msg = "!!! Token missing, please check your credentials on api.insee.fr !!!\n"
+            commands = "\nimport os\nos.environ['insee_key'] = 'my_key'\nos.environ['insee_secret'] = 'my_secret_key'"
+            msg1 = "!!! Token missing, please check your credentials on api.insee.fr !!!\n"
+            msg2 = "!!! Please do the following to use your credentials : {}".format(commands)
+            msg3 = "\n!!! If your token still does not work, please try to use pynsee.utils.clear_all_cache !!!\n"
+        
             if not sdmx_url is None:
-                msg2 = "SDMX web service used instead of API"
-                print(msg + msg2)
+                msg4 = "SDMX web service used instead of API"
+                print("{}{}{}".format(msg1, msg2, msg3, msg4))
                 # _warning_no_token(msg + msg2)
                 results = requests.get(sdmx_url, proxies = proxies)
                 if results.status_code != 200:
                     raise ValueError(results.text + '\n' + sdmx_url)
             else:
-                raise ValueError(msg)
+                raise ValueError("{}{}".format(msg1, msg2))
     else:
         #api_url is None
         if not sdmx_url is None:
