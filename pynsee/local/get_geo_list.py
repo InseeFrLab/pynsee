@@ -67,6 +67,9 @@ def get_geo_list(geo):
         if geo == 'departements':
             data_all = data_all.loc[data_all['TYPE'].str.match('^Departement$')]
         
+        data_all = data_all[['TITLE', 'TYPE', 'DATECREATION',
+                               'TITLE_SHORT', 'CHEFLIEU', 'CODE', 'URI', 'CODE_REG', 'TITLE_REG']]
+        
         if geo != 'departements':
             dep = _get_geo_list_simple('departements', progress_bar=True)
             dep.columns = ['TITLE', 'TYPE', 'DATECREATION',
@@ -93,8 +96,8 @@ def get_geo_list(geo):
                 
             
             data_all = data_all[['TITLE', 'TYPE', 'DATECREATION',
-                              'TITLE_SHORT', 'CODE', 'URI',
-                              'CODE_DEP', 'TITLE_DEP', 'CODE_REG', 'TITLE_REG']]
+                                 'TITLE_SHORT', 'CHEFLIEU', 'CODE', 'URI',
+                                 'CODE_REG', 'TITLE_REG', 'CODE_DEP', 'TITLE_DEP']]
         
         df_geo = data_all        
     else:
