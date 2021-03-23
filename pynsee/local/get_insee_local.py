@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 
-def _get_insee_local(variables, dataset, geo, geocodes):
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def _warning_future_dev():
+    print("!!! This function is still at an early development stage,\ncode breaks are likely in the future !!!")
+
+
+def get_insee_local(variables, dataset, geo, geocodes):
+    
+    _warning_future_dev()
     
     from pynsee.utils._request_insee import _request_insee
     from pynsee.utils._paste import _paste
