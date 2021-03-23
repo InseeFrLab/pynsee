@@ -7,7 +7,7 @@ import geopandas as gpd
 
 from pynsee.local._get_geo_relation import _get_geo_relation
 from pynsee.local.get_insee_local import get_insee_local
-from pynsee.local.get_nivgeo import get_nivgeo
+from pynsee.local.get_nivgeo_list import get_nivgeo_list
 from pynsee.local.get_local_metadata import get_local_metadata
 
 from pynsee.local.get_geo_list import get_geo_list
@@ -38,8 +38,8 @@ class TestFunction(TestCase):
         test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
         self.assertTrue(test)        
     
-    def test_get_nivgeo(self):
-        data = get_nivgeo()
+    def test_get_nivgeo_list(self):
+        data = get_nivgeo_list()
         self.assertTrue(isinstance(data, pd.DataFrame))
     
     def test_get_local_metadata(self):
