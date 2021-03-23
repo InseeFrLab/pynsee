@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-#from functools import lru_cache
-#
-#@lru_cache(maxsize=None)
-#def _warning_query_limit():
-#    print("API query number limit reached - function might be slowed down")
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def _warning_query_limit():
+    print("API query number limit reached - function might be slowed down")
 
 def _wait_below_api_query_limit(query):
     
     import os, time, math
     import pandas as pd
     from datetime import datetime
-    from tqdm import trange
+#    from tqdm import trange
     
     from pynsee.utils._create_insee_folder import _create_insee_folder
     from pynsee.utils._hash import _hash
@@ -34,8 +34,17 @@ def _wait_below_api_query_limit(query):
         qCount.to_pickle(file)
         
     else:
-        
-        qCount = pd.read_pickle(file) 
+        try:
+            qCount = pd.read_pickle(file) 
+        except:
+            os.remove(file)
+            qCount = pd.DataFrame({
+                "query" : query,
+                "run_time" : date_time_now                
+                }, index=[0])
+    
+            qCount.to_pickle(file)
+            
         
         for r in range(len(qCount.index)):
             qCount.loc[r, 'time_gap'] = (date_time_now - qCount.loc[r, 'run_time']).seconds
@@ -51,11 +60,12 @@ def _wait_below_api_query_limit(query):
             oldest_query_time_gap = max(qCount['time_gap'])
             waiting_time = math.ceil(timespan_insee_api - oldest_query_time_gap + 1)
             
-            for t in trange(waiting_time, desc = "Waiting time - %s secs" % waiting_time):
-                time.sleep(1)
-#            _warning_query_limit()
-#            for t in range(waiting_time):
-#                time.sleep(1)   
+#            for t in trange(waiting_time, desc = "Waiting time - %s secs" % waiting_time):
+#                time.sleep(1)
+            _warning_query_limit()
+            print("Waiting time - %s secs" % waiting_time)
+            for t in range(waiting_time):
+                time.sleep(1)   
                         
         new_query_time = pd.DataFrame({
                 "query" : query,
