@@ -2,7 +2,13 @@
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
-def _get_local_metadata():
+def _warning_data():
+    print("!!! This function renders only package's internal data, it might not be the most up-to-date\nHave a look at api.insee.fr !!!")
+
+@lru_cache(maxsize=None)
+def get_local_metadata():
+
+    _warning_data()
     
     #import geopandas as gpd
     import os, re

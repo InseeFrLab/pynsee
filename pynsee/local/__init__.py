@@ -5,6 +5,6 @@ from .get_map_list import get_map_list
 from .get_map_link import get_map_link
 from .get_map import get_map
 
-from ._get_insee_local import _get_insee_local
-from ._get_nivgeo import _get_nivgeo
-from ._get_local_metadata import _get_local_metadata
+from .get_insee_local import get_insee_local
+from .get_nivgeo import get_nivgeo
+from .get_local_metadata import get_local_metadata

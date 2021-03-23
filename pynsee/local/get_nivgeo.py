@@ -1,5 +1,13 @@
+from functools import lru_cache
 
-def _get_nivgeo():
+@lru_cache(maxsize=None)
+def _warning_data():
+    print("!!! This function renders only package's internal data, it might not be the most up-to-date\nHave a look at api.insee.fr !!!")
+
+def get_nivgeo():
+    
+    _warning_data()
+    
     import pandas as pd
     dict_ng = {
             'nivgeo':['COM',
