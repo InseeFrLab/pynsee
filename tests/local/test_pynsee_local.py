@@ -6,9 +6,9 @@ from pandas import pandas as pd
 import geopandas as gpd
 
 from pynsee.local._get_geo_relation import _get_geo_relation
-from pynsee.local._get_insee_local import _get_insee_local
-from pynsee.local._get_nivgeo import _get_nivgeo
-from pynsee.local._get_local_metadata import _get_local_metadata
+from pynsee.local.get_insee_local import get_insee_local
+from pynsee.local.get_nivgeo import get_nivgeo
+from pynsee.local.get_local_metadata import get_local_metadata
 
 from pynsee.local.get_geo_list import get_geo_list
 from pynsee.local.get_map_link import get_map_link
@@ -39,11 +39,11 @@ class TestFunction(TestCase):
         self.assertTrue(test)        
     
     def test_get_nivgeo(self):
-        data = _get_nivgeo()
+        data = get_nivgeo()
         self.assertTrue(isinstance(data, pd.DataFrame))
     
     def test_get_local_metadata(self):
-        data = _get_local_metadata()
+        data = get_local_metadata()
         self.assertTrue(isinstance(data, pd.DataFrame))
 
     def test_get_insee_local(self):            
@@ -51,7 +51,7 @@ class TestFunction(TestCase):
         dataset = 'GEO2019RP2011'
         codegeo = '91'
         geo = 'DEP'
-        data = _get_insee_local(variables, dataset, codegeo, geo)
+        data = get_insee_local(variables, dataset, codegeo, geo)
         self.assertTrue(isinstance(data, pd.DataFrame))
 
     def test_get_map_link(self):
