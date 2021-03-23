@@ -88,8 +88,8 @@ def get_insee_local(variables, dataset, geo, geocodes):
                                  '$':'UNIT_label'}, inplace=True)
             
             data['OBS_VALUE'] = pd.to_numeric(data['OBS_VALUE'])
-            data['DATA_DATE'] = pd.to_numeric(data['DATA_DATE'])
-            data['GEO_DATE'] = pd.to_numeric(data['GEO_DATE'])
+#            data['DATA_DATE'] = pd.to_numeric(data['DATA_DATE'])
+#            data['GEO_DATE'] = pd.to_numeric(data['GEO_DATE'])
             list_data_all.append(data)
         except:
             data = pd.DataFrame({'CODEGEO':codegeo,'OBS_VALUE':np.nan},index=[0])
