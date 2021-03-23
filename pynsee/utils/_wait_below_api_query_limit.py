@@ -3,7 +3,7 @@
 
 def _wait_below_api_query_limit(query):
     
-    import os, time
+    import os, time, math
     import pandas as pd
     from datetime import datetime
     from tqdm import trange
@@ -30,36 +30,38 @@ def _wait_below_api_query_limit(query):
         qCount.to_pickle(file)
         
     else:
-        try:
-            qCount = pd.read_pickle(file) 
-            
-            for r in range(len(qCount.index)):
-                qCount.loc[r, 'time_gap'] = (date_time_now - qCount.loc[r, 'run_time']).seconds
-                qCount.loc[r, 'oneMin'] = (qCount.loc[r, 'time_gap'] < timespan_insee_api)
         
-            qCount = qCount.loc[qCount['oneMin'] == True]
-            n_query = len(qCount.index)
+        qCount = pd.read_pickle(file) 
+        
+        for r in range(len(qCount.index)):
+            qCount.loc[r, 'time_gap'] = (date_time_now - qCount.loc[r, 'run_time']).seconds
+            qCount.loc[r, 'oneMin'] = (qCount.loc[r, 'time_gap'] < timespan_insee_api)
+    
+        qCount = qCount.loc[qCount['oneMin'] == True]
+        n_query = len(qCount.index)
+        
+        #print("n query in 1 min : %s" % n_query)
+        
+        if n_query >= max_query_insee_api-1:
             
-            if n_query >= max_query_insee_api-1:
-                
-                oldest_query_time_gap = max(qCount['time_gap'])
-                waiting_time = timespan_insee_api - oldest_query_time_gap + 1
-                
-                for t in trange(waiting_time, desc = "Waiting time - %s secs" % waiting_time):
-                    time.sleep(1)
-                            
-            new_query_time = pd.DataFrame({
-                    "query" : query,
-                    "run_time" : date_time_now                
-                    }, index=[0])
+            oldest_query_time_gap = max(qCount['time_gap'])
+            waiting_time = math.ceil(timespan_insee_api - oldest_query_time_gap + 1)
             
-            qCount = qCount.append(new_query_time).reset_index()
-            
-            qCount.to_pickle(file)
-            
-        except:
-            os.remove(file)
-            _wait_below_api_query_limit(query)
+            for t in trange(waiting_time, desc = "Waiting time - %s secs" % waiting_time):
+                time.sleep(1)
+                        
+        new_query_time = pd.DataFrame({
+                "query" : query,
+                "run_time" : date_time_now                
+                }, index=[0])
+        
+        qCount = qCount.append(new_query_time).reset_index(drop=True)
+        qCount = qCount[['query', 'run_time', 'time_gap', 'oneMin']]
+        
+        qCount.to_pickle(file)            
+        
+    
+        return(qCount)
             
         
         
