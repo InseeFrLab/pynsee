@@ -4,7 +4,7 @@ from functools import lru_cache
 def _warning_data():
     print("!!! This function renders only package's internal data, it might not be the most up-to-date\nHave a look at api.insee.fr !!!")
 
-def get_nivgeo():
+def get_nivgeo_list():
     
     _warning_data()
     
