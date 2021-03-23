@@ -46,12 +46,17 @@ class TestFunction(TestCase):
         data = get_local_metadata()
         self.assertTrue(isinstance(data, pd.DataFrame))
 
-    def test_get_insee_local(self):            
+    def test_get_insee_local(self):  
+
+        dep = get_geo_list('departements')
+
         variables = 'AGESCOL-SEXE-ETUD'
         dataset = 'GEO2019RP2011'
-        codegeo = '91'
+        # codegeo = ['91', '976']
+        codegeo = list(dep.CODE)
         geo = 'DEP'
-        data = get_insee_local(variables, dataset, codegeo, geo)
+        data = get_insee_local(variables, dataset, geo, codegeo)
+
         self.assertTrue(isinstance(data, pd.DataFrame))
 
     def test_get_map_link(self):
