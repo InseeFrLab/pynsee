@@ -55,9 +55,10 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
 
             if results.status_code != 200:
                 msg1 = "!!! Wrong query or api.insee.fr error !!!"
-                msg2 = "\n!!! Please check your credentials and subscribe to all APIs!!!"
-                msg3 = "\n!!! If your token still don't work, please try to use pynsee.utils.clear_all_cache !!!"
-                print("{}{}{}".format(msg1, msg2, msg3))
+#                msg2 = "\n!!! Please check your credentials and subscribe to all APIs!!!"
+#                msg3 = "\n!!! If your token still does't work, please try to use pynsee.utils.clear_all_cache !!!"
+#                print("{}{}{}".format(msg1, msg2, msg3))
+                print("{}".format(msg1))
 
                 if not sdmx_url is None:
 
@@ -90,7 +91,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
                 if results.status_code != 200:
                     raise ValueError(results.text + '\n' + sdmx_url)
             else:
-                raise ValueError("{}{}".format(msg1, msg2))
+                raise ValueError("{}{}{}".format(msg1, msg2, msg3))
     else:
         #api_url is None
         if not sdmx_url is None:
