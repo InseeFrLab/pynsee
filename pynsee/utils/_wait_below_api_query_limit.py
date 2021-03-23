@@ -3,7 +3,7 @@ from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def _warning_query_limit():
-    print("API query number limit reached - function might be slowed down")
+    print("\nAPI query number limit reached - function might be slowed down")
 
 def _wait_below_api_query_limit(query):
     
@@ -63,7 +63,7 @@ def _wait_below_api_query_limit(query):
 #            for t in trange(waiting_time, desc = "Waiting time - %s secs" % waiting_time):
 #                time.sleep(1)
             _warning_query_limit()
-            print("Waiting time - %s secs" % waiting_time)
+            print("\nWaiting time - %s secs" % waiting_time)
             for t in range(waiting_time):
                 time.sleep(1)   
                         
