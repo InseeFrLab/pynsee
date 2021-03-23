@@ -55,17 +55,17 @@ def get_geo_list(geo):
                                   left_on = 'geo_init', right_on = 'CODE_REG')
     
         if geo == 'communes':
-            data_all = data_all.loc[data_all['TYPE'].str.match('^Commune$')]
+            data_all = data_all.loc[data_all['TYPE'].str.match('^Commune$', na=False)]
         if geo == 'communesDeleguees':
-            data_all = data_all.loc[data_all['TYPE'].str.match('^CommuneDeleguee$')]
+            data_all = data_all.loc[data_all['TYPE'].str.match('^CommuneDeleguee$', na=False)]
         if geo == 'communesAssociees':
-            data_all = data_all.loc[data_all['TYPE'].str.match('^CommuneAssociee$')]
+            data_all = data_all.loc[data_all['TYPE'].str.match('^CommuneAssociee$', na=False)]
         if geo == 'arrondissements':
-            data_all = data_all.loc[data_all['TYPE'].str.match('^Arrondissement$')]
+            data_all = data_all.loc[data_all['TYPE'].str.match('^Arrondissement$', na=False)]
         if geo == 'arrondissementsMunicipaux':
-            data_all = data_all.loc[data_all['TYPE'].str.match('^ArrondissementMunicipal$')]
+            data_all = data_all.loc[data_all['TYPE'].str.match('^ArrondissementMunicipal$', na=False)]
         if geo == 'departements':
-            data_all = data_all.loc[data_all['TYPE'].str.match('^Departement$')]
+            data_all = data_all.loc[data_all['TYPE'].str.match('^Departement$', na=False)]
         
         data_all = data_all[['TITLE', 'TYPE', 'DATECREATION',
                                'TITLE_SHORT', 'CHEFLIEU', 'CODE', 'URI', 'CODE_REG', 'TITLE_REG']]
