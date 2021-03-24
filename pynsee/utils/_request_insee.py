@@ -18,7 +18,8 @@
 
 def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
 
-    import os, re
+    import os
+#    import re
     import requests
     from pynsee.utils._get_token import _get_token
     from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
