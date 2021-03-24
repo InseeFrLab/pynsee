@@ -3,21 +3,24 @@
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
-def get_geo_list(geo):    
+def get_geo_list(geo, date=None):    
     """Get a list of French geographic areas (communes, departements, regions ...)
 
     Args:
-        geo (str): choose among : 'communes', 'regions', 'departements',
-                          'arrondissements', 'arrondissementsMunicipaux'
+        geo (str): choose among : 'communes','communesDeleguees', 'communesAssociees',
+                                    'regions', 'departements',
+                                    'arrondissements', 'arrondissementsMunicipaux'
 
     Raises:
         ValueError: geo should be among the geographic area list
     
     Examples:
     ---------
+    >>> from pynsee.local.get_geo_list import get_geo_list
     >>> city_list = get_geo_list('communes')
     >>> region_list = get_geo_list('regions')
     >>> departement_list = get_geo_list('departements')
+    >>> arrondiss_list = get_geo_list('arrondissements')
     """   
     import pandas as pd
     from tqdm import trange
@@ -43,12 +46,32 @@ def get_geo_list(geo):
         list_reg = list(reg.CODE)
         list_data_reg = []
         
+        if geo == 'communes':
+            type_geo = 'commune'
+        elif geo == 'departements':
+            type_geo = 'departement'
+        else:
+            type_geo = None            
+        
         for r in trange(len(list_reg), desc = 'Getting {}'.format(geo)):
-            list_data_reg.append(_get_geo_relation('region', list_reg[r], 'descendants'))
+            try:
+                df = _get_geo_relation(geo='region', code=list_reg[r],
+                                       relation='descendants', date=date,
+                                       type=type_geo)
+            except:
+                pass
+            else:
+                list_data_reg.append(df)
             
         data_all = pd.concat(list_data_reg)
-        data_all.columns = ['TITLE', 'TYPE', 'DATECREATION',
+        if len(data_all.columns) == 8:
+            data_all.columns = ['TITLE', 'TYPE', 'DATECREATION',
                             'TITLE_SHORT', 'CHEFLIEU', 'CODE', 'URI', 'geo_init']
+        else:
+            data_all.columns = ['TITLE', 'TYPE', 'DATECREATION',
+                            'TITLE_SHORT', 'CODE', 'URI', 'geo_init']
+        
+        
         reg_short = reg[['TITLE', 'CODE']]
         reg_short.columns = ['TITLE_REG', 'CODE_REG']
         data_all = data_all.merge(reg_short, how = 'left', 
@@ -67,8 +90,14 @@ def get_geo_list(geo):
         if geo == 'departements':
             data_all = data_all.loc[data_all['TYPE'].str.match('^Departement$', na=False)]
         
-        data_all = data_all[['TITLE', 'TYPE', 'DATECREATION',
+        
+        
+        if len(data_all.columns) == 8:
+            data_all = data_all[['TITLE', 'TYPE', 'DATECREATION',
                                'TITLE_SHORT', 'CHEFLIEU', 'CODE', 'URI', 'CODE_REG', 'TITLE_REG']]
+        else:
+            data_all = data_all[['TITLE', 'TYPE', 'DATECREATION',
+                               'TITLE_SHORT', 'CODE', 'URI', 'CODE_REG', 'TITLE_REG']]
         
         if geo != 'departements':
             dep = _get_geo_list_simple('departements', progress_bar=True)
@@ -94,10 +123,14 @@ def get_geo_list(geo):
                     data_all.loc[i, 'CODE_DEP'] = data_all.loc[i, 'code_dep1']
                     data_all.loc[i, 'TITLE_DEP'] = data_all.loc[i, 'TITLE_DEP1']  
                 
-            
-            data_all = data_all[['TITLE', 'TYPE', 'DATECREATION',
-                                 'TITLE_SHORT', 'CHEFLIEU', 'CODE', 'URI',
-                                 'CODE_REG', 'TITLE_REG', 'CODE_DEP', 'TITLE_DEP']]
+            if len(data_all.columns) == 8:
+                data_all = data_all[['TITLE', 'TYPE', 'DATECREATION',
+                                     'TITLE_SHORT', 'CHEFLIEU', 'CODE', 'URI',
+                                     'CODE_REG', 'TITLE_REG', 'CODE_DEP', 'TITLE_DEP']]
+            else:
+                data_all = data_all[['TITLE', 'TYPE', 'DATECREATION',
+                                     'TITLE_SHORT', 'CODE', 'URI',
+                                     'CODE_REG', 'TITLE_REG', 'CODE_DEP', 'TITLE_DEP']]
         
         df_geo = data_all        
     else:

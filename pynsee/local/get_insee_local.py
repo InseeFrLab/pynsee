@@ -4,7 +4,7 @@ from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def _warning_future_dev():
-    print("!!! This function is still at an early development stage,\nchanges are likely in the future !!!")
+    print("!!! This function is still at an early development stage,\nfuture changes are likely !!!")
 
 
 def get_insee_local(variables, dataset, geo, geocodes):
