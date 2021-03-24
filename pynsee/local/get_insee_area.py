@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from functools import lru_cache
-
-@lru_cache(maxsize=None)
+#from functools import lru_cache
+#
+#@lru_cache(maxsize=None)
 def get_insee_area(area_type, codeareas):
     
 #    codeareas = ['1109']
