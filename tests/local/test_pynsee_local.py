@@ -8,10 +8,14 @@ import sys
 
 from pynsee.local._get_geo_relation import _get_geo_relation
 from pynsee.local.get_insee_local import get_insee_local
-from pynsee.local.get_nivgeo_list import get_nivgeo_list
-from pynsee.local.get_local_metadata import get_local_metadata
+from pynsee.local.get_insee_area import get_insee_area
 
 from pynsee.local.get_geo_list import get_geo_list
+from pynsee.local.get_nivgeo_list import get_nivgeo_list
+from pynsee.local.get_area_list import get_area_list
+
+from pynsee.local.get_local_metadata import get_local_metadata
+
 from pynsee.local.get_map_link import get_map_link
 from pynsee.local.get_map import get_map
 
@@ -69,3 +73,25 @@ class TestFunction(TestCase):
             map_file = get_map_link('communes')
             map = gpd.read_file(map_file)
             self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
+        
+        def test_get_area_list_1(self):                 
+            def get_area_list_test():
+                get_area_list('a')    
+            self.assertRaises(ValueError, get_area_list_test)
+        
+        def test_get_insee_area(self):   
+              
+            list_available_area = ['zonesDEmploi2020', 
+                                   'airesDAttractionDesVilles2020',
+                                   'unitesUrbaines2020']
+            list_data = []
+            
+            for a in list_available_area:
+                df_list = get_area_list(a)
+                code = df_list.code[:3].to_list()
+                data = get_insee_area(area_type=a, codeareas=code)
+                list_data.append(data)
+                
+            data_final = pd.concat(list_data)
+            
+            self.assertTrue(isinstance(data_final, pd.DataFrame))
