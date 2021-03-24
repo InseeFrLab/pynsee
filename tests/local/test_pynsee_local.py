@@ -58,6 +58,7 @@ class TestFunction(TestCase):
             dataset = 'GEO2019RP2011'
             # codegeo = ['91', '976']
             codegeos = list(dep.CODE)
+            codegeos = dep.CODE.to_list()
             geo = 'DEP'
             data = get_insee_local(variables=variables,
                                    dataset=dataset, geo=geo, geocodes = codegeos)
