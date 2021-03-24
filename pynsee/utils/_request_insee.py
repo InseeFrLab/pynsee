@@ -70,11 +70,11 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
                 else:
                     print("Error %s" % results.status_code)
                     
-                    m = re.search("ams\\:description\\>.*\\<\\/ams\\:description", results.text)
-                    if m:
-                        found = m.group(0)
-                        found2 = found.replace("description", "").replace("ams", "")
-                        print(found2)
+#                    m = re.search("ams\\:description\\>.*\\<\\/ams\\:description", results.text)
+#                    if m:
+#                        found = m.group(0)
+#                        found2 = found.replace("description", "").replace("ams", "")
+#                        print(found2)
 
         else:
             # token is None
