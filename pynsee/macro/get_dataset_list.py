@@ -12,19 +12,20 @@ def get_dataset_list() :
     --------
     >>> insee_dataset = get_dataset_list()
     """    
-    import tempfile
+    import os
     import xml.etree.ElementTree as ET
     import pandas as pd
     from tqdm import trange
     
     from pynsee.utils._request_insee import _request_insee
+    from pynsee.utils._get_temp_dir import _get_temp_dir
     
     INSEE_sdmx_link_dataflow = "https://bdm.insee.fr/series/sdmx/dataflow"
         
     results = _request_insee(sdmx_url=INSEE_sdmx_link_dataflow)
     
     # create temporary directory
-    dirpath = tempfile.mkdtemp()
+    dirpath = _get_temp_dir()
     
     dataflow_file = dirpath + '\\dataflow_file'
     
@@ -32,6 +33,9 @@ def get_dataset_list() :
         f.write(results.content)
     
     root = ET.parse(dataflow_file).getroot()
+    
+    if os.path.exists(dataflow_file):
+        os.remove(dataflow_file)
     
     data = root[1][0]
         

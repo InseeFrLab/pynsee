@@ -37,7 +37,7 @@ def get_insee_idbank(*idbanks,
     import pandas
     import math
     
-    from ._get_insee import _get_insee  
+    from pynsee.macro._get_insee import _get_insee  
     from pynsee.utils._paste import _paste  
             
     INSEE_sdmx_link_idbank = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/"

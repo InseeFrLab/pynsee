@@ -4,13 +4,13 @@ def _download_idbank_list():
     
     import requests
     import zipfile
-    import tempfile
     import pandas as pd
     import os
     import re
     
     from pynsee.utils._hash import _hash
     from pynsee.utils._create_insee_folder import _create_insee_folder 
+    from pynsee.utils._get_temp_dir import _get_temp_dir
     from datetime import datetime
 
     file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
@@ -62,7 +62,7 @@ def _download_idbank_list():
             results = requests.get(file_to_dwn, proxies = proxies)
             
             # create temporary directory
-            dirpath = tempfile.mkdtemp()
+            dirpath = _get_temp_dir()
             
             idbank_zip_file = dirpath + '\\idbank_list.zip'
             

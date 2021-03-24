@@ -5,7 +5,6 @@ from functools import lru_cache
 @lru_cache(maxsize=None)
 def _get_insee(api_query, sdmx_query, step = "1/1"):
     
-    import tempfile
     import pandas as pd
     import os
     import xml.dom.minidom
@@ -13,12 +12,13 @@ def _get_insee(api_query, sdmx_query, step = "1/1"):
     
     from pynsee.macro._get_date import _get_date
     from pynsee.utils._request_insee import _request_insee
+    from pynsee.utils._get_temp_dir import _get_temp_dir
     
     # "001694056", "001691912", "001580062", "001688370", "010565692"
     # sdmx_query = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_query = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
     # create temporary directory
-    dirpath = tempfile.mkdtemp()
+    dirpath = _get_temp_dir()
                         
     # results = requests.get(query, proxies = proxies) 
     results = _request_insee(api_url=api_query, sdmx_url=sdmx_query)

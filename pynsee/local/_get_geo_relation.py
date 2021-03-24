@@ -3,7 +3,7 @@
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
-def _get_geo_relation(geo, code, relation):    
+def _get_geo_relation(geo, code, relation, date=None, type=None):    
    
     # relation_list = ['ascendants', 'descendants', 'suivants', 'precedents', 'projetes']
     # list_available_geo = ['communes', 'regions', 'departements',
@@ -15,19 +15,31 @@ def _get_geo_relation(geo, code, relation):
     #idf = _get_geo_relation('region', "11", 'descendants')
     #essonne = _get_geo_relation('region', "11", 'ascendants')
     import os
-    import tempfile
     import pandas as pd
     import xml.etree.ElementTree as ET
-#    from tqdm import trange
-
-
+    #    from tqdm import trange
+    
+    from pynsee.utils._paste import _paste
     from pynsee.utils._request_insee import _request_insee
-
+    from pynsee.utils._get_temp_dir import _get_temp_dir
+    
     api_url = 'https://api.insee.fr/metadonnees/V1/geo/' + geo + '/' + code + '/' + relation
+    
+    parameters = ["date", "type"]
+
+    list_addded_param = []
+    for param in parameters:
+        if eval(param) is not None:
+            list_addded_param.append(param + "=" + str(eval(param)))
+    
+    added_param_string = ""
+    if len(list_addded_param) > 0:
+        added_param_string = "?" + _paste(list_addded_param, collapse = '&')
+        api_url = api_url + added_param_string         
     
     results = _request_insee(api_url = api_url)
     
-    dirpath = tempfile.mkdtemp()
+    dirpath = _get_temp_dir()
                             
     raw_data_file = dirpath + '\\' + "raw_data_file"
         

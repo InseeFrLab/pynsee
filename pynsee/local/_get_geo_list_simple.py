@@ -4,18 +4,19 @@ from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def _get_geo_list_simple(geo, progress_bar=False):
-    import tempfile
+    
     import pandas as pd
     import xml.etree.ElementTree as ET
     from tqdm import trange
     import os
     
     from pynsee.utils._request_insee import _request_insee
+    from pynsee.utils._get_temp_dir import _get_temp_dir
         
     api_url = 'https://api.insee.fr/metadonnees/V1/geo/' + geo
     results = _request_insee(api_url=api_url, sdmx_url=None)
         
-    dirpath = tempfile.mkdtemp()
+    dirpath = _get_temp_dir()
                             
     raw_data_file = dirpath + '\\' + "raw_data_file"
         

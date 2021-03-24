@@ -4,9 +4,10 @@ from functools import lru_cache
 @lru_cache(maxsize=None)
 def _create_insee_folder():
     import os 
-    import tempfile
     import appdirs
-        
+    
+    from pynsee.utils._get_temp_dir import _get_temp_dir
+    
     try:
         from ._hash import _hash
         #find local folder
@@ -36,6 +37,6 @@ def _create_insee_folder():
         # testing requires restricted rights on the machine
     except:
         #if error temporary folder is returned
-        insee_folder = tempfile.mkdtemp()
+        insee_folder = _get_temp_dir()
     finally:
         return(insee_folder)

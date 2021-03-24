@@ -9,13 +9,13 @@ Created on Sat Dec 26 17:56:28 2020
 # @lru_cache(maxsize=None)
 def _get_dataset_dimension(dataset) :
              
-    import tempfile
     import xml.etree.ElementTree as ET
     import pandas as pd
     import os
     from datetime import datetime 
     
     from pynsee.utils._create_insee_folder import _create_insee_folder
+    from pynsee.utils._get_temp_dir import _get_temp_dir
     from pynsee.utils._hash import _hash
     from pynsee.utils._request_insee import _request_insee    
     
@@ -57,7 +57,7 @@ def _get_dataset_dimension(dataset) :
            api_url = INSEE_api_link_datastructure_dataset)
 
         # create temporary directory
-        dirpath = tempfile.mkdtemp()
+        dirpath = _get_temp_dir()
         
         dataset_dimension_file = dirpath + '\\dataset_dimension_file'
         

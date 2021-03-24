@@ -6,18 +6,18 @@ from functools import lru_cache
 def get_last_release():
     
     import xml.etree.ElementTree as ET
-    import tempfile
     import pandas as pd
     import os, re
     import datetime
     
-    from pynsee.utils._request_insee import _request_insee    
+    from pynsee.utils._request_insee import _request_insee 
+    from pynsee.utils._get_temp_dir import _get_temp_dir
     
     link = 'https://bdm.insee.fr/series/sdmx/rss/donnees'
     
     request = _request_insee(sdmx_url = link)
     
-    file = tempfile.mkdtemp() + '\\last_release'        
+    file = _get_temp_dir() + '\\last_release'        
     
     with open(file, 'wb') as f:
         f.write(request.content)

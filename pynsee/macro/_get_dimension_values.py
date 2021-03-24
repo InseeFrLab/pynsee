@@ -2,13 +2,12 @@
 
 def _get_dimension_values(cl_dimension):    
     
-    import requests
-    import tempfile
     import xml.etree.ElementTree as ET
     import pandas as pd
     import os
     from datetime import datetime 
     
+    from pynsee.utils._get_temp_dir import _get_temp_dir
     from pynsee.utils._create_insee_folder import _create_insee_folder
     from pynsee.utils._request_insee import _request_insee
     from pynsee.utils._hash import _hash
@@ -51,7 +50,7 @@ def _get_dimension_values(cl_dimension):
                                  api_url = INSEE_api_link_codelist_dimension)
         
         # create temporary directory
-        dirpath = tempfile.mkdtemp()
+        dirpath = _get_temp_dir()
         
         dimension_file = dirpath + '\\dimension_file'
         
@@ -59,6 +58,9 @@ def _get_dimension_values(cl_dimension):
             f.write(results.content)
         
         root = ET.parse(dimension_file).getroot()
+        
+        if os.path.exists(dimension_file):
+            os.remove(dimension_file)
                
         list_values = []
         
