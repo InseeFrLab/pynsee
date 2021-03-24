@@ -5,7 +5,7 @@ from functools import lru_cache
 def _warning_query_limit():
     print("\nAPI query number limit reached - function might be slowed down")
 
-def _wait_below_api_query_limit(query):
+def _wait_api_query_limit(query):
     
     import os, time, math
     import pandas as pd
