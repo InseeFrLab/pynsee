@@ -92,8 +92,11 @@ class TestFunction(TestCase):
 
         self.assertRaises(ValueError, request_insee_test)
     
-    def test_request_insee_6(self):       
-        self.assertRaises(ValueError, _request_insee)
+    def test_request_insee_7(self):
+        resp = _request_insee(api_url='https://api.insee.fr/metadonnees/V1/geo/arrondissement/01/descendants?type=arrondissement')
+        test = (resp.status_code==404)
+        self.assertTrue(test)       
+        
 
     def test_get_envir_token(self):
         # if credentials are not well provided but sdmx url works   
