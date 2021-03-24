@@ -81,7 +81,7 @@ def get_insee_local(variables, dataset, geo, geocodes):
                                DATASET_NAME = dataset_name,
                                DATA_DATE = data_date,
                                GEO_DATE = geo_date,
-                               CODEGEO_LABEL = codegeo_label)
+                               CODEGEO_label = codegeo_label)
             
             data.rename(columns={'@codgeo':'CODEGEO',
                                  '@nivgeo':'NIVGEO',
