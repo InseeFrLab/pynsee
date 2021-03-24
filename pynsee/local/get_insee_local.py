@@ -4,9 +4,9 @@ from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def _warning_future_dev():
-    print("!!! This function is still at an early development stage,\ncode breaks are likely in the future !!!")
+    print("!!! This function is still at an early development stage,\nchanges are likely in the future !!!")
 
-@lru_cache(maxsize=None)
+
 def get_insee_local(variables, dataset, geo, geocodes):
     
     _warning_future_dev()
@@ -19,6 +19,7 @@ def get_insee_local(variables, dataset, geo, geocodes):
     import numpy as np
     
 #    variables = 'AGESCOL-SEXE-ETUD';dataset = 'GEO2019RP2011';geocodes = ['91','92', '976'];geo = 'DEP'
+    
     
     list_data_all = []
     
