@@ -12,7 +12,6 @@ def get_insee_local(variables, dataset, geo, geocodes):
     _warning_future_dev()
     
     from pynsee.utils._request_insee import _request_insee
-    from pynsee.utils._paste import _paste
     
     from tqdm import trange
     import pandas as pd
@@ -26,9 +25,6 @@ def get_insee_local(variables, dataset, geo, geocodes):
     for cdg in trange(len(geocodes), desc = "Getting data"): 
         
         codegeo = geocodes[cdg]
-        
-        if type(variables) == list:
-                variables = _paste(variables, collapse = '-')
                 
         count_sep = variables.count('-')
         modalite = '.all' * (count_sep+1)
@@ -61,7 +57,10 @@ def get_insee_local(variables, dataset, geo, geocodes):
                 modalite = Cellule[i]['Modalite']
                 
                 for m in range(len(modalite)):
-                    dico_added = {modalite[m]['@variable']: modalite[m]['@code']}
+                    try:
+                        dico_added = {modalite[m]['@variable']: modalite[m]['@code']}
+                    except:
+                        dico_added = {modalite['@variable']: modalite['@code']}
                     dico = {**dico, **dico_added}
                     
                 dico['OBS_VALUE'] =  Cellule[i]['Valeur']
@@ -70,21 +69,29 @@ def get_insee_local(variables, dataset, geo, geocodes):
                 
             data = pd.concat(list_data)
                     
-            for i in range(len(Variable)):
-                
-                try:
-                    df = pd.DataFrame(Variable[i]['Modalite'], index=[0])
-                except:
-                    list_dict_var = []
-                    values = Variable[i]['Modalite']
-                    for d in range(len(values)):
-                        df_dict = pd.DataFrame(values[d], index=[0])
-                        list_dict_var.append(df_dict)                        
-                    df = pd.concat(list_dict_var).reset_index(drop=True)                
-                
-                var_name = Variable[i]['@code']
-                df = df[['@code', 'Libelle']]
-                df.columns = [var_name, var_name + '_label']
+            try:
+                for i in range(len(Variable)):
+                    
+                    try:
+                        df = pd.DataFrame(Variable[i]['Modalite'], index=[0])
+                    except:
+                        list_dict_var = []
+                        values = Variable[i]['Modalite']
+                        for d in range(len(values)):
+                            df_dict = pd.DataFrame(values[d], index=[0])
+                            list_dict_var.append(df_dict)                        
+                        df = pd.concat(list_dict_var).reset_index(drop=True)                
+                    
+                    var_name = Variable[i]['@code']
+                    df = df[['@code', 'Libelle']]
+                    df.columns = [var_name, var_name + '_label']
+                    data = data.merge(df, on = var_name, how = 'left')
+            except:
+                var_name = Variable['@code']
+                var_name_label = var_name + '_label'
+                value = Variable['Modalite']['@code']
+                label = Variable['Modalite']['Libelle']
+                df = pd.DataFrame({var_name:value, var_name_label:label},index=[0])
                 data = data.merge(df, on = var_name, how = 'left')
             
             data = data.assign(DATASET_VERSION = dataset_version,
