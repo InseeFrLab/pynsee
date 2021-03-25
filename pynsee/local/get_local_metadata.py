@@ -65,7 +65,7 @@ def get_local_metadata():
       
         if reshape == True:
             list_col = ['var' if x=='variable' else x for x in list_col]
-            list_col_new = list_col + ['dataset_value']
+#            list_col_new = list_col + ['dataset_value']
         
         list_var_data = []
         
@@ -80,23 +80,26 @@ def get_local_metadata():
                     list_other_col = [col for col in df.columns if not col in list_col]       
                     
                     if len(list_other_col) > 0:
+                        list_col2 = [col for col in list_col if col in df.columns]
+                        list_col_new2 = list_col2 + ['dataset_value']
                         #reshape dataframe
-                        df = pd.melt(df, id_vars = list_col, value_vars = list_other_col)
+                        df = pd.melt(df, id_vars = list_col2, value_vars = list_other_col)
                         #rename col variable into dataset_value
                         df.columns = ['dataset_value' if x == 'variable' else x for x in df.columns]
                         #drop nan in value col
                         df = df[df['value'].notna()]
                         #drop value column
-                        df = df[list_col_new]
+                        df = df[list_col_new2]
                 
                 #add column to reference
-                file_id = list_files[f].replace("doc_", "").replace(".csv", "")
-                df = df.assign(dataset = file_id, tab = var)
+                file_id = list_files[f].replace("doc_", "").replace(".csv", "").replace('_' + var, "")
+                df = df.assign(dataset = file_id, tab = var)                
                 
-                list_var_data.append(df)
             except:
-                pass
-                #print('error {} {}'.format(list_files[f], var))
+#                print('error {} {}'.format(list_files[f], var))
+                pass                
+            else:
+                list_var_data.append(df)
         
         var_data = pd.concat(list_var_data)
         return(var_data)  
