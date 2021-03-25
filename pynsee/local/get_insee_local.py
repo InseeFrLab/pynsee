@@ -87,12 +87,26 @@ def get_insee_local(variables, dataset, geo, geocodes):
                     df.columns = [var_name, var_name + '_label']
                     data = data.merge(df, on = var_name, how = 'left')
             except:
-                var_name = Variable['@code']
-                var_name_label = var_name + '_label'
-                value = Variable['Modalite']['@code']
-                label = Variable['Modalite']['Libelle']
-                df = pd.DataFrame({var_name:value, var_name_label:label},index=[0])
-                data = data.merge(df, on = var_name, how = 'left')
+                try:
+                    var_name = Variable['@code']
+                    var_name_label = var_name + '_label'
+                    value = Variable['Modalite']['@code']
+                    label = Variable['Modalite']['Libelle']
+                    df = pd.DataFrame({var_name:value, var_name_label:label},index=[0])
+                    data = data.merge(df, on = var_name, how = 'left')
+                except:                    
+                    var_name = Variable['@code']
+                    var_name_label = var_name + '_label'
+                    
+                    list_dict_var = []
+                    values = Variable['Modalite']
+                    for d in range(len(values)):
+                        df_dict = pd.DataFrame(values[d], index=[0])
+                        list_dict_var.append(df_dict) 
+                    df = pd.concat(list_dict_var).reset_index(drop=True) 
+                    df = df[['@code', 'Libelle']]
+                    df.columns = [var_name, var_name_label]
+                    data = data.merge(df, on = var_name, how = 'left')
             
             data = data.assign(DATASET_VERSION = dataset_version,
                                DATASET_NAME = dataset_name,
