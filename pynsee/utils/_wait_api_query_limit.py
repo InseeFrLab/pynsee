@@ -63,9 +63,8 @@ def _wait_api_query_limit(query):
 #            for t in trange(waiting_time, desc = "Waiting time - %s secs" % waiting_time):
 #                time.sleep(1)
             _warning_query_limit()
-            print("\nWaiting time - %s secs" % waiting_time)
-            for t in range(waiting_time):
-                time.sleep(1)   
+            # print("\nWai!ting time - %s secs" % waiting_time)'
+            time.sleep(waiting_time)
                         
         new_query_time = pd.DataFrame({
                 "query" : query,
