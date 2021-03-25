@@ -54,7 +54,7 @@ class TestFunction(TestCase):
             data = get_local_metadata()
             self.assertTrue(isinstance(data, pd.DataFrame))
     
-        def test_get_insee_local(self):  
+        def test_get_insee_local_1(self):  
     
             dep = get_geo_list('departements')
     
@@ -68,6 +68,60 @@ class TestFunction(TestCase):
                                    dataset=dataset, geo=geo, geocodes = codegeos)
     
             self.assertTrue(isinstance(data, pd.DataFrame))
+            
+            
+        def test_get_insee_local_all(self):
+                        
+            data = get_insee_local(dataset='GEO2020RP2017',
+                                   variables =  'SEXE-DIPL_19',
+                                   geo = 'DEP',
+                                   geocodes = ['91','92', '976'])
+            test1 = isinstance(data, pd.DataFrame)
+            
+            data = get_insee_local(dataset='GEO2020FILO2018',
+                                   variables =  'INDICS_FILO_DISP_DET-TRAGERF',
+                                   geo = 'REG',
+                                   geocodes = ['11', '01'])
+            test2 = isinstance(data, pd.DataFrame)
+            
+            data = get_insee_local(dataset='BDCOM2017',
+                                   variables =  'INDICS_BDCOM',
+                                   geo = 'REG',
+                                   geocodes = ['11'])
+            test3 = isinstance(data, pd.DataFrame)
+            
+            data = get_insee_local(dataset= 'GEO2019RFD2011',
+                                   variables = 'INDICS_ETATCIVIL',
+                                   geo = 'REG',
+                                   geocodes = ['11'])
+            test4 = isinstance(data, pd.DataFrame)
+            
+            data = get_insee_local(dataset= 'TOUR2019',
+                                   variables = 'ETOILE',
+                                   geo = 'REG',
+                                   geocodes = ['11'])
+            test5 = isinstance(data, pd.DataFrame)
+            
+            data = get_insee_local(dataset= 'GEO2020FLORES2017',
+                                   variables = 'EFFECSAL5T_1_100P',
+                                   geo = 'REG',
+                                   geocodes = ['11'])
+            test6 = isinstance(data, pd.DataFrame)
+            
+            data = get_insee_local(dataset= 'GEO2019REE2018',
+                                   variables = 'NA5_B',
+                                   geo = 'REG',
+                                   geocodes = ['11'])
+            test7 = isinstance(data, pd.DataFrame)
+            
+            data = get_insee_local(dataset= 'POPLEG2018',
+                                   variables = 'IND_POPLEGALES',
+                                   geo = 'COM',
+                                   geocodes = ['91477'])
+            test8 = isinstance(data, pd.DataFrame)
+            
+            test = test1 & test2 & test3 & test4 & test5 & test6 & test7 & test8 
+            self.assertTrue(test)
     
         def test_get_map_link(self):
             map_file = get_map_link('communes')
