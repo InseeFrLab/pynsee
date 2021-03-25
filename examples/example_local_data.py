@@ -8,6 +8,8 @@ from pynsee.local.get_area_list import get_area_list
 from pynsee.local._get_geo_list_simple import _get_geo_list_simple
 from pynsee.local.get_map import get_map
 
+from pynsee.local import *
+
 metadata = get_local_metadata()
 
 meta = metadata.loc[metadata.variables.str.contains('SEXE')]
@@ -18,74 +20,116 @@ area = get_area_list()
 
 reg = get_geo_list('regions')
 dep = get_geo_list('departements')
-
 coma = get_geo_list('communesAssociees')
 
-com2 = _get_geo_list_simple('communes', progress_bar=True)
 
 com = get_geo_list('communes')
 com_dep = com.loc[com.CODE_DEP=='91']
-code_com_list = com_dep.CODE.to_list()[1:40]
-code_dep_list = dep.CODE.to_list()
+code_dep_list = com_dep.CODE.to_list()
 
-data = get_insee_local(dataset='GEO2020RP2017',
-                       variables =  'SEXE-DIPL_19',
-                       geo = 'DEP',
+data = get_insee_local(dataset='GEO2020FILO2017',
+                       variables =  'INDICS_FILO_DISP_DET',
+                       geo = 'COM',
                        geocodes = code_dep_list)
 
-data = get_insee_local(dataset='GEO2020FILO2018',
-                       variables =  'INDICS_FILO_DISP_DET-TRAGERF',
-                       geo = 'REG',
-                       geocodes = ['11', '01'])
+data_plot = data.loc[data.UNIT=='D9']
+map = get_map('communes')
+map91 = map.merge(data_plot, how = 'right', left_on = 'code', right_on = 'CODEGEO')
 
-data = get_insee_local(dataset='BDCOM2017',
-                       variables =  'INDICS_BDCOM',
-                       geo = 'REG',
-                       geocodes = ['11'])
+map91.plot(column='OBS_VALUE')
 
-data = get_insee_local(dataset= 'GEO2019RFD2011',
-                       variables = 'INDICS_ETATCIVIL',
-                       geo = 'REG',
-                       geocodes = ['11'])
+#example2
+import pandas as pd
 
-data = get_insee_local(dataset= 'TOUR2019',
-                       variables = 'ETOILE',
-                       geo = 'REG',
-                       geocodes = ['11'])
+map_list = get_map_list()
 
-data = get_insee_local(dataset= 'GEO2020FLORES2017',
-                       variables = 'EFFECSAL5T_1_100P',
-                       geo = 'REG',
-                       geocodes = ['11'])
+com = get_geo_list('communes')
+com_paris = com.loc[com.CODE_DEP.isin(['92', '93', '94', '75']) ]
+code_com_paris = com_paris.CODE.to_list()
 
-data = get_insee_local(dataset= 'GEO2019REE2018',
-                       variables = 'NA5_B',
-                       geo = 'REG',
-                       geocodes = ['11'])
 
-data = get_insee_local(dataset= 'POPLEG2018',
-                       variables = 'IND_POPLEGALES',
+dataParis = get_insee_local(dataset='GEO2020FILO2017',
+                       variables =  'INDICS_FILO_DISP_DET',
                        geo = 'COM',
-                       geocodes = ['91477'])
+                       geocodes = code_com_paris)
+
+data_plot = dataParis.loc[dataParis.UNIT=='TP60']
+map = get_map('communes')
+mapparis = map.merge(data_plot, how = 'right', left_on = 'code', right_on = 'CODEGEO')
+
+mapparis.plot(column='OBS_VALUE')
 
 
+arr = get_geo_list('arrondissementsMunicipaux')
+arrParis = arr.loc[arr.CODE_DEP == '75']
+code_arrParis = arrParis.CODE.to_list()
 
+dataParisM = get_insee_local(dataset='GEO2020FILO2017',
+                       variables =  'INDICS_FILO_DISP_DET',
+                       geo = 'COM',
+                       geocodes = code_arrParis)
 
+dataP = pd.concat([dataParis, dataParisM])
+dataP = dataP.loc[dataP.CODEGEO!='75056']
 
-
-data = get_insee_local(dataset='GEO2019RP2011',
-                       variables =  'AGESCOL-SEXE-ETUD',
-                       geo = 'DEP',
-                       geocodes = ['91','92', '976'])
-
-data = get_insee_local(dataset='RP2014',
-                       variables =  'SEXE-DIPL_15',
-                       geo = 'DEP',
-                       geocodes = ['91','92', '976'])
+data_plot = dataP.loc[dataParis.UNIT=='TP60']
 
 
 map = get_map('communes')
-map.plot(column='value')
+map_paris = map.merge(data_plot, how = 'right',
+                      left_on = 'code', right_on = 'CODEGEO')
+
+
+map_paris.plot(column='OBS_VALUE')
+
+
+
+
+#ALL IDF
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
+import descartes
+
+area_all = get_area_list('unitesUrbaines2020')
+
+areaParis = get_insee_area('unitesUrbaines2020', ['00851'])
+
+code_com_paris = areaParis.code.to_list()
+
+#get data 
+dataParis = get_insee_local(dataset='GEO2020FILO2017',
+                       variables =  'INDICS_FILO_DISP_DET',
+                       geo = 'COM',
+                       geocodes = code_com_paris)
+
+#select poverty rate data
+data_plot = dataParis.loc[dataParis.UNIT=='TP60']
+
+#get communes limits
+map = get_map('communes')
+
+# merge values and geographic limits
+mapparis = map.merge(data_plot, how = 'right', left_on = 'code', right_on = 'CODEGEO')
+
+#plot
+fig, ax = plt.subplots(1,1,figsize=[10,10])
+mapparis.plot(column='OBS_VALUE', cmap=cm.viridis, 
+    legend=True, ax=ax, legend_kwds={'shrink': 0.3})
+ax.set_axis_off()
+ax.set(title='Poverty rate in Paris urban area in 2017')
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
 
     # test
     # import matplotlib
