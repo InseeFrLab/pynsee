@@ -71,7 +71,17 @@ def get_insee_local(variables, dataset, geo, geocodes):
             data = pd.concat(list_data)
                     
             for i in range(len(Variable)):
-                df = pd.DataFrame(Variable[i]['Modalite'])
+                
+                try:
+                    df = pd.DataFrame(Variable[i]['Modalite'], index=[0])
+                except:
+                    list_dict_var = []
+                    values = Variable[i]['Modalite']
+                    for d in range(len(values)):
+                        df_dict = pd.DataFrame(values[d], index=[0])
+                        list_dict_var.append(df_dict)                        
+                    df = pd.concat(list_dict_var).reset_index(drop=True)                
+                
                 var_name = Variable[i]['@code']
                 df = df[['@code', 'Libelle']]
                 df.columns = [var_name, var_name + '_label']
