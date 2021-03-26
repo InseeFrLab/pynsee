@@ -131,9 +131,13 @@ plt.show()
 <!-- ![](examples/pictures/example_poverty_paris_uu.png) -->
 ![](examples/pictures/poverty_paris_urban_area.svg)
 ```python
+import os 
+os.environ['insee_key'] = "my_key"
+os.environ['insee_secret'] = "my_secret_key"
 
 from pynsee.local import *
 
+import pandas as pd
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import descartes
@@ -159,14 +163,17 @@ dataParis = get_insee_local(dataset='GEO2020FILO2017',
                        geo = 'COM',
                        geocodes = code_com_paris)
 
-#select poverty rate data
+#select poverty rate data, exclude paris commune
 data_plot = dataParis.loc[dataParis.UNIT=='TP60']
+data_plot = data_plot.loc[data_plot.CODEGEO!='75056']
 
 #get communes limits
-map = get_map('communes')
+map_com = get_map('communes')
+map_arr_mun = get_map('arrondissements-municipaux')
+map_idf = pd.concat([map_com, map_arr_mun])
 
 # merge values and geographic limits
-mapparis = map.merge(data_plot, how = 'right',
+mapparis = map_idf.merge(data_plot, how = 'right',
                      left_on = 'code', right_on = 'CODEGEO')
 
 #plot
@@ -176,7 +183,11 @@ mapparis.plot(column='OBS_VALUE', cmap=cm.viridis,
 ax.set_axis_off()
 ax.set(title='Poverty rate in Paris urban area in 2017')
 plt.show()
-fig.savefig('poverty_paris_urban_area.png')
+fig.savefig('poverty_paris_urban_area.svg',
+            format='svg', dpi=1200,
+            bbox_inches = 'tight',
+            pad_inches = 0)
+
 ```
 
 ## How to avoid proxy issues ?
