@@ -128,8 +128,8 @@ plt.show()
 ```
 ## Poverty in Paris urban area
 
-![](examples/pictures/example_poverty_paris_uu.png)
-
+<!-- ![](examples/pictures/example_poverty_paris_uu.png) -->
+![](examples/pictures/poverty_paris_urban_area.svg)
 ```python
 
 from pynsee.local import *
