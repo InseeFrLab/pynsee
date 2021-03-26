@@ -128,6 +128,10 @@ class TestFunction(TestCase):
             map = gpd.read_file(map_file)
             self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
         
+        def test_get_map(self):
+            map = get_map_link('arrondissements-municipaux')
+            self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
+        
         def test_get_area_list_1(self):                 
             def get_area_list_test():
                 get_area_list('a')    
