@@ -8,7 +8,7 @@ import sys
 
 from pynsee.local._get_geo_relation import _get_geo_relation
 from pynsee.local.get_insee_local import get_insee_local
-from pynsee.local.get_insee_area import get_insee_area
+from pynsee.local.get_included_area import get_included_area
 
 from pynsee.local.get_geo_list import get_geo_list
 from pynsee.local.get_nivgeo_list import get_nivgeo_list
@@ -137,7 +137,7 @@ class TestFunction(TestCase):
                 get_area_list('a')    
             self.assertRaises(ValueError, get_area_list_test)
         
-        def test_get_insee_area(self):   
+        def test_get_included_area(self):   
               
             list_available_area = ['zonesDEmploi2020', 
                                    'airesDAttractionDesVilles2020',
@@ -147,7 +147,7 @@ class TestFunction(TestCase):
             for a in list_available_area:
                 df_list = get_area_list(a)
                 code = df_list.CODE[:3].to_list()
-                data = get_insee_area(area_type=a, codeareas=code)
+                data = get_included_area(area_type=a, codeareas=code)
                 list_data.append(data)
                 
             data_final = pd.concat(list_data)
