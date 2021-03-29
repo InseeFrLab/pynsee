@@ -65,58 +65,58 @@ class TestFunction(TestCase):
             codegeos = dep.CODE.to_list()
             geo = 'DEP'
             data = get_insee_local(variables=variables,
-                                   dataset=dataset, geo=geo, geocodes = codegeos)
+                                   dataset_version=dataset, nivgeo=geo, geocodes = codegeos)
     
             self.assertTrue(isinstance(data, pd.DataFrame))
             
             
         def test_get_insee_local_all(self):
                         
-            data = get_insee_local(dataset='GEO2020RP2017',
+            data = get_insee_local(dataset_version='GEO2020RP2017',
                                    variables =  'SEXE-DIPL_19',
-                                   geo = 'DEP',
+                                   nivgeo = 'DEP',
                                    geocodes = ['91','92', '976'])
             test1 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset='GEO2020FILO2018',
+            data = get_insee_local(dataset_version='GEO2020FILO2018',
                                    variables =  'INDICS_FILO_DISP_DET-TRAGERF',
-                                   geo = 'REG',
+                                   nivgeo = 'REG',
                                    geocodes = ['11', '01'])
             test2 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset='BDCOM2017',
+            data = get_insee_local(dataset_version='BDCOM2017',
                                    variables =  'INDICS_BDCOM',
-                                   geo = 'REG',
+                                   nivgeo = 'REG',
                                    geocodes = ['11'])
             test3 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset= 'GEO2019RFD2011',
+            data = get_insee_local(dataset_version= 'GEO2019RFD2011',
                                    variables = 'INDICS_ETATCIVIL',
-                                   geo = 'REG',
+                                   nivgeo = 'REG',
                                    geocodes = ['11'])
             test4 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset= 'TOUR2019',
+            data = get_insee_local(dataset_version= 'TOUR2019',
                                    variables = 'ETOILE',
-                                   geo = 'REG',
+                                   nivgeo = 'REG',
                                    geocodes = ['11'])
             test5 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset= 'GEO2020FLORES2017',
+            data = get_insee_local(dataset_version= 'GEO2020FLORES2017',
                                    variables = 'EFFECSAL5T_1_100P',
-                                   geo = 'REG',
+                                   nivgeo = 'REG',
                                    geocodes = ['11'])
             test6 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset= 'GEO2019REE2018',
+            data = get_insee_local(dataset_version= 'GEO2019REE2018',
                                    variables = 'NA5_B',
-                                   geo = 'REG',
+                                   nivgeo = 'REG',
                                    geocodes = ['11'])
             test7 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset= 'POPLEG2018',
+            data = get_insee_local(dataset_version= 'POPLEG2018',
                                    variables = 'IND_POPLEGALES',
-                                   geo = 'COM',
+                                   nivgeo = 'COM',
                                    geocodes = ['91477'])
             test8 = isinstance(data, pd.DataFrame)
             
@@ -146,7 +146,7 @@ class TestFunction(TestCase):
             
             for a in list_available_area:
                 df_list = get_area_list(a)
-                code = df_list.code[:3].to_list()
+                code = df_list.CODE[:3].to_list()
                 data = get_insee_area(area_type=a, codeareas=code)
                 list_data.append(data)
                 

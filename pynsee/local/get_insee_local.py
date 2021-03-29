@@ -8,7 +8,7 @@ def _warning_future_dev():
 
 def get_insee_local(variables, dataset_version, nivgeo, geocodes):
     
-    from pynsee.utils._get_insee_local_onegeo import _get_insee_local_onegeo
+    from pynsee.local._get_insee_local_onegeo import _get_insee_local_onegeo
     
     from tqdm import trange
     import pandas as pd
