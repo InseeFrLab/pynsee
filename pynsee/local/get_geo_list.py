@@ -3,7 +3,7 @@
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
-def get_geo_list(geo, date=None):    
+def get_geo_list(geo=None, date=None):    
     """Get a list of French geographic areas (communes, departements, regions ...)
 
     Args:
@@ -34,8 +34,15 @@ def get_geo_list(geo, date=None):
                           'arrondissements', 'arrondissementsMunicipaux']
     geo_string = _paste(list_available_geo, collapse = " ")
     
-    if not geo in list_available_geo:
-        msg = "!!! {} is not available\nPlease choose geo among:\n{}".format(geo, geo_string)
+    error_msg = False
+    
+    if geo is None:
+        error_msg = True        
+    elif not geo in list_available_geo:
+        error_msg = True
+        
+    if error_msg:
+        msg = "!!! Please choose geo among:\n{}".format(geo, geo_string)
         raise ValueError(msg)
         
     reg = _get_geo_list_simple('regions', progress_bar=True)
