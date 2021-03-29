@@ -18,12 +18,13 @@ def _get_insee_one_area(area_type, codearea):
     list_ZE20 = [s.lower() for s in list_ZE20]
     list_AAV20 = [s.lower() for s in list_AAV20]
     list_UU20 = [s.lower() for s in list_UU20]
+    area_type = area_type.lower()
     
-    if area_type.lower().isin(list_ZE20) :
+    if area_type in list_ZE20:
         type2 = 'zoneDEmploi2020'
-    if area_type.lower().isin(list_AAV20):
+    if area_type in list_AAV20:
         type2 = 'aireDAttractionDesVilles2020'
-    if area_type.lower().isin(list_UU20):
+    if area_type in list_UU20:
         type2 = 'uniteUrbaine2020'
         
     if codearea in list_available_codeareas:
