@@ -42,7 +42,7 @@ def get_geo_list(geo=None, date=None):
         error_msg = True
         
     if error_msg:
-        msg = "!!! Please choose geo among:\n{}".format(geo, geo_string)
+        msg = "!!! Please choose geo among:\n{}".format(geo_string)
         raise ValueError(msg)
         
     reg = _get_geo_list_simple('regions', progress_bar=True)
