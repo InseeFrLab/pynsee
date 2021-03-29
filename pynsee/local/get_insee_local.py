@@ -7,7 +7,27 @@ def _warning_future_dev():
     print("!!! This function is still at an early development stage,\nfuture changes are likely !!!")
 
 def get_insee_local(variables, dataset_version, nivgeo, geocodes):
+    """[Get the numeric values on INSEE local data]
+
+    Args:
+        variables (str): one or several variables separated by an hyphen (see get_local_metadata)
+        dataset_version (str): code of a dataset version (see get_local_metadata)
+        nivgeo (str): code of kind of French administrative area (see get_nivgeo_list)
+        geocodes (list): code one specific area (see get_geo_list)
+
+    Raises:
+        ValueError: Error if geocodes is not a list
     
+    Examples
+    --------
+    >>> metadata = get_local_metadata()
+    >>> nivgeo = get_nivgeo_list()
+    >>> departement = get_geo_list('departements')
+    >>> data = get_insee_local(dataset_version='GEO2020RP2017',
+                               variables =  'SEXE-DIPL_19',
+                               nivgeo = 'DEP',
+                               geocodes = ['91','92'])
+    """    
     from pynsee.local._get_insee_local_onegeo import _get_insee_local_onegeo
     
     from tqdm import trange

@@ -1,7 +1,15 @@
 # -*- coding: utf-8 -*-
 
 def get_map_link(geo):
-    
+    """[Get the link of the geojson map file stored locally]
+
+    Args:
+        geo (str): French administrative area (see get_map_list)
+
+    Raises:
+        ValueError: [description]
+        ValueError: [description]
+    """    
     #import geopandas as gpd
     import os
     import zipfile

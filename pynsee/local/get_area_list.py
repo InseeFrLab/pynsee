@@ -4,7 +4,18 @@ from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def get_area_list(area=None):    
+    """Get a list of non administrative areas : urban, employment or functional areas
+
+    Args:
+        area (str, optional): Defaults to None, then get all values
+
+    Raises:
+        ValueError: Error if area is not available
     
+    Examples
+    --------
+    >>> area_list = get_area_list()
+    """    
     import pandas as pd
     from pynsee.utils._request_insee import _request_insee
     from pynsee.utils._paste import _paste
