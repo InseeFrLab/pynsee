@@ -10,12 +10,20 @@ def _get_insee_one_area(area_type, codearea):
     
     df_list = get_area_list(area_type)
     list_available_codeareas = df_list.code.to_list()
-
-    if area_type == 'zonesDEmploi2020':
+    
+    list_ZE20 = ['ZE2020', 'zonesDEmploi2020', 'ZoneDEmploi2020']
+    list_AAV20 = ['AAV2020', 'airesDAttractionDesVilles2020', 'AireDAttractionDesVilles2020']
+    list_UU20 = ['UU2020' ,'unitesUrbaines2020', 'UniteUrbaine2020']
+    
+    list_ZE20 = [s.lower() for s in list_ZE20]
+    list_AAV20 = [s.lower() for s in list_AAV20]
+    list_UU20 = [s.lower() for s in list_UU20]
+    
+    if area_type.lower().isin(list_ZE20) :
         type2 = 'zoneDEmploi2020'
-    if area_type == 'airesDAttractionDesVilles2020':
+    if area_type.lower().isin(list_AAV20):
         type2 = 'aireDAttractionDesVilles2020'
-    if area_type == 'unitesUrbaines2020':
+    if area_type.lower().isin(list_UU20):
         type2 = 'uniteUrbaine2020'
         
     if codearea in list_available_codeareas:
