@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def _warning_future_dev():
+    print("!!! This function is still at an early development stage,\nfuture changes are likely !!!")
+
 def get_insee_local(variables, dataset_version, nivgeo, geocodes):
     
     from pynsee.utils._get_insee_local_onegeo import _get_insee_local_onegeo
@@ -9,6 +15,8 @@ def get_insee_local(variables, dataset_version, nivgeo, geocodes):
     
     if type(geocodes) != list:
         raise ValueError("!!! geocodes must be a list !!!")
+        
+    _warning_future_dev()
     
 #    variables = 'AGESCOL-SEXE-ETUD';dataset_version = 'GEO2019RP2011';geocodes = ['91','92', '976'];nivgeo = 'DEP'
       
