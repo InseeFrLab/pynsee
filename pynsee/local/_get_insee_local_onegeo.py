@@ -7,7 +7,7 @@ def _warning_future_dev():
     print("!!! This function is still at an early development stage,\nfuture changes are likely !!!")
 
 @lru_cache(maxsize=None)
-def get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
+def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
     
     _warning_future_dev()
     
