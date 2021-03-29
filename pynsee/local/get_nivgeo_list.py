@@ -2,7 +2,7 @@ from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def _warning_data():
-    print("!!! This function renders only package's internal data, it might not be the most up-to-date\nHave a look at api.insee.fr !!!")
+    print("!!! This function renders only package's internal data,\nit might not be the most up-to-date\nHave a look at api.insee.fr !!!")
 
 def get_nivgeo_list():
     
@@ -10,7 +10,7 @@ def get_nivgeo_list():
     
     import pandas as pd
     dict_ng = {
-            'nivgeo':['COM',
+            'NIVGEO':['COM',
                       'DEP',
                       'REG',
                       'METRODOM',
@@ -23,7 +23,7 @@ def get_nivgeo_list():
                       'AU2010',
                       'UU2010',
                       'ZE2010'],
-            'nivgeo_label_fr':['communes et arrondissements municipaux',
+            'NIVGEO_label_fr':['communes et arrondissements municipaux',
                                'départements',
                                'régions',
                                'France métropolitaine',
@@ -35,7 +35,21 @@ def get_nivgeo_list():
                                "zones d'emploi 2020",
                                "aires urbaines 2010",
                                'unités urbaines 2010',
-                               "zones d'emploi 2010"]}
+                               "zones d'emploi 2010"],
+           'NIVGEO_label_en':['municipalities and municipal districts',
+                              'departments',
+                              'regions',
+                              'metropolitan France',
+                              'France',
+                              'districts',
+                              'intermunicipal authorities',
+                              'functional areas 2020',
+                              'urban unit 2020',
+                              'employment zone 2020',
+                              'urban area 2010',
+                              'urban unit 2010',                              
+                              'employment zone 2010']                 
+        }
             
     nivgeo= pd.DataFrame(dict_ng)
     return(nivgeo)
