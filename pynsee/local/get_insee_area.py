@@ -11,6 +11,9 @@ def get_insee_area(area_type, codeareas):
     import pandas as pd    
     from tqdm import trange
     
+    if type(codeareas) != list:
+        raise ValueError("!!! codeareas must be a list !!!")
+    
     list_data = []    
     
     for c in trange(len(codeareas)):   

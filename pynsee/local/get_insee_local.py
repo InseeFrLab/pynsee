@@ -7,6 +7,9 @@ def get_insee_local(variables, dataset_version, nivgeo, geocodes):
     from tqdm import trange
     import pandas as pd
     
+    if type(geocodes) != list:
+        raise ValueError("!!! geocodes must be a list !!!")
+    
 #    variables = 'AGESCOL-SEXE-ETUD';dataset_version = 'GEO2019RP2011';geocodes = ['91','92', '976'];nivgeo = 'DEP'
       
     list_data_all = []
