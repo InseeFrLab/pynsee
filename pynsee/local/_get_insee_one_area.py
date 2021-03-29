@@ -5,6 +5,7 @@ from functools import lru_cache
 def _get_insee_one_area(area_type, codearea):
     
     import pandas as pd 
+    from pynsee.utils._paste import _paste
     from pynsee.utils._request_insee import _request_insee
     from pynsee.local.get_area_list import get_area_list
     
@@ -19,13 +20,19 @@ def _get_insee_one_area(area_type, codearea):
     list_AAV20 = [s.lower() for s in list_AAV20]
     list_UU20 = [s.lower() for s in list_UU20]
     area_type = area_type.lower()
-    
+
+    type2=''
     if area_type in list_ZE20:
         type2 = 'zoneDEmploi2020'
     if area_type in list_AAV20:
         type2 = 'aireDAttractionDesVilles2020'
     if area_type in list_UU20:
         type2 = 'uniteUrbaine2020'
+    if type2 == '':
+        geo_string = _paste(['ZoneDEmploi2020', 'AireDAttractionDesVilles2020',
+         'UniteUrbaine2020'], collapse = " ")
+        msg = "!!! Please choose area_type among:\n{}".format(geo_string)
+        raise ValueError(msg)
         
     if codearea in list_available_codeareas:
         api_url = 'https://api.insee.fr/metadonnees/V1/geo/'
@@ -40,7 +47,7 @@ def _get_insee_one_area(area_type, codearea):
             
         data_area = pd.concat(list_data_area).reset_index(drop=True)
         
-        ref_area_label = df_list.loc[df_list.code == codearea].intitule
+        ref_area_label = df_list.loc[df_list.CODE == codearea].TITLE
         ref_area_label = ref_area_label.reset_index(drop=True)[0]
         
         data_area = data_area.assign(ref_area_code = codearea,
