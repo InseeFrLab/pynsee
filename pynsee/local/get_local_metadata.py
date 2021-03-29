@@ -201,7 +201,11 @@ def get_local_metadata():
     variables = variables.merge(datasets, on = 'dataset', how='left')
     
     
-    variables.columns = ['variables', 'unit', 'dataset_version', 'dataset',
-                         'variables_label', 'unit_label', 'geo_date', 'data_date', 'dataset_label']
+#    variables.columns = ['variables', 'unit', 'dataset_version', 'dataset',
+#                         'variables_label', 'unit_label', 'geo_date', 'data_date', 'dataset_label']
     
+    variables.columns = ['VARIABLES', 'UNIT', 'DATASET_VERSION', 'DATASET',
+                         'VARIABLES_label', 'UNIT_label', 'GEO_DATE',
+                         'DATA_DATE', 'DATASET_label']
+   
     return(variables)

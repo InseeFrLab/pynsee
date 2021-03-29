@@ -9,7 +9,7 @@ def _get_insee_one_area(area_type, codearea):
     from pynsee.local.get_area_list import get_area_list
     
     df_list = get_area_list(area_type)
-    list_available_codeareas = df_list.code.to_list()
+    list_available_codeareas = df_list.CODE.to_list()
     
     list_ZE20 = ['ZE2020', 'zonesDEmploi2020', 'ZoneDEmploi2020']
     list_AAV20 = ['AAV2020', 'airesDAttractionDesVilles2020', 'AireDAttractionDesVilles2020']
