@@ -207,5 +207,7 @@ def get_local_metadata():
     variables.columns = ['VARIABLES', 'UNIT', 'DATASET_VERSION', 'DATASET',
                          'VARIABLES_label', 'UNIT_label', 'GEO_DATE',
                          'DATA_DATE', 'DATASET_label']
+    
+    variables = variables.dropn(subset=['GEO_DATE'])
    
     return(variables)
