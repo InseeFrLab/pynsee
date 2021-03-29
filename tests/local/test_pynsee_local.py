@@ -129,7 +129,7 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
         
         def test_get_map(self):
-            map = get_map_link('arrondissements-municipaux')
+            map = get_map('arrondissements-municipaux')
             self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
         
         def test_get_area_list_1(self):                 
