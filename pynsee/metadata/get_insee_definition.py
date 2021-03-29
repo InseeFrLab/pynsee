@@ -6,6 +6,9 @@ def get_insee_definition(ids):
     
     import re
     import pandas as pd
+
+    if type(ids) != list:
+        raise ValueError("!!! ids must be a list !!!")
     
     #ids = ['c1020', 'c1601']
     
