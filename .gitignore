@@ -11,3 +11,4 @@ settings.json
 .coverage
 .venv/
 *.html
+*.pyc
