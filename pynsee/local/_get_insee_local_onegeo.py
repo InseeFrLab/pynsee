@@ -1,16 +1,9 @@
 # -*- coding: utf-8 -*-
-
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
-def _warning_future_dev():
-    print("!!! This function is still at an early development stage,\nfuture changes are likely !!!")
-
-@lru_cache(maxsize=None)
 def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
-    
-    _warning_future_dev()
-    
+        
     from pynsee.utils._request_insee import _request_insee
     
     import pandas as pd
