@@ -208,6 +208,6 @@ def get_local_metadata():
                          'VARIABLES_label', 'UNIT_label', 'GEO_DATE',
                          'DATA_DATE', 'DATASET_label']
     
-    variables = variables.dropn(subset=['GEO_DATE'])
+    variables = variables.dropna(subset=['GEO_DATE'])
    
     return(variables)
