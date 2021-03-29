@@ -33,6 +33,16 @@ def get_area_list(area=None):
     
     data_all = pd.concat(list_data).reset_index(drop=True)
     
+    data_all.rename(columns={
+            'code':'CODE',
+            'uri':'URI',
+            'dateCreation':'DATE_CREATION',
+            'intituleSansArticle': 'TITLE_SHORT',
+            'type':'AREA_TYPE',
+            'typeArticle':'DETERMINER_TYPE',
+            'intitule':'TITLE',
+            'dateSuppression':'DATE_DELETION'}, inplace=True)   
+    
     return(data_all)
     
 
