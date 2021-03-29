@@ -152,7 +152,7 @@ nivgeo = get_nivgeo_list()
 area = get_area_list()
 
 # get all communes in Paris urban area
-areaParis = get_insee_area('unitesUrbaines2020', ['00851'])
+areaParis = get_included_area('unitesUrbaines2020', ['00851'])
 
 # get selected communes identifiers
 code_com_paris = areaParis.code.to_list()
