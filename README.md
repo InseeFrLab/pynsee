@@ -35,7 +35,7 @@ os.environ['insee_secret'] = "my_secret_key"
 ![](examples/pictures/example_gdp_picture.png)
 
 ```python
-from pynsee import * 
+from pynsee.macro import * 
 import plotly.express as px
 from plotly.offline import plot
 
