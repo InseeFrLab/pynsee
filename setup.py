@@ -11,7 +11,7 @@ setuptools.setup(
     author="Hadrien Leclerc",
     author_email="hadrien.leclerc@insee.fr",
     description="Tools to Download Easily Data and Metadata from INSEE",
-    url="",
+    url="https://pynsee.readthedocs.io/en/latest/",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
