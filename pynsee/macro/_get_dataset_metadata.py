@@ -8,10 +8,10 @@ def _get_dataset_metadata(dataset, update=False):
     
     from datetime import datetime    
         
-    from ._download_idbank_list import _download_idbank_list
-    from ._get_dataset_dimension import _get_dataset_dimension
-    from ._get_dimension_values import _get_dimension_values    
-    from ._get_idbank_internal_data import _get_idbank_internal_data
+    from pynsee.macro._download_idbank_list import _download_idbank_list
+    from pynsee.macro._get_dataset_dimension import _get_dataset_dimension
+    from pynsee.macro._get_dimension_values import _get_dimension_values    
+    from pynsee.macro._get_idbank_internal_data import _get_idbank_internal_data
     from pynsee.utils._hash import _hash  
     from pynsee.utils._create_insee_folder import _create_insee_folder
     
