@@ -6,11 +6,17 @@
 Welcome to pynsee's documentation!
 ===========================================
 
+
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
+pynsee macro
+=====================
+.. automodule:: pynsee.macro.get_idbank_list
+   :members:
 
 Indices and tables
 ==================

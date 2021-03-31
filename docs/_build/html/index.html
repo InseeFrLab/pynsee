@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Welcome to insee_macrodata’s documentation! &mdash; insee_macrodata 0.0.1 documentation</title>
+  <title>Welcome to pynsee’s documentation! &mdash; pynsee 0.0.1 documentation</title>
   
 
   
@@ -51,7 +51,7 @@
           
 
           
-            <a href="#" class="icon icon-home"> insee_macrodata
+            <a href="#" class="icon icon-home"> pynsee
           
 
           
@@ -88,7 +88,8 @@
             
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Welcome to insee_macrodata’s documentation!</a></li>
+<li><a class="reference internal" href="#">Welcome to pynsee’s documentation!</a></li>
+<li><a class="reference internal" href="#module-pynsee.macro.get_idbank_list">pynsee macro</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </div>
@@ -105,7 +106,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">insee_macrodata</a>
+          <a href="#">pynsee</a>
         
       </nav>
 
@@ -138,7 +139,7 @@
     
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Welcome to insee_macrodata’s documentation!</li>
+      <li>Welcome to pynsee’s documentation!</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -157,10 +158,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="welcome-to-insee-macrodata-s-documentation">
-<h1>Welcome to insee_macrodata’s documentation!<a class="headerlink" href="#welcome-to-insee-macrodata-s-documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="welcome-to-pynsee-s-documentation">
+<h1>Welcome to pynsee’s documentation!<a class="headerlink" href="#welcome-to-pynsee-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
+</div>
+<div class="section" id="module-pynsee.macro.get_idbank_list">
+<span id="pynsee-macro"></span><h1>pynsee macro<a class="headerlink" href="#module-pynsee.macro.get_idbank_list" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="pynsee.macro.get_idbank_list.get_idbank_list">
+<code class="sig-prename descclassname"><span class="pre">pynsee.macro.get_idbank_list.</span></code><code class="sig-name descname"><span class="pre">get_idbank_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">datasets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pynsee.macro.get_idbank_list.get_idbank_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download an INSEE’s series key list for one or several datasets
+Notes: Some metadata is stored for 3 months locally on the computer. It is updated automatically.
+Args:</p>
+<blockquote>
+<div><p>… (datasets, str) :  datasets should be among the datasets list provided by get_dataset_list()
+update (bool, optional): Set to True, to update manually the metadata stored</p>
+<blockquote>
+<div><p>locally on the computer. Defaults to False.</p>
+</div></blockquote>
+</div></blockquote>
+<dl class="simple">
+<dt>Raises:</dt><dd><p>ValueError: datasets should be among the datasets list provided by get_dataset_list()</p>
+</dd>
+<dt>Returns:</dt><dd><p>DataFrame: contains dimension columns, series keys, dataset name</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">idbank_ipc</span> <span class="o">=</span> <span class="n">get_idbank_list</span><span class="p">(</span><span class="s1">&#39;IPC-2015&#39;</span><span class="p">,</span> <span class="s1">&#39;CLIMAT-AFFAIRES&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
@@ -181,7 +209,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2021, hadrilec.
+        &#169; Copyright 2021, INSEE.
 
     </p>
   </div>
