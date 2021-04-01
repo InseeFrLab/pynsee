@@ -39,7 +39,8 @@ import sphinx_rtd_theme
 extensions = [
      "sphinx_rtd_theme",     
      'sphinx.ext.autodoc',
-     'sphinx_copybutton'
+     'sphinx_copybutton',
+     'nbsphinx'
 ]
 #"rinoh.frontend.sphinx"
 
@@ -67,3 +68,7 @@ html_static_path = []
 
 #exclude from copy button code snippet
 copybutton_prompt_text = ">>> "
+
+#full screen use
+def setup(app):
+    app.add_css_file('my_theme.css')
