@@ -38,7 +38,8 @@ release = '0.0.1'
 import sphinx_rtd_theme
 extensions = [
      "sphinx_rtd_theme",     
-     'sphinx.ext.autodoc'
+     'sphinx.ext.autodoc',
+     'sphinx_copybutton'
 ]
 #"rinoh.frontend.sphinx"
 
@@ -63,3 +64,6 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 #html_static_path = ['_static']
 html_static_path = []
+
+#exclude from copy button code snippet
+copybutton_prompt_text = ">>> "
