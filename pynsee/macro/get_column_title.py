@@ -9,10 +9,9 @@ def get_column_title(dataset = None):
         ValueError: Only one string (length one)
         ValueError: Dataset must belong to INSEE datasets list
     
-    Examples
-    --------
-    >>> insee_all_columns = get_column_title()
-    >>> balance_paiements_columns = get_column_title("BALANCE-PAIEMENTS")
+    Examples:   
+        >>> insee_all_columns = get_column_title()
+        >>> balance_paiements_columns = get_column_title("BALANCE-PAIEMENTS")
     """    
     import pandas as pd
     from tqdm import trange

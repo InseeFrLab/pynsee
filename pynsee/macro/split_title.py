@@ -9,10 +9,10 @@ def split_title(df, title_col_name = ["TITLE_EN", "TITLE_FR"],
         title_col_name (list, optional): Names of the title columns. Defaults to ["TITLE_EN", "TITLE_FR"].
         pattern (str, optional): Separator string. Defaults to " – | — | - ".
         n_split (int, optional): Number of split, 1 corresponds to 2 columns. Defaults to -1, i.e. the maximun.
-    Example:
-    --------
-    >>> data_raw = get_insee_idbank("001577236")
-    >>> data = split_title(data_raw)
+    
+    Examples:    
+        >>> data_raw = get_insee_idbank("001577236")
+        >>> data = split_title(data_raw)
     """    
     import pandas as pd
             

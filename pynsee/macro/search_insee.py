@@ -10,13 +10,12 @@ def search_insee(pattern = ".*"):
     Args:
         pattern (str, optional): String used to filter the idbank list. Defaults to ".*", returns all series.
 
-    Examples:
-    ---------
-    >>> from insee_macrodata import search_insee 
-    >>> search_all = search_insee()
-    >>> search_paper = search_insee("pâte à papier")
-    >>> search_paris = search_insee("PARIS")
-    >>> search_survey_gdp = search_insee("Survey|GDP")
+    Examples:    
+        >>> from pynsee.macro import search_insee 
+        >>> search_all = search_insee()
+        >>> search_paper = search_insee("pâte à papier")
+        >>> search_paris = search_insee("PARIS")
+        >>> search_survey_gdp = search_insee("Survey|GDP")
     """    
     from ._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
     from ._get_idbank_internal_data import _get_idbank_internal_data

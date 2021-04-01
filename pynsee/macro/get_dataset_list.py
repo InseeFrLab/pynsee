@@ -8,9 +8,8 @@ def get_dataset_list() :
     Returns:
         DataFrame: contains 5 columns - idm Name.fr, Name.en, url, n_series
 
-    Example:
-    --------
-    >>> insee_dataset = get_dataset_list()
+    Examples:
+        >>> insee_dataset = get_dataset_list()
     """    
     import os
     import xml.etree.ElementTree as ET
