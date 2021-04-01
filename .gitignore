@@ -12,3 +12,8 @@ settings.json
 .venv/
 *.html
 *.pyc
+*.rtc
+*.doctree
+*.pickle
+*.stylelog
+*.pdf
