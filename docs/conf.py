@@ -14,6 +14,7 @@ import os
 import sys
 import sphinx_copybutton
 import sphinx_rtd_theme
+import m2r2
 
 #import rinoh
 os.chdir('../')
@@ -43,7 +44,8 @@ extensions = [
      "sphinx_rtd_theme",     
      'sphinx.ext.autodoc',
      'sphinx_copybutton',
-     'nbsphinx'
+     'nbsphinx', 
+     'm2r2'
 ]
 #"rinoh.frontend.sphinx"
 
@@ -75,3 +77,6 @@ copybutton_prompt_text = ">>> "
 #full screen use
 def setup(app):
     app.add_css_file('my_theme.css')
+
+#include alos md doc
+source_suffix = ['.rst', '.md']
