@@ -10,5 +10,5 @@
    :caption: Contents:
    
    readme
-   search_macro
-   get_macrodata
+   search_data
+   get_data
