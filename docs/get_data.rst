@@ -1,5 +1,15 @@
-Get macrodata from INSEE
-========================
+Get data
+========
+
+Get macroeconomic data
+----------------------
 .. autofunction:: pynsee.macro.get_insee_idbank
 
 .. autofunction:: pynsee.macro.get_insee_dataset
+
+Get local data
+----------------------
+
+.. autofunction:: pynsee.local.get_insee_local
+
+.. autofunction:: pynsee.local.get_map

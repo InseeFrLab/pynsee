@@ -20,11 +20,15 @@ Search geographic and local data
 
 .. autofunction:: pynsee.local.get_nivgeo_list
 
+.. autofunction:: pynsee.local.get_geo_list
+
 .. autofunction:: pynsee.local.get_area_list
 
 .. autofunction:: pynsee.local.get_included_area
 
 .. autofunction:: pynsee.local.get_map_list
+
+.. autofunction:: pynsee.local.get_map_link
 
 Search metadata
 ---------------
