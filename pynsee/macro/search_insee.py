@@ -5,7 +5,8 @@ from functools import lru_cache
 def search_insee(pattern = ".*"):
     """Search a pattern among insee series (idbanks)
 
-    Notes: this function uses package's internal data which might not be the most up-to-date.
+    Notes: 
+        This function uses package's internal data which might not be the most up-to-date.
 
     Args:
         pattern (str, optional): String used to filter the idbank list. Defaults to ".*", returns all series.
