@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pynsee package &mdash; pynsee 0.0.1 documentation</title>
+  <title>Introduction to pynsee package &mdash; pynsee 0.0.1 documentation</title>
   
 
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="_static/my_theme.css" type="text/css" />
 
   
   
@@ -32,6 +34,9 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -88,8 +93,7 @@
             
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">pynsee package</a></li>
-<li><a class="reference internal" href="#overview">Overview</a><ul>
+<li><a class="reference internal" href="#">Introduction to pynsee package</a><ul>
 <li><a class="reference internal" href="#installation-loading">Installation &amp; Loading</a></li>
 <li><a class="reference internal" href="#french-gdp-growth-rate">French GDP growth rate</a></li>
 <li><a class="reference internal" href="#population-map">Population Map</a></li>
@@ -98,7 +102,7 @@
 <li><a class="reference internal" href="#support">Support</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#search-in-insee-s-macroeconomic-data-bdm">Search in INSEE’s macroeconomic data (BDM)</a></li>
+<li><a class="reference internal" href="#search-macrodata-from-insee">Search macrodata from INSEE</a></li>
 <li><a class="reference internal" href="#get-macrodata-from-insee">Get macrodata from INSEE</a></li>
 </ul>
 </div>
@@ -148,7 +152,7 @@
     
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
         
-      <li>pynsee package</li>
+      <li>Introduction to pynsee package</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -167,17 +171,36 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="pynsee-package">
-<h1>pynsee package<a class="headerlink" href="#pynsee-package" title="Permalink to this headline">¶</a></h1>
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="introduction-to-pynsee-package">
+<h1>Introduction to pynsee package<a class="headerlink" href="#introduction-to-pynsee-package" title="Permalink to this headline">¶</a></h1>
 <p><strong>Work in progress</strong></p>
-<p><span class="raw-html-m2r"><br></span></p>
 <a class="reference external image-reference" href="https://github.com/hadrilec/pynsee/actions"><img alt="Build Status" src="https://github.com/hadrilec/pynsee/actions/workflows/pynsee-test.yml/badge.svg" /></a>
 <a class="reference external image-reference" href="https://codecov.io/gh/hadrilec/pynsee?branch=master"><img alt="Codecov test coverage" src="https://codecov.io/gh/hadrilec/pynsee/branch/master/graph/badge.svg" /></a>
 <a class="reference external image-reference" href="https://pynsee.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/pynsee/badge/?version=latest" /></a>
-<p><span class="raw-html-m2r"><br></span></p>
-</div>
-<div class="section" id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
 <p>The pynsee package contains tools to easily download data and metadata from INSEE API.
 Using the API or the SDMX queries, get the data of more than 150 000 INSEE series.
 Have a look at the detailed API page with the following <a class="reference external" href="https://api.insee.fr/catalogue/">link</a>.
@@ -370,8 +393,8 @@ This package is a contribution to reproducible research and public data transpar
 </div>
 </div>
 </div>
-<div class="section" id="search-in-insee-s-macroeconomic-data-bdm">
-<h1>Search in INSEE’s macroeconomic data (BDM)<a class="headerlink" href="#search-in-insee-s-macroeconomic-data-bdm" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="search-macrodata-from-insee">
+<h1>Search macrodata from INSEE<a class="headerlink" href="#search-macrodata-from-insee" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="pynsee.macro.get_dataset_list">
 <code class="sig-prename descclassname"><span class="pre">pynsee.macro.</span></code><code class="sig-name descname"><span class="pre">get_dataset_list</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pynsee.macro.get_dataset_list" title="Permalink to this definition">¶</a></dt>

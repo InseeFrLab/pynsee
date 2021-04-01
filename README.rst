@@ -4,12 +4,10 @@
 
 
 
-pynsee package
-==============
+Introduction to pynsee package
+==============================
 
 **Work in progress**
-
-:raw-html-m2r:`<br>` 
 
 .. image:: https://github.com/hadrilec/pynsee/actions/workflows/pynsee-test.yml/badge.svg
    :target: https://github.com/hadrilec/pynsee/actions
@@ -26,12 +24,6 @@ pynsee package
 .. image:: https://readthedocs.org/projects/pynsee/badge/?version=latest
    :target: https://pynsee.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-
-
-:raw-html-m2r:`<br>` 
-
-Overview
-========
 
 The pynsee package contains tools to easily download data and metadata from INSEE API.
 Using the API or the SDMX queries, get the data of more than 150 000 INSEE series.

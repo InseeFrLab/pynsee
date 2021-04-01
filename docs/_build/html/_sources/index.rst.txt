@@ -9,7 +9,7 @@
    :maxdepth: 2
    :caption: Contents:
 
-Search in INSEE's macroeconomic data (BDM)
+Search macrodata from INSEE
 ==========================================
 .. autofunction:: pynsee.macro.get_dataset_list
 
