@@ -33,4 +33,4 @@ Search geographic and local data
 Search metadata
 ---------------
 
-
+.. autofunction:: pynsee.metadata.get_definition_list
