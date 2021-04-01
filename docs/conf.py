@@ -12,7 +12,7 @@
 #
 import os
 import sys
-import rinoh
+#import rinoh
 sys.path.insert(0, os.path.abspath('../'))
 
 
@@ -20,7 +20,7 @@ sys.path.insert(0, os.path.abspath('../'))
 
 project = 'pynsee'
 copyright = '2021, INSEE'
-author = 'hadrilec'
+author = 'Hadrien Leclerc'
 
 # The short X.Y version
 version = '0.0.1'
@@ -36,10 +36,10 @@ release = '0.0.1'
 # ones.
 import sphinx_rtd_theme
 extensions = [
-     "sphinx_rtd_theme",
-     "rinoh.frontend.sphinx",
+     "sphinx_rtd_theme",     
      'sphinx.ext.autodoc'
 ]
+#"rinoh.frontend.sphinx"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
