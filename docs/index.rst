@@ -12,25 +12,18 @@ Welcome to pynsee's documentation!
 
 Search in INSEE's macroeconomic data (BDM)
 ==========================================
-.. automodule:: pynsee.macro.get_dataset_list
-   :members:
+.. autofunction:: pynsee.macro.get_dataset_list
 
-.. automodule:: pynsee.macro.get_idbank_list
-   :members:
+.. autofunction:: pynsee.macro.get_idbank_list
 
-.. automodule:: pynsee.macro.search_insee
-   :members:
+.. autofunction:: pynsee.macro.search_insee
 
-.. automodule:: pynsee.macro.get_last_release
-   :members:
+.. autofunction:: pynsee.macro.get_last_release
 
-.. automodule:: pynsee.macro.get_column_title
-   :members:
+.. autofunction:: pynsee.macro.get_column_title
 
 Get macrodata from INSEE
 ========================
-.. automodule:: pynsee.macro.get_insee_idbank
-   :members:
+.. autofunction:: pynsee.macro.get_insee_idbank
 
-.. automodule:: pynsee.macro.get_insee_dataset
-   :members:
+.. autofunction:: pynsee.macro.get_insee_dataset
