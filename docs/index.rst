@@ -6,21 +6,31 @@
 Welcome to pynsee's documentation!
 ===========================================
 
-
-
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-pynsee macro
-=====================
+Search in INSEE's macroeconomic data (BDM)
+==========================================
+.. automodule:: pynsee.macro.get_dataset_list
+   :members:
+
 .. automodule:: pynsee.macro.get_idbank_list
    :members:
 
-Indices and tables
-==================
+.. automodule:: pynsee.macro.search_insee
+   :members:
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. automodule:: pynsee.macro.get_last_release
+   :members:
+
+.. automodule:: pynsee.macro.get_column_title
+   :members:
+
+Get macrodata from INSEE
+========================
+.. automodule:: pynsee.macro.get_insee_idbank
+   :members:
+
+.. automodule:: pynsee.macro.get_insee_dataset
+   :members:
