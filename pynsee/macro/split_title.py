@@ -10,7 +10,8 @@ def split_title(df, title_col_name = ["TITLE_EN", "TITLE_FR"],
         pattern (str, optional): Separator string. Defaults to " – | — | - ".
         n_split (int, optional): Number of split, 1 corresponds to 2 columns. Defaults to -1, i.e. the maximun.
     
-    Examples:    
+    Examples:  
+        >>> from pynsee.macro import *   
         >>> data_raw = get_insee_idbank("001577236")
         >>> data = split_title(data_raw)
     """    

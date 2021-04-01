@@ -9,6 +9,7 @@ def get_dataset_list() :
         DataFrame: contains 5 columns - idm Name.fr, Name.en, url, n_series
 
     Examples:
+        >>> from pynsee.macro import * 
         >>> insee_dataset = get_dataset_list()
     """    
     import os

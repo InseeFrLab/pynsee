@@ -16,6 +16,7 @@ def get_idbank_list(*datasets, update = False):
         Some metadata is stored for 3 months locally on the computer. It is updated automatically
     
     Examples:
+        >>> from pynsee.macro import * 
         >>> idbank_ipc = get_idbank_list('IPC-2015', 'CLIMAT-AFFAIRES')
     """    
     import pandas as pd

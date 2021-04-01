@@ -9,7 +9,8 @@ def get_column_title(dataset = None):
         ValueError: Only one string (length one)
         ValueError: Dataset must belong to INSEE datasets list
     
-    Examples:   
+    Examples:  
+        >>> from pynsee.macro import * 
         >>> insee_all_columns = get_column_title()
         >>> balance_paiements_columns = get_column_title("BALANCE-PAIEMENTS")
     """    

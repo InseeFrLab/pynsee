@@ -29,6 +29,7 @@ def get_insee_dataset(dataset,
         DataFrame: contains the data
     
     Examples:
+        >>> from pynsee.macro import * 
         >>> ipc_data = 
         >>>    get_insee_dataset("IPC-2015", 
         >>>        filter = "M......ENSEMBLE...CVS.2015",
