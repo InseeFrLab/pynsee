@@ -89,6 +89,16 @@
               <!-- Local TOC -->
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">Welcome to pynsee’s documentation!</a></li>
+<li><a class="reference internal" href="#pynsee-package">pynsee package</a></li>
+<li><a class="reference internal" href="#overview">Overview</a><ul>
+<li><a class="reference internal" href="#installation-loading">Installation &amp; Loading</a></li>
+<li><a class="reference internal" href="#french-gdp-growth-rate">French GDP growth rate</a></li>
+<li><a class="reference internal" href="#population-map">Population Map</a></li>
+<li><a class="reference internal" href="#poverty-in-paris-urban-area">Poverty in Paris urban area</a></li>
+<li><a class="reference internal" href="#how-to-avoid-proxy-issues">How to avoid proxy issues ?</a></li>
+<li><a class="reference internal" href="#support">Support</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#search-in-insee-s-macroeconomic-data-bdm">Search in INSEE’s macroeconomic data (BDM)</a></li>
 <li><a class="reference internal" href="#get-macrodata-from-insee">Get macrodata from INSEE</a></li>
 </ul>
@@ -160,7 +170,208 @@
             
   <div class="section" id="welcome-to-pynsee-s-documentation">
 <h1>Welcome to pynsee’s documentation!<a class="headerlink" href="#welcome-to-pynsee-s-documentation" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="pynsee-package">
+<h1>pynsee package<a class="headerlink" href="#pynsee-package" title="Permalink to this headline">¶</a></h1>
+<p><strong>Work in progress</strong></p>
+<p><span class="raw-html-m2r"><br></span></p>
+<a class="reference external image-reference" href="https://github.com/hadrilec/pynsee/actions"><img alt="Build Status" src="https://github.com/hadrilec/pynsee/actions/workflows/pynsee-test.yml/badge.svg" /></a>
+<a class="reference external image-reference" href="https://codecov.io/gh/hadrilec/pynsee?branch=master"><img alt="Codecov test coverage" src="https://codecov.io/gh/hadrilec/pynsee/branch/master/graph/badge.svg" /></a>
+<a class="reference external image-reference" href="https://pynsee.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/pynsee/badge/?version=latest" /></a>
+<p><span class="raw-html-m2r"><br></span></p>
+</div>
+<div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>The pynsee package contains tools to easily download data and metadata from INSEE API.
+Using the API or the SDMX queries, get the data of more than 150 000 INSEE series.
+Have a look at the detailed API page with the following <a class="reference external" href="https://api.insee.fr/catalogue/">link</a>.
+This package is a contribution to reproducible research and public data transparency.</p>
+<div class="section" id="installation-loading">
+<h2>Installation &amp; Loading<a class="headerlink" href="#installation-loading" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get the development version from GitHub</span>
+<span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">hadrilec</span><span class="o">/</span><span class="n">pynsee</span><span class="o">.</span><span class="n">git</span><span class="c1">#egg=pynsee</span>
+
+<span class="c1"># Subscribe to api.insee.fr and get your credentials!</span>
+<span class="c1"># Beware : any change to the keys should be tested after having cleared the cache</span>
+<span class="c1"># Please use : pynsee.utils.clear_all_cache to do so</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;insee_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_key&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;insee_secret&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_secret_key&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="french-gdp-growth-rate">
+<h2>French GDP growth rate<a class="headerlink" href="#french-gdp-growth-rate" title="Permalink to this headline">¶</a></h2>
+<a class="reference external image-reference" href="examples/pictures/example_gdp_picture.png"><img alt="" src="examples/pictures/example_gdp_picture.png" /></a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pynsee.macro</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
+<span class="kn">from</span> <span class="nn">plotly.offline</span> <span class="kn">import</span> <span class="n">plot</span>
+
+<span class="c1"># Subscribe to api.insee.fr and get your credentials!</span>
+<span class="c1"># Beware : any change to the keys should be tested after having cleared the cache</span>
+<span class="c1"># Please use : pynsee.utils.clear_all_cache to do so</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;insee_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_insee_key&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;insee_secret&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_insee_secret&quot;</span>
+
+<span class="c1"># get series key (idbank), for Gross domestic product balance</span>
+<span class="nb">id</span> <span class="o">=</span> <span class="n">get_idbank_list</span><span class="p">(</span><span class="s2">&quot;CNT-2014-PIB-EQB-RF&quot;</span><span class="p">)</span>
+
+<span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="nb">id</span><span class="o">.</span><span class="n">FREQ</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">)</span> <span class="o">&amp;</span>
+            <span class="p">(</span><span class="nb">id</span><span class="o">.</span><span class="n">OPERATION</span> <span class="o">==</span> <span class="s2">&quot;PIB&quot;</span><span class="p">)</span> <span class="o">&amp;</span>
+            <span class="p">(</span><span class="nb">id</span><span class="o">.</span><span class="n">NATURE</span> <span class="o">==</span> <span class="s2">&quot;TAUX&quot;</span><span class="p">)</span> <span class="o">&amp;</span>
+            <span class="p">(</span><span class="nb">id</span><span class="o">.</span><span class="n">CORRECTION</span> <span class="o">==</span> <span class="s2">&quot;CVS-CJO&quot;</span><span class="p">)]</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">get_insee_idbank</span><span class="p">(</span><span class="nb">id</span><span class="o">.</span><span class="n">idbank</span><span class="p">)</span>
+
+<span class="c1"># plot with plotly</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="s2">&quot;OBS_VALUE&quot;</span><span class="p">,</span>
+             <span class="n">facet_col</span> <span class="o">=</span> <span class="s2">&quot;TITLE_EN&quot;</span><span class="p">,</span> <span class="n">facet_col_wrap</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">matches</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">plot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="population-map">
+<h2>Population Map<a class="headerlink" href="#population-map" title="Permalink to this headline">¶</a></h2>
+<a class="reference external image-reference" href="examples/pictures/example_pop_map.png"><img alt="" src="examples/pictures/example_pop_map.png" /></a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pynsee.local</span> <span class="kn">import</span> <span class="n">get_map</span>
+<span class="kn">from</span> <span class="nn">pynsee.macro</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pandas.api.types</span> <span class="kn">import</span> <span class="n">CategoricalDtype</span>
+<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="k">as</span> <span class="nn">cm</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">descartes</span>
+
+<span class="n">map_file</span> <span class="o">=</span> <span class="n">get_map</span><span class="p">(</span><span class="s1">&#39;departements&#39;</span><span class="p">)</span>
+<span class="nb">map</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">map_file</span><span class="p">)</span>
+
+<span class="n">dataset_list</span> <span class="o">=</span> <span class="n">get_dataset_list</span><span class="p">()</span>
+
+<span class="nb">id</span> <span class="o">=</span> <span class="n">get_idbank_list</span><span class="p">(</span><span class="s2">&quot;TCRED-ESTIMATIONS-POPULATION&quot;</span><span class="p">)</span>
+
+<span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="nb">id</span><span class="o">.</span><span class="n">AGE</span> <span class="o">==</span> <span class="s2">&quot;00-&quot;</span><span class="p">)</span> <span class="o">&amp;</span>
+            <span class="p">(</span><span class="nb">id</span><span class="o">.</span><span class="n">SEXE</span> <span class="o">==</span> <span class="s2">&quot;0&quot;</span><span class="p">)</span> <span class="o">&amp;</span>
+            <span class="p">(</span><span class="nb">id</span><span class="o">.</span><span class="n">REF_AREA</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;^D&quot;</span><span class="p">))]</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">get_insee_idbank</span><span class="p">(</span><span class="nb">id</span><span class="o">.</span><span class="n">idbank</span><span class="p">,</span> <span class="n">lastNObservations</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[[</span><span class="s1">&#39;REF_AREA&#39;</span><span class="p">,</span> <span class="s1">&#39;OBS_VALUE&#39;</span><span class="p">]]</span>
+
+<span class="nb">map</span><span class="p">[</span><span class="s1">&#39;REF_AREA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;D&#39;</span> <span class="o">+</span> <span class="nb">map</span><span class="p">[</span><span class="s1">&#39;code&#39;</span><span class="p">]</span>
+
+<span class="nb">map</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="mi">3035</span><span class="p">)</span>
+<span class="nb">map</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">area</span><span class="o">/</span> <span class="mi">10</span><span class="o">**</span><span class="mi">6</span>
+<span class="nb">map</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="mi">4326</span><span class="p">)</span>
+
+<span class="nb">map</span> <span class="o">=</span> <span class="nb">map</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="s1">&#39;REF_AREA&#39;</span><span class="p">)</span>
+<span class="nb">map</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">[</span><span class="s1">&#39;OBS_VALUE&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="nb">map</span><span class="p">[</span><span class="s2">&quot;area&quot;</span><span class="p">]</span>
+
+<span class="nb">map</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">map</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&lt; 40&quot;</span>
+<span class="nb">map</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">map</span><span class="o">.</span><span class="n">density</span> <span class="o">&gt;=</span> <span class="mi">20000</span><span class="p">,</span> <span class="s1">&#39;range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&gt; 20 000&quot;</span>
+
+<span class="n">density_ranges</span> <span class="o">=</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">160</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">240</span><span class="p">,</span> <span class="mi">260</span><span class="p">,</span> <span class="mi">410</span><span class="p">,</span> <span class="mi">600</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">20000</span><span class="p">]</span>
+<span class="n">list_ranges</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">list_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s2">&quot;&lt; 40&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">density_ranges</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="nb">min</span> <span class="o">=</span> <span class="n">density_ranges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="nb">max</span> <span class="o">=</span> <span class="n">density_ranges</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">range_string</span> <span class="o">=</span> <span class="s2">&quot;[</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">[&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">)</span>
+    <span class="nb">map</span><span class="o">.</span><span class="n">loc</span><span class="p">[(</span><span class="nb">map</span><span class="o">.</span><span class="n">density</span> <span class="o">&gt;=</span> <span class="nb">min</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="nb">map</span><span class="o">.</span><span class="n">density</span> <span class="o">&lt;</span> <span class="nb">max</span><span class="p">),</span> <span class="s1">&#39;range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">range_string</span>
+    <span class="n">list_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">range_string</span><span class="p">)</span>
+
+<span class="n">list_ranges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&gt; 20 000&quot;</span><span class="p">)</span>
+
+<span class="nb">map</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">map</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span> <span class="n">CategoricalDtype</span><span class="p">(</span><span class="n">categories</span><span class="o">=</span><span class="n">list_ranges</span><span class="p">,</span> <span class="n">ordered</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span>
+<span class="nb">map</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s1">&#39;range&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span>
+    <span class="n">legend_kwds</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;bbox_to_anchor&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">),</span>
+                 <span class="s1">&#39;title&#39;</span><span class="p">:</span><span class="s1">&#39;density per km2&#39;</span><span class="p">})</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Distribution of population in metropolitan France&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="poverty-in-paris-urban-area">
+<h2>Poverty in Paris urban area<a class="headerlink" href="#poverty-in-paris-urban-area" title="Permalink to this headline">¶</a></h2>
+<p><span class="raw-html-m2r"><!-- ![](examples/pictures/example_poverty_paris_uu.png) --></span></p>
+<a class="reference external image-reference" href="examples/pictures/poverty_paris_urban_area.svg"><img alt="" src="examples/pictures/poverty_paris_urban_area.svg" /></a>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;insee_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_key&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;insee_secret&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_secret_key&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pynsee.local</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.cm</span> <span class="k">as</span> <span class="nn">cm</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">descartes</span>
+
+<span class="c1"># get a list all data available : datasets and variables</span>
+<span class="n">metadata</span> <span class="o">=</span> <span class="n">get_local_metadata</span><span class="p">()</span>
+
+<span class="c1"># geographic metadata</span>
+<span class="n">nivgeo</span> <span class="o">=</span> <span class="n">get_nivgeo_list</span><span class="p">()</span>
+
+<span class="c1"># get geographic area list</span>
+<span class="n">area</span> <span class="o">=</span> <span class="n">get_area_list</span><span class="p">()</span>
+
+<span class="c1"># get all communes in Paris urban area</span>
+<span class="n">areaParis</span> <span class="o">=</span> <span class="n">get_included_area</span><span class="p">(</span><span class="s1">&#39;unitesUrbaines2020&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;00851&#39;</span><span class="p">])</span>
+
+<span class="c1"># get selected communes identifiers</span>
+<span class="n">code_com_paris</span> <span class="o">=</span> <span class="n">areaParis</span><span class="o">.</span><span class="n">code</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+
+<span class="c1"># get numeric values from INSEE database</span>
+<span class="n">dataParis</span> <span class="o">=</span> <span class="n">get_insee_local</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="s1">&#39;GEO2020FILO2017&#39;</span><span class="p">,</span>
+                       <span class="n">variables</span> <span class="o">=</span>  <span class="s1">&#39;INDICS_FILO_DISP_DET&#39;</span><span class="p">,</span>
+                       <span class="n">geo</span> <span class="o">=</span> <span class="s1">&#39;COM&#39;</span><span class="p">,</span>
+                       <span class="n">geocodes</span> <span class="o">=</span> <span class="n">code_com_paris</span><span class="p">)</span>
+
+<span class="c1">#select poverty rate data, exclude paris commune</span>
+<span class="n">data_plot</span> <span class="o">=</span> <span class="n">dataParis</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dataParis</span><span class="o">.</span><span class="n">UNIT</span><span class="o">==</span><span class="s1">&#39;TP60&#39;</span><span class="p">]</span>
+<span class="n">data_plot</span> <span class="o">=</span> <span class="n">data_plot</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">data_plot</span><span class="o">.</span><span class="n">CODEGEO</span><span class="o">!=</span><span class="s1">&#39;75056&#39;</span><span class="p">]</span>
+
+<span class="c1">#get communes limits</span>
+<span class="n">map_com</span> <span class="o">=</span> <span class="n">get_map</span><span class="p">(</span><span class="s1">&#39;communes&#39;</span><span class="p">)</span>
+<span class="n">map_arr_mun</span> <span class="o">=</span> <span class="n">get_map</span><span class="p">(</span><span class="s1">&#39;arrondissements-municipaux&#39;</span><span class="p">)</span>
+<span class="n">map_idf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">map_com</span><span class="p">,</span> <span class="n">map_arr_mun</span><span class="p">])</span>
+
+<span class="c1"># merge values and geographic limits</span>
+<span class="n">mapparis</span> <span class="o">=</span> <span class="n">map_idf</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">data_plot</span><span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span>
+                     <span class="n">left_on</span> <span class="o">=</span> <span class="s1">&#39;code&#39;</span><span class="p">,</span> <span class="n">right_on</span> <span class="o">=</span> <span class="s1">&#39;CODEGEO&#39;</span><span class="p">)</span>
+
+<span class="c1">#plot</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span><span class="mi">15</span><span class="p">])</span>
+<span class="n">mapparis</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">column</span><span class="o">=</span><span class="s1">&#39;OBS_VALUE&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+    <span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">legend_kwds</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;shrink&#39;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">})</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_axis_off</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Poverty rate in Paris urban area in 2017&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;poverty_paris_urban_area.svg&#39;</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;svg&#39;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">1200</span><span class="p">,</span>
+            <span class="n">bbox_inches</span> <span class="o">=</span> <span class="s1">&#39;tight&#39;</span><span class="p">,</span>
+            <span class="n">pad_inches</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="how-to-avoid-proxy-issues">
+<h2>How to avoid proxy issues ?<a class="headerlink" href="#how-to-avoid-proxy-issues" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;http_proxy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;http://my_proxy_server:port&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;https_proxy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;http://my_proxy_server:port&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="support">
+<h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h2>
+<p>Feel free to contact me with any question about this package using this <a class="reference external" href="mailto:hadrien&#46;leclerc&#37;&#52;&#48;insee&#46;fr?subject=[pynsee]">e-mail address</a>.</p>
 <div class="toctree-wrapper compound">
+</div>
 </div>
 </div>
 <div class="section" id="search-in-insee-s-macroeconomic-data-bdm">
