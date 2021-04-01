@@ -18,15 +18,15 @@ def get_insee_local(variables, dataset_version, nivgeo, geocodes):
     Raises:
         ValueError: Error if geocodes is not a list
     
-    Examples
-    --------
-    >>> metadata = get_local_metadata()
-    >>> nivgeo = get_nivgeo_list()
-    >>> departement = get_geo_list('departements')
-    >>> data = get_insee_local(dataset_version='GEO2020RP2017',
-                               variables =  'SEXE-DIPL_19',
-                               nivgeo = 'DEP',
-                               geocodes = ['91','92'])
+    Examples:
+        >>> from pynsee.local import *
+        >>> metadata = get_local_metadata()
+        >>> nivgeo = get_nivgeo_list()
+        >>> departement = get_geo_list('departements')
+        >>> data = get_insee_local(dataset_version='GEO2020RP2017',
+        >>>                        variables =  'SEXE-DIPL_19',
+        >>>                        nivgeo = 'DEP',
+        >>>                        geocodes = ['91','92'])
     """    
     from pynsee.local._get_insee_local_onegeo import _get_insee_local_onegeo
     

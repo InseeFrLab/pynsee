@@ -14,13 +14,13 @@ def get_map(geo):
     Args:
         geo (str): French administrative area (see get_map_list)
 
-    Examples
-    --------
-    >>> map_list = get_map_list()
-    >>> map_departement = get_map('departements')
-    >>> # Draw map with random values
-    >>> import matplotlib, descartes
-    >>> map_departement.plot(column='value')
+    Examples:
+        >>> from pynsee.local import *
+        >>> map_list = get_map_list()
+        >>> map_departement = get_map('departements')
+        >>> # Draw map with random values
+        >>> import matplotlib, descartes
+        >>> map_departement.plot(column='value')
     """        
     import geopandas as gpd
     import numpy as np

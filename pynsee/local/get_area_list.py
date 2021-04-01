@@ -12,9 +12,9 @@ def get_area_list(area=None):
     Raises:
         ValueError: Error if area is not available
     
-    Examples
-    --------
-    >>> area_list = get_area_list()
+    Examples:    
+        >>> from pynsee.local import *
+        >>> area_list = get_area_list()
     """    
     import pandas as pd
     from pynsee.utils._request_insee import _request_insee

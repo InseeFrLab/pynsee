@@ -3,9 +3,9 @@
 def get_map_list():
 
     """Get a list of all available maps
-    Examples
-    --------
-    >>> map_list = get_map_list()
+    Examples:
+        >>> from pynsee.local import *
+        >>> map_list = get_map_list()
     """
     import pandas as pd
     maps_list = {

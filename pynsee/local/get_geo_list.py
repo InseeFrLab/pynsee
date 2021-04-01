@@ -15,12 +15,11 @@ def get_geo_list(geo=None, date=None):
         ValueError: geo should be among the geographic area list
     
     Examples:
-    ---------
-    >>> from pynsee.local.get_geo_list import get_geo_list
-    >>> city_list = get_geo_list('communes')
-    >>> region_list = get_geo_list('regions')
-    >>> departement_list = get_geo_list('departements')
-    >>> arrondiss_list = get_geo_list('arrondissements')
+        >>> from pynsee.local.get_geo_list import get_geo_list
+        >>> city_list = get_geo_list('communes')
+        >>> region_list = get_geo_list('regions')
+        >>> departement_list = get_geo_list('departements')
+        >>> arrondiss_list = get_geo_list('arrondissements')
     """   
     import pandas as pd
     from tqdm import trange
