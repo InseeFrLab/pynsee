@@ -3,6 +3,7 @@
 def get_map_list():
 
     """Get a list of all available maps
+    
     Examples:
         >>> from pynsee.local import *
         >>> map_list = get_map_list()

@@ -7,7 +7,7 @@ def _warning_future_dev():
     print("!!! This function is still at an early development stage,\nfuture changes are likely !!!")
 
 def get_insee_local(variables, dataset_version, nivgeo, geocodes):
-    """[Get the numeric values on INSEE local data]
+    """Get INSEE local numeric data
 
     Args:
         variables (str): one or several variables separated by an hyphen (see get_local_metadata)
