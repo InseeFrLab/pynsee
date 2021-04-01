@@ -42,7 +42,8 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Search macrodata from INSEE" href="search_macro.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -91,21 +92,12 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Introduction to pynsee package</a><ul>
-<li><a class="reference internal" href="#installation-loading">Installation &amp; Loading</a></li>
-<li><a class="reference internal" href="#french-gdp-growth-rate">French GDP growth rate</a></li>
-<li><a class="reference internal" href="#population-map">Population Map</a></li>
-<li><a class="reference internal" href="#poverty-in-paris-urban-area">Poverty in Paris urban area</a></li>
-<li><a class="reference internal" href="#how-to-avoid-proxy-issues">How to avoid proxy issues ?</a></li>
-<li><a class="reference internal" href="#support">Support</a></li>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="search_macro.html">Search macrodata from INSEE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_macrodata.html">Get macrodata from INSEE</a></li>
 </ul>
-</li>
-<li><a class="reference internal" href="#search-macrodata-from-insee">Search macrodata from INSEE</a></li>
-<li><a class="reference internal" href="#get-macrodata-from-insee">Get macrodata from INSEE</a></li>
-</ul>
-</div>
+
             
           
         </div>
@@ -197,10 +189,16 @@
 </style>
 <div class="section" id="introduction-to-pynsee-package">
 <h1>Introduction to pynsee package<a class="headerlink" href="#introduction-to-pynsee-package" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="pynsee-package">
+<h1>pynsee package<a class="headerlink" href="#pynsee-package" title="Permalink to this headline">¶</a></h1>
 <p><strong>Work in progress</strong></p>
 <a class="reference external image-reference" href="https://github.com/hadrilec/pynsee/actions"><img alt="Build Status" src="https://github.com/hadrilec/pynsee/actions/workflows/pynsee-test.yml/badge.svg" /></a>
 <a class="reference external image-reference" href="https://codecov.io/gh/hadrilec/pynsee?branch=master"><img alt="Codecov test coverage" src="https://codecov.io/gh/hadrilec/pynsee/branch/master/graph/badge.svg" /></a>
 <a class="reference external image-reference" href="https://pynsee.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/pynsee/badge/?version=latest" /></a>
+</div>
+<div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
 <p>The pynsee package contains tools to easily download data and metadata from INSEE API.
 Using the API or the SDMX queries, get the data of more than 150 000 INSEE series.
 Have a look at the detailed API page with the following <a class="reference external" href="https://api.insee.fr/catalogue/">link</a>.
@@ -221,7 +219,7 @@ This package is a contribution to reproducible research and public data transpar
 </div>
 <div class="section" id="french-gdp-growth-rate">
 <h2>French GDP growth rate<a class="headerlink" href="#french-gdp-growth-rate" title="Permalink to this headline">¶</a></h2>
-<a class="reference external image-reference" href="../examples/pictures/example_gdp_picture.png"><img alt="" src="_images/example_gdp_picture.png" /></a>
+<a class="reference external image-reference" href="examples/pictures/example_gdp_picture.png"><img alt="" src="examples/pictures/example_gdp_picture.png" /></a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pynsee.macro</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
 <span class="kn">from</span> <span class="nn">plotly.offline</span> <span class="kn">import</span> <span class="n">plot</span>
@@ -253,7 +251,7 @@ This package is a contribution to reproducible research and public data transpar
 </div>
 <div class="section" id="population-map">
 <h2>Population Map<a class="headerlink" href="#population-map" title="Permalink to this headline">¶</a></h2>
-<a class="reference external image-reference" href="../examples/pictures/example_pop_map.png"><img alt="" src="_images/example_pop_map.png" /></a>
+<a class="reference external image-reference" href="examples/pictures/example_pop_map.png"><img alt="" src="examples/pictures/example_pop_map.png" /></a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pynsee.local</span> <span class="kn">import</span> <span class="n">get_map</span>
 <span class="kn">from</span> <span class="nn">pynsee.macro</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
@@ -317,8 +315,8 @@ This package is a contribution to reproducible research and public data transpar
 </div>
 <div class="section" id="poverty-in-paris-urban-area">
 <h2>Poverty in Paris urban area<a class="headerlink" href="#poverty-in-paris-urban-area" title="Permalink to this headline">¶</a></h2>
-<p><span class="raw-html-m2r"><!-- ![](../examples/pictures/example_poverty_paris_uu.png) --></span></p>
-<a class="reference external image-reference" href="../examples/pictures/poverty_paris_urban_area.svg"><img alt="" src="_images/poverty_paris_urban_area.svg" /></a>
+<p><span class="raw-html-m2r"><!-- ![](examples/pictures/example_poverty_paris_uu.png) --></span></p>
+<a class="reference external image-reference" href="examples/pictures/poverty_paris_urban_area.svg"><img alt="" src="examples/pictures/poverty_paris_urban_area.svg" /></a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;insee_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_key&quot;</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;insee_secret&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_secret_key&quot;</span>
@@ -390,154 +388,13 @@ This package is a contribution to reproducible research and public data transpar
 <h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h2>
 <p>Feel free to contact me with any question about this package using this <a class="reference external" href="mailto:hadrien&#46;leclerc&#37;&#52;&#48;insee&#46;fr?subject=[pynsee]">e-mail address</a>.</p>
 <div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="search_macro.html">Search macrodata from INSEE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_macrodata.html">Get macrodata from INSEE</a></li>
+</ul>
 </div>
 </div>
-</div>
-<div class="section" id="search-macrodata-from-insee">
-<h1>Search macrodata from INSEE<a class="headerlink" href="#search-macrodata-from-insee" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="pynsee.macro.get_dataset_list">
-<code class="sig-prename descclassname"><span class="pre">pynsee.macro.</span></code><code class="sig-name descname"><span class="pre">get_dataset_list</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pynsee.macro.get_dataset_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download a full INSEE’s datasets list</p>
-<dl>
-<dt>Returns:</dt><dd><p>DataFrame: contains 5 columns - idm Name.fr, Name.en, url, n_series</p>
-</dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">insee_dataset</span> <span class="o">=</span> <span class="n">get_dataset_list</span><span class="p">()</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pynsee.macro.get_idbank_list">
-<code class="sig-prename descclassname"><span class="pre">pynsee.macro.</span></code><code class="sig-name descname"><span class="pre">get_idbank_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">datasets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pynsee.macro.get_idbank_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Download an INSEE’s series key list for one or several datasets</p>
-<dl>
-<dt>Args:       </dt><dd><p>datasets (str) : datasets should be among the datasets list provided by get_dataset_list()
-update (bool, optional): Set to True, to update manually the metadata stored locally on the computer. Defaults to False.</p>
-</dd>
-<dt>Raises:</dt><dd><p>ValueError: datasets should be among the datasets list provided by get_dataset_list()</p>
-</dd>
-<dt>Returns:</dt><dd><p>DataFrame: contains dimension columns, series keys, dataset name</p>
-</dd>
-<dt>Notes: </dt><dd><p>Some metadata is stored for 3 months locally on the computer. It is updated automatically</p>
-</dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">idbank_ipc</span> <span class="o">=</span> <span class="n">get_idbank_list</span><span class="p">(</span><span class="s1">&#39;IPC-2015&#39;</span><span class="p">,</span> <span class="s1">&#39;CLIMAT-AFFAIRES&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pynsee.macro.search_insee">
-<code class="sig-prename descclassname"><span class="pre">pynsee.macro.</span></code><code class="sig-name descname"><span class="pre">search_insee</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.*'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pynsee.macro.search_insee" title="Permalink to this definition">¶</a></dt>
-<dd><p>Search a pattern among insee series (idbanks)</p>
-<p>Notes: this function uses package’s internal data which might not be the most up-to-date.</p>
-<dl>
-<dt>Args:</dt><dd><p>pattern (str, optional): String used to filter the idbank list. Defaults to “.*”, returns all series.</p>
-</dd>
-<dt>Examples:    </dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pynsee.macro</span> <span class="kn">import</span> <span class="n">search_insee</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">search_all</span> <span class="o">=</span> <span class="n">search_insee</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">search_paper</span> <span class="o">=</span> <span class="n">search_insee</span><span class="p">(</span><span class="s2">&quot;pâte à papier&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">search_paris</span> <span class="o">=</span> <span class="n">search_insee</span><span class="p">(</span><span class="s2">&quot;PARIS&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">search_survey_gdp</span> <span class="o">=</span> <span class="n">search_insee</span><span class="p">(</span><span class="s2">&quot;Survey|GDP&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pynsee.macro.get_last_release">
-<code class="sig-prename descclassname"><span class="pre">pynsee.macro.</span></code><code class="sig-name descname"><span class="pre">get_last_release</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pynsee.macro.get_last_release" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="pynsee.macro.get_column_title">
-<code class="sig-prename descclassname"><span class="pre">pynsee.macro.</span></code><code class="sig-name descname"><span class="pre">get_column_title</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pynsee.macro.get_column_title" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the title of a dataset’s columns</p>
-<dl>
-<dt>Args:</dt><dd><p>dataset (DataFrame, optional): An INSEE dataset. Defaults to None, this returns all columns.</p>
-</dd>
-<dt>Raises:</dt><dd><p>ValueError: Only one string (length one)
-ValueError: Dataset must belong to INSEE datasets list</p>
-</dd>
-<dt>Examples:   </dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">insee_all_columns</span> <span class="o">=</span> <span class="n">get_column_title</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">balance_paiements_columns</span> <span class="o">=</span> <span class="n">get_column_title</span><span class="p">(</span><span class="s2">&quot;BALANCE-PAIEMENTS&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="get-macrodata-from-insee">
-<h1>Get macrodata from INSEE<a class="headerlink" href="#get-macrodata-from-insee" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="pynsee.macro.get_insee_idbank">
-<code class="sig-prename descclassname"><span class="pre">pynsee.macro.</span></code><code class="sig-name descname"><span class="pre">get_insee_idbank</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">idbanks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startPeriod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endPeriod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">firstNObservations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lastNObservations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">includeHistory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updatedAfter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pynsee.macro.get_insee_idbank" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get data from INSEE series idbank</p>
-<dl>
-<dt>Args:</dt><dd><p>idbanks (str or list or pd.series) : some idbanks provided bu get_idbank_list()
-startPeriod (str, optional): start date of the data. 
-endPeriod (str, optional): end date of the data. 
-firstNObservations (int, optional): get the first N observations for each key series (idbank). 
-lastNObservations (int, optional): get the last N observations for each key series (idbank). 
-includeHistory (boolean, optional): boolean to access the previous releases (not available on all series). 
-updatedAfter (str, optional): starting point for querying the previous releases (format yyyy-mm-ddThh:mm:ss)</p>
-</dd>
-<dt>Returns:</dt><dd><p>DataFrame: contains the data, indexed by DATE and sorted by IDBANK</p>
-</dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pynsee.macro</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># inflation figures in France</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df_idbank</span> <span class="o">=</span> <span class="n">get_idbank_list</span><span class="p">(</span><span class="s2">&quot;IPC-2015&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df_idbank</span> <span class="o">=</span> <span class="n">df_idbank</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span>
-<span class="gp">&gt;&gt;&gt; </span>                   <span class="p">(</span><span class="n">df_idbank</span><span class="o">.</span><span class="n">FREQ</span> <span class="o">==</span> <span class="s2">&quot;M&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="c1"># monthly</span>
-<span class="gp">&gt;&gt;&gt; </span>                   <span class="p">(</span><span class="n">df_idbank</span><span class="o">.</span><span class="n">NATURE</span> <span class="o">==</span> <span class="s2">&quot;INDICE&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="c1"># index</span>
-<span class="gp">&gt;&gt;&gt; </span>                   <span class="p">(</span><span class="n">df_idbank</span><span class="o">.</span><span class="n">MENAGES_IPC</span> <span class="o">==</span> <span class="s2">&quot;ENSEMBLE&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="c1"># all kinds of household</span>
-<span class="gp">&gt;&gt;&gt; </span>                   <span class="p">(</span><span class="n">df_idbank</span><span class="o">.</span><span class="n">REF_AREA</span> <span class="o">==</span> <span class="s2">&quot;FE&quot;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="c1"># all France including overseas departements</span>
-<span class="gp">&gt;&gt;&gt; </span>                   <span class="p">(</span><span class="n">df_idbank</span><span class="o">.</span><span class="n">COICOP2016</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;^[0-9]</span><span class="si">{2}</span><span class="s2">$&quot;</span><span class="p">))]</span> <span class="c1"># coicop aggregation level</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># get data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">get_insee_idbank</span><span class="p">(</span><span class="n">df_idbank</span><span class="o">.</span><span class="n">idbank</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pynsee.macro.get_insee_dataset">
-<code class="sig-prename descclassname"><span class="pre">pynsee.macro.</span></code><code class="sig-name descname"><span class="pre">get_insee_dataset</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">startPeriod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endPeriod</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">firstNObservations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lastNObservations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">includeHistory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updatedAfter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pynsee.macro.get_insee_dataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get dataset’s data from INSEE BDM database</p>
-<dl>
-<dt>Args:</dt><dd><p>dataset (str): an INSEE dataset included in the list provided by get_dataset_list()
-filter (str, optional): Use the filter to choose only some values in a dimension. 
-It is recommended to use it for big datasets. A dimension left empty means 
-all values are selected. To select multiple values in one dimension put a “+” between those values.
-startPeriod (str, optional): start date of the data. 
-endPeriod (str, optional): end date of the data. 
-firstNObservations (int, optional): get the first N observations for each key series (idbank). 
-lastNObservations (int, optional): get the last N observations for each key series (idbank). 
-includeHistory (boolean, optional): boolean to access the previous releases (not available on all series). 
-updatedAfter (str, optional): starting point for querying the previous releases (format yyyy-mm-ddThh:mm:ss)</p>
-</dd>
-<dt>Raises:</dt><dd><p>ValueError: dataset should be in INSEE’s datasets list</p>
-</dd>
-<dt>Returns:</dt><dd><p>DataFrame: contains the data</p>
-</dd>
-<dt>Examples:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ipc_data</span> <span class="o">=</span> 
-<span class="gp">&gt;&gt;&gt; </span>   <span class="n">get_insee_dataset</span><span class="p">(</span><span class="s2">&quot;IPC-2015&quot;</span><span class="p">,</span> 
-<span class="gp">&gt;&gt;&gt; </span>       <span class="nb">filter</span> <span class="o">=</span> <span class="s2">&quot;M......ENSEMBLE...CVS.2015&quot;</span><span class="p">,</span>
-<span class="gp">&gt;&gt;&gt; </span>       <span class="n">includeHistory</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">updatedAfter</span> <span class="o">=</span> <span class="s2">&quot;2017-07-11T08:45:00&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">business_climate</span> <span class="o">=</span> <span class="n">get_insee_dataset</span><span class="p">(</span><span class="s2">&quot;CLIMAT-AFFAIRES&quot;</span><span class="p">,</span> <span class="n">lastNObservations</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
 
 
@@ -545,6 +402,9 @@ updatedAfter (str, optional): starting point for querying the previous releases 
            
           </div>
           <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="search_macro.html" class="btn btn-neutral float-right" title="Search macrodata from INSEE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
