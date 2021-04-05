@@ -27,6 +27,7 @@ Installation & Loading
 ----------------------
 
 .. code-block:: python
+
    # Get the development version from GitHub
    pip install git+https://github.com/hadrilec/pynsee.git#egg=pynsee
 
@@ -48,6 +49,7 @@ French GDP growth rate
 
 
 .. code-block:: python
+
    from pynsee.macro import *
    import plotly.express as px
    from plotly.offline import plot
@@ -86,6 +88,7 @@ Population Map
 
 
 .. code-block:: python
+
    from pynsee.local import get_map
    from pynsee.macro import *
    import geopandas as gpd
@@ -156,6 +159,7 @@ Poverty in Paris urban area
 
 
 .. code-block:: python
+
    import os
    os.environ['insee_key'] = "my_key"
    os.environ['insee_secret'] = "my_secret_key"
@@ -218,6 +222,7 @@ How to avoid proxy issues ?
 ---------------------------
 
 .. code-block:: python
+
    import os
    os.environ['http_proxy'] = 'http://my_proxy_server:port'
    os.environ['https_proxy'] = 'http://my_proxy_server:port'
