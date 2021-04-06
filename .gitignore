@@ -17,3 +17,4 @@ settings.json
 *.pickle
 *.stylelog
 *.pdf
+docs/_build/
