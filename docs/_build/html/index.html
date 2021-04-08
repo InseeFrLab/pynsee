@@ -92,11 +92,16 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Introduction to pynsee package</a></li>
 <li class="toctree-l1"><a class="reference internal" href="search_data.html">Search data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="get_data.html">Get data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_gdp_growth_rate_yoy.html">GDP growth rate yoy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_deaths_births.html">Deaths and Births</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_inflation_yoy.html">Inflation yoy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_population_map.html">Population Map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_poverty_paris_urban_area.html">Poverty in Paris urban area</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_population_pyramid.html">Population pyramid</a></li>
 </ul>
 
             
@@ -214,7 +219,7 @@ This package is a contribution to reproducible research and public data transpar
 </div>
 <div class="section" id="french-gdp-growth-rate">
 <h2>French GDP growth rate<a class="headerlink" href="#french-gdp-growth-rate" title="Permalink to this headline">¶</a></h2>
-<a class="reference external image-reference" href="../examples/pictures/example_gdp_picture.png"><img alt="" src="_images/example_gdp_picture.png" /></a>
+<a class="reference external image-reference" href="examples/pictures/example_gdp_picture.png"><img alt="" src="_images/example_gdp_picture.png" /></a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pynsee.macro</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">plotly.express</span> <span class="k">as</span> <span class="nn">px</span>
 <span class="kn">from</span> <span class="nn">plotly.offline</span> <span class="kn">import</span> <span class="n">plot</span>
@@ -246,7 +251,7 @@ This package is a contribution to reproducible research and public data transpar
 </div>
 <div class="section" id="population-map">
 <h2>Population Map<a class="headerlink" href="#population-map" title="Permalink to this headline">¶</a></h2>
-<a class="reference external image-reference" href="../examples/pictures/example_pop_map.png"><img alt="" src="_images/example_pop_map.png" /></a>
+<a class="reference external image-reference" href="examples/pictures/example_pop_map.png"><img alt="" src="_images/example_pop_map.png" /></a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pynsee.local</span> <span class="kn">import</span> <span class="n">get_map</span>
 <span class="kn">from</span> <span class="nn">pynsee.macro</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">geopandas</span> <span class="k">as</span> <span class="nn">gpd</span>
@@ -311,7 +316,7 @@ This package is a contribution to reproducible research and public data transpar
 <div class="section" id="poverty-in-paris-urban-area">
 <h2>Poverty in Paris urban area<a class="headerlink" href="#poverty-in-paris-urban-area" title="Permalink to this headline">¶</a></h2>
 <p><span class="raw-html-m2r"><!-- ![](../examples/pictures/example_poverty_paris_uu.png) --></span></p>
-<a class="reference external image-reference" href="../examples/pictures/poverty_paris_urban_area.svg"><img alt="" src="_images/poverty_paris_urban_area.svg" /></a>
+<a class="reference external image-reference" href="examples/pictures/poverty_paris_urban_area.svg"><img alt="" src="_images/poverty_paris_urban_area.svg" /></a>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;insee_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_key&quot;</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;insee_secret&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;my_secret_key&quot;</span>
@@ -383,7 +388,6 @@ This package is a contribution to reproducible research and public data transpar
 <h2>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h2>
 <p>Feel free to contact me with any question about this package using this <a class="reference external" href="mailto:hadrien&#46;leclerc&#37;&#52;&#48;insee&#46;fr?subject=[pynsee]">e-mail address</a>.</p>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Introduction to pynsee package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="readme.html#installation-loading">Installation &amp; Loading</a></li>
@@ -406,6 +410,12 @@ This package is a contribution to reproducible research and public data transpar
 <li class="toctree-l2"><a class="reference internal" href="get_data.html#get-metadata">Get metadata</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_gdp_growth_rate_yoy.html">GDP growth rate yoy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_deaths_births.html">Deaths and Births</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_inflation_yoy.html">Inflation yoy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_population_map.html">Population Map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_poverty_paris_urban_area.html">Poverty in Paris urban area</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/example_population_pyramid.html">Population pyramid</a></li>
 </ul>
 </div>
 </div>
