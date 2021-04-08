@@ -18,3 +18,4 @@ settings.json
 *.stylelog
 *.pdf
 docs/_build/
+docs/_build/html/
