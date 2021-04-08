@@ -42,8 +42,8 @@ Installation & Loading
 French GDP growth rate
 ----------------------
 
-.. image:: examples/pictures/example_gdp_picture.png
-   :target: examples/pictures/example_gdp_picture.png
+.. image:: docs/examples/pictures/example_gdp_picture.png
+   :target: docs/examples/pictures/example_gdp_picture.png
    :alt:
 
 
@@ -81,8 +81,8 @@ French GDP growth rate
 Population Map
 --------------
 
-.. image:: examples/pictures/example_pop_map.png
-   :target: examples/pictures/example_pop_map.png
+.. image:: docs/examples/pictures/example_pop_map.png
+   :target: docs/examples/pictures/example_pop_map.png
    :alt:
 
 
@@ -152,8 +152,8 @@ Population Map
 Poverty in Paris urban area
 ---------------------------
 
-.. image:: examples/pictures/poverty_paris_urban_area.svg
-   :target: examples/pictures/poverty_paris_urban_area.svg
+.. image:: docs/examples/pictures/poverty_paris_urban_area.svg
+   :target: docs/examples/pictures/poverty_paris_urban_area.svg
    :alt:
 
 
