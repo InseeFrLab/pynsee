@@ -6,14 +6,14 @@ from functools import lru_cache
 def _warning_future_dev():
     print("!!! This function is still at an early development stage,\nfuture changes are likely !!!")
 
-def get_insee_local(variables, dataset_version, nivgeo, geocodes):
+def get_insee_local(variables, dataset_version, nivgeo='FE', geocodes=['1']):
     """Get INSEE local numeric data
 
     Args:
         variables (str): one or several variables separated by an hyphen (see get_local_metadata)
         dataset_version (str): code of a dataset version (see get_local_metadata)
-        nivgeo (str): code of kind of French administrative area (see get_nivgeo_list)
-        geocodes (list): code one specific area (see get_geo_list)
+        nivgeo (str): code of kind of French administrative area (see get_nivgeo_list), by default it is 'FE' ie all France
+        geocodes (list): code one specific area (see get_geo_list), by default it is ['1'] ie all France
 
     Raises:
         ValueError: Error if geocodes is not a list
@@ -23,7 +23,9 @@ def get_insee_local(variables, dataset_version, nivgeo, geocodes):
         >>> metadata = get_local_metadata()
         >>> nivgeo = get_nivgeo_list()
         >>> departement = get_geo_list('departements')
-        >>> data = get_insee_local(dataset_version='GEO2020RP2017',
+        >>> data_all_france = get_insee_local(dataset_version='GEO2020RP2017',
+        >>>                        variables =  'SEXE-DIPL_19')
+        >>> data_91_92 = get_insee_local(dataset_version='GEO2020RP2017',
         >>>                        variables =  'SEXE-DIPL_19',
         >>>                        nivgeo = 'DEP',
         >>>                        geocodes = ['91','92'])
