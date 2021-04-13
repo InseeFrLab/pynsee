@@ -55,7 +55,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
             results = requests.get(api_url, proxies = proxies, headers=headers)
 
             if results.status_code != 200:
-                msg1 = "!!! Wrong query or api.insee.fr error !!!"
+                msg1 = "\n!!! Wrong query or api.insee.fr error !!!"
 #                msg2 = "\n!!! Please check your credentials and subscribe to all APIs!!!"
 #                msg3 = "\n!!! If your token still does't work, please try to use pynsee.utils.clear_all_cache !!!"
 #                print("{}{}{}".format(msg1, msg2, msg3))
@@ -86,7 +86,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
         
             if not sdmx_url is None:
                 msg4 = "SDMX web service used instead of API"
-                print("{}{}{}".format(msg1, msg2, msg3, msg4))
+                print("{}{}{}{}".format(msg1, msg2, msg3, msg4))
                 # _warning_no_token(msg + msg2)
                 results = requests.get(sdmx_url, proxies = proxies)
                 if results.status_code != 200:
