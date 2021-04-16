@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+from functools import lru_cache
 
+@lru_cache(maxsize=None)
 def get_definition_list():
-    
+    """[summary]
+    """    
     from pynsee.utils._request_insee import _request_insee
     
     import pandas as pd
@@ -19,7 +22,8 @@ def get_definition_list():
         df = df[['id', 'uri', 'intitule']]        
         list_data.append(df)
         
-    data = pd.concat(list_data)  
+    data = pd.concat(list_data)
+    data = data.reset_index(drop=True)
     data.columns = ['ID', 'URI', 'TITLE_FR']          
      
     return(data)           
