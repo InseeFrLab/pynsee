@@ -15,6 +15,8 @@ def get_activity_metadata(level, version='latest'):
     from pynsee.metadata._get_naf import _get_naf
     from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
     
+    level = level.upper()
+    
     level_available = ['A10', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
                        'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5']
     
@@ -37,7 +39,8 @@ def get_activity_metadata(level, version='latest'):
                            'int_eng_na_2008_a64.csv',
                            'int_eng_na_2008_a88.csv',
                            'int_eng_na_2008_a138.csv',
-                           'niv_agreg_naf_rev_2.csv']
+                           'niv_agreg_naf_rev_2.csv', 
+                           'table_NAF2-NA.csv']
                            
     list_expected_files = [insee_folder + '/naf2008/' + f for f in list_expected_files]
     
@@ -73,13 +76,30 @@ def get_activity_metadata(level, version='latest'):
         naf = naf.rename(columns={"CODE": level,
                                   "TITLE_FR": "TITLE_" + level + "_FR",
                                   "TITLE_65CH_FR": "TITLE_" + level + "_65CH_FR",
-                                  "TITLE_40CH_FR": "TITLE_" + level + "_40CH_FR"})
+                                  "TITLE_40CH_FR": "TITLE_" + level + "_40CH_FR"})       
         
+        mapp = pd.read_csv(list_expected_files[10],
+                           sep=";", encoding='latin', dtype=str)
+        
+        mapp = mapp.iloc[:,[0]+list(range(2,10))]
+        mapp = mapp[mapp.index!=0]
+        # mapp.columns = ['A732', 'A615', 'A272',
+        #                 'A129', 'A88', 'A64', 'A38', 'A21', 'A10']
+      
+        mapp.columns = ['NAF5', 'NAF4', 'NAF3',
+                        'A129', 'A88', 'A64', 'A38', 'A21', 'A10']
+        mapp['NAF2'] =  mapp['A88']
+        mapp['NAF1'] =  mapp['A21']
+        
+        mapp = mapp[[level, 'A129', 'A88', 'A64', 'A38', 'A21', 'A10']]        
+                
         if level == 'NAF1':
             naf = naf[naf['len_code']==1]
+            mapp = mapp[[level, 'A21', 'A10']]    
         if level == 'NAF2':
             naf = naf[naf['len_code']==2]        
-            naf_level = naf_level[['NAF1', 'NAF2']]        
+            naf_level = naf_level[['NAF1', 'NAF2']]  
+            mapp = mapp[[level, 'A88', 'A64', 'A38', 'A21', 'A10']]
         if level == 'NAF3':
             naf = naf[naf['len_code']==4]
             naf_level = naf_level[['NAF1', 'NAF2', 'NAF3']]
@@ -92,8 +112,11 @@ def get_activity_metadata(level, version='latest'):
         if not level == 'NAF1':
             naf_level = naf_level.drop_duplicates()
             naf = naf.merge(naf_level, on=level, how="left")
-            
+        
+        mapp = mapp.drop_duplicates()
         naf = naf.drop(columns=['len_code'])
+        naf = naf.merge(mapp, on=level, how='left')
+                
         return(naf)
     
     #
