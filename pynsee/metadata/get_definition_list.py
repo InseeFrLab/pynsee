@@ -2,12 +2,42 @@
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
+def _warning_definition_internal_data():
+ msg1 = "!!! Internal package data has been used !!!\n!!! If some data is missing, please use get_insee_definition !!!"
+ print(msg1)
+
+@lru_cache(maxsize=None)
 def get_definition_list():
-    """[summary]
+    """Get a list of concept definitions
     """    
     from pynsee.utils._request_insee import _request_insee
+    from pynsee.utils._create_insee_folder import _create_insee_folder
     
+    import zipfile, os
+    import pkg_resources
     import pandas as pd
+    
+    insee_folder = _create_insee_folder()
+
+    insee_folder_local_def = insee_folder + '/' + 'definition'
+    
+    if not os.path.exists(insee_folder_local_def):
+        os.mkdir(insee_folder_local_def)  
+    
+    list_expected_files = ['all_definitions.csv']
+                           
+    list_expected_files = [insee_folder + '/definition/' + f for f in list_expected_files]
+    
+    list_available_file = [not os.path.exists(f) for f in list_expected_files]
+    
+    #unzipping raw files
+    if any(list_available_file):
+    
+        zip_file = pkg_resources.resource_stream(__name__, 'data/definition.zip')
+          
+        with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+            zip_ref.extractall(insee_folder)        
+    
     
     link = 'https://api.insee.fr/metadonnees/V1/concepts/definitions'
     
@@ -24,6 +54,14 @@ def get_definition_list():
         
     data = pd.concat(list_data)
     data = data.reset_index(drop=True)
-    data.columns = ['ID', 'URI', 'TITLE_FR']          
+    data.columns = ['ID', 'URI', 'TITLE_FR']  
+
+    if os.path.exists(list_expected_files[0]):
+        all_data = pd.read_csv(list_expected_files[0])
+        all_data = all_data.iloc[:,1:10]
+        all_data = all_data.drop(columns={'URI', 'TITLE_FR'})    
+        data = data.merge(all_data, on='ID', how='left')
      
+    _warning_definition_internal_data()
+    
     return(data)           
