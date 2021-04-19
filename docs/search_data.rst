@@ -16,7 +16,7 @@ Search macrodata
 
 Search geographic and local data
 --------------------------------
-.. autofunction:: pynsee.local.get_local_metadata
+.. autofunction:: pynsee.localdata.get_local_metadata
 
 .. autofunction:: pynsee.localdata.get_nivgeo_list
 
