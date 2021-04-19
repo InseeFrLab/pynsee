@@ -13,6 +13,7 @@ def get_activity_list(level, version='latest'):
     Args:
         level (str): Levels available are : ['A10', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
                        'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5']
+        
         version (str, optional): Defaults to 'latest'. 
 
     Raises:

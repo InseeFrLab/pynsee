@@ -7,6 +7,7 @@ def get_included_area(area_type, codeareas):
 
     Args:
         area_type (str): type of area
+        
         codeareas (str): list of areas
 
     Raises:

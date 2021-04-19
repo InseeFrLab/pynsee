@@ -12,14 +12,21 @@ def get_insee_dataset(dataset,
 
     Args:
         dataset (str): an INSEE dataset included in the list provided by get_dataset_list()
+        
         filter (str, optional): Use the filter to choose only some values in a dimension. 
         It is recommended to use it for big datasets. A dimension left empty means 
         all values are selected. To select multiple values in one dimension put a "+" between those values.
+        
         startPeriod (str, optional): start date of the data. 
+        
         endPeriod (str, optional): end date of the data. 
+        
         firstNObservations (int, optional): get the first N observations for each key series (idbank). 
+        
         lastNObservations (int, optional): get the last N observations for each key series (idbank). 
+        
         includeHistory (boolean, optional): boolean to access the previous releases (not available on all series). 
+        
         updatedAfter (str, optional): starting point for querying the previous releases (format yyyy-mm-ddThh:mm:ss)
 
     Raises:

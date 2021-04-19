@@ -7,8 +7,7 @@ def get_map_link(geo):
         geo (str): French administrative area (see get_map_list)
 
     Raises:
-        ValueError: [description]
-        ValueError: [description]
+        ValueError: an error is raised if geo is not in the list from get_map_list()
     """    
     #import geopandas as gpd
     import os
@@ -43,4 +42,4 @@ def get_map_link(geo):
             else:
                 raise ValueError('Package error : %s is missing' % geo_file)
     else:
-        raise ValueError('%s is not in the list coming from get_maps_list' % geo)
+        raise ValueError('%s is not in the list coming from get_map_list' % geo)

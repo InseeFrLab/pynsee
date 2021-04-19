@@ -4,6 +4,7 @@ def get_idbank_list(*datasets, update = False):
     
     Args:       
         datasets (str) : datasets should be among the datasets list provided by get_dataset_list()
+        
         update (bool, optional): Set to True, to update manually the metadata stored locally on the computer. Defaults to False.
 
     Raises:

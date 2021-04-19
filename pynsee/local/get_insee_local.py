@@ -11,8 +11,11 @@ def get_insee_local(variables, dataset_version, nivgeo='FE', geocodes=['1']):
 
     Args:
         variables (str): one or several variables separated by an hyphen (see get_local_metadata)
+
         dataset_version (str): code of a dataset version (see get_local_metadata)
+
         nivgeo (str): code of kind of French administrative area (see get_nivgeo_list), by default it is 'FE' ie all France
+        
         geocodes (list): code one specific area (see get_geo_list), by default it is ['1'] ie all France
 
     Raises:

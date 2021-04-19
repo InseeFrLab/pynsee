@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 def get_map_list():
-
     """Get a list of all available maps
     
     Examples:

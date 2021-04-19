@@ -17,9 +17,9 @@ def get_column_title(dataset = None):
     import pandas as pd
     from tqdm import trange
     
-    from .get_dataset_list import get_dataset_list 
-    from ._get_dataset_dimension import _get_dataset_dimension
-    from ._get_dimension_values import _get_dimension_values
+    from pynsee.macrodata.get_dataset_list import get_dataset_list 
+    from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
+    from pynsee.macrodata._get_dimension_values import _get_dimension_values
     
     insee_dataset = get_dataset_list()    
     insee_dataset_list = insee_dataset['id'].to_list()

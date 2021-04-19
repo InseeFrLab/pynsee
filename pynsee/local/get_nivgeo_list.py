@@ -1,12 +1,16 @@
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
-def _warning_data():
+def _warning_nivgeo():
     print("!!! This function renders only package's internal data,\nit might not be the most up-to-date\nHave a look at api.insee.fr !!!")
 
 def get_nivgeo_list():
+    """Get geographic list
     
-    _warning_data()
+    Examples
+        >>> nivgeo_list = get_nivgeo_list()
+    """    
+    _warning_nivgeo()
     
     import pandas as pd
     dict_ng = {
