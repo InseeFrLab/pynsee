@@ -17,7 +17,7 @@ import os
 
 from pynsee.metadata.get_definition_list import get_definition_list
 from pynsee.metadata.get_insee_definition import get_insee_definition
-from pynsee.metadata.get_activity_metadata import get_activity_metadata
+from pynsee.metadata.get_activity import get_activity
 
 class TestFunction(TestCase):
 
@@ -29,11 +29,11 @@ class TestFunction(TestCase):
         data = get_insee_definition(ids=['c1020', 'c1601'])
         self.assertTrue(isinstance(data, pd.DataFrame))
         
-    def test_get_activity_metadata(self):
+    def test_get_activity(self):
         test = True
         level_available = ['A10', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
                        'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5']
         for nomencl in level_available:
-            data = get_activity_metadata(nomencl)
+            data = get_activity(nomencl)
             test = test & isinstance(data, pd.DataFrame)
         self.assertTrue(test)
