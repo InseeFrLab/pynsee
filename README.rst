@@ -50,7 +50,7 @@ French GDP growth rate
 
 .. code-block:: python
 
-   from pynsee.macro import *
+   from pynsee.macrodata import *
    import plotly.express as px
    from plotly.offline import plot
 
@@ -89,8 +89,8 @@ Population Map
 
 .. code-block:: python
 
-   from pynsee.local import get_map
-   from pynsee.macro import *
+   from pynsee.localdata import get_map
+   from pynsee.macrodata import *
    import geopandas as gpd
    import pandas as pd
    from pandas.api.types import CategoricalDtype
@@ -164,7 +164,7 @@ Poverty in Paris urban area
    os.environ['insee_key'] = "my_key"
    os.environ['insee_secret'] = "my_secret_key"
 
-   from pynsee.local import *
+   from pynsee.localdata import *
 
    import pandas as pd
    import matplotlib.cm as cm
