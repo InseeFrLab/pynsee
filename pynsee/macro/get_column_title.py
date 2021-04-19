@@ -3,7 +3,7 @@ def get_column_title(dataset = None):
     """Get the title of a dataset's columns
 
     Args:
-        dataset (DataFrame, optional): An INSEE dataset. Defaults to None, this returns all columns.
+        dataset (str, optional): An INSEE dataset name. Defaults to None, this returns all columns.
 
     Raises:
         ValueError: Only one string (length one)
