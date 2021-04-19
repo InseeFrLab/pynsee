@@ -10,7 +10,12 @@ def get_insee_definition(ids):
         ValueError: an error is raised if ids is not a list
 
     Examples:
-        >>> 
+        >>> from pynsee.metadata import *
+        >>> def_list = get_definition_list()
+        >>> # geographic areas definition
+        >>> geo_definitions = get_insee_definition(['c1468', 'c1282', 'c1762',
+                               'c1501', 'c1346', 'c1502', 'c1912',
+                               'c1361', 'c2173', 'c2070'])
 
     """    
     from pynsee.utils._request_insee import _request_insee
