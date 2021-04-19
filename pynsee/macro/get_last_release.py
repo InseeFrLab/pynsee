@@ -4,7 +4,8 @@ from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def get_last_release():
-    
+    """Get the datasets released in the last 30 days
+    """    
     import xml.etree.ElementTree as ET
     import pandas as pd
     import os, re

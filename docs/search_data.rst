@@ -34,3 +34,5 @@ Search metadata
 ---------------
 
 .. autofunction:: pynsee.metadata.get_definition_list
+
+.. autofunction:: pynsee.metadata.get_activity_list
