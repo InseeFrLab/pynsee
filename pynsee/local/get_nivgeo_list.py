@@ -5,7 +5,7 @@ def _warning_nivgeo():
     print("!!! This function renders only package's internal data,\nit might not be the most up-to-date\nHave a look at api.insee.fr !!!")
 
 def get_nivgeo_list():
-    """Get geographic list
+    """Get a list of geographic levels
     
     Examples
         >>> nivgeo_list = get_nivgeo_list()

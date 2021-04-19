@@ -7,9 +7,7 @@ def get_geo_list(geo=None, date=None):
     """Get a list of French geographic areas (communes, departements, regions ...)
 
     Args:
-        geo (str): choose among : communes, communesDeleguees, communesAssociees,
-                                  regions, departements,
-                                  arrondissements, arrondissementsMunicipaux
+        geo (str): choose among : communes, communesDeleguees, communesAssociees, regions, departements, arrondissements, arrondissementsMunicipaux
 
     Raises:
         ValueError: geo should be among the geographic area list

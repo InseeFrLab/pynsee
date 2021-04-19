@@ -8,6 +8,10 @@ def get_map_link(geo):
 
     Raises:
         ValueError: an error is raised if geo is not in the list from get_map_list()
+
+    Examples:
+        >>> from pynsee.local import *
+        >>> map_departement_link = get_map_link('departements')
     """    
     #import geopandas as gpd
     import os
