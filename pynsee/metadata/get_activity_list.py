@@ -3,8 +3,8 @@ from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def _warning_activity():
- msg1 = "!!! This function uses the latest data available (which is NAF/NACE rev. 2 - 2008), it may evolve over time !!!"
- print(msg1)
+    msg1 = "!!! This function uses the latest data available (which is NAF/NACE rev. 2 - 2008), it may evolve over time !!!"
+    print(msg1)
 
 @lru_cache(maxsize=None)
 def get_activity_list(level, version='latest'):
