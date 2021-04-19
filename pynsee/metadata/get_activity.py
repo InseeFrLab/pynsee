@@ -8,7 +8,16 @@ def _warning_activity():
 
 @lru_cache(maxsize=None)
 def get_activity(level, version='latest'):
-        
+    """Get a list of economic activities from NAF/NACE rev 2 2008 classification
+
+    Args:
+        level (str): Levels available are : ['A10', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
+                       'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5']
+        version (str, optional): Defaults to 'latest'. 
+
+    Raises:
+        ValueError: an error is raised if level is not in the default list
+    """        
     import os, re
     import zipfile
     import pkg_resources
