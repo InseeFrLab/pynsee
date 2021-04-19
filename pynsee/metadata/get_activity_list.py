@@ -7,7 +7,7 @@ def _warning_activity():
  print(msg1)
 
 @lru_cache(maxsize=None)
-def get_activity(level, version='latest'):
+def get_activity_list(level, version='latest'):
     """Get a list of economic activities from NAF/NACE rev 2 2008 classification
 
     Args:
