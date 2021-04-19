@@ -17,6 +17,11 @@ def get_activity_list(level, version='latest'):
 
     Raises:
         ValueError: an error is raised if level is not in the default list
+    
+    Examples:
+        >>> from pynsee.metadata import *
+        >>> activity_A138 = get_activity_list('A138')
+        >>> activity_NAF3 = get_activity_list('NAF3')
     """        
     import os, re
     import zipfile

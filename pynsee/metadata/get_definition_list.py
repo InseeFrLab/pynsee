@@ -9,6 +9,10 @@ def _warning_definition_internal_data():
 @lru_cache(maxsize=None)
 def get_definition_list():
     """Get a list of concept definitions
+
+    Examples:
+        >>> from pynsee.metadata import *
+        >>> definition = get_definition_list()
     """    
     from pynsee.utils._request_insee import _request_insee
     from pynsee.utils._create_insee_folder import _create_insee_folder
