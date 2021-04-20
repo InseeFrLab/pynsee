@@ -3,16 +3,16 @@ Get data
 
 Get macroeconomic data
 ----------------------
-.. autofunction:: pynsee.macro.get_insee_idbank
+.. autofunction:: pynsee.macrodata.get_insee_idbank
 
-.. autofunction:: pynsee.macro.get_insee_dataset
+.. autofunction:: pynsee.macrodata.get_insee_dataset
 
 Get geographic and local data
 -----------------------------
 
-.. autofunction:: pynsee.local.get_insee_local
+.. autofunction:: pynsee.localdata.get_insee_local
 
-.. autofunction:: pynsee.local.get_map
+.. autofunction:: pynsee.localdata.get_map
 
 Get metadata
 ------------

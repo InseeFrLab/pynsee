@@ -3,20 +3,25 @@ from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def _warning_activity():
- msg1 = "!!! This function uses the latest data available (which is NAF/NACE rev. 2 - 2008), it may evolve over time !!!"
- print(msg1)
+    msg1 = "!!! This function uses the latest data available (which is NAF/NACE rev. 2 - 2008), it may evolve over time !!!"
+    print(msg1)
 
 @lru_cache(maxsize=None)
 def get_activity_list(level, version='latest'):
     """Get a list of economic activities from NAF/NACE rev 2 2008 classification
 
     Args:
-        level (str): Levels available are : ['A10', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
-                       'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5']
-        version (str, optional): Defaults to 'latest'. 
+        level (str): Levels available are :  A10, A21, A38, A64, A88, A129, A138, NAF1, NAF2, NAF3, NAF4, NAF5
+        
+        version (str, optional): Defaults to 'latest'.
 
     Raises:
         ValueError: an error is raised if level is not in the default list
+    
+    Examples:
+        >>> from pynsee.metadata import *
+        >>> activity_A138 = get_activity_list('A138')
+        >>> activity_NAF3 = get_activity_list('NAF3')
     """        
     import os, re
     import zipfile
