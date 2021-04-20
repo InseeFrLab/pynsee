@@ -50,6 +50,12 @@ def get_idbank_list(*datasets, update = False):
     column_other = [col for col in column_all if col not in column_label]    
     new_column_order = column_other + column_label
     
-    idbank_list = pd.DataFrame(idbank_list, columns = new_column_order)
-        
+    idbank_list = pd.DataFrame(idbank_list, columns = new_column_order)        
+    
+    idbank_list = idbank_list.rename(columns = {'nomflow': 'DATASET',
+                                                'idbank' : 'IDBANK',
+                                                'cleFlow': 'KEY'})
+    
+    idbank_list.columns = [col.replace('-', '_') for col in idbank_list.columns]
+    
     return idbank_list

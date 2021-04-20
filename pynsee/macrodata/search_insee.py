@@ -35,5 +35,11 @@ def search_insee(pattern = ".*"):
         idbank_selected = _get_idbank_internal_data()
     
     idbank_selected = idbank_selected[["nomflow", "idbank", "cleFlow", "title_fr", "title_en"]]
-        
+    
+    idbank_selected = idbank_selected.rename(columns = {'nomflow': 'DATASET',
+                                                        'idbank' : 'IDBANK',
+                                                        "title_fr": "TITLE_FR",
+                                                        "title_en": "TITLE_EN",
+                                                        'cleFlow': 'KEY'})
+    
     return(idbank_selected)
