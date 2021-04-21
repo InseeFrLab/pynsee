@@ -100,7 +100,7 @@ class TestFunction(TestCase):
 
     def test_get_insee_idbank_1(self):
         idbank_list = get_idbank_list('IPC-2015').iloc[:900]
-        data = get_insee_idbank(idbank_list.idbank)
+        data = get_insee_idbank(idbank_list.IDBANK)
         self.assertTrue(isinstance(data, pd.DataFrame))
         
     def test_get_insee_idbank_2(self):
