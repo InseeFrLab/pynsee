@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 def get_insee_dataset(dataset,
+                      metadata=True,
                       filter = None,
                       startPeriod = None,
                       endPeriod = None,
@@ -46,6 +47,7 @@ def get_insee_dataset(dataset,
     from pynsee.utils._paste import _paste 
     from ._get_insee import _get_insee
     from .get_dataset_list import get_dataset_list 
+    from .get_idbank_list import get_idbank_list 
     
     insee_dataset = get_dataset_list()    
     insee_dataset_list = insee_dataset['id'].to_list()
@@ -79,5 +81,15 @@ def get_insee_dataset(dataset,
         api_query = api_query + added_param_string            
     
     data = _get_insee(api_query=api_query, sdmx_query=sdmx_query)
+    
+    if metadata:
+        idbank_list = get_idbank_list(dataset)
+        
+        newcol = [col for col in idbank_list.columns if col not in data.columns] + ['IDBANK']
+        idbank_list = idbank_list[newcol]
+        
+        data = data.merge(idbank_list, on = 'IDBANK', how='left')
+        # remove all na columns
+        data = data.dropna(axis=1, how='all')
     
     return data

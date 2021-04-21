@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 def get_insee_idbank(*idbanks,
+                     metadata=True,
                      startPeriod = None,
                      endPeriod = None,
                      firstNObservations = None,
@@ -43,7 +44,9 @@ def get_insee_idbank(*idbanks,
     import pandas
     import math
     
-    from pynsee.macrodata._get_insee import _get_insee  
+    from pynsee.macrodata._get_insee import _get_insee 
+    from pynsee.macrodata.get_idbank_list import get_idbank_list  
+    from pynsee.macrodata.search_insee import search_insee 
     from pynsee.utils._paste import _paste  
             
     INSEE_sdmx_link_idbank = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/"
@@ -111,5 +114,27 @@ def get_insee_idbank(*idbanks,
                                     step =  str("{0}/{1}").format(q+1, max_seq_idbank)))
     
     data = pandas.concat(list_data)
+    
+    if metadata:
+        all_idbank = search_insee()
+        list_all_idbank = all_idbank.IDBANK.to_list()
+        
+        list_data_idbank = data.IDBANK.unique()
+        idbank_available_bool = [(idb in list_all_idbank) for idb in list_data_idbank]
+            
+        if any(idbank_available_bool):
+            
+            idbank_available = list_data_idbank[idbank_available_bool]
+            list_dataset = all_idbank[all_idbank.IDBANK.isin(idbank_available)]
+            list_dataset = list(list_dataset.DATASET.unique())            
+            
+            idbank_list = get_idbank_list(list_dataset)
+            newcol = [col for col in idbank_list.columns if col not in data.columns] + ['IDBANK']
+            idbank_list = idbank_list[newcol]
+            
+            data = data.merge(idbank_list, on = 'IDBANK', how='left')
+            
+            # remove all na columns
+            data = data.dropna(axis=1, how='all')
     
     return data
