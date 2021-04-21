@@ -29,6 +29,10 @@ def get_idbank_list(*datasets, update = False):
     insee_dataset = get_dataset_list()    
     insee_dataset_list = insee_dataset['id'].to_list()
     
+    if len(datasets) == 1:
+        if isinstance(datasets[0], list):
+            datasets = datasets[0]
+    
     for dt in datasets:
         if not dt in insee_dataset_list:               
             raise ValueError("%s is not a dataset from INSEE" % dt)
