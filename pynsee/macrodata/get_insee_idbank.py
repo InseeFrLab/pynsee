@@ -39,7 +39,7 @@ def get_insee_idbank(*idbanks,
         >>>                    (df_idbank.REF_AREA == "FE") & # all France including overseas departements
         >>>                    (df_idbank.COICOP2016.str.match("^[0-9]{2}$"))] # coicop aggregation level
         >>> # get data
-        >>> data = get_insee_idbank(df_idbank.idbank)
+        >>> data = get_insee_idbank(df_idbank.IDBANK)
     """    
     import pandas
     import math

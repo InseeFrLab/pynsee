@@ -70,7 +70,7 @@ French GDP growth rate
                (id.NATURE == "TAUX") &
                (id.CORRECTION == "CVS-CJO")]
 
-   data = get_insee_idbank(id.idbank)
+   data = get_insee_idbank(id.IDBANK)
 
    # plot with plotly
    fig = px.bar(data, x = data.index, y = "OBS_VALUE",
@@ -110,7 +110,7 @@ Population Map
                (id.SEXE == "0") &
                (id.REF_AREA.str.match("^D"))]
 
-   data = get_insee_idbank(id.idbank, lastNObservations=1)
+   data = get_insee_idbank(id.IDBANK, lastNObservations=1)
    data = data[['REF_AREA', 'OBS_VALUE']]
 
    map['REF_AREA'] = 'D' + map['code']
