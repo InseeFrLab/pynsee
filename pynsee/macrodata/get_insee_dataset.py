@@ -83,13 +83,16 @@ def get_insee_dataset(dataset,
     data = _get_insee(api_query=api_query, sdmx_query=sdmx_query)
     
     if metadata:
-        idbank_list = get_idbank_list(dataset)
-        
-        newcol = [col for col in idbank_list.columns if col not in data.columns] + ['IDBANK']
-        idbank_list = idbank_list[newcol]
-        
-        data = data.merge(idbank_list, on = 'IDBANK', how='left')
-        # remove all na columns
-        data = data.dropna(axis=1, how='all')
+        try:
+            idbank_list = get_idbank_list(dataset)
+            
+            newcol = [col for col in idbank_list.columns if col not in data.columns] + ['IDBANK']
+            idbank_list = idbank_list[newcol]
+            
+            data = data.merge(idbank_list, on = 'IDBANK', how='left')
+            # remove all na columns
+            data = data.dropna(axis=1, how='all')
+        except:
+            pass
     
     return data
