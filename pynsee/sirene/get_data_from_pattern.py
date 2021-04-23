@@ -11,7 +11,7 @@ def _warning_default_value_siret(msg):
      print(msg)
 
 def get_data_from_pattern(pattern, variable = None,
-                     kind = "siren", includeHistory = False, number = 20):
+                     kind = "siren", includeHistory = False, number = 20, clean=True):
 
     import pandas as pd
     from pynsee.utils._paste import _paste
@@ -29,13 +29,15 @@ def get_data_from_pattern(pattern, variable = None,
             msg = '!!! By default search is made on the variables:\n{} !!!'.format(_paste(variable, collapse = ' '))
             _warning_default_value_siren(msg)
         else:
-            if variable not in list_all_variables:
+            if type(variable) == str:
+                variable = [variable]
+            if not set(variable).issubset(list_all_variables):
                 string_all_variables = _paste(list_all_variables,collapse= ' ')
                 raise ValueError('!!! variable should be among : {} !!!'.format(string_all_variables))
                 
     elif kind == 'siret':
         includeHistory = False
-        list_all_variables = [ 'libelleCommuneEtablissement', 'libelleVoieEtablissement',
+        list_all_variables = ['libelleCommuneEtablissement', 'libelleVoieEtablissement',
                               'enseigne1Etablissement', 'enseigne2Etablissement', 'enseigne3Etablissement']
         
         if variable is None:
@@ -43,7 +45,9 @@ def get_data_from_pattern(pattern, variable = None,
             msg = '!!! By default search is made on the variables:\n{} !!!'.format(_paste(variable, collapse = ' '))
             _warning_default_value_siret(msg)
         else:
-            if variable not in list_all_variables:
+            if type(variable) == str:
+                variable = [variable]
+            if not set(variable).issubset(list_all_variables):
                 string_all_variables = _paste(list_all_variables, collapse= ' ')
                 raise ValueError('!!! variable should be among : {} !!!'.format(string_all_variables))
     else:
@@ -52,18 +56,33 @@ def get_data_from_pattern(pattern, variable = None,
     list_dataframe = []
 
     for var in variable:    
-    
-        if includeHistory:
-            search_link = "?q=periode({}.phonetisation:{})&nombre={}".format(var, pattern, number)
-        else:
-            search_link = "?q={}.phonetisation:{}&champs={}&nombre={}".format(var, pattern, var, number)
-                
-        df = get_data_sirene(query= search_link, kind = kind)
+#        var='denominationUniteLegale'
+#        if includeHistory:
+#            query = "?q=periode({}.phonetisation:{})&nombre={}".format(var, pattern, number)
+#        else:
+##            query = "?q={}.phonetisation:{}&champs={}&nombre={}".format(var, pattern, var, number)
+#            query = "?q={}.phonetisation:{}&nombre={}".format(var, pattern, number)
+#        
+        query = "?q=periode({}.phonetisation:{})&nombre={}".format(var, pattern, number)        
+        df = get_data_sirene(query = query, kind = kind)
+        
         list_dataframe.append(df)
         
     data_final = pd.concat(list_dataframe)
     data_final = data_final.reset_index(drop=True)
-         
+    
+    if clean:
+        # drop column full of None
+        data_final = data_final.dropna(axis=1, how='all')
+    
+    if kind == 'siren' :
+        first_col = ['siren', 'denominationUniteLegale' ,
+                     'dateFin', 'dateDebut', 'categorieEntreprise',
+                     'categorieJuridiqueUniteLegale', 'activitePrincipaleUniteLegale']
+        if set(first_col).issubset(data_final.columns):
+            other_col = [col for col in data_final if col not in first_col]
+            data_final = data_final[first_col + other_col]
+        
     return(data_final)
     
     
