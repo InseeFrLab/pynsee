@@ -23,7 +23,7 @@ def _get_dataset_metadata(dataset, update=False):
         
         if not os.path.exists(file_dataset_metadata): 
             trigger_update = True
-            print("%s : metadata update triggered because a file is missing" % dataset)
+            print("%s : metadata update triggered because it is not found locally" % dataset)
         else:
            
             try:
