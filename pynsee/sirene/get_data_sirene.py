@@ -53,4 +53,5 @@ def get_data_sirene(query, kind = 'siren'):
             list_dataframe.append(data_final)
             
         data_final = pd.concat(list_dataframe)
+        
         return(data_final)
