@@ -109,7 +109,7 @@ def get_insee_idbank(*idbanks,
              sdmx_query = sdmx_query + added_param_string
              api_query = api_query + added_param_string
              
-        list_data.append(_get_insee(api_query=api_query,
+        list_data.append(_get_insee(api_query=None, #api_query
                                     sdmx_query=sdmx_query,
                                     step =  str("{0}/{1}").format(q+1, max_seq_idbank)))
     
