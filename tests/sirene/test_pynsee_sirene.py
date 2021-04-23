@@ -24,6 +24,6 @@ class TestFunction(TestCase):
         df = get_data_from_pattern("sncf")        
         self.assertTrue(isinstance(df, pd.DataFrame))
     
-     def test_get_data_sirene(self):  
+    def test_get_data_sirene(self):  
         df = get_data_sirene("sncf")        
         self.assertTrue(isinstance(df, pd.DataFrame))
