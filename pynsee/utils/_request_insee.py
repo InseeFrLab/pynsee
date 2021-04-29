@@ -22,7 +22,6 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
 #    import re
     import requests
     from pynsee.utils._get_token import _get_token
-    from pynsee.utils._get_token2 import _get_token2
     from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
     # sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
@@ -44,7 +43,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
 
     if not api_url is None:
 
-        token = _get_token2()
+        token = _get_token()
 
         if not token is None:
             headers = {'Accept': file_format,
