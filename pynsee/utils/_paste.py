@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Dec 28 00:01:40 2020
-
-@author: eurhope
-"""
 
 def _reduce_concat(x, sep=""):
     import functools
