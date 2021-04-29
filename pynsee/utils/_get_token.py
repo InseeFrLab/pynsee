@@ -3,9 +3,9 @@ from functools import lru_cache
 @lru_cache(maxsize=None)
 def _get_token():
     import os
-    from api_insee import ApiInsee
+    #from api_insee import ApiInsee
     
-    from pynsee.utils._get_envir_token import 
+    from pynsee.utils._get_envir_token import _get_envir_token
     from pynsee.utils._get_token_from_insee import _get_token_from_insee
 
     token_envir = _get_envir_token()
