@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import requests, re, os, base64
 
-def _get_token2():
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def _get_token_from_insee():
 
     string_key = "{}:{}".format(os.environ['insee_key'], os.environ['insee_secret'])
     string_key_encoded = string_key.encode("utf-8")

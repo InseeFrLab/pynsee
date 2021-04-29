@@ -22,7 +22,7 @@ setuptools.setup(
             "pandas>=0.24.2",
             "tqdm>=4.56.0",
             "requests>=2.25.1",
-            "api_insee>=1.5",
+            #"api_insee>=1.5",
             "appdirs>=1.4.4",
             "unidecode>=1.2.0",
             "datetime>=3.5.9"],
