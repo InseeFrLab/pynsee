@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-#proxy
-# 
+ 
 from unittest import TestCase
 from pandas import pandas as pd
 import geopandas as gpd

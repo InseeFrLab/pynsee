@@ -1,11 +1,3 @@
-proxy_file_folder = 'C:/Users/eurhope/Desktop/insee_pylib/insee_pylib'
-proxy_file = proxy_file_folder + '/proxy.py'
-try:
-    f = open(proxy_file)
-    exec(f.read())
-    print("Proxy file executed")
-except IOError:
-    print("Proxy file not accessible")
 
 from unittest import TestCase
 from pandas import pandas as pd
