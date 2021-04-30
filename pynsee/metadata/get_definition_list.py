@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
+from pynsee.utils._request_insee import _request_insee
+from pynsee.utils._create_insee_folder import _create_insee_folder
+    
+import zipfile, os
+import pkg_resources
+import pandas as pd
 
 @lru_cache(maxsize=None)
 def _warning_definition_internal_data():
@@ -14,13 +20,7 @@ def get_definition_list():
         >>> from pynsee.metadata import *
         >>> definition = get_definition_list()
     """    
-    from pynsee.utils._request_insee import _request_insee
-    from pynsee.utils._create_insee_folder import _create_insee_folder
-    
-    import zipfile, os
-    import pkg_resources
-    import pandas as pd
-    
+        
     insee_folder = _create_insee_folder()
 
     insee_folder_local_def = insee_folder + '/' + 'definition'

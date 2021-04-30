@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
+import pandas as pd
 
 @lru_cache(maxsize=None)
 def _get_nomenclature_agreg(file):
-    import pandas as pd
+    
     df = pd.read_csv(file, sep=";", encoding='latin1', dtype=str)
     
     for i in range(len(df.index)):

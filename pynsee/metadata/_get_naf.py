@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
+import pandas as pd
+import re
 
 @lru_cache(maxsize=None)
 def _get_naf(file):
-    import pandas as pd
-    import re
-    
+        
     def clean_CODE_col(string):
         re_searched = re.search('^SECTION .*$', string)
         if re_searched:

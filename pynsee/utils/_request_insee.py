@@ -1,32 +1,13 @@
-#from functools import lru_cache
-#import warnings
 
-# @lru_cache(maxsize=None)
-# def _warning_api_success():
-#     print("Insee API used")
+import os
+import requests
+from pynsee.utils._get_token import _get_token
+from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
-# @lru_cache(maxsize=None)
-# def _warning_api_failure():
-#     msg1 = "\n!!! Error : check your subscription to api.insee.fr"
-#     #msg2 = "Due to an error the sdmx service is used instead of the api!!!\n"
-#     #print(msg1 + "\n" + msg2)
-#     print(msg1 + "\n" )
-
-#@lru_cache(maxsize=None)
-#def _warning_no_token(msg):
-#    warnings.warn(msg)
-
-def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
-
-    import os
-#    import re
-    import requests
-    from pynsee.utils._get_token import _get_token
-    from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
+def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'): 
 
     # sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
-
 
     try:
         proxies = {'http': os.environ['http_proxy'],

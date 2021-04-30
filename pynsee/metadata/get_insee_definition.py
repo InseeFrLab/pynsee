@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+from pynsee.utils._request_insee import _request_insee
+from tqdm import trange
+
+import re
+import pandas as pd
 
 def get_insee_definition(ids):
     """Get the definition of a concept from its identifier
@@ -18,12 +23,7 @@ def get_insee_definition(ids):
         >>>                       'c1361', 'c2173', 'c2070'])
 
     """    
-    from pynsee.utils._request_insee import _request_insee
-    from tqdm import trange
-
-    import re
-    import pandas as pd
-
+   
     if type(ids) != list:
         raise ValueError("!!! ids must be a list !!!")
     

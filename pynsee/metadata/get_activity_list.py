@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
+import os, re
+import zipfile
+import pkg_resources
+import pandas as pd    
 
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._paste import _paste
+from pynsee.metadata._get_naf import _get_naf
+from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
+    
+    
 @lru_cache(maxsize=None)
 def _warning_activity():
     msg1 = "!!! This function uses the latest data available (which is NAF/NACE rev. 2 - 2008), it may evolve over time !!!"
@@ -23,16 +33,7 @@ def get_activity_list(level, version='latest'):
         >>> activity_A138 = get_activity_list('A138')
         >>> activity_NAF3 = get_activity_list('NAF3')
     """        
-    import os, re
-    import zipfile
-    import pkg_resources
-    import pandas as pd    
-    
-    from pynsee.utils._create_insee_folder import _create_insee_folder
-    from pynsee.utils._paste import _paste
-    from pynsee.metadata._get_naf import _get_naf
-    from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
-    
+   
     level = level.upper()
     
     level_available = ['A10', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
