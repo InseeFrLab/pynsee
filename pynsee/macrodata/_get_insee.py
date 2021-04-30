@@ -107,7 +107,7 @@ def _get_insee(api_query, sdmx_query, step = "1/1"):
     data_final = pd.concat(list_series)
     
     # index and sort dataframe by date
-    data_final = data_final.set_index('DATE')
+    # data_final = data_final.set_index('DATE')
     data_final = data_final.sort_values(["IDBANK", "DATE"])
         
     #harmonise column names
