@@ -25,5 +25,9 @@ class TestFunction(TestCase):
         self.assertTrue(isinstance(df, pd.DataFrame))
     
     def test_get_data_sirene(self):  
-        df = get_data_sirene("?q=periode(denominationUniteLegale.phonetisation:sncf)&nombre=20")        
-        self.assertTrue(isinstance(df, pd.DataFrame))
+        df1 = get_data_sirene("?q=periode(denominationUniteLegale.phonetisation:sncf)&nombre=20")        
+        df2 = get_data_sirene('?q=denominationUniteLegale.phonetisation:oto&nombre=20', kind='siret')
+        df3 = get_data_sirene('?q=denominationUniteLegale.phonetisation:oto&nombre=20&champs=denominationUniteLegale', kind='siret')
+        
+        test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame) & isinstance(df3, pd.DataFrame)
+        self.assertTrue(test)
