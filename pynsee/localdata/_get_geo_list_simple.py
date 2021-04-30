@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from functools import lru_cache
- import pandas as pd
+import pandas as pd
 import xml.etree.ElementTree as ET
 from tqdm import trange
 import os
