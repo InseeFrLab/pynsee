@@ -11,7 +11,6 @@ except IOError:
 
 from unittest import TestCase
 from pandas import pandas as pd
-import geopandas as gpd
 
 import os
 
@@ -70,8 +69,9 @@ class TestFunction(TestCase):
     
     def test_request_insee_4(self):
         # token is none and sdmx query is None
-        _get_token.cache_clear()
-        _get_envir_token.cache_clear() 
+        # _get_token.cache_clear()
+        # _get_envir_token.cache_clear() 
+        clear_all_cache()
 
         os.environ['insee_token'] = "test"
         os.environ['insee_key'] = "key"
