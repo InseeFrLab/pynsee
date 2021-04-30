@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+import functools
 
 def _reduce_concat(x, sep=""):
-    import functools
+    
     return functools.reduce(lambda x, y: str(x) + sep + str(y), x)
  
 def _paste(*lists, sep=" ", collapse=None):

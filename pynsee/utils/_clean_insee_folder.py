@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
+import appdirs
+import os
 
-def _clean_insee_folder():
-    import appdirs
-    import os
+def _clean_insee_folder():    
     
     local_appdata_folder = appdirs.user_cache_dir()      
     insee_folder = local_appdata_folder + '/insee' + '/py_insee'

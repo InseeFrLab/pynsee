@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
+import os 
+import appdirs
+
+from pynsee.utils._get_temp_dir import _get_temp_dir
 
 @lru_cache(maxsize=None)
 def _create_insee_folder():
-    import os 
-    import appdirs
-    
-    from pynsee.utils._get_temp_dir import _get_temp_dir
     
     try:
         from ._hash import _hash

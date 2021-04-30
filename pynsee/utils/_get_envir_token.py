@@ -1,10 +1,10 @@
+import os, requests
 
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def _get_envir_token():
-    import os, requests
-
+    
     try:
         proxies = {'http': os.environ['http_proxy'],
                    'https': os.environ['http_proxy']}

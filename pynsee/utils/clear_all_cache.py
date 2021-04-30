@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+import functools
+import gc
 
 def clear_all_cache():
-    import functools
-    import gc
-
+    
     gc.collect()
     wrappers = [
         a for a in gc.get_objects() 

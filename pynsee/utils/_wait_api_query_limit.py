@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
+import os, time, math
+import pandas as pd
+from datetime import datetime
+#    from tqdm import trange
+
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._hash import _hash
 
 @lru_cache(maxsize=None)
 def _warning_query_limit():
     print("\nAPI query number limit reached - function might be slowed down")
 
 def _wait_api_query_limit(query):
-    
-    import os, time, math
-    import pandas as pd
-    from datetime import datetime
-#    from tqdm import trange
-    
-    from pynsee.utils._create_insee_folder import _create_insee_folder
-    from pynsee.utils._hash import _hash
-    
+        
     max_query_insee_api = 30
     timespan_insee_api = 60
     
