@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+import pandas as pd
+from tqdm import trange
+
+from pynsee.macrodata.get_dataset_list import get_dataset_list 
+from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
+from pynsee.macrodata._get_dimension_values import _get_dimension_values
+
 def get_column_title(dataset = None):
     """Get the title of a dataset's columns
 
@@ -14,12 +21,6 @@ def get_column_title(dataset = None):
         >>> insee_all_columns = get_column_title()
         >>> balance_paiements_columns = get_column_title("BALANCE-PAIEMENTS")
     """    
-    import pandas as pd
-    from tqdm import trange
-    
-    from pynsee.macrodata.get_dataset_list import get_dataset_list 
-    from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
-    from pynsee.macrodata._get_dimension_values import _get_dimension_values
     
     insee_dataset = get_dataset_list()    
     insee_dataset_list = insee_dataset['id'].to_list()

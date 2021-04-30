@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from functools import lru_cache
+import xml.etree.ElementTree as ET
+import pandas as pd
+import os, re
+import datetime
+
+from pynsee.utils._request_insee import _request_insee 
+from pynsee.utils._get_temp_dir import _get_temp_dir
+
 
 @lru_cache(maxsize=None)
 def get_last_release():
@@ -9,15 +17,7 @@ def get_last_release():
     Examples
         >>> from pynsee.macrodata import *
         >>> dataset_released = get_last_release()
-    """    
-    import xml.etree.ElementTree as ET
-    import pandas as pd
-    import os, re
-    import datetime
-    
-    from pynsee.utils._request_insee import _request_insee 
-    from pynsee.utils._get_temp_dir import _get_temp_dir
-    
+    """       
     link = 'https://bdm.insee.fr/series/sdmx/rss/donnees'
     
     request = _request_insee(sdmx_url = link)

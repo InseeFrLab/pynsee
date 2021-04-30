@@ -1,15 +1,10 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon Feb 15 16:58:11 2021
-
-@author: XLAPDO
-"""
+import pandas as pd
 
 def _get_date(freq, time_period):
     
     # from datetime import datetime 
-    import pandas as pd
-      
+          
     if freq == "M":
         dates = [tp + "-01" for tp in time_period]
     

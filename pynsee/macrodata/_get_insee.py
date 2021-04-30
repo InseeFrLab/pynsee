@@ -1,19 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from functools import lru_cache
+import pandas as pd
+import os
+import xml.dom.minidom
+from tqdm import trange
+
+from pynsee.macrodata._get_date import _get_date
+from pynsee.utils._request_insee import _request_insee
+from pynsee.utils._get_temp_dir import _get_temp_dir
 
 @lru_cache(maxsize=None)
 def _get_insee(api_query, sdmx_query, step = "1/1"):
-    
-    import pandas as pd
-    import os
-    import xml.dom.minidom
-    from tqdm import trange
-    
-    from pynsee.macrodata._get_date import _get_date
-    from pynsee.utils._request_insee import _request_insee
-    from pynsee.utils._get_temp_dir import _get_temp_dir
-    
+        
     # "001694056", "001691912", "001580062", "001688370", "010565692"
     # sdmx_query = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_query = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"

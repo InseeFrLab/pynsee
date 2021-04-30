@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Feb 18 17:35:16 2021
 
-@author: XLAPDO
-"""
 from functools import lru_cache
+import unidecode
+import pandas as pd
+
+from ._get_idbank_internal_data import _get_idbank_internal_data
 
 @lru_cache(maxsize=None)
 def _get_idbank_internal_data_harmonized():
-    
-    import unidecode
-    import pandas as pd
-    
-    from ._get_idbank_internal_data import _get_idbank_internal_data
-    
+        
     idbank_list = _get_idbank_internal_data()
     
     col_selected = ["nomflow", "idbank", "cleFlow", "title_fr", "title_en"]

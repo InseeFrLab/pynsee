@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
+import pandas as pd
+import numpy as np
+
+from pynsee.utils._request_insee import _request_insee
 
 @lru_cache(maxsize=None)
 def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
-        
-    from pynsee.utils._request_insee import _request_insee
-    
-    import pandas as pd
-    import numpy as np
-                    
+                            
     count_sep = variables.count('-')
     modalite = '.all' * (count_sep+1)
     

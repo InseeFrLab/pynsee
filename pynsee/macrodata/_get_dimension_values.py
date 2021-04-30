@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
+import xml.etree.ElementTree as ET
+import pandas as pd
+import os
+from datetime import datetime 
+
+from pynsee.utils._get_temp_dir import _get_temp_dir
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._request_insee import _request_insee
+from pynsee.utils._hash import _hash
 
 def _get_dimension_values(cl_dimension):    
-    
-    import xml.etree.ElementTree as ET
-    import pandas as pd
-    import os
-    from datetime import datetime 
-    
-    from pynsee.utils._get_temp_dir import _get_temp_dir
-    from pynsee.utils._create_insee_folder import _create_insee_folder
-    from pynsee.utils._request_insee import _request_insee
-    from pynsee.utils._hash import _hash
-    
+       
     INSEE_sdmx_link_codelist = "https://www.bdm.insee.fr/series/sdmx/codelist/FR1"
     INSEE_api_link_codelist = "https://api.insee.fr/series/BDM/V1/codelist/FR1"
        

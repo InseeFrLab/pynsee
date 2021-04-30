@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
+import os, re
+import zipfile
+import pkg_resources
+import pandas as pd
+
+from pynsee.utils._create_insee_folder import _create_insee_folder
+    
 
 @lru_cache(maxsize=None)
 def _warning_data():
@@ -16,12 +23,6 @@ def get_local_metadata():
     _warning_data()
     
     #import geopandas as gpd
-    import os, re
-    import zipfile
-    import pkg_resources
-    import pandas as pd
-    
-    from pynsee.utils._create_insee_folder import _create_insee_folder
     
     insee_folder = _create_insee_folder()
 

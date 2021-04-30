@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
+import pandas as pd 
+   
+from pynsee.utils._paste import _paste
+from pynsee.utils._request_insee import _request_insee
+from pynsee.localdata.get_area_list import get_area_list
 
 @lru_cache(maxsize=None)
 def _get_insee_one_area(area_type, codearea):
-    
-    import pandas as pd 
-    from pynsee.utils._paste import _paste
-    from pynsee.utils._request_insee import _request_insee
-    from pynsee.localdata.get_area_list import get_area_list
-    
+        
     df_list = get_area_list(area_type)
     list_available_codeareas = df_list.CODE.to_list()
     

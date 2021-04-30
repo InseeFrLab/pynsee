@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from functools import lru_cache
+import pandas as pd
+from tqdm import trange
+
+from pynsee.utils._paste import _paste
+from pynsee.localdata._get_geo_relation import _get_geo_relation
+from pynsee.localdata._get_geo_list_simple import _get_geo_list_simple
 
 @lru_cache(maxsize=None)
 def get_geo_list(geo=None, date=None):    
@@ -19,13 +25,7 @@ def get_geo_list(geo=None, date=None):
         >>> departement_list = get_geo_list('departements')
         >>> arrondiss_list = get_geo_list('arrondissements')
     """   
-    import pandas as pd
-    from tqdm import trange
-    
-    from pynsee.utils._paste import _paste
-    from pynsee.localdata._get_geo_relation import _get_geo_relation
-    from pynsee.localdata._get_geo_list_simple import _get_geo_list_simple
-    
+        
     list_available_geo = ['communes', 'communesDeleguees', 'communesAssociees',
                           'regions', 'departements',
                           'arrondissements', 'arrondissementsMunicipaux']

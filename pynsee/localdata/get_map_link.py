@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+import os
+import zipfile
+import pkg_resources
+
+from pynsee.localdata import get_map_list
+from pynsee.utils._create_insee_folder import _create_insee_folder
 
 def get_map_link(geo):
     """Get the link of the geojson map file stored locally
@@ -14,13 +20,7 @@ def get_map_link(geo):
         >>> map_departement_link = get_map_link('departements')
     """    
     #import geopandas as gpd
-    import os
-    import zipfile
-    import pkg_resources
-    
-    from pynsee.localdata import get_map_list
-    from pynsee.utils._create_insee_folder import _create_insee_folder
-    
+        
     insee_folder = _create_insee_folder()
 
     insee_folder_map = insee_folder + '/' + 'maps'

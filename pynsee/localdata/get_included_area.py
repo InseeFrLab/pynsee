@@ -2,6 +2,12 @@
 #from functools import lru_cache
 #
 #@lru_cache(maxsize=None)
+
+from pynsee.localdata._get_insee_one_area import _get_insee_one_area
+    
+import pandas as pd    
+from tqdm import trange
+
 def get_included_area(area_type, codeareas):
     """Get all areas included in the list of areas provided
 
@@ -19,10 +25,7 @@ def get_included_area(area_type, codeareas):
     """    
 #    codeareas = ['1109']
 #    area_type = 'zonesDEmploi2020'
-    from pynsee.localdata._get_insee_one_area import _get_insee_one_area
     
-    import pandas as pd    
-    from tqdm import trange
     
     if type(codeareas) != list:
         raise ValueError("!!! codeareas must be a list !!!")

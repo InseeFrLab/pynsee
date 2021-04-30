@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from functools import lru_cache
+import pandas as pd
+    
+from pynsee.utils._request_insee import _request_insee
+from pynsee.utils._paste import _paste
 
 @lru_cache(maxsize=None)
 def get_area_list(area=None):    
@@ -16,10 +20,7 @@ def get_area_list(area=None):
         >>> from pynsee.localdata import *
         >>> area_list = get_area_list()
     """    
-    import pandas as pd
-    from pynsee.utils._request_insee import _request_insee
-    from pynsee.utils._paste import _paste
-    
+        
     list_available_area = ['zonesDEmploi2020', 'airesDAttractionDesVilles2020', 'unitesUrbaines2020']
     area_string = _paste(list_available_area, collapse = " ")
     

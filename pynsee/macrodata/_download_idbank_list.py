@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
+import requests
+import zipfile
+import pandas as pd
+import os
+import re
+
+from pynsee.utils._hash import _hash
+from pynsee.utils._create_insee_folder import _create_insee_folder 
+from pynsee.utils._get_temp_dir import _get_temp_dir
+from datetime import datetime
 
 def _download_idbank_list():
     
-    import requests
-    import zipfile
-    import pandas as pd
-    import os
-    import re
-    
-    from pynsee.utils._hash import _hash
-    from pynsee.utils._create_insee_folder import _create_insee_folder 
-    from pynsee.utils._get_temp_dir import _get_temp_dir
-    from datetime import datetime
-
     file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
     idbank_file_csv_default = "2020_correspondances_idbank_dimension.csv"
     

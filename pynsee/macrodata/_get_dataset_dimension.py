@@ -1,23 +1,18 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sat Dec 26 17:56:28 2020
+import xml.etree.ElementTree as ET
+import pandas as pd
+import os
+from datetime import datetime 
 
-@author: eurhope
-"""
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._get_temp_dir import _get_temp_dir
+from pynsee.utils._hash import _hash
+from pynsee.utils._request_insee import _request_insee 
+
 # from functools import lru_cache
 
 # @lru_cache(maxsize=None)
 def _get_dataset_dimension(dataset) :
-             
-    import xml.etree.ElementTree as ET
-    import pandas as pd
-    import os
-    from datetime import datetime 
-    
-    from pynsee.utils._create_insee_folder import _create_insee_folder
-    from pynsee.utils._get_temp_dir import _get_temp_dir
-    from pynsee.utils._hash import _hash
-    from pynsee.utils._request_insee import _request_insee    
     
     INSEE_sdmx_link_datastructure = "https://www.bdm.insee.fr/series/sdmx/datastructure/FR1"
     INSEE_api_link_datastructure = "https://api.insee.fr/series/BDM/V1/datastructure/FR1"

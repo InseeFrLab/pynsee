@@ -1,4 +1,5 @@
 from functools import lru_cache
+import pandas as pd
 
 @lru_cache(maxsize=None)
 def _warning_nivgeo():
@@ -13,7 +14,6 @@ def get_nivgeo_list():
     """    
     _warning_nivgeo()
     
-    import pandas as pd
     dict_ng = {
             'NIVGEO':['COM',
                       'DEP',

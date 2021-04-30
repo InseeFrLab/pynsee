@@ -1,22 +1,17 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Feb 14 21:15:52 2021
-
-@author: XLAPDO
-"""
 
 import zipfile
 import pkg_resources
 import pandas as pd
 import os
+
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._hash import _hash
     
 #from functools import lru_cache
 
 #@lru_cache(maxsize=None)
 def _get_idbank_internal_data():
-    
-    from pynsee.utils._create_insee_folder import _create_insee_folder
-    from pynsee.utils._hash import _hash
     
     insee_folder = _create_insee_folder()
     

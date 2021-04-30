@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pandas as pd
 
 def split_title(df, title_col_name = ["TITLE_EN", "TITLE_FR"],
                 pattern = " – | — | - ", n_split = -1):
@@ -18,8 +19,7 @@ def split_title(df, title_col_name = ["TITLE_EN", "TITLE_FR"],
         >>> data_raw = get_insee_idbank("001577236")
         >>> data = split_title(data_raw)
     """    
-    import pandas as pd
-            
+                
     if isinstance(df, pd.DataFrame):        
         for title in title_col_name :
             if title in df.columns:

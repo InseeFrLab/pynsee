@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from functools import lru_cache
+import os
+import pandas as pd
+import xml.etree.ElementTree as ET
+#    from tqdm import trange
+    
+from pynsee.utils._paste import _paste
+from pynsee.utils._request_insee import _request_insee
+from pynsee.utils._get_temp_dir import _get_temp_dir
 
 @lru_cache(maxsize=None)
 def _get_geo_relation(geo, code, relation, date=None, type=None):    
@@ -14,15 +22,7 @@ def _get_geo_relation(geo, code, relation, date=None, type=None):
 
     #idf = _get_geo_relation('region', "11", 'descendants')
     #essonne = _get_geo_relation('region', "11", 'ascendants')
-    import os
-    import pandas as pd
-    import xml.etree.ElementTree as ET
-    #    from tqdm import trange
-    
-    from pynsee.utils._paste import _paste
-    from pynsee.utils._request_insee import _request_insee
-    from pynsee.utils._get_temp_dir import _get_temp_dir
-    
+        
     api_url = 'https://api.insee.fr/metadonnees/V1/geo/' + geo + '/' + code + '/' + relation
     
     parameters = ["date", "type"]

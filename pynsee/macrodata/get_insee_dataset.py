@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+from pynsee.utils._paste import _paste 
+from ._get_insee import _get_insee
+from .get_dataset_list import get_dataset_list 
+from .get_idbank_list import get_idbank_list 
 
 def get_insee_dataset(dataset,
                       metadata=True,
@@ -43,12 +47,7 @@ def get_insee_dataset(dataset,
         >>>        filter = "M......ENSEMBLE...CVS.2015",
         >>>        includeHistory = True, updatedAfter = "2017-07-11T08:45:00")
         >>> business_climate = get_insee_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
-    """    
-    from pynsee.utils._paste import _paste 
-    from ._get_insee import _get_insee
-    from .get_dataset_list import get_dataset_list 
-    from .get_idbank_list import get_idbank_list 
-    
+    """       
     insee_dataset = get_dataset_list()    
     insee_dataset_list = insee_dataset['id'].to_list()
     

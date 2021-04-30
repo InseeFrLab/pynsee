@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+import pandas as pd
+import re
+
+from .get_dataset_list import get_dataset_list 
+from ._get_dataset_metadata import _get_dataset_metadata
+    
 def get_idbank_list(*datasets, update = False):
     """Download an INSEE's series key list for one or several datasets
     
@@ -19,13 +25,7 @@ def get_idbank_list(*datasets, update = False):
     Examples:
         >>> from pynsee.macrodata import * 
         >>> idbank_ipc = get_idbank_list('IPC-2015', 'CLIMAT-AFFAIRES')
-    """    
-    import pandas as pd
-    import re
-    
-    from .get_dataset_list import get_dataset_list 
-    from ._get_dataset_metadata import _get_dataset_metadata
-    
+    """        
     insee_dataset = get_dataset_list()    
     insee_dataset_list = insee_dataset['id'].to_list()
     

@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
+import pandas as pd
+import os
+import warnings
+
+from datetime import datetime    
+    
+from pynsee.macrodata._download_idbank_list import _download_idbank_list
+from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
+from pynsee.macrodata._get_dimension_values import _get_dimension_values    
+from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data
+from pynsee.utils._hash import _hash  
+from pynsee.utils._create_insee_folder import _create_insee_folder
 
 def _get_dataset_metadata(dataset, update=False):
-    
-    import pandas as pd
-    import os
-    import warnings
-    
-    from datetime import datetime    
         
-    from pynsee.macrodata._download_idbank_list import _download_idbank_list
-    from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
-    from pynsee.macrodata._get_dimension_values import _get_dimension_values    
-    from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data
-    from pynsee.utils._hash import _hash  
-    from pynsee.utils._create_insee_folder import _create_insee_folder
-    
     try:        
         insee_folder = _create_insee_folder()
         file_dataset_metadata = insee_folder + "/" + _hash("idbank_list" + dataset)

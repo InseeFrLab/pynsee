@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
+import os
+import xml.etree.ElementTree as ET
+import pandas as pd
+from tqdm import trange
+
+from pynsee.utils._request_insee import _request_insee
+from pynsee.utils._get_temp_dir import _get_temp_dir
 
 @lru_cache(maxsize=None)
 def get_dataset_list() :
@@ -12,14 +19,7 @@ def get_dataset_list() :
         >>> from pynsee.macrodata import * 
         >>> insee_dataset = get_dataset_list()
     """    
-    import os
-    import xml.etree.ElementTree as ET
-    import pandas as pd
-    from tqdm import trange
-    
-    from pynsee.utils._request_insee import _request_insee
-    from pynsee.utils._get_temp_dir import _get_temp_dir
-    
+        
     INSEE_sdmx_link_dataflow = "https://bdm.insee.fr/series/sdmx/dataflow"
         
     results = _request_insee(sdmx_url=INSEE_sdmx_link_dataflow)

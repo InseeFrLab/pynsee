@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+import pandas
+import math
+
+from pynsee.macrodata._get_insee import _get_insee 
+from pynsee.macrodata.get_idbank_list import get_idbank_list  
+from pynsee.macrodata.search_insee import search_insee 
+from pynsee.utils._paste import _paste           
 
 def get_insee_idbank(*idbanks,
                      metadata=True,
@@ -41,14 +48,6 @@ def get_insee_idbank(*idbanks,
         >>> # get data
         >>> data = get_insee_idbank(df_idbank.IDBANK)
     """    
-    import pandas
-    import math
-    
-    from pynsee.macrodata._get_insee import _get_insee 
-    from pynsee.macrodata.get_idbank_list import get_idbank_list  
-    from pynsee.macrodata.search_insee import search_insee 
-    from pynsee.utils._paste import _paste  
-            
     INSEE_sdmx_link_idbank = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/"
     INSEE_api_link_idbank = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/"
         

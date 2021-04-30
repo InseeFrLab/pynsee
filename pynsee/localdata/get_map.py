@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
+import geopandas as gpd
+import numpy as np
+
+from pynsee.localdata.get_map_link import get_map_link
 
 @lru_cache(maxsize=None)
 def _warning_arr_muni():
@@ -21,12 +25,7 @@ def get_map(geo):
         >>> # Draw map with random values
         >>> import matplotlib, descartes
         >>> map_departement.plot(column='value')
-    """        
-    import geopandas as gpd
-    import numpy as np
-    
-    from pynsee.localdata.get_map_link import get_map_link
-    
+    """            
     map = gpd.read_file(get_map_link(geo))
 
     if geo == 'arrondissements-municipaux':

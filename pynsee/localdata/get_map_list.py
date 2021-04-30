@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import pandas as pd
 
 def get_map_list():
     """Get a list of all available maps
@@ -7,7 +8,7 @@ def get_map_list():
         >>> from pynsee.localdata import *
         >>> map_list = get_map_list()
     """
-    import pandas as pd
+   
     maps_list = {
             'name_fr':['arrondissements',
                     'arrondissements-avec-outre-mer',

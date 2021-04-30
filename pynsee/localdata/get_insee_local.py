@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from functools import lru_cache
+from functools import lru_cache    
+from tqdm import trange
+import pandas as pd
+
+from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
 
 @lru_cache(maxsize=None)
 def _warning_future_dev():
@@ -33,11 +37,7 @@ def get_insee_local(variables, dataset_version, nivgeo='FE', geocodes=['1']):
         >>>                        nivgeo = 'DEP',
         >>>                        geocodes = ['91','92'])
     """    
-    from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
-    
-    from tqdm import trange
-    import pandas as pd
-    
+        
     if type(geocodes) != list:
         raise ValueError("!!! geocodes must be a list !!!")
         
