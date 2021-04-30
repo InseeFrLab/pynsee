@@ -83,6 +83,11 @@ def get_data_sirene(query, kind = 'siren'):
             
         data_final = pd.concat(list_dataframe)
         
+        # empty columns at the end
+        list_all_na_col = [col for col in data_final.columns if all(pd.isna(data_final[col]))]
+        list_first_col = [col for col in data_final.columns if col not in list_all_na_col]
+        data_final = data_final[list_first_col + list_all_na_col]
+        
         return(data_final)
     else:
         print(request.text)
