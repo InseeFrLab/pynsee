@@ -4,7 +4,11 @@
 #code = "552081317"
 
 def get_data_from_code(*siren):
-    
+    """Get data about one or several companies from siren codes
+
+    Examples:
+        >>> df = get_data_from_code("552081317")
+    """    
     import pandas as pd
     from pynsee.utils._request_insee import _request_insee
     

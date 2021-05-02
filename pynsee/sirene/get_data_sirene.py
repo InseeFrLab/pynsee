@@ -1,11 +1,22 @@
 # -*- coding: utf-8 -*-
 
-import re
+# import re
 import pandas as pd
 from pynsee.utils._request_insee import _request_insee
+from pynsee.metadata.get_activity_list import get_activity_list
 
-def get_data_sirene(query, kind = 'siren'):
-            
+def get_data_sirene(query, kind = 'siren', clean=True, activity=True):
+    """Get data from any criteria-based query
+
+    Args:
+        query (str): query string
+        kind (str, optional): kind of entitty: siren or siret. Defaults to 'siren'.
+        clean (bool, optional): If True empty columns are removed. Defaults to True.
+        activity (bool, optional): If True activity label is added. Defaults to True.
+
+    Raises:
+        ValueError: If kind is not equal to 'siret' or 'siren' an error is raised.
+    """            
     INSEE_api_sirene_siren = "https://api.insee.fr/entreprises/sirene/V3"
     
     link = INSEE_api_sirene_siren + '/' + kind + query
@@ -25,8 +36,8 @@ def get_data_sirene(query, kind = 'siren'):
     
         data_request = request.json()
         
-        # main_key = [key for key in list(data_request.keys()) if key != "header"]
-        # main_key = main_key[0]
+        # main_key_list = [key for key in list(data_request.keys()) if key != "header"]
+        # main_key = main_key_list[0]
         
         data = data_request[main_key]          
         
@@ -83,6 +94,18 @@ def get_data_sirene(query, kind = 'siren'):
             
         data_final = pd.concat(list_dataframe)
         
+        if clean:
+            data_final = data_final.dropna(axis=1, how='all')
+        
+        # add activity metadata
+        if activity:
+            if "activitePrincipaleUniteLegale" in data_final.columns:
+                data_final["NAF5"] = data_final["activitePrincipaleUniteLegale"]
+                naf5 = get_activity_list("NAF5")
+                naf5 = naf5[["NAF5", "TITLE_NAF5_FR"]]
+                data_final = data_final.merge(naf5, on ="NAF5", how="left")
+    
+        
         # empty columns at the end
         list_all_na_col = [col for col in data_final.columns if all(pd.isna(data_final[col]))]
         list_first_col = [col for col in data_final.columns if col not in list_all_na_col]
@@ -90,6 +113,7 @@ def get_data_sirene(query, kind = 'siren'):
         
         return(data_final)
     else:
+        print("Query : %s" % link)
         print(request.text)
          # m = re.search("ams\\:description\\>.*\\<\\/ams\\:description", results.text)
 #                    if m:
