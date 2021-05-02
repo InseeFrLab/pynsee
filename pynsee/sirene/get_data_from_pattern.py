@@ -24,10 +24,10 @@ def get_data_from_pattern(pattern,
     """Get data about companies from a pattern string
 
     Args:
-        pattern (str): the pattern searched
-        kind (str, optional): kind of companies : siren or siret []. Defaults to "siren".
+        pattern (str): the pattern or criterium searched
+        kind (str, optional): kind of companies : siren or siret. Defaults to "siren".
         variable (str or list, optional): name of the variable on which the search is applied. Defaults to None.
-        phonetic_search (bool, optional): If True phonetic search is triggered, if False the exact stringis searched. Defaults to True.
+        phonetic_search (bool, optional): If True phonetic search is triggered, if False the exact string is searched. Defaults to True.
         number (int, optional): Maximum number of companies. Defaults to 200.
         clean (bool, optional): If True, empty columns are deleted. Defaults to True.
         activity (bool, optional): If True, activty title is added based on NAF/NACE. Defaults to True.
@@ -36,6 +36,12 @@ def get_data_from_pattern(pattern,
         ValueError: [description]
         ValueError: [description]
         ValueError: [description]
+    
+    Examples:
+        >>> # Get a list of all hospitals in Paris
+        >>> df4 = get_data_from_pattern(variable = ["activitePrincipaleUniteLegale", 
+        >>>                                        "codePostalEtablissement"],
+        >>>                            pattern = ["86.10Z", "75*"], kind = "siret", number = 1000000)
     """        
     if kind == 'siren':        
         # list_all_variables = ['denominationUniteLegale', 'denominationUsuelle1UniteLegale',
