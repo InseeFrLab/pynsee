@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from functools import lru_cache
-import geopandas as gpd
 import numpy as np
 
 from pynsee.localdata.get_map_link import get_map_link
@@ -26,6 +25,7 @@ def get_map(geo):
         >>> import matplotlib, descartes
         >>> map_departement.plot(column='value')
     """            
+    import geopandas as gpd
     map = gpd.read_file(get_map_link(geo))
 
     if geo == 'arrondissements-municipaux':
