@@ -7,6 +7,7 @@ pynsee/__pycache__/
 pynsee/macro/__pycache__/
 pynsee/utils/__pycache__/
 pynsee/local/__pycache__/
+pynsee/sirene/__pycache__/
 settings.json
 .coverage
 .venv/
