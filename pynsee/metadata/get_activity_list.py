@@ -32,6 +32,7 @@ def get_activity_list(level, version='latest'):
         >>> from pynsee.metadata import *
         >>> activity_A138 = get_activity_list('A138')
         >>> activity_NAF3 = get_activity_list('NAF3')
+        >>> activity_NAF5 = get_activity_list('NAF5')
     """        
    
     level = level.upper()
