@@ -20,15 +20,15 @@ class TestFunction(TestCase):
         df3 = get_data_from_pattern(variable="libelleCommuneEtablissement",
                                     pattern="montrouge", kind="siret")
         
-        # df4 = get_data_from_pattern(variable="prenom1UniteLegale", number=10000,
-        #                             pattern="hadrien", kind="siren")
-        
-        # df4 = get_data_from_pattern(variable="prenom1UniteLegale", number=10000,
-        #                             pattern="hadrien", kind="siret")
+        df4 = get_data_from_pattern(variable = ["activitePrincipaleUniteLegale", 
+                                                "codePostalEtablissement"],
+                                    kind = "siret",
+                                    pattern = ["86.10Z", "75*"], number = 1000000)
         
         test = isinstance(df1, pd.DataFrame) &
                 isinstance(df2, pd.DataFrame) &
-                isinstance(df3, pd.DataFrame)
+                isinstance(df3, pd.DataFrame) &
+                isinstance(df4, pd.DataFrame)
         
         self.assertTrue(test)
     

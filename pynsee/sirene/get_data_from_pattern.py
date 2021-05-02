@@ -17,7 +17,7 @@ def _warning_default_value_siret(msg):
 def get_data_from_pattern(pattern,
                           kind = "siren",
                           variable = None,
-                          phonetic_search= True,
+                          phonetic_search=False,
                           number = 200,
                           clean=True,
                           activity=True):   
@@ -38,11 +38,11 @@ def get_data_from_pattern(pattern,
         ValueError: [description]
     """        
     if kind == 'siren':        
-        list_all_variables = ['denominationUniteLegale', 'denominationUsuelle1UniteLegale',
-                              'denominationUsuelle2UniteLegale', 'denominationUsuelle3UniteLegale',
-                              'nomUniteLegale', 'nomUsageUniteLegale', 'pseudonymeUniteLegale',
-                              'prenom1UniteLegale', 'prenom2UniteLegale', 'prenom3UniteLegale',
-                              'prenom4UniteLegale', 'prenomUsuelUniteLegale']
+        # list_all_variables = ['denominationUniteLegale', 'denominationUsuelle1UniteLegale',
+        #                       'denominationUsuelle2UniteLegale', 'denominationUsuelle3UniteLegale',
+        #                       'nomUniteLegale', 'nomUsageUniteLegale', 'pseudonymeUniteLegale',
+        #                       'prenom1UniteLegale', 'prenom2UniteLegale', 'prenom3UniteLegale',
+        #                       'prenom4UniteLegale', 'prenomUsuelUniteLegale']
 
         if variable is None:
             variable = ['denominationUniteLegale']
@@ -51,14 +51,14 @@ def get_data_from_pattern(pattern,
         else:
             if type(variable) == str:
                 variable = [variable]
-            if not set(variable).issubset(list_all_variables):
-                string_all_variables = _paste(list_all_variables,collapse= ' ')
-                raise ValueError('!!! variable should be among : {} !!!'.format(string_all_variables))
+            # if not set(variable).issubset(list_all_variables):
+            #     string_all_variables = _paste(list_all_variables,collapse= ' ')
+            #     raise ValueError('!!! variable should be among : {} !!!'.format(string_all_variables))
                 
     elif kind == 'siret':
         # includeHistory = False
-        list_all_variables = ['denominationUniteLegale', 'libelleCommuneEtablissement', 'libelleVoieEtablissement',
-                              'enseigne1Etablissement', 'enseigne2Etablissement', 'enseigne3Etablissement']
+        # list_all_variables = ['denominationUniteLegale', 'libelleCommuneEtablissement', 'libelleVoieEtablissement',
+        #                       'enseigne1Etablissement', 'enseigne2Etablissement', 'enseigne3Etablissement']
         
         if variable is None:
             # variable = ['nomUniteLegale']
@@ -68,9 +68,9 @@ def get_data_from_pattern(pattern,
         else:
             if type(variable) == str:
                 variable = [variable]
-            if not set(variable).issubset(list_all_variables):
-                string_all_variables = _paste(list_all_variables, collapse= ' ')
-                raise ValueError('!!! variable should be among : {} !!!'.format(string_all_variables))
+            # if not set(variable).issubset(list_all_variables):
+            #     string_all_variables = _paste(list_all_variables, collapse= ' ')
+            #     raise ValueError('!!! variable should be among : {} !!!'.format(string_all_variables))
     else:
          raise ValueError('!!! kind should be among : siren siret !!!')
                     
@@ -84,25 +84,16 @@ def get_data_from_pattern(pattern,
     
     if len(variable) == 1 & len(pattern) == 1:
         if kind == "siren":
-            query = "?q=periode({}{}:{})&nombre={}".format(var, phntc, patt, number)        
+            query = "?q=periode({}{}:{})&nombre={}".format(variable, phntc, pattern, number)        
         else:
-            query = "?q={}{}:{}&nombre={}".format(var, phntc, patt, number)
+            query = "?q={}{}:{}&nombre={}".format(variable, phntc, pattern, number)
     else:       
         list_var_pattern = []
-        for var, patt in zip(variable, pattern):    
-            
-            list_var_pattern.append("{}{}:{}".format())
+        for var, patt in zip(variable, pattern):
+            list_var_pattern.append("{}{}:{}".format(var, phntc, patt))
+        query = "?q=" + _paste(list_var_pattern, collapse = " AND ") + "&nombre={}".format(number)
         
-#        var='denominationUniteLegale'
-#        if includeHistory:
-#            query = "?q=periode({}.phonetisation:{})&nombre={}".format(var, pattern, number)
-#        else:
-##            query = "?q={}.phonetisation:{}&champs={}&nombre={}".format(var, pattern, var, number)
-#            query = "?q={}.phonetisation:{}&nombre={}".format(var, pattern, number)
-#
-       
-            #query = "?q={}.phonetisation:{}&champs={}&nombre={}".format(var, pattern, var, number)
-            
+
     df = get_data_sirene(query = query, kind = kind, clean=clean, activity=activity)
         
     list_dataframe.append(df)
