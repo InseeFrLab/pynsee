@@ -5,7 +5,10 @@ import pandas as pd
 @lru_cache(maxsize=None)
 def _get_nomenclature_agreg(file):
     
-    df = pd.read_csv(file, sep=";", encoding='latin1', dtype=str)
+    df = pd.read_csv(file, sep=";",
+                     #encoding='latin1',
+                     encoding="ISO-8859-1",
+                     dtype=str)
     
     for i in range(len(df.index)):
         for j in range(2,len(df.columns)):

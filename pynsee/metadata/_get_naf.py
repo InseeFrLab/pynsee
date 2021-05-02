@@ -15,7 +15,10 @@ def _get_naf(file):
             string_found_cleaned = string
         return(string_found_cleaned)
     
-    naf = pd.read_csv(file, sep=";", encoding='latin1')
+    naf = pd.read_csv(file, sep=";", 
+                      encoding="ISO-8859-1"
+                      # encoding='latin1'
+                      )
         
     #data cleaning    
     naf = naf.iloc[:,1:5]

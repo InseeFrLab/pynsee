@@ -89,7 +89,11 @@ def get_activity_list(level, version='latest'):
     if level in ['NAF5', 'NAF4', 'NAF3', 'NAF2', 'NAF1']:
          #read files
         naf_level = pd.read_csv(list_expected_files[1],
-                                sep=";", encoding='latin', dtype=str)
+                                sep=";", 
+                                encoding="ISO-8859-1",
+                                #encoding='latin',
+                                dtype=str)
+        
         naf_level.columns = ['NAF5', 'NAF4', 'NAF3', 'NAF2', 'NAF1']
         
         naf = _get_naf(file=list_expected_files[0])
@@ -100,7 +104,10 @@ def get_activity_list(level, version='latest'):
                                   "TITLE_40CH_FR": "TITLE_" + level + "_40CH_FR"})       
         
         mapp = pd.read_csv(list_expected_files[10],
-                           sep=";", encoding='latin', dtype=str)
+                           sep=";",
+                           encoding="ISO-8859-1",
+                           #encoding='latin',
+                           dtype=str)
         
         mapp = mapp.iloc[:,[0]+list(range(2,10))]
         mapp = mapp[mapp.index!=0]
@@ -212,7 +219,10 @@ def get_activity_list(level, version='latest'):
         label_list_col = ['', 'A10', '' ,'TITLE_A10_EN', 'TITLE_A10_FR'] 
         col_merged = ['A10', 'TITLE_A10_EN']
         
-    label = pd.read_csv(list_expected_files[ifile], sep=";", encoding='latin1', dtype=str)
+    label = pd.read_csv(list_expected_files[ifile], sep=";",
+                        #encoding='latin1',
+                        encoding="ISO-8859-1",
+                        dtype=str)
     label = label.iloc[:,first_col:ncol]
     label.columns = label_list_col
     label = label.dropna(how='all')        
