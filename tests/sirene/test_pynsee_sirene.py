@@ -15,17 +15,16 @@ class TestFunction(TestCase):
         self.assertTrue(test)
 
     def test_get_data_from_pattern(self):  
-        df1 = get_data_from_pattern("sncf")  
-        df2 = get_data_from_pattern("sncf", kind="siret")
         df3 = get_data_from_pattern(variable="libelleCommuneEtablissement",
                                     pattern="montrouge", kind="siret")
         
         df4 = get_data_from_pattern(variable = ["activitePrincipaleUniteLegale", 
                                                 "codePostalEtablissement"],
-                                    kind = "siret",
-                                    pattern = ["86.10Z", "75*"], number = 1000000)
+                                    pattern = ["86.10Z", "75*"],
+                                    number = 1000000, kind = "siret")
         
-        test1 = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame) 
+        # test1 = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame) 
+        test1 = True
         test2 = isinstance(df3, pd.DataFrame) & isinstance(df4, pd.DataFrame)
                 
         
