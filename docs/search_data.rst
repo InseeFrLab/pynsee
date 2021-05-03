@@ -36,9 +36,3 @@ Search metadata
 .. autofunction:: pynsee.metadata.get_definition_list
 
 .. autofunction:: pynsee.metadata.get_activity_list
-
-Search sirene
--------------
-
-.. autofunction:: pynsee.sirene.get_data_from_pattern
-
