@@ -10,8 +10,11 @@ def get_data_sirene(query, kind = 'siren', clean=True, activity=True):
 
     Args:
         query (str): query string
+
         kind (str, optional): kind of entitty: siren or siret. Defaults to 'siren'.
+
         clean (bool, optional): If True empty columns are removed. Defaults to True.
+        
         activity (bool, optional): If True activity label is added. Defaults to True.
 
     Raises:

@@ -25,11 +25,17 @@ def get_data_from_pattern(pattern,
 
     Args:
         pattern (str): the pattern or criterium searched
+
         kind (str, optional): kind of companies : siren or siret. Defaults to "siren".
+
         variable (str or list, optional): name of the variable on which the search is applied. Defaults to None.
+
         phonetic_search (bool, optional): If True phonetic search is triggered, if False the exact string is searched. Defaults to True.
+       
         number (int, optional): Maximum number of companies. Defaults to 200.
+       
         clean (bool, optional): If True, empty columns are deleted. Defaults to True.
+      
         activity (bool, optional): If True, activty title is added based on NAF/NACE. Defaults to True.
 
     Raises:
