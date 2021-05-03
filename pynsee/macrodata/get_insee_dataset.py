@@ -42,8 +42,7 @@ def get_insee_dataset(dataset,
     
     Examples:
         >>> from pynsee.macrodata import * 
-        >>> ipc_data = 
-        >>>    get_insee_dataset("IPC-2015", 
+        >>> ipc_data = get_insee_dataset("IPC-2015", 
         >>>        filter = "M......ENSEMBLE...CVS.2015",
         >>>        includeHistory = True, updatedAfter = "2017-07-11T08:45:00")
         >>> business_climate = get_insee_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
@@ -79,7 +78,7 @@ def get_insee_dataset(dataset,
         sdmx_query = sdmx_query + added_param_string 
         api_query = api_query + added_param_string            
     
-    data = _get_insee(api_query=None, sdmx_query=sdmx_query)
+    data = _get_insee(api_query=api_query, sdmx_query=sdmx_query)
 #    data = _get_insee(api_query=api_query, sdmx_query=sdmx_query)
     
     if metadata:
