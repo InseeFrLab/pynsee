@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from functools import lru_cache
 import pandas as pd
 
