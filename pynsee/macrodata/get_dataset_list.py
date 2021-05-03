@@ -21,8 +21,9 @@ def get_dataset_list() :
     """    
         
     INSEE_sdmx_link_dataflow = "https://bdm.insee.fr/series/sdmx/dataflow"
-        
-    results = _request_insee(sdmx_url=INSEE_sdmx_link_dataflow)
+    INSEE_api_link_dataflow = "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all"
+
+    results = _request_insee(api_url=INSEE_api_link_dataflow, sdmx_url=INSEE_sdmx_link_dataflow)
     
     # create temporary directory
     dirpath = _get_temp_dir()
