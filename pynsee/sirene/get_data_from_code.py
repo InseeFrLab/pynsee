@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-#siren = ["552081317"]
-#code = "552081317"
-
 def get_data_from_code(*siren):
     """Get data about one or several companies from siren codes
 
