@@ -89,6 +89,7 @@ def get_data_from_pattern(pattern,
         
     
     if len(variable) == 1 & len(pattern) == 1:
+        variable = variable[0]
         if kind == "siren":
             query = "?q=periode({}{}:{})&nombre={}".format(variable, phntc, pattern, number)        
         else:
