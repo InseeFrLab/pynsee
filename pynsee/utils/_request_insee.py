@@ -40,7 +40,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
                 
                 print("{}".format(api_url))
                 
-                msg1 = "\n!!! Wrong query or api.insee.fr error !!!"
+                msg1 = "\n!!! Error {} !!!".format(results.status_code)
 #                msg2 = "\n!!! Please check your credentials and subscribe to all APIs!!!"
 #                msg3 = "\n!!! If your token still does't work, please try to use pynsee.utils.clear_all_cache !!!"
 #                print("{}{}{}".format(msg1, msg2, msg3))
