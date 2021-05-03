@@ -102,7 +102,7 @@ def get_insee_idbank(*idbanks,
         list_idbank_q = list_idbank[min_range:max_range]  
          
         sdmx_query = INSEE_sdmx_link_idbank + _paste(list_idbank_q, collapse = '+') 
-        api_query = INSEE_api_link_idbank + _paste(list_idbank_q, collapse = '+')  
+        api_query = INSEE_api_link_idbank + _paste(list_idbank_q, collapse = '%2B')  
         
         if len(list_addded_param) > 0:
              sdmx_query = sdmx_query + added_param_string
