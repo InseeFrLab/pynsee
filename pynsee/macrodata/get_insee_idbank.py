@@ -106,7 +106,7 @@ def get_insee_idbank(*idbanks,
         
         if len(list_addded_param) > 0:
              sdmx_query = sdmx_query + added_param_string
-             api_query = api_query + added_param_string
+             api_query = api_query + "/" + added_param_string
              
         list_data.append(_get_insee(api_query=api_query, #api_query
                                     sdmx_query=sdmx_query,
