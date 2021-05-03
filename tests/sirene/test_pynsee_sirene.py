@@ -25,12 +25,11 @@ class TestFunction(TestCase):
                                     kind = "siret",
                                     pattern = ["86.10Z", "75*"], number = 1000000)
         
-        test = isinstance(df1, pd.DataFrame) &
-                isinstance(df2, pd.DataFrame) &
-                isinstance(df3, pd.DataFrame) &
-                isinstance(df4, pd.DataFrame)
+        test1 = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame) 
+        test2 = isinstance(df3, pd.DataFrame) & isinstance(df4, pd.DataFrame)
+                
         
-        self.assertTrue(test)
+        self.assertTrue(test1 & test2)
     
     def test_get_data_sirene(self):  
         
