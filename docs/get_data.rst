@@ -18,3 +18,10 @@ Get metadata
 ------------
 
 .. autofunction:: pynsee.metadata.get_insee_definition
+
+Get sirene
+----------
+
+.. autofunction:: pynsee.sirene.get_data_from_code
+
+.. autofunction:: pynsee.sirene.get_data_sirene
