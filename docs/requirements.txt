@@ -10,3 +10,4 @@ requests>=2.25.1
 appdirs>=1.4.4
 unidecode>=1.2.0
 datetime>=3.5.9
+ipython>=7.23.0
