@@ -2,6 +2,7 @@
 
 import pandas as pd
 from functools import lru_cache
+from tqdm import trange
 
 from pynsee.utils._request_insee import _request_insee
 
@@ -15,10 +16,11 @@ def get_insee_legal_entity(codes, print_err_msg=True):
         >>> legal_entity = get_insee_legal_entity(codes = ['5599', '83'])
     """    
     list_data = []
-    for c in codes:
+    for c in trange(len(codes), desc = 'Getting legal entities'):
         # c = '5599'
+        code = codes[c]
         try:            
-            data = _get_one_legal_entity(c, print_err_msg=print_err_msg)
+            data = _get_one_legal_entity(code, print_err_msg=print_err_msg)
             list_data.append(data)
         except:
             pass
