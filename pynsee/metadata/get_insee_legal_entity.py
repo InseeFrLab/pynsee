@@ -5,7 +5,7 @@ from functools import lru_cache
 
 from pynsee.utils._request_insee import _request_insee
 
-def get_insee_legal_entity(codes):      
+def get_insee_legal_entity(codes, print_err_msg=True):      
     """Get legal entities labels
 
     Args:
@@ -18,7 +18,7 @@ def get_insee_legal_entity(codes):
     for c in codes:
         # c = '5599'
         try:            
-            data = _get_one_legal_entity(c)
+            data = _get_one_legal_entity(c, print_err_msg=print_err_msg)
             list_data.append(data)
         except:
             pass
@@ -30,7 +30,7 @@ def get_insee_legal_entity(codes):
     return(data_final)
 
 @lru_cache(maxsize=None)
-def _get_one_legal_entity(c):
+def _get_one_legal_entity(c, print_err_msg=True):
     
     if len(c) == 2:
         n = 'n2'
@@ -42,7 +42,8 @@ def _get_one_legal_entity(c):
     INSEE_legal_entity_n3 = 'https://api.insee.fr/metadonnees/V1/codes/cj/' + n + '/'
     
     request = _request_insee(api_url = INSEE_legal_entity_n3 + c,
-                             file_format = 'application/json;charset=utf-8')
+                             file_format = 'application/json;charset=utf-8',
+                             print_msg=print_err_msg)
             
     data_request = request.json()
     
