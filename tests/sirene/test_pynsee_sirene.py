@@ -23,18 +23,28 @@ class TestFunction(TestCase):
             # df1 = get_data_from_criteria(variable="libelleCommuneEtablissement",
             #                             pattern="montrouge", kind="siren")
             
-            df2 = get_data_from_criteria(variable = ["activitePrincipaleUniteLegale", 
+            df1 = get_data_from_criteria(variable = ["activitePrincipaleUniteLegale", 
                                                     "codePostalEtablissement"],
                                         pattern = ["86.10Z", "75*"], kind = "siret")
 
-            df3 = get_data_from_criteria(variable = ["libelleCommuneEtablissement",
+            df2 = get_data_from_criteria(variable = ["libelleCommuneEtablissement",
                                         'denominationUniteLegale'],
                             pattern = ["igny", 'pizza'], 
                             phonetic_search=True,
                             kind = "siret")
+
+            #mix of variable with and without history on siren
+            df3 = get_data_from_criteria(variable=["denominationUniteLegale",
+                                       'categorieJuridiqueUniteLegale', 
+                                       'categorieEntreprise'],                                     
+                                        pattern=["sncf", '9220', 'PME'], kind="siren")
+
+            #input as string and not list
+            df4 = get_data_from_criteria(variable = 'libelleCommuneEtablissement',
+                                         pattern= "montrouge", kind="siret")
                 
-            test1 = isinstance(df2, pd.DataFrame) & isinstance(df2, pd.DataFrame)
-            test2 = True 
+            test1 = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
+            test2 = isinstance(df3, pd.DataFrame) & isinstance(df4, pd.DataFrame)
             
             self.assertTrue(test1 & test2)
 
