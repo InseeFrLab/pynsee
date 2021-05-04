@@ -4,8 +4,9 @@
 import pandas as pd
 from pynsee.utils._request_insee import _request_insee
 from pynsee.metadata.get_activity_list import get_activity_list
+from pynsee.metadata.get_insee_legal_entity import get_insee_legal_entity
 
-def get_data_sirene(query, kind = 'siren', clean=True, activity=True):
+def get_data_sirene(query, kind = 'siren', clean=True, activity=True, legal=True):
     """Get data from any criteria-based query
 
     Args:
@@ -107,7 +108,15 @@ def get_data_sirene(query, kind = 'siren', clean=True, activity=True):
                 naf5 = get_activity_list("NAF5")
                 naf5 = naf5[["NAF5", "TITLE_NAF5_FR"]]
                 data_final = data_final.merge(naf5, on ="NAF5", how="left")
-    
+        
+        # add legal entities title
+        if legal:
+            if 'categorieJuridiqueUniteLegale' in data_final.columns:
+                data_legal = get_insee_legal_entity(data_final.categorieJuridiqueUniteLegale)
+                data_legal = data_legal[['code', 'title']]
+                data_legal = data_legal.rename(columns={'code' : 'categorieJuridiqueUniteLegale',
+                                                        'title' : 'categorieJuridiqueUniteLegaleTitle'})
+                data_final = data_final.merge(data_legal, on = 'categorieJuridiqueUniteLegale', how='left')
         
         # empty columns at the end
         list_all_na_col = [col for col in data_final.columns if all(pd.isna(data_final[col]))]
@@ -118,8 +127,3 @@ def get_data_sirene(query, kind = 'siren', clean=True, activity=True):
     else:
         print("Query : %s" % link)
         print(request.text)
-         # m = re.search("ams\\:description\\>.*\\<\\/ams\\:description", results.text)
-#                    if m:
-#                        found = m.group(0)
-#                        found2 = found.replace("description", "").replace("ams", "")
-#                        print(found2)
