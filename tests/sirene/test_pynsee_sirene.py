@@ -18,25 +18,25 @@ class TestFunction(TestCase):
     version_3_7 = (sys.version_info[0]==3) & (sys.version_info[1]==7)
     
     if version_3_7:
-        
-        def test_get_data_from_criteria(self):  
-        # df1 = get_data_from_criteria(variable="libelleCommuneEtablissement",
-        #                             pattern="montrouge", kind="siren")
-        
-        df2 = get_data_from_criteria(variable = ["activitePrincipaleUniteLegale", 
-                                                "codePostalEtablissement"],
-                                    pattern = ["86.10Z", "75*"], kind = "siret")
 
-        df3 = get_data_from_criteria(variable = ["libelleCommuneEtablissement",
-                                       'denominationUniteLegale'],
-                           pattern = ["igny", 'pizza'], 
-                           phonetic_search=True,
-                           kind = "siret")
-              
-        test1 = isinstance(df2, pd.DataFrame) & isinstance(df2, pd.DataFrame)
-        test2 = True 
-        
-        self.assertTrue(test1 & test2)
+        def test_get_data_from_criteria(self):  
+            # df1 = get_data_from_criteria(variable="libelleCommuneEtablissement",
+            #                             pattern="montrouge", kind="siren")
+            
+            df2 = get_data_from_criteria(variable = ["activitePrincipaleUniteLegale", 
+                                                    "codePostalEtablissement"],
+                                        pattern = ["86.10Z", "75*"], kind = "siret")
+
+            df3 = get_data_from_criteria(variable = ["libelleCommuneEtablissement",
+                                        'denominationUniteLegale'],
+                            pattern = ["igny", 'pizza'], 
+                            phonetic_search=True,
+                            kind = "siret")
+                
+            test1 = isinstance(df2, pd.DataFrame) & isinstance(df2, pd.DataFrame)
+            test2 = True 
+            
+            self.assertTrue(test1 & test2)
 
 
 
