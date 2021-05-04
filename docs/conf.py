@@ -46,7 +46,8 @@ extensions = [
      'sphinx_copybutton',
      'nbsphinx', 
      'sphinx.ext.mathjax',
-     'm2r2'
+     'm2r2',
+     'IPython.sphinxext.ipython_console_highlighting'
 ]
 #"rinoh.frontend.sphinx"
 
