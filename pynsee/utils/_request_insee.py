@@ -4,7 +4,7 @@ import requests
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
-def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'): 
+def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', print_msg=True): 
 
     # sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
@@ -36,25 +36,29 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
 
             results = requests.get(api_url, proxies = proxies, headers=headers)
 
-            if results.status_code != 200:
-                
-                print("{}".format(api_url))
+            if results.status_code != 200:               
                 
                 msg1 = "\n!!! Error {} !!!".format(results.status_code)
+                
+                if print_msg:
+                    print("{}".format(api_url))
+                    print("{}".format(msg1))
 #                msg2 = "\n!!! Please check your credentials and subscribe to all APIs!!!"
 #                msg3 = "\n!!! If your token still does't work, please try to use pynsee.utils.clear_all_cache !!!"
 #                print("{}{}{}".format(msg1, msg2, msg3))
-                print("{}".format(msg1))
+               
 
                 if not sdmx_url is None:
 
                     results = requests.get(sdmx_url, proxies = proxies)
-                    print("!!! SDMX web service used instead of API !!!")
+                    if print_msg:
+                        print("!!! SDMX web service used instead of API !!!")
 
                     if results.status_code != 200:
                         raise ValueError(results.text + '\n' + sdmx_url)
                 else:
-                    print("Error %s" % results.status_code)
+                    if print_msg:
+                        print("Error %s" % results.status_code)
                     
 #                    m = re.search("ams\\:description\\>.*\\<\\/ams\\:description", results.text)
 #                    if m:
@@ -71,7 +75,8 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml'):
         
             if not sdmx_url is None:
                 msg4 = "SDMX web service used instead of API"
-                print("{}{}{}{}".format(msg1, msg2, msg3, msg4))
+                if print_msg:
+                    print("{}{}{}{}".format(msg1, msg2, msg3, msg4))
                 # _warning_no_token(msg + msg2)
                 results = requests.get(sdmx_url, proxies = proxies)
                 if results.status_code != 200:
