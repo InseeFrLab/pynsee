@@ -1,6 +1,7 @@
 
 from unittest import TestCase
 from pandas import pandas as pd
+import sys
 
 from pynsee.sirene.get_data_from_code import get_data_from_code
 from pynsee.sirene.get_data_from_pattern import get_data_from_pattern
@@ -29,28 +30,31 @@ class TestFunction(TestCase):
                 
         
         self.assertTrue(test1 & test2)
+
+    version_3_7 = (sys.version_info[0]==3) & (sys.version_info[1]==7)
     
-    def test_get_data_sirene(self):  
-        
-        list_query_siren = ["?q=periode(denominationUniteLegale.phonetisation:sncf)&nombre=20",
-                 '?q=sigleUniteLegale:???',
-                 '?q=periode(activitePrincipaleUniteLegale:86.10Z)&nombre=1000000']
-        
-        test = True
-        for q in list_query_siren:
-            df = get_data_sirene(q, kind= 'siren')
-            test = test & isinstance(df, pd.DataFrame)
+    if version_3_7:
+        def test_get_data_sirene(self):  
+            
+            list_query_siren = ["?q=periode(denominationUniteLegale.phonetisation:sncf)&nombre=20",
+                    '?q=sigleUniteLegale:???',
+                    '?q=periode(activitePrincipaleUniteLegale:86.10Z)&nombre=1000000']
+            
+            test = True
+            for q in list_query_siren:
+                df = get_data_sirene(q, kind= 'siren')
+                test = test & isinstance(df, pd.DataFrame)
 
-        list_query_siret =['?q=denominationUniteLegale.phonetisation:oto&nombre=20&champs=denominationUniteLegale', 
-                '?q=prenom1UniteLegale:hadrien AND nomUniteLegale:leclerc',
-                '?q=prenom1UniteLegale.phonetisation:hadrien AND nomUniteLegale.phonetisation:leclerc',
-                '?q=activitePrincipaleUniteLegale:8*',
-                '?q=activitePrincipaleUniteLegale:86.10Z&nombre=1000000', 
-                '?q=activitePrincipaleUniteLegale:86.10Z AND codePostalEtablissement:75*&nombre=5000', 
-                '?q=denominationUniteLegale.phonetisation:oto&nombre=20']
+            list_query_siret =['?q=denominationUniteLegale.phonetisation:oto&nombre=20&champs=denominationUniteLegale', 
+                    '?q=prenom1UniteLegale:hadrien AND nomUniteLegale:leclerc',
+                    '?q=prenom1UniteLegale.phonetisation:hadrien AND nomUniteLegale.phonetisation:leclerc',
+                    '?q=activitePrincipaleUniteLegale:8*',
+                    '?q=activitePrincipaleUniteLegale:86.10Z&nombre=1000000', 
+                    '?q=activitePrincipaleUniteLegale:86.10Z AND codePostalEtablissement:75*&nombre=5000', 
+                    '?q=denominationUniteLegale.phonetisation:oto&nombre=20']
 
-        for q in list_query_siret:
-            df = get_data_sirene(q, kind= 'siret')
-            test = test & isinstance(df, pd.DataFrame)
-                
-        self.assertTrue(test)
+            for q in list_query_siret:
+                df = get_data_sirene(q, kind= 'siret')
+                test = test & isinstance(df, pd.DataFrame)
+                    
+            self.assertTrue(test)
