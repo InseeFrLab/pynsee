@@ -40,4 +40,4 @@ Search metadata
 Search sirene
 -------------
 
-.. autofunction:: pynsee.sirene.get_data_from_pattern
+.. autofunction:: pynsee.sirene.get_data_from_criteria
