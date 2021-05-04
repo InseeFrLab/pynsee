@@ -6,7 +6,14 @@ from functools import lru_cache
 from pynsee.utils._request_insee import _request_insee
 
 def get_insee_legal_entity(codes):      
-    
+    """Get legal entities labels
+
+    Args:
+        codes (list): list of legal entities code of 2 or 4 characters
+
+    Examples:
+        >>> legal_entity = get_insee_legal_entity(codes = ['5599', '83'])
+    """    
     list_data = []
     for c in codes:
         # c = '5599'
