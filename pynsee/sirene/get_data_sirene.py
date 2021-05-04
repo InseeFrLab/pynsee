@@ -179,6 +179,5 @@ def get_data_sirene(query, kind = 'siren', clean=True,
                 data_final.insert(loc_var+1, var + 'Title', col2insert)
                 
         return(data_final)
-    else:
-        print("Query : %s" % link)
+    else:        
         print(request.text)
