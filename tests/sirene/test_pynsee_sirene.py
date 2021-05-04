@@ -15,7 +15,11 @@ class TestFunction(TestCase):
         test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
         self.assertTrue(test)
 
-    def test_get_data_from_criteria(self):  
+    version_3_7 = (sys.version_info[0]==3) & (sys.version_info[1]==7)
+    
+    if version_3_7:
+        
+        def test_get_data_from_criteria(self):  
         # df1 = get_data_from_criteria(variable="libelleCommuneEtablissement",
         #                             pattern="montrouge", kind="siren")
         
@@ -34,9 +38,8 @@ class TestFunction(TestCase):
         
         self.assertTrue(test1 & test2)
 
-    version_3_7 = (sys.version_info[0]==3) & (sys.version_info[1]==7)
-    
-    if version_3_7:
+
+
         def test_get_data_sirene(self):  
             
             list_query_siren = ["?q=periode(denominationUniteLegale.phonetisation:sncf)&nombre=20",
