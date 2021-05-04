@@ -158,6 +158,7 @@ def get_data_sirene(query, kind = 'siren', clean=True,
                          'categorieJuridiqueUniteLegale',
                          'activitePrincipaleUniteLegale',
                          'activitePrincipaleEtablissement',
+                         'numeroVoieEtablissement',
                          'typeVoieEtablissement',
                          'libelleVoieEtablissement', 'codePostalEtablissement',
                          'libelleCommuneEtablissement',  'codeCommuneEtablissement']
@@ -167,15 +168,15 @@ def get_data_sirene(query, kind = 'siren', clean=True,
             data_final = data_final[first_col + other_col]
         
         # move columns title after columns containing values
-#        for var in ['categorieJuridiqueUniteLegale', 
-#                    'activitePrincipaleUniteLegale',
-#                    'activitePrincipaleEtablissement']:
-#            
-#            if var + 'Title' in data_final.columns:
-#                loc_var = data_final.columns.get_loc(var)
-#                col2insert = data_final[var + 'Title']
-#                data_final = data_final.drop([var], axis = 1)
-#                data_final.insert(loc_var+1, var + 'Title', col2insert)
+        for var in ['categorieJuridiqueUniteLegale', 
+                    'activitePrincipaleUniteLegale',
+                    'activitePrincipaleEtablissement']:
+            
+            if var + 'Title' in data_final.columns:
+                loc_var = data_final.columns.get_loc(var)
+                col2insert = data_final[var + 'Title']
+                data_final = data_final.drop([var+ 'Title'], axis = 1)
+                data_final.insert(loc_var+1, var + 'Title', col2insert)
                 
         return(data_final)
     else:
