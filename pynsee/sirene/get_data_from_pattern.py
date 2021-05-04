@@ -18,10 +18,11 @@ def get_data_from_pattern(pattern,
                           kind = "siren",
                           variable = None,
                           phonetic_search=False,
-                          number = 200,
+                          number = 1000000,
                           clean=True,
                           activity=True,
-                          legal=True):   
+                          legal=True,
+                          only_alive=True):   
     """Get data about companies from a pattern string
 
     Args:
@@ -46,89 +47,50 @@ def get_data_from_pattern(pattern,
     
     Examples:
         >>> # Get a list of all hospitals in Paris
-        >>> df4 = get_data_from_pattern(variable = ["activitePrincipaleUniteLegale", 
+        >>> df = get_data_from_pattern(variable = ["activitePrincipaleUniteLegale", 
         >>>                                        "codePostalEtablissement"],
         >>>                            pattern = ["86.10Z", "75*"], kind = "siret", number = 1000000)
-    """        
-    if kind == 'siren':        
-        # list_all_variables = ['denominationUniteLegale', 'denominationUsuelle1UniteLegale',
-        #                       'denominationUsuelle2UniteLegale', 'denominationUsuelle3UniteLegale',
-        #                       'nomUniteLegale', 'nomUsageUniteLegale', 'pseudonymeUniteLegale',
-        #                       'prenom1UniteLegale', 'prenom2UniteLegale', 'prenom3UniteLegale',
-        #                       'prenom4UniteLegale', 'prenomUsuelUniteLegale']
 
-        if variable is None:
-            variable = ['denominationUniteLegale']
-            msg = '!!! By default search is made on the variables:\n{} !!!'.format(_paste(variable, collapse = ' '))
-            _warning_default_value_siren(msg)
-        else:
-            if type(variable) == str:
-                variable = [variable]
-            # if not set(variable).issubset(list_all_variables):
-            #     string_all_variables = _paste(list_all_variables,collapse= ' ')
-            #     raise ValueError('!!! variable should be among : {} !!!'.format(string_all_variables))
-                
-    elif kind == 'siret':
-        # includeHistory = False
-        # list_all_variables = ['denominationUniteLegale', 'libelleCommuneEtablissement', 'libelleVoieEtablissement',
-        #                       'enseigne1Etablissement', 'enseigne2Etablissement', 'enseigne3Etablissement']
-        
-        if variable is None:
-            # variable = ['nomUniteLegale']
-            variable = ['denominationUniteLegale']
-            msg = '!!! By default search is made on the variables:\n{} !!!'.format(_paste(variable, collapse = ' '))
-            _warning_default_value_siret(msg)
-        else:
-            if type(variable) == str:
-                variable = [variable]
-            # if not set(variable).issubset(list_all_variables):
-            #     string_all_variables = _paste(list_all_variables, collapse= ' ')
-            #     raise ValueError('!!! variable should be among : {} !!!'.format(string_all_variables))
-    else:
-         raise ValueError('!!! kind should be among : siren siret !!!')
-                    
-    list_dataframe = []
-    
+    """        
+    if (not kind == 'siret') & (not kind == 'siren') :      
+        raise ValueError('!!! kind should be among : siren siret !!!')
+                        
     if phonetic_search:        
         phntc = ".phonetisation"
     else:
-        phntc = ""
-        
-    
-    if len(variable) == 1 & len(pattern) == 1:
-        variable = variable[0]
-        if kind == "siren":
-            query = "?q=periode({}{}:{})&nombre={}".format(variable, phntc, pattern, number)        
-        else:
-            query = "?q={}{}:{}&nombre={}".format(variable, phntc, pattern, number)
-    else:       
-        list_var_pattern = []
-        for var, patt in zip(variable, pattern):
-            list_var_pattern.append("{}{}:{}".format(var, phntc, patt))
-        query = "?q=" + _paste(list_var_pattern, collapse = " AND ") + "&nombre={}".format(number)
+        phntc = ""    
+
+    if type(variable) == 'str':
+        variable = [variable] 
+
+    if type(pattern) == 'str':
+        pattern = [pattern] 
+
+    list_var_pattern = []
+    for var, patt in zip(variable, pattern):
+        list_var_pattern.append("{}{}:{}".format(var, phntc, patt))
+
+    query = "?q=" + _paste(list_var_pattern, collapse = " AND ") + "&nombre={}".format(number)
+
+    # if len(variable) == 1 & len(pattern) == 1:
+    #     variable = variable[0]
+    #     if kind == "siren":
+    #         query = "?q=periode({}{}:{})&nombre={}".format(variable, phntc, pattern, number)        
+    #     else:
+    #         query = "?q={}{}:{}&nombre={}".format(variable, phntc, pattern, number)
+    # else:       
+    #     list_var_pattern = []
+    #     for var, patt in zip(variable, pattern):
+    #         list_var_pattern.append("{}{}:{}".format(var, phntc, patt))
+    #     query = "?q=" + _paste(list_var_pattern, collapse = " AND ") + "&nombre={}".format(number)
         
 
     df = get_data_sirene(query = query, kind = kind, 
-                         clean=clean, activity=activity, legal=legal)
+                         clean=clean, activity=activity,
+                         legal=legal, only_alive=only_alive)
         
-    list_dataframe.append(df)
-        
-    data_final = pd.concat(list_dataframe)
-    data_final = data_final.reset_index(drop=True)
-    
-        
-     # change colummn order        
-    if kind == 'siren' :
-        first_col = ['siren', 'denominationUniteLegale' ,
-                     'dateFin', 'dateDebut', 'categorieEntreprise',
-                     'categorieJuridiqueUniteLegale', 'activitePrincipaleUniteLegale']
-        
-        if set(first_col).issubset(data_final.columns):
-            other_col = [col for col in data_final if col not in first_col]
-            data_final = data_final[first_col + other_col]
-    
-   
+    df = df.reset_index(drop=True)
             
-    return(data_final)
+    return(df)
     
     
