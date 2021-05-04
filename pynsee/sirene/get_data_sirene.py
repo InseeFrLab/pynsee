@@ -126,7 +126,8 @@ def get_data_sirene(query, kind = 'siren', clean=True,
                 
         #remove companies which no longer exist
         if only_alive:
-            data_final = data_final[data_final['dateFin'].isnull()]
+            if 'dateFin' in data_final.columns:
+                data_final = data_final[data_final['dateFin'].isnull()]
         
         # add legal entities title
         if legal:
