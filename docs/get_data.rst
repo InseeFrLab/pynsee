@@ -19,6 +19,8 @@ Get metadata
 
 .. autofunction:: pynsee.metadata.get_insee_definition
 
+.. autofunction:: pynsee.metadata.get_insee_legal_entity
+
 Get sirene
 ----------
 
