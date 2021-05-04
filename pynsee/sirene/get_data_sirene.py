@@ -4,6 +4,7 @@
 import pandas as pd
 #import sys, os
 from functools import lru_cache
+from tqdm import trange
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.metadata.get_activity_list import get_activity_list
@@ -50,7 +51,7 @@ def get_data_sirene(query, kind = 'siren', clean=True,
         
         data = data_request[main_key]          
         
-        for i in range(len(data)):
+        for i in trange(len(data), desc='Getting data'):
             idata = data[i]
             
             key_list = [key for key in idata.keys() if type(idata[key]) is list]
@@ -102,10 +103,7 @@ def get_data_sirene(query, kind = 'siren', clean=True,
             list_dataframe.append(data_final)
             
         data_final = pd.concat(list_dataframe)
-        
-        if clean:
-            data_final = data_final.dropna(axis=1, how='all')
-        
+                
         # add activity metadata
         if activity:
             naf5 = get_activity_list("NAF5")
@@ -178,7 +176,10 @@ def get_data_sirene(query, kind = 'siren', clean=True,
                 col2insert = data_final[var + 'Title']
                 data_final = data_final.drop([var+ 'Title'], axis = 1)
                 data_final.insert(loc_var+1, var + 'Title', col2insert)
-                
+        
+        if clean:
+            data_final = data_final.dropna(axis=1, how='all')
+            
         return(data_final)
     else:        
         print(request.text)
