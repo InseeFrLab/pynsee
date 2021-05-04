@@ -20,7 +20,8 @@ def get_data_from_pattern(pattern,
                           phonetic_search=False,
                           number = 200,
                           clean=True,
-                          activity=True):   
+                          activity=True,
+                          legal=True):   
     """Get data about companies from a pattern string
 
     Args:
@@ -107,7 +108,8 @@ def get_data_from_pattern(pattern,
         query = "?q=" + _paste(list_var_pattern, collapse = " AND ") + "&nombre={}".format(number)
         
 
-    df = get_data_sirene(query = query, kind = kind, clean=clean, activity=activity)
+    df = get_data_sirene(query = query, kind = kind, 
+                         clean=clean, activity=activity, legal=legal)
         
     list_dataframe.append(df)
         

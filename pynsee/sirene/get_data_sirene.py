@@ -112,7 +112,7 @@ def get_data_sirene(query, kind = 'siren', clean=True, activity=True, legal=True
         # add legal entities title
         if legal:
             if 'categorieJuridiqueUniteLegale' in data_final.columns:
-                data_legal = get_insee_legal_entity(data_final.categorieJuridiqueUniteLegale)
+                data_legal = get_insee_legal_entity(data_final.categorieJuridiqueUniteLegale.unique())
                 data_legal = data_legal[['code', 'title']]
                 data_legal = data_legal.rename(columns={'code' : 'categorieJuridiqueUniteLegale',
                                                         'title' : 'categorieJuridiqueUniteLegaleTitle'})
