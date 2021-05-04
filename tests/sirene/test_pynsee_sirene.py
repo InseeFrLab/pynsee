@@ -16,8 +16,8 @@ class TestFunction(TestCase):
         self.assertTrue(test)
 
     def test_get_data_from_criteria(self):  
-        df1 = get_data_from_criteria(variable="libelleCommuneEtablissement",
-                                    pattern="montrouge", kind="siren")
+        # df1 = get_data_from_criteria(variable="libelleCommuneEtablissement",
+        #                             pattern="montrouge", kind="siren")
         
         df2 = get_data_from_criteria(variable = ["activitePrincipaleUniteLegale", 
                                                 "codePostalEtablissement"],
@@ -29,8 +29,8 @@ class TestFunction(TestCase):
                            phonetic_search=True,
                            kind = "siret")
               
-        test1 = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
-        test2 = isinstance(df3, pd.DataFrame) 
+        test1 = isinstance(df2, pd.DataFrame) & isinstance(df2, pd.DataFrame)
+        test2 = True 
         
         self.assertTrue(test1 & test2)
 
