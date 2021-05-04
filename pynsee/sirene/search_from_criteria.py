@@ -2,7 +2,7 @@
 
 import pandas as pd
 from pynsee.utils._paste import _paste
-from pynsee.sirene.get_data_sirene import get_data_sirene
+from pynsee.sirene._get_data_sirene import _get_data_sirene
 
 from functools import lru_cache
 
@@ -14,7 +14,7 @@ def _warning_default_value_siren(msg):
 def _warning_default_value_siret(msg):
      print(msg)
 
-def get_data_from_criteria(          
+def search_from_criteria(          
                           variable,
                           pattern,  
                           kind = "siren",
