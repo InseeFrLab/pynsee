@@ -4,7 +4,7 @@ from pandas import pandas as pd
 import sys
 
 from pynsee.sirene.get_data_from_code import get_data_from_code
-from pynsee.sirene.get_data_from_pattern import get_data_from_pattern
+from pynsee.sirene.get_data_from_criteria import get_data_from_criteria
 from pynsee.sirene.get_data_sirene import get_data_sirene
 
 class TestFunction(TestCase):
@@ -15,19 +15,22 @@ class TestFunction(TestCase):
         test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
         self.assertTrue(test)
 
-    def test_get_data_from_pattern(self):  
-        df3 = get_data_from_pattern(variable="libelleCommuneEtablissement",
-                                    pattern="montrouge", kind="siret")
+    def test_get_data_from_criteria(self):  
+        df1 = get_data_from_criteria(variable="libelleCommuneEtablissement",
+                                    pattern="montrouge", kind="siren")
         
-        df4 = get_data_from_pattern(variable = ["activitePrincipaleUniteLegale", 
+        df2 = get_data_from_criteria(variable = ["activitePrincipaleUniteLegale", 
                                                 "codePostalEtablissement"],
-                                    pattern = ["86.10Z", "75*"],
-                                    number = 1000000, kind = "siret")
-        
-        # test1 = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame) 
-        test1 = True
-        test2 = isinstance(df3, pd.DataFrame) & isinstance(df4, pd.DataFrame)
-                
+                                    pattern = ["86.10Z", "75*"], kind = "siret")
+
+        df3 = get_data_from_criteria(variable = ["libelleCommuneEtablissement",
+                                       'denominationUniteLegale'],
+                           pattern = ["igny", 'pizza'], 
+                           phonetic_search=True,
+                           kind = "siret")
+              
+        test1 = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
+        test2 = isinstance(df3, pd.DataFrame) 
         
         self.assertTrue(test1 & test2)
 
