@@ -6,7 +6,7 @@ from functools import lru_cache
 from pynsee.utils._request_insee import _request_insee
 
 @lru_cache(maxsize=None)
-def _get_data_from_query(link, kind):
+def _get_data_from_query_json(link, kind):
 
     if kind == 'siren':        
         main_key = 'unitesLegales'
@@ -16,7 +16,7 @@ def _get_data_from_query(link, kind):
         raise ValueError('!!! kind should be among : siren siret !!!')
     
     request = _request_insee(api_url = link, file_format = 'application/json;charset=utf-8')
-    
+       
     list_dataframe = []
     
     if request.status_code == 200:
