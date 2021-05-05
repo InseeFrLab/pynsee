@@ -58,7 +58,7 @@ class TestFunction(TestCase):
             
             test = True
             for q in list_query_siren:
-                df = get_data_sirene(q, kind= 'siren')
+                df = _get_data_sirene(q, kind= 'siren')
                 test = test & isinstance(df, pd.DataFrame)
 
             list_query_siret =['?q=denominationUniteLegale.phonetisation:oto&nombre=20&champs=denominationUniteLegale', 
@@ -70,7 +70,7 @@ class TestFunction(TestCase):
                     '?q=denominationUniteLegale.phonetisation:oto&nombre=20']
 
             for q in list_query_siret:
-                df = get_data_sirene(q, kind= 'siret')
+                df = _get_data_sirene(q, kind= 'siret')
                 test = test & isinstance(df, pd.DataFrame)
                     
             self.assertTrue(test)

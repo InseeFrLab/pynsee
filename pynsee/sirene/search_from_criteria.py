@@ -118,7 +118,7 @@ def search_from_criteria(
     query = "?q=" + _paste(list_var_pattern, collapse = " AND ") + "&nombre={}".format(number)
 
 
-    df = get_data_sirene(query = query, kind = kind, 
+    df = _get_data_sirene(query = query, kind = kind, 
                          clean=clean, activity=activity,
                          legal=legal, only_alive=only_alive)
         
