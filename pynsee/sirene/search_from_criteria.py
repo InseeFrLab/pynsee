@@ -107,21 +107,26 @@ def search_from_criteria(
         list_hist_variable = list_siret_hist_variable
         
     list_var_pattern = []
+    
     for var, patt in zip(variable, pattern):
         
         phntc = ""  
         if var == variable[0]:
              if phonetic_firstvar:        
                  phntc = ".phonetisation"
+                 
+        #if pattern has several words, split and put mutiple conditions with OR
+        list_patt = patt.split(' ')
         
-        # remove spaces
-        patt = re.sub(' ', '', patt)
-
-        if var in list_hist_variable:
-            list_var_pattern.append("periode({}{}:{})".format(var, phntc, patt))
-        else:
-            list_var_pattern.append("{}{}:{}".format(var, phntc, patt))
-
+        list_var_patt = []
+        for ptt in list_patt:
+            if var in list_hist_variable:
+                list_var_patt.append("periode({}{}:{})".format(var, phntc, ptt))
+            else:
+                list_var_patt.append("{}{}:{}".format(var, phntc, ptt))
+        
+        list_var_pattern.append(_paste(list_var_patt, collapse = " OR "))
+        
     query = "?q=" + _paste(list_var_pattern, collapse = " AND ") + "&nombre={}".format(number)
 
 
