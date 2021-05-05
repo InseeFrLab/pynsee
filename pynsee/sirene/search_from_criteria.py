@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
+import re
 from pynsee.utils._paste import _paste
 from pynsee.sirene._get_data_sirene import _get_data_sirene
 
@@ -18,7 +19,7 @@ def search_from_criteria(
                           variable,
                           pattern,  
                           kind = "siren",
-                          phonetic_search=False,
+                          phonetic_firstvar=False,
                           number = 1000000,
                           clean=True,
                           activity=True,
@@ -33,7 +34,7 @@ def search_from_criteria(
 
         variable (str or list, optional): name of the variable on which the search is applied. Defaults to None.
 
-        phonetic_search (bool, optional): If True phonetic search is triggered, if False the exact string is searched. Defaults to True.
+        phonetic_firstvar (bool, optional): If True phonetic search is triggered on the first variable of the list, if False the exact string is searched. Defaults to True.
        
         number (int, optional): Maximum number of companies. Defaults to 200.
        
@@ -51,7 +52,7 @@ def search_from_criteria(
         >>> df = search_from_pattern(variable = ["libelleCommuneEtablissement",
         >>>                            'denominationUniteLegale'],
         >>>                 pattern = ["igny", 'pizza'], 
-        >>>                 phonetic_search=True, kind = "siret")
+        >>>                 phonetic_firstvar=True, kind = "siret")
         >>>
         >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company) 
         >>> # and whose legal status is SAS (societe par actions simplifiee)
@@ -67,10 +68,7 @@ def search_from_criteria(
     if (not kind == 'siret') & (not kind == 'siren') :      
         raise ValueError('!!! kind should be among : siren, siret !!!')
                         
-    if phonetic_search:        
-        phntc = ".phonetisation"
-    else:
-        phntc = ""    
+     
 
     if type(variable) == str:
         variable = [variable] 
@@ -110,6 +108,15 @@ def search_from_criteria(
         
     list_var_pattern = []
     for var, patt in zip(variable, pattern):
+        
+        phntc = ""  
+        if var == variable[0]:
+             if phonetic_firstvar:        
+                 phntc = ".phonetisation"
+        
+        # remove spaces
+        patt = re.sub(' ', '', patt)
+
         if var in list_hist_variable:
             list_var_pattern.append("periode({}{}:{})".format(var, phntc, patt))
         else:
@@ -121,8 +128,9 @@ def search_from_criteria(
     df = _get_data_sirene(query = query, kind = kind, 
                          clean=clean, activity=activity,
                          legal=legal, only_alive=only_alive)
-        
-    df = df.reset_index(drop=True)
+    
+    if not df is None:
+        df = df.reset_index(drop=True)
             
     return(df)
     
