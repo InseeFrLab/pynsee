@@ -28,11 +28,11 @@ def search_from_criteria(
     """Get data about companies from criteria on variables
 
     Args:
+        variable (str or list, optional): name of the variable on which the search is applied. Defaults to None.
+
         pattern (str): the pattern or criterium searched
 
         kind (str, optional): kind of companies : siren or siret. Defaults to "siren".
-
-        variable (str or list, optional): name of the variable on which the search is applied. Defaults to None.
 
         phonetic_firstvar (bool, optional): If True phonetic search is triggered on the first variable of the list, if False the exact string is searched. Defaults to True.
        
@@ -41,29 +41,33 @@ def search_from_criteria(
         clean (bool, optional): If True, empty columns are deleted. Defaults to True.
       
         activity (bool, optional): If True, activty title is added based on NAF/NACE. Defaults to True.
-    
+        
+        legal (bool, optional): If True, legal entities title are added
+        
+        only_alive (bool, optional): If True, closed entities are removed from the output
+        
     Examples:
         >>> # Get a list of hospitals in Paris
         >>> df = search_from_criteria(variable = ["activitePrincipaleUniteLegale", 
         >>>                                        "codePostalEtablissement"],
-        >>>                             pattern = ["86.10Z", "75*"], kind = "siret")
+        >>>                           pattern = ["86.10Z", "75*"], kind = "siret")
         >>>
         >>> # Get a list of companies located in Igny city whose name matches with 'pizza' using a phonetic search
         >>> df = search_from_pattern(variable = ["libelleCommuneEtablissement",
         >>>                            'denominationUniteLegale'],
-        >>>                 pattern = ["igny", 'pizza'], 
-        >>>                 phonetic_firstvar=True, kind = "siret")
+        >>>                          pattern = ["igny", 'pizza'], 
+        >>>                          phonetic_firstvar=True, kind = "siret")
         >>>
         >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company) 
         >>> # and whose legal status is SAS (societe par actions simplifiee)
         >>> df = search_from_criteria(variable=["denominationUniteLegale",
-        >>>                                       'categorieJuridiqueUniteLegale'],                                     
-        >>>                                       pattern=["sncf", '5710'], kind="siren")
+        >>>                                      'categorieJuridiqueUniteLegale'],                                     
+        >>>                           pattern=["sncf", '5710'], kind="siren")
         >>>
         >>> # Get data on Hadrien Leclerc
         >>> df = search_from_criteria(variable = ['prenom1UniteLegale', 'nomUniteLegale'],
-        >>>                             pattern = ['hadrien', 'leclerc'],
-        >>>                             kind = 'siret', only_alive = False)
+        >>>                           pattern = ['hadrien', 'leclerc'],
+        >>>                           kind = 'siret', only_alive = False)
     """        
     if (not kind == 'siret') & (not kind == 'siren') :      
         raise ValueError('!!! kind should be among : siren, siret !!!')
