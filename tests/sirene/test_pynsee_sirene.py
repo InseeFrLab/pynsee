@@ -20,33 +20,53 @@ class TestFunction(TestCase):
     if version_3_7:
 
         def test_search_from_criteria(self):  
-            # df1 = get_data_from_criteria(variable="libelleCommuneEtablissement",
-            #                             pattern="montrouge", kind="siren")
             
-            df1 = search_from_criteria(variable = ["activitePrincipaleUniteLegale", 
+            test = True
+
+            df = search_from_criteria(variable = ["activitePrincipaleUniteLegale", 
                                                     "codePostalEtablissement"],
                                         pattern = ["86.10Z", "75*"], kind = "siret")
+            test = test & isinstance(df, pd.DataFrame)
 
-            df2 = search_from_criteria(variable = ["libelleCommuneEtablissement",
+            df = search_from_criteria(variable = ["libelleCommuneEtablissement",
                                         'denominationUniteLegale'],
                             pattern = ["igny", 'pizza'], 
                             phonetic_search=True,
                             kind = "siret")
+            test = test & isinstance(df, pd.DataFrame)
 
             #mix of variable with and without history on siren
-            df3 = search_from_criteria(variable=["denominationUniteLegale",
+            df = search_from_criteria(variable=["denominationUniteLegale",
                                        'categorieJuridiqueUniteLegale', 
                                        'categorieEntreprise'],                                     
                                         pattern=["sncf", '9220', 'PME'], kind="siren")
+            test = test & isinstance(df, pd.DataFrame)
 
             #input as string and not list
-            df4 = search_from_criteria(variable = 'libelleCommuneEtablissement',
+            df = search_from_criteria(variable = 'libelleCommuneEtablissement',
                                          pattern= "montrouge", kind="siret")
-                
-            test1 = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
-            test2 = isinstance(df3, pd.DataFrame) & isinstance(df4, pd.DataFrame)
+            test = test & isinstance(df, pd.DataFrame)                        
+
             
-            self.assertTrue(test1 & test2)
+            df = search_from_criteria(variable = ["denominationUniteLegale", 'categorieEntreprise'],
+                                    pattern = ["Pernod Ricard", 'GE'], 
+                                    phonetic_firstvar=True,
+                                    kind = "siren")
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = search_from_criteria(variable = ["denominationUniteLegale",
+                                                 'categorieEntreprise',
+                                                 'categorieJuridiqueUniteLegale'],
+                                    pattern = ["Pernod Ricard", 'GE', '5710'], 
+                                    kind = "siren")
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = search_from_criteria(variable = ["denominationUniteLegale"],
+                                    pattern = ["Pernod Ricard"], 
+                                    kind = "siret")
+            test = test & isinstance(df, pd.DataFrame)
+            
+            self.assertTrue(test)
 
 
 
@@ -71,6 +91,14 @@ class TestFunction(TestCase):
 
             for q in list_query_siret:
                 df = _get_data_sirene(q, kind= 'siret')
-                test = test & isinstance(df, pd.DataFrame)
+                test = test & isinstance(df, pd.DataFrame)            
+            
+            q = '?q=denominationUniteLegale.phonetisation:Pernod OR denominationUniteLegale.phonetisation:Ricard'
+            df = _get_data_sirene(q, kind= 'siret')
+            test = test & isinstance(df, pd.DataFrame)  
+
+            q = '?q=periode(denominationUniteLegale.phonetisation:Dassault) OR periode(denominationUniteLegale.phonetisation:Système) AND categorieEntreprise:GE'
+            df = _get_data_sirene(q, kind= 'siren')
+            test = test & isinstance(df, pd.DataFrame)  
                     
             self.assertTrue(test)
