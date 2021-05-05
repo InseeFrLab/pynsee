@@ -31,7 +31,7 @@ class TestFunction(TestCase):
             df = search_from_criteria(variable = ["libelleCommuneEtablissement",
                                         'denominationUniteLegale'],
                             pattern = ["igny", 'pizza'], 
-                            phonetic_search=True,
+                            phonetic_firstvar=True,
                             kind = "siret")
             test = test & isinstance(df, pd.DataFrame)
 

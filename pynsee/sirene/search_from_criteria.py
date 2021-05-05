@@ -1,22 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
-import re
 from pynsee.utils._paste import _paste
 from pynsee.sirene._get_data_sirene import _get_data_sirene
 
-from functools import lru_cache
-
-@lru_cache(maxsize=None)
-def _warning_default_value_siren(msg):
-     print(msg)
-
-@lru_cache(maxsize=None)
-def _warning_default_value_siret(msg):
-     print(msg)
-
-def search_from_criteria(          
-                          variable,
+def search_from_criteria( variable,
                           pattern,  
                           kind = "siren",
                           phonetic_firstvar=False,
@@ -28,9 +16,9 @@ def search_from_criteria(
     """Get data about companies from criteria on variables
 
     Args:
-        variable (str or list, optional): name of the variable on which the search is applied. Defaults to None.
+        variable (str or list): name of the variable on which the search is applied. Defaults to None.
 
-        pattern (str): the pattern or criterium searched
+        pattern (str or list): the pattern or criterium searched
 
         kind (str, optional): kind of companies : siren or siret. Defaults to "siren".
 
