@@ -7,7 +7,8 @@ from functools import lru_cache
 
 from pynsee.metadata.get_activity_list import get_activity_list
 from pynsee.metadata.get_insee_legal_entity import get_insee_legal_entity
-from pynsee.sirene._get_data_from_query_csv import _get_data_from_query_csv
+#from pynsee.sirene._get_data_from_query_csv import _get_data_from_query_csv
+from pynsee.sirene._get_data_from_query_json import _get_data_from_query_json
 
 @lru_cache(maxsize=None)
 def _get_data_sirene(query, kind = 'siren', clean=True,
@@ -30,7 +31,8 @@ def _get_data_sirene(query, kind = 'siren', clean=True,
     
     link = INSEE_api_sirene_siren + '/' + kind + query
     
-    data_final = _get_data_from_query_csv(link=link, kind=kind)
+    data_final = _get_data_from_query_json(link=link, kind=kind)
+#    data_final = _get_data_from_query_csv(link=link, kind=kind)
     
     # add activity metadata
     if not data_final is None:
@@ -59,13 +61,15 @@ def _get_data_sirene(query, kind = 'siren', clean=True,
         # add legal entities title
         if legal:
             if 'categorieJuridiqueUniteLegale' in data_final.columns:
-                list_legal_code = data_final.categorieJuridiqueUniteLegale.unique()
-                data_legal = get_insee_legal_entity(list_legal_code, print_err_msg=False)
-                data_legal = data_legal[['code', 'title']]
-                data_legal = data_legal.rename(columns={'code' : 'categorieJuridiqueUniteLegale',
-                                                        'title' : 'categorieJuridiqueUniteLegaleTitle'})
-                data_final = data_final.merge(data_legal, on = 'categorieJuridiqueUniteLegale', how='left')
-                                
+                try:
+                    list_legal_code = data_final.categorieJuridiqueUniteLegale.unique()
+                    data_legal = get_insee_legal_entity(list_legal_code, print_err_msg=False)
+                    data_legal = data_legal[['code', 'title']]
+                    data_legal = data_legal.rename(columns={'code' : 'categorieJuridiqueUniteLegale',
+                                                            'title' : 'categorieJuridiqueUniteLegaleTitle'})
+                    data_final = data_final.merge(data_legal, on = 'categorieJuridiqueUniteLegale', how='left')
+                except:
+                     pass
         # empty columns at the end
         list_all_na_col = [col for col in data_final.columns if all(pd.isna(data_final[col]))]
         list_first_col = [col for col in data_final.columns if col not in list_all_na_col]
