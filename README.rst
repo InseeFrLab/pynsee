@@ -56,7 +56,7 @@ French GDP growth rate
 
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
-   # Please use : pynsee.utils.clear_all_cache to do so
+   # Please do : from pynsee.utils import *; clear_all_cache()
    import os
    os.environ['insee_key'] = "my_insee_key"
    os.environ['insee_secret'] = "my_insee_secret"
