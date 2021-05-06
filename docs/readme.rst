@@ -34,7 +34,7 @@ Installation & Loading
 
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
-   # Please use : pynsee.utils.clear_all_cache to do so
+   # Please do : from pynsee.utils import *; clear_all_cache()
    import os
    os.environ['insee_key'] = "my_key"
    os.environ['insee_secret'] = "my_secret_key"
@@ -57,10 +57,10 @@ French GDP growth rate
 
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
-   # Please use : pynsee.utils.clear_all_cache to do so
+   # Please do : from pynsee.utils import *; clear_all_cache()
    import os
-   os.environ['insee_key'] = "my_insee_key"
-   os.environ['insee_secret'] = "my_insee_secret"
+   os.environ['insee_key'] = "my_key"
+   os.environ['insee_secret'] = "my_secret_key"
 
    # get series key (idbank), for Gross domestic product balance
    id = get_idbank_list("CNT-2014-PIB-EQB-RF")
@@ -89,9 +89,17 @@ Population Map
 
 
 .. code-block:: python
-
+   
+   # Subscribe to api.insee.fr and get your credentials!
+   # Beware : any change to the keys should be tested after having cleared the cache
+   # Please do : from pynsee.utils import *; clear_all_cache()
+   import os
+   os.environ['insee_key'] = "my_key"
+   os.environ['insee_secret'] = "my_secret_key"
+   
    from pynsee.localdata import get_map
    from pynsee.macrodata import *
+   
    import geopandas as gpd
    import pandas as pd
    from pandas.api.types import CategoricalDtype
@@ -163,7 +171,10 @@ Poverty in Paris urban area
 
 .. code-block:: python
 
-   import os 
+   # Subscribe to api.insee.fr and get your credentials!
+   # Beware : any change to the keys should be tested after having cleared the cache
+   # Please do : from pynsee.utils import *; clear_all_cache()
+   import os
    os.environ['insee_key'] = "my_key"
    os.environ['insee_secret'] = "my_secret_key"
 
