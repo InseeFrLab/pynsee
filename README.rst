@@ -22,6 +22,7 @@ The pynsee package contains tools to easily download data and metadata from INSE
 Using the API or the SDMX queries, get the data of more than 150 000 INSEE series.
 Have a look at the detailed API page with the following `link <https://api.insee.fr/catalogue/>`_.
 This package is a contribution to reproducible research and public data transparency.
+Have a look at pynsee's documentation website : https://pynsee.readthedocs.io/en/latest/
 
 Installation & Loading
 ----------------------
