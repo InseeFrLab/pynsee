@@ -11,7 +11,7 @@ setuptools.setup(
     author="Hadrien Leclerc",
     author_email="hadrien.leclerc@insee.fr",
     description="Tools to Easily Download Data and Metadata from INSEE APIs",
-    long_description = long_description
+    long_description = long_description,
     url="https://pynsee.readthedocs.io/en/latest/",
     packages=setuptools.find_packages(),
     classifiers=[
