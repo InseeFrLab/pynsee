@@ -52,8 +52,10 @@ French GDP growth rate
 .. code-block:: python
 
    from pynsee.macrodata import * 
-   import plotly.express as px
-   from plotly.offline import plot
+  
+   import pandas as pd
+   import matplotlib.ticker as ticker
+   import matplotlib.pyplot as plt
 
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
@@ -71,12 +73,22 @@ French GDP growth rate
                (id.CORRECTION == "CVS-CJO")]
 
    data = get_insee_idbank(id.IDBANK)
-
-   # plot with plotly
-   fig = px.bar(data, x = data.index, y = "OBS_VALUE",
-                facet_col = "TITLE_EN", facet_col_wrap=5)
-   fig.update_yaxes(matches=None)
-   plot(fig)
+   data = split_title(df = data, n_split=2)
+   
+   # define plot
+   ax = data.plot(kind='bar', x="TIME_PERIOD", stacked=True, y="OBS_VALUE", figsize=(15,5))
+   #add title
+   plt.title("French GDP growth rate, quarter-on-quarter, sa-wda")
+   # customize x-axis tickers
+   ticklabels = ['']*len(data.TIME_PERIOD)
+   ticklabels[::12] = [item for item in data.TIME_PERIOD[::12]]
+   ax.xaxis.set_major_formatter(ticker.FixedFormatter(ticklabels))
+   plt.gcf().autofmt_xdate()
+   #remove legend
+   ax.get_legend().remove()
+   #remove x-axistitle
+   ax.xaxis.label.set_visible(False)
+   plt.show()
 
 
 Population Map
