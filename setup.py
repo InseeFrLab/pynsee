@@ -11,11 +11,12 @@ setuptools.setup(
     author="Hadrien Leclerc",
     author_email="hadrien.leclerc@insee.fr",
     description="Tools to Easily Download Data and Metadata from INSEE APIs",
+    long_description = long_description
     url="https://pynsee.readthedocs.io/en/latest/",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: MIT License",
+        "License :: OPEN LICENCE 2.0/LICENCE OUVERTE 2.0",
         "Operating System :: OS Independent",
     ],
     install_requires=[
