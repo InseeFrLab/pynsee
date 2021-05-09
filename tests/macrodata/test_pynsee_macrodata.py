@@ -19,7 +19,7 @@ from pynsee.macrodata._get_dimension_values import _get_dimension_values
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
 
 from pynsee.macrodata.get_column_title import get_column_title
-from pynsee.macrodata.search_insee import search_insee
+from pynsee.macrodata.search_macrodata import search_macrodata
 from pynsee.macrodata.get_dataset_list import get_dataset_list
 from pynsee.macrodata.get_idbank_list import get_idbank_list
 from pynsee.macrodata.get_insee_dataset import get_insee_dataset
@@ -159,9 +159,9 @@ class TestFunction(TestCase):
         test5 = isinstance(df5, pd.DataFrame)
         self.assertTrue(test1 & test2 & test3 & test4 & test5)
        
-    def test_search_insee(self):
-        search_all = search_insee()
-        search_paris = search_insee("PARIS")
+    def test_search_macrodata(self):
+        search_all = search_macrodata()
+        search_paris = search_macrodata("PARIS")
         test1 = isinstance(search_all, pd.DataFrame)
         test2 = isinstance(search_paris, pd.DataFrame)
         self.assertTrue(test1 & test2)
