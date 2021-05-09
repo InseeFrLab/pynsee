@@ -65,9 +65,7 @@ def search_sirene( variable,
         >>>                           kind = 'siret', only_alive = False)
     """        
     if (not kind == 'siret') & (not kind == 'siren') :      
-        raise ValueError('!!! kind should be among : siren, siret !!!')
-
-    legal framework relating to personal data protection                
+        raise ValueError('!!! kind should be among : siren, siret !!!')              
 
     if type(variable) == str:
         variable = [variable] 
