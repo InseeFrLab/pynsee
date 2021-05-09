@@ -90,8 +90,8 @@ French GDP growth rate
 Poverty in Paris urban area
 ---------------------------
 
-.. image:: https://github.com/hadrilec/pynsee/blob/master/docs/examples/pictures/poverty_paris_urban_area.svg
-https://raw.githubusercontent.com/hadrilec/pynsee/master/docs/examples/pictures/poverty_paris_urban_area.svg
+.. image:: https://raw.githubusercontent.com/hadrilec/pynsee/master/docs/examples/pictures/poverty_paris_urban_area.svg
+
 .. code-block:: python
    
    # Subscribe to api.insee.fr and get your credentials!
