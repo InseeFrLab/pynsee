@@ -17,16 +17,6 @@ class TestFunction(TestCase):
     def test_get_token(self):        
         token = _get_token()
         self.assertTrue((token is not None))
-
-    def test_request_insee_0(self):
-        # test both api and sdmx queries fail but token is not none        
-        sdmx_url = "https://bdm.insee.fr/series/sdmx/data/CLIMAT-AFFAIRES"
-        api_url = "https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRE_test"
-       
-        def request_insee_test(sdmx_url=sdmx_url, api_url=api_url):
-            _request_insee(sdmx_url=sdmx_url, api_url=api_url)
-
-        self.assertRaises(ValueError, request_insee_test)
     
     def test_request_insee_1(self):
         # test both api and sdmx queries fail but token is not none        
@@ -40,8 +30,7 @@ class TestFunction(TestCase):
 
     def test_request_insee_2(self):
         # if credentials are not well provided but sdmx url works
-        _get_token.cache_clear()
-        _get_envir_token.cache_clear() 
+        clear_all_cache() 
 
         os.environ['insee_token'] = "test"
         os.environ['insee_key'] = "key"
@@ -97,7 +86,7 @@ class TestFunction(TestCase):
         
 
     def test_get_envir_token(self):
-        # if credentials are not well provided but sdmx url works   
+         
         _get_envir_token.cache_clear()    
         os.environ['insee_token'] = "a"    
         token = _get_envir_token()  
