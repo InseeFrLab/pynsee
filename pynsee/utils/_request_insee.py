@@ -58,7 +58,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
 
                     if results.status_code == 200:
                         return(results)
-                    else results.status_code != 200:
+                    else:
                         raise ValueError(results.text + '\n' + sdmx_url)
                 else:
                     if print_msg:
