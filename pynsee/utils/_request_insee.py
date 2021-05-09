@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
 
 import os
 import requests
@@ -36,7 +38,9 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
 
             results = requests.get(api_url, proxies = proxies, headers=headers)
 
-            if results.status_code != 200:               
+            if results.status_code == 200:   
+                return(results)
+            else:               
                 
                 msg1 = "\n!!! Wrong query !!!"
                 
@@ -44,29 +48,22 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                     
                     print("{}".format(msg1))
                     print("Query : {}".format(api_url))
-#                msg2 = "\n!!! Please check your credentials and subscribe to all APIs!!!"
-#                msg3 = "\n!!! If your token still does't work, please try to use pynsee.utils.clear_all_cache !!!"
-#                print("{}{}{}".format(msg1, msg2, msg3))
-               
 
                 if not sdmx_url is None:
 
                     results = requests.get(sdmx_url, proxies = proxies)
+
                     if print_msg:
                         print("!!! SDMX web service used instead of API !!!")
 
-                    if results.status_code != 200:
+                    if results.status_code == 200:
+                        return(results)
+                    else results.status_code != 200:
                         raise ValueError(results.text + '\n' + sdmx_url)
                 else:
                     if print_msg:
                         print("Error %s" % results.status_code)
                     
-#                    m = re.search("ams\\:description\\>.*\\<\\/ams\\:description", results.text)
-#                    if m:
-#                        found = m.group(0)
-#                        found2 = found.replace("description", "").replace("ams", "")
-#                        print(found2)
-
         else:
             # token is None
             commands = "\nimport os\nos.environ['insee_key'] = 'my_key'\nos.environ['insee_secret'] = 'my_secret_key'"
@@ -78,10 +75,14 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                 msg4 = "SDMX web service used instead of API"
                 if print_msg:
                     print("{}{}{}{}".format(msg1, msg2, msg3, msg4))
-                # _warning_no_token(msg + msg2)
+
                 results = requests.get(sdmx_url, proxies = proxies)
-                if results.status_code != 200:
+
+                if results.status_code == 200:
+                    return(results)
+                else:
                     raise ValueError(results.text + '\n' + sdmx_url)
+
             else:
                 raise ValueError("{}{}{}".format(msg1, msg2, msg3))
     else:
@@ -89,11 +90,10 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
         if not sdmx_url is None:
             results = requests.get(sdmx_url, proxies = proxies)
 
-            if results.status_code != 200:
-                    raise ValueError(results.text + '\n' + sdmx_url)
+            if results.status_code == 200:
+                return(results)
+            else:
+                raise ValueError(results.text + '\n' + sdmx_url)
+            
         else:
             raise ValueError("!!! Error : urls are missing")
-    try:
-        return(results)
-    except:
-        raise ValueError("Error")
