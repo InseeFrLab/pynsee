@@ -16,9 +16,10 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OPEN LICENCE 2.0/LICENCE OUVERTE 2.0",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    license_files = ('LICENSE.md',),
     install_requires=[
             "pandas>=0.24.2",
             "tqdm>=4.56.0",
