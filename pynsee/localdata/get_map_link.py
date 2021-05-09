@@ -15,6 +15,12 @@ def get_map_link(geo):
     Raises:
         ValueError: an error is raised if geo is not in the list from get_map_list()
 
+    Notes:
+        All data come from https://france-geojson.gregoiredavid.fr/, made from INSEE and IGN data in 2018.
+
+        Only arrondissements municipaux data have been downloaded come from https://public.opendatasoft.com/explore/dataset/arrondissements-millesimes0/information/ in 2020.
+
+
     Examples:
         >>> from pynsee.localdata import *
         >>> map_departement_link = get_map_link('departements')

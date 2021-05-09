@@ -3,6 +3,11 @@ import pandas as pd
 
 def get_map_list():
     """Get a list of all available maps
+
+    Notes:
+        All data come from https://france-geojson.gregoiredavid.fr/, made from INSEE and IGN data.
+        
+        Only arrondissements municipaux data come from https://public.opendatasoft.com/explore/dataset/arrondissements-millesimes0/information/
     
     Examples:
         >>> from pynsee.localdata import *
