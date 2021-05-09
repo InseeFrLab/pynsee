@@ -4,7 +4,7 @@ import math
 
 from pynsee.macrodata._get_insee import _get_insee 
 from pynsee.macrodata.get_idbank_list import get_idbank_list  
-from pynsee.macrodata.search_insee import search_insee 
+from pynsee.macrodata.search_macrodata import search_macrodata 
 from pynsee.utils._paste import _paste           
 
 def get_insee_idbank(*idbanks,
@@ -116,7 +116,7 @@ def get_insee_idbank(*idbanks,
     
     if metadata:
         try:
-            all_idbank = search_insee()
+            all_idbank = search_macrodata()
             list_all_idbank = all_idbank.IDBANK.to_list()
             
             list_data_idbank = data.IDBANK.unique()
