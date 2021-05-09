@@ -1,3 +1,5 @@
+# Copyright : INSEE, 2021
+
 from functools import lru_cache
 import os
     

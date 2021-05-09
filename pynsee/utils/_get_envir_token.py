@@ -1,3 +1,5 @@
+# Copyright : INSEE, 2021
+
 import os, requests
 
 from functools import lru_cache

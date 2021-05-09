@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
+
 import requests, re, os, base64
 
 from functools import lru_cache
