@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
+from functools import lru_cache
+
 from pynsee.utils._paste import _paste
 from pynsee.sirene._get_data_sirene import _get_data_sirene
+
+@lru_cache(maxsize=None)
+def _warning_search_sirene():
+    print("!!! This function may return 'personal data',\n please check and comply with legal framework relating to personal data protection !!!")
 
 def search_sirene( variable,
                           pattern,  
@@ -59,8 +65,8 @@ def search_sirene( variable,
     """        
     if (not kind == 'siret') & (not kind == 'siren') :      
         raise ValueError('!!! kind should be among : siren, siret !!!')
-                        
-     
+
+    legal framework relating to personal data protection                
 
     if type(variable) == str:
         variable = [variable] 
@@ -128,7 +134,9 @@ def search_sirene( variable,
     
     if not df is None:
         df = df.reset_index(drop=True)
-            
+    
+    _warning_search_sirene()
+
     return(df)
     
     

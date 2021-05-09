@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 
+import pandas as pd
+from functools import lru_cache
+
+from pynsee.utils._request_insee import _request_insee
+
+@lru_cache(maxsize=None)
+def _warning_get_data_from_code():
+    print("!!! This function may return 'personal data',\n please check and comply with legal framework relating to personal data protection !!!")
+
 def get_data_from_code(*siren):
     """Get data about one or several companies from siren codes
 
     Examples:
         >>> df = get_data_from_code("552081317")
     """    
-    import pandas as pd
-    from pynsee.utils._request_insee import _request_insee
     
     INSEE_api_sirene_siren = "https://api.insee.fr/entreprises/sirene/V3/siren"
 #    INSEE_api_sirene_siret = "https://api.insee.fr/entreprises/sirene/V3/siret"
@@ -40,4 +47,6 @@ def get_data_from_code(*siren):
     
     data_final = pd.concat(list_data).reset_index(drop=True)
     
+    _warning_get_data_from_code()
+
     return(data_final)
