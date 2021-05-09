@@ -54,7 +54,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                     results = requests.get(sdmx_url, proxies = proxies)
 
                     if print_msg:
-                        print("!!! SDMX web service used instead of API !!!")
+                        print("\n!!! SDMX web service used instead of API !!!")
 
                     if results.status_code == 200:
                         return(results)
