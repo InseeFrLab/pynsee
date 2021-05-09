@@ -7,7 +7,7 @@ with open("README.rst", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="pynsee", 
-    version="0.0.5",
+    version="0.0.52",
     author="Hadrien Leclerc",
     author_email="hadrien.leclerc@insee.fr",
     description="Tools to Easily Download Data and Metadata from INSEE APIs",
@@ -17,7 +17,7 @@ setuptools.setup(
     license='OPEN LICENCE 2.0/LICENCE OUVERTE 2.0',
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: OPEN LICENCE 2.0/LICENCE OUVERTE 2.0",
+        "License :: OSI Approved",
         "Operating System :: OS Independent",
     ],
     license_files = ('LICENSE.md',),
