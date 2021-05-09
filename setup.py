@@ -28,9 +28,9 @@ setuptools.setup(
             "unidecode>=1.2.0",
             "datetime>=3.5.9"],
     include_package_data=True,
-    package_data={'pynsee_data': ['macrodata/data/*',
-                       'localdata/data/*',
-                       'metadata/data/*']},
+    package_data={'pynsee_data': ['pynsee/macrodata/data/*',
+                       'pynsee/localdata/data/*',
+                       'pynsee/metadata/data/*']},
     python_requires='>=3.6',
     test_suite='nose.collector',
     tests_require=['nose']

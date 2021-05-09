@@ -7,8 +7,3 @@ include LICENSE.md
 
 # Include setup.py
 include setup.py
-
-# Include the data files
-recursive-include macrodata/data *
-recursive-include localdata/data *
-recursive-include metadatadata/data *

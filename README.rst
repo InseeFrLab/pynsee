@@ -30,7 +30,7 @@ Installation & Loading
 .. code-block:: python
 
    # Get the development version from GitHub
-   pip install git+https://github.com/hadrilec/pynsee.git#egg=pynsee
+   # pip install git+https://github.com/hadrilec/pynsee.git#egg=pynsee
 
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
