@@ -4,7 +4,7 @@ import pandas as pd
 from pynsee.utils._paste import _paste
 from pynsee.sirene._get_data_sirene import _get_data_sirene
 
-def search_from_criteria( variable,
+def search_sirene( variable,
                           pattern,  
                           kind = "siren",
                           phonetic_firstvar=False,
@@ -36,24 +36,24 @@ def search_from_criteria( variable,
         
     Examples:
         >>> # Get a list of hospitals in Paris
-        >>> df = search_from_criteria(variable = ["activitePrincipaleUniteLegale", 
+        >>> df = search_sirene(variable = ["activitePrincipaleUniteLegale", 
         >>>                                        "codePostalEtablissement"],
         >>>                           pattern = ["86.10Z", "75*"], kind = "siret")
         >>>
         >>> # Get a list of companies located in Igny city whose name matches with 'pizza' using a phonetic search
-        >>> df = search_from_pattern(variable = ["libelleCommuneEtablissement",
+        >>> df = search_sirene(variable = ["libelleCommuneEtablissement",
         >>>                            'denominationUniteLegale'],
         >>>                          pattern = ["igny", 'pizza'], 
         >>>                          phonetic_firstvar=True, kind = "siret")
         >>>
         >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company) 
         >>> # and whose legal status is SAS (societe par actions simplifiee)
-        >>> df = search_from_criteria(variable=["denominationUniteLegale",
+        >>> df = search_sirene(variable=["denominationUniteLegale",
         >>>                                      'categorieJuridiqueUniteLegale'],                                     
         >>>                           pattern=["sncf", '5710'], kind="siren")
         >>>
         >>> # Get data on Hadrien Leclerc
-        >>> df = search_from_criteria(variable = ['prenom1UniteLegale', 'nomUniteLegale'],
+        >>> df = search_sirene(variable = ['prenom1UniteLegale', 'nomUniteLegale'],
         >>>                           pattern = ['hadrien', 'leclerc'],
         >>>                           kind = 'siret', only_alive = False)
     """        

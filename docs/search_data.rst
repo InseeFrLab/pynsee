@@ -8,7 +8,7 @@ Search macrodata
 
 .. autofunction:: pynsee.macrodata.get_idbank_list
 
-.. autofunction:: pynsee.macrodata.search_insee
+.. autofunction:: pynsee.macrodata.search_macrodata
 
 .. autofunction:: pynsee.macrodata.get_last_release
 
@@ -40,4 +40,4 @@ Search metadata
 Search sirene
 -------------
 
-.. autofunction:: pynsee.sirene.search_from_criteria
+.. autofunction:: pynsee.sirene.search_sirene

@@ -4,7 +4,7 @@ from pandas import pandas as pd
 import sys
 
 from pynsee.sirene.get_data_from_code import get_data_from_code
-from pynsee.sirene.search_from_criteria import search_from_criteria
+from pynsee.sirene.search_sirene import search_sirene
 from pynsee.sirene._get_data_sirene import _get_data_sirene
 
 class TestFunction(TestCase):
@@ -19,16 +19,16 @@ class TestFunction(TestCase):
     
     if version_3_7:
 
-        def test_search_from_criteria(self):  
+        def test_search_sirene(self):  
             
             test = True
 
-            df = search_from_criteria(variable = ["activitePrincipaleUniteLegale", 
+            df = search_sirene(variable = ["activitePrincipaleUniteLegale", 
                                                     "codePostalEtablissement"],
                                         pattern = ["86.10Z", "75*"], kind = "siret")
             test = test & isinstance(df, pd.DataFrame)
 
-            df = search_from_criteria(variable = ["libelleCommuneEtablissement",
+            df = search_sirene(variable = ["libelleCommuneEtablissement",
                                         'denominationUniteLegale'],
                             pattern = ["igny", 'pizza'], 
                             phonetic_firstvar=True,
@@ -36,32 +36,32 @@ class TestFunction(TestCase):
             test = test & isinstance(df, pd.DataFrame)
 
             #mix of variable with and without history on siren
-            df = search_from_criteria(variable=["denominationUniteLegale",
+            df = search_sirene(variable=["denominationUniteLegale",
                                        'categorieJuridiqueUniteLegale', 
                                        'categorieEntreprise'],                                     
                                         pattern=["sncf", '9220', 'PME'], kind="siren")
             test = test & isinstance(df, pd.DataFrame)
 
             #input as string and not list
-            df = search_from_criteria(variable = 'libelleCommuneEtablissement',
+            df = search_sirene(variable = 'libelleCommuneEtablissement',
                                          pattern= "montrouge", kind="siret")
             test = test & isinstance(df, pd.DataFrame)                        
 
             
-            df = search_from_criteria(variable = ["denominationUniteLegale", 'categorieEntreprise'],
+            df = search_sirene(variable = ["denominationUniteLegale", 'categorieEntreprise'],
                                     pattern = ["Pernod Ricard", 'GE'], 
                                     phonetic_firstvar=True,
                                     kind = "siren")
             test = test & isinstance(df, pd.DataFrame)
 
-            df = search_from_criteria(variable = ["denominationUniteLegale",
+            df = search_sirene(variable = ["denominationUniteLegale",
                                                  'categorieEntreprise',
                                                  'categorieJuridiqueUniteLegale'],
                                     pattern = ["Pernod Ricard", 'GE', '5710'], 
                                     kind = "siren")
             test = test & isinstance(df, pd.DataFrame)
 
-            df = search_from_criteria(variable = ["denominationUniteLegale"],
+            df = search_sirene(variable = ["denominationUniteLegale"],
                                     pattern = ["Pernod Ricard"], 
                                     kind = "siret")
             test = test & isinstance(df, pd.DataFrame)
