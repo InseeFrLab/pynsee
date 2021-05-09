@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
+
 import pandas as pd
 
 def _get_date(freq, time_period):

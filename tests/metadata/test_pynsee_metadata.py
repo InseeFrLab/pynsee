@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
 
 from unittest import TestCase
 from pandas import pandas as pd

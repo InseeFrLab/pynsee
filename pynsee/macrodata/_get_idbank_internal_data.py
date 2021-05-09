@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
 
 import zipfile
 import pkg_resources

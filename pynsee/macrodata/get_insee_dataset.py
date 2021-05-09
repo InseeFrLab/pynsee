@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
+
 from pynsee.utils._paste import _paste 
 from ._get_insee import _get_insee
 from .get_dataset_list import get_dataset_list 

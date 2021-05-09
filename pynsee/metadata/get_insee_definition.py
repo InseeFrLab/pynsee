@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
+
 from pynsee.utils._request_insee import _request_insee
 from tqdm import trange
 

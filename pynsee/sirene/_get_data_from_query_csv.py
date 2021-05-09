@@ -1,3 +1,4 @@
+# Copyright : INSEE, 2021
 
 import pandas as pd
 import csv

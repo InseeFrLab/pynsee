@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
+
 from functools import lru_cache
 
 from ._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized

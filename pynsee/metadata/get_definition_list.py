@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
+
 from functools import lru_cache
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._create_insee_folder import _create_insee_folder

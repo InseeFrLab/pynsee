@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
+
 import xml.etree.ElementTree as ET
 import pandas as pd
 import os

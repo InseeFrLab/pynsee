@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
+
 import pandas as pd
 
 def split_title(df, title_col_name = ["TITLE_EN", "TITLE_FR"],
