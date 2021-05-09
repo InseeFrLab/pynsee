@@ -43,11 +43,7 @@ Installation & Loading
 French GDP growth rate
 ----------------------
 
-.. image:: docs/examples/pictures/example_gdp_picture.png
-   :target: docs/examples/pictures/example_gdp_picture.png
-   :alt:
-
-
+.. image:: https://github.com/hadrilec/pynsee/blob/master/docs/examples/pictures/example_gdp_picture.png
 
 .. code-block:: python
 
@@ -94,9 +90,7 @@ French GDP growth rate
 Poverty in Paris urban area
 ---------------------------
 
-.. image:: docs/examples/pictures/poverty_paris_urban_area.svg
-   :target: docs/examples/pictures/poverty_paris_urban_area.svg
-   :alt:
+.. image:: https://github.com/hadrilec/pynsee/blob/master/docs/examples/pictures/poverty_paris_urban_area.svg
 
 .. code-block:: python
    
