@@ -159,6 +159,7 @@ How to avoid proxy issues ?
 ---------------------------
 
 .. code-block:: python
+
    import os
    os.environ['http_proxy'] = 'http://my_proxy_server:port'
    os.environ['https_proxy'] = 'http://my_proxy_server:port'

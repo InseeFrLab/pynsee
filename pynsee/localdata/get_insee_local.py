@@ -9,7 +9,7 @@ from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
 
 @lru_cache(maxsize=None)
 def _warning_future_dev():
-    print("!!! This function is still at an early development stage,\nfuture changes are likely !!!")
+    print("\n!!! This function is still at an early development stage,\nfuture changes are likely !!!")
 
 def get_insee_local(variables, dataset_version, nivgeo='FE', geocodes=['1']):
     """Get INSEE local numeric data
@@ -31,8 +31,10 @@ def get_insee_local(variables, dataset_version, nivgeo='FE', geocodes=['1']):
         >>> metadata = get_local_metadata()
         >>> nivgeo = get_nivgeo_list()
         >>> departement = get_geo_list('departements')
+        >>> #
         >>> data_all_france = get_insee_local(dataset_version='GEO2020RP2017',
         >>>                        variables =  'SEXE-DIPL_19')
+        >>> #
         >>> data_91_92 = get_insee_local(dataset_version='GEO2020RP2017',
         >>>                        variables =  'SEXE-DIPL_19',
         >>>                        nivgeo = 'DEP',
@@ -40,12 +42,8 @@ def get_insee_local(variables, dataset_version, nivgeo='FE', geocodes=['1']):
     """    
         
     if type(geocodes) != list:
-        raise ValueError("!!! geocodes must be a list !!!")
-        
-    _warning_future_dev()
+        raise ValueError("!!! geocodes must be a list !!!")    
     
-#    variables = 'AGESCOL-SEXE-ETUD';dataset_version = 'GEO2019RP2011';geocodes = ['91','92', '976'];nivgeo = 'DEP'
-      
     list_data_all = []
     
     for cdg in trange(len(geocodes), desc = "Getting data"): 
@@ -58,5 +56,7 @@ def get_insee_local(variables, dataset_version, nivgeo='FE', geocodes=['1']):
  
     data_final = pd.concat(list_data_all).reset_index(drop=True)
         
+    _warning_future_dev()
+    
     return(data_final)
            
