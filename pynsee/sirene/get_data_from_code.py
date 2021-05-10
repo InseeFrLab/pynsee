@@ -13,6 +13,9 @@ def _warning_get_data_from_code():
 def get_data_from_code(*siren):
     """Get data about one or several companies from siren codes
 
+    Notes:
+        This function may return personal data, please check and comply with the legal framework relating to personal data protection
+
     Examples:
         >>> df = get_data_from_code("552081317")
     """    

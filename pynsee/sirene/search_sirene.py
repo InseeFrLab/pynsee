@@ -40,7 +40,10 @@ def search_sirene( variable,
         legal (bool, optional): If True, legal entities title are added
         
         only_alive (bool, optional): If True, closed entities are removed from the output
-        
+    
+    Notes:
+        This function may return personal data, please check and comply with the legal framework relating to personal data protection
+
     Examples:
         >>> # Get a list of hospitals in Paris
         >>> df = search_sirene(variable = ["activitePrincipaleUniteLegale", 
