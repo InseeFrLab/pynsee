@@ -11,7 +11,7 @@ from pynsee.localdata.get_area_list import get_area_list
 @lru_cache(maxsize=None)
 def _get_insee_one_area(area_type, codearea):
         
-    df_list = get_area_list(area_type)
+    df_list = get_area_list()
     list_available_codeareas = df_list.CODE.to_list()
     
     list_ZE20 = ['ZE2020', 'zonesDEmploi2020', 'ZoneDEmploi2020']
