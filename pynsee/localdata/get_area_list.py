@@ -26,7 +26,6 @@ def get_area_list(area=None):
     area_string = _paste(list_available_area, collapse = " ")
     
     if area is not None:
-        list_available_area = [area]
         if not area in list_available_area:
             msg = "!!! {} is not available\nPlease choose area among:\n{}".format(area, area_string)
             raise ValueError(msg)        
