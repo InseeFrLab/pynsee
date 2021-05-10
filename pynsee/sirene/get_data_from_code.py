@@ -26,7 +26,7 @@ def get_data_from_code(*siren):
     list_data = []
     
     for code in siren:
-        link = INSEE_api_sirene_siren + '/' + code
+        link = INSEE_api_sirene_siren + '/' + str(code)
         request = _request_insee(api_url = link, file_format = 'application/json;charset=utf-8')
 
         data_request = request.json()

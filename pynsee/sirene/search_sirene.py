@@ -49,19 +49,19 @@ def search_sirene( variable,
         >>> df = search_sirene(variable = ["activitePrincipaleUniteLegale", 
         >>>                                        "codePostalEtablissement"],
         >>>                           pattern = ["86.10Z", "75*"], kind = "siret")
-        >>>
+        >>> #
         >>> # Get a list of companies located in Igny city whose name matches with 'pizza' using a phonetic search
         >>> df = search_sirene(variable = ["libelleCommuneEtablissement",
         >>>                            'denominationUniteLegale'],
         >>>                          pattern = ["igny", 'pizza'], 
         >>>                          phonetic_firstvar=True, kind = "siret")
-        >>>
+        >>> #
         >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company) 
         >>> # and whose legal status is SAS (societe par actions simplifiee)
         >>> df = search_sirene(variable=["denominationUniteLegale",
         >>>                                      'categorieJuridiqueUniteLegale'],                                     
         >>>                           pattern=["sncf", '5710'], kind="siren")
-        >>>
+        >>> #
         >>> # Get data on Hadrien Leclerc
         >>> df = search_sirene(variable = ['prenom1UniteLegale', 'nomUniteLegale'],
         >>>                           pattern = ['hadrien', 'leclerc'],
