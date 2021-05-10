@@ -20,7 +20,7 @@ def get_map_link(geo):
     Notes:
         All data come from https://france-geojson.gregoiredavid.fr/, made from INSEE and IGN data in 2018.
 
-        Only arrondissements municipaux data have been downloaded come from https://public.opendatasoft.com/explore/dataset/arrondissements-millesimes0/information/ in 2020.
+        Only arrondissements municipaux data come from https://public.opendatasoft.com/explore/dataset/arrondissements-millesimes0/information/ in 2020.
 
 
     Examples:
