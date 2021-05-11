@@ -19,10 +19,12 @@ Introduction to pynsee package
    :target: https://pynsee.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-The pynsee package contains tools to easily download data and metadata from INSEE API.
-Using the API or the SDMX queries, get the data of more than 150 000 INSEE series.
+The pynsee package contains tools to easily download data and metadata from INSEE APIs.
+Pynsee gives a quick access to more than 150 000 macroeconomic series,
+a dozen datasets of local data, key metadata and SIRENE database containing data on all French companies.
 Have a look at the detailed API page with the following `link <https://api.insee.fr/catalogue/>`_.
-This package is a contribution to reproducible research and public data transparency, and it benefits from the developements made by INSEE's teams working on APIs.
+This package is a contribution to reproducible research and public data transparency. 
+It benefits from  the developements made by INSEE's teams working on APIs.
 
 Installation & Loading
 ----------------------
