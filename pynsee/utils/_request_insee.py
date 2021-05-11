@@ -72,7 +72,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
             msg3 = "\n!!! If your token still does not work, please try to clear the cache :\n from pynsee.utils import *; clear_all_cache() !!!\n"
         
             if not sdmx_url is None:
-                msg4 = "SDMX web service used instead of API"
+                msg4 = "\nSDMX web service used instead of API"
                 if print_msg:
                     print("{}{}{}{}".format(msg1, msg2, msg3, msg4))
 
