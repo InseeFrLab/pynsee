@@ -24,11 +24,30 @@ def get_area_list(area=None):
         
     list_available_area = ['zonesDEmploi2020', 'airesDAttractionDesVilles2020', 'unitesUrbaines2020']
     area_string = _paste(list_available_area, collapse = " ")
+
+    list_ZE20 = ['ZE2020', 'zonesDEmploi2020', 'ZoneDEmploi2020']
+    list_AAV20 = ['AAV2020', 'airesDAttractionDesVilles2020', 'AireDAttractionDesVilles2020']
+    list_UU20 = ['UU2020' ,'unitesUrbaines2020', 'UniteUrbaine2020']
     
+    list_ZE20 = [s.lower() for s in list_ZE20]
+    list_AAV20 = [s.lower() for s in list_AAV20]
+    list_UU20 = [s.lower() for s in list_UU20]
+       
     if area is not None:
+        area = area.lower()
+
+        if area in list_ZE20:
+            area = 'zonesDEmploi2020'
+        if area in list_AAV20:
+            area = 'airesDAttractionDesVilles2020'
+        if area in list_UU20:
+            area = 'unitesUrbaines2020'
+
         if not area in list_available_area:
             msg = "!!! {} is not available\nPlease choose area among:\n{}".format(area, area_string)
-            raise ValueError(msg)        
+            raise ValueError(msg)
+        else:
+            list_available_area = [area]
     
     list_data = []
     
