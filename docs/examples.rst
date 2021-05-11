@@ -15,3 +15,4 @@ Examples
    examples/example_population_map.ipynb
    examples/example_poverty_paris_urban_area.ipynb
    examples/example_population_pyramid.ipynb
+   examples/example_sirene_insee_premises.ipynb
