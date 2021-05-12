@@ -12,6 +12,8 @@ from pynsee.utils._clean_insee_folder import _clean_insee_folder
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.clear_all_cache import clear_all_cache
 
+os.environ['pynsee_query_print'] = 'True'
+
 class TestFunction(TestCase):
 
     def test_get_token(self):        
