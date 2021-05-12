@@ -8,7 +8,7 @@ from pynsee.utils._request_insee import _request_insee
 
 @lru_cache(maxsize=None)
 def _warning_get_data_from_code():
-    print("!!! This function may return personal data,\n please check and comply with the legal framework relating to personal data protection !!!")
+    print("!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!")
 
 def get_data_from_code(*siren):
     """Get data about one or several companies from siren codes
