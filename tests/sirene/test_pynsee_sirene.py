@@ -7,8 +7,20 @@ import sys
 from pynsee.sirene.get_data_from_code import get_data_from_code
 from pynsee.sirene.search_sirene import search_sirene
 from pynsee.sirene._request_sirene import _request_sirene
+from pynsee.sirene.get_location import get_location
 
 class TestFunction(TestCase):
+
+    def test_get_location(self):
+        df = search_sirene(variable = ["activitePrincipaleEtablissement"],
+                   pattern = ['29.10Z'], kind = 'siret')
+
+        df = df.loc[df['effectifsMinEtablissement'] > 100]
+        df = df.reset_index(drop=True)
+        df_location = get_location(df)
+        test = isinstance(df_location, pd.DataFrame)
+        self.assertTrue(test)
+
 
     def test_get_data_from_code(self):  
         df1 = get_data_from_code("552081317", "808332670")     
