@@ -24,4 +24,4 @@ def _employee_metadata(kind='siren'):
     
     df = df.reset_index(drop=True)
     
-    return()
+    return(df)
