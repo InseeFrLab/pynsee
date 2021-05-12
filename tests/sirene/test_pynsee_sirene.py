@@ -98,8 +98,9 @@ class TestFunction(TestCase):
                     '?q=activitePrincipaleUniteLegale:86.10Z AND codePostalEtablissement:75*&nombre=5000', 
                     '?q=denominationUniteLegale.phonetisation:oto&nombre=20']
 
-            for q in list_query_siret:
-                df = _request_sirene(q, kind= 'siret')
+            for q in range(len(list_query_siret)):
+                query = list_query_siret[q]
+                df = _request_sirene(query, kind= 'siret')
                 test = test & isinstance(df, pd.DataFrame)            
             
             q = '?q=denominationUniteLegale.phonetisation:Pernod OR denominationUniteLegale.phonetisation:Ricard'
