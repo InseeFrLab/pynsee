@@ -15,7 +15,7 @@ from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
     
 @lru_cache(maxsize=None)
 def _warning_activity():
-    msg1 = "!!! This function uses the latest data available (which is NAF/NACE rev. 2 - 2008), it may evolve over time !!!"
+    msg1 = "\n!!! This function uses NAF/NACE rev. 2 classification made in 2008 !!!"
     print(msg1)
 
 @lru_cache(maxsize=None)

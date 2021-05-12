@@ -4,28 +4,14 @@
 # import re
 import pandas as pd
 #import sys, os
-from functools import lru_cache
+#from functools import lru_cache
 
 from pynsee.metadata.get_activity_list import get_activity_list
 from pynsee.metadata.get_insee_legal_entity import get_insee_legal_entity
 
-@lru_cache(maxsize=None)
+#@lru_cache(maxsize=None)
 def _clean_data(data_final, kind = 'siren', clean=True, 
-                    activity=True, legal=True, only_alive=True):
-    """Get data from any criteria-based query
-
-    Args:
-        query (str): query string
-
-        kind (str, optional): kind of entitty: siren or siret. Defaults to 'siren'.
-
-        clean (bool, optional): If True empty columns are removed. Defaults to True.
-        
-        activity (bool, optional): If True activity label is added. Defaults to True.
-
-    Raises:
-        ValueError: If kind is not equal to 'siret' or 'siren' an error is raised.
-    """            
+                    activity=True, legal=True, only_alive=True):            
     
     # add activity metadata
     if not data_final is None:

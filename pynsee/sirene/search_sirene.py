@@ -133,8 +133,8 @@ def search_sirene( variable,
     data_final = _request_sirene(query=query, kind=kind, number=number)
 
     df = _clean_data(data_final, kind = kind, 
-                         clean=clean, activity=activity,
-                         legal=legal, only_alive=only_alive)
+                     clean=clean, activity=activity,
+                     legal=legal, only_alive=only_alive)
     
     if not df is None:
         df = df.reset_index(drop=True)

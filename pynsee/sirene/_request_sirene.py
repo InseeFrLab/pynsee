@@ -43,7 +43,7 @@ def _request_sirene(query, kind, number):
         
         data_request = request.json()
         
-        data_request_1 = _make_dataframe(data_request, main_key, query_number)
+        data_request_1 = _make_dataframe(data_request, main_key, '1')
         df_nrows = len(data_request_1[kind].unique())
         
         list_dataframe.append(data_request_1)       
