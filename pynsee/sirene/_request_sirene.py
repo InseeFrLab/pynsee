@@ -10,6 +10,10 @@ from pynsee.sirene._make_dataframe import _make_dataframe
 @lru_cache(maxsize=None)
 def _request_sirene(query, kind, number):
     
+    #query = '?q=denominationUniteLegale.phonetisation:pizza'
+    #kind = 'siret'
+    #number = 2001
+    
     if kind == 'siren':        
         main_key = 'unitesLegales'
     elif kind == 'siret':
@@ -55,12 +59,12 @@ def _request_sirene(query, kind, number):
             cursor = data_request['header']['curseur']
             following_cursor = data_request['header']['curseurSuivant']
             
-            while (following_cursor != cursor) & (request_status == 200) & (number < df_nrows):
+            while (following_cursor != cursor) & (request_status == 200) & (df_nrows < number):
                 
                 i_query += 1
                 query_number = '{}/{}'.format(i_query, n_query_total)
             
-                new_query = main_query + following_cursor + "&nombre={}".format(number_query_limit)
+                new_query = main_query + '&curseur=' + following_cursor + "&nombre={}".format(number_query_limit)
                 
                 request_new = _request_insee(api_url=new_query, file_format= 'application/json;charset=utf-8')
                 
