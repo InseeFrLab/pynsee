@@ -2,7 +2,7 @@
 Search data
 ===========
 
-Search macrodata
+Search macroeconomic data
 ----------------
 .. autofunction:: pynsee.macrodata.get_dataset_list
 
