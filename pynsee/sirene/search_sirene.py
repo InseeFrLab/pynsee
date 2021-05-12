@@ -46,6 +46,9 @@ def search_sirene( variable,
         This function may return personal data, please check and comply with the legal framework relating to personal data protection
 
     Examples:
+        >>> # Get activity list (NAF rev 2)
+        >>> naf5 = get_activity_list('NAF5')
+        >>> #
         >>> # Get a list of hospitals in Paris
         >>> df = search_sirene(variable = ["activitePrincipaleUniteLegale", 
         >>>                                "codePostalEtablissement"],
