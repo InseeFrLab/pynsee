@@ -66,7 +66,15 @@ class TestFunction(TestCase):
                                     pattern = ["Pernod Ricard"], 
                                     kind = "siret")
             test = test & isinstance(df, pd.DataFrame)
+
             
+            df = search_sirene(variable = ['denominationUniteLegale'],
+                                pattern = ['tabac'], 
+                                number = 2500,
+                                kind = "siret")
+
+            test = test & isinstance(df, pd.DataFrame)
+                        
             self.assertTrue(test)
 
 

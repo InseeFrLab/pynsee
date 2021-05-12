@@ -24,7 +24,7 @@ def search_sirene( variable,
     """Get data about companies from criteria on variables
 
     Args:
-        variable (str or list): name of the variable on which the search is applied. Defaults to None.
+        variable (str or list): name of the variable on which the search is applied.
 
         pattern (str or list): the pattern or criterium searched
 
@@ -32,7 +32,7 @@ def search_sirene( variable,
 
         phonetic_firstvar (bool, optional): If True phonetic search is triggered on the first variable of the list, if False the exact string is searched. Defaults to True.
        
-        number (int, optional): Maximum number of companies. Defaults to 200.
+        number (int, optional): Number of companies searched. Defaults to 1000. If it is above 1000, multiple queries are triggered.
        
         clean (bool, optional): If True, empty columns are deleted. Defaults to True.
       
@@ -48,25 +48,31 @@ def search_sirene( variable,
     Examples:
         >>> # Get a list of hospitals in Paris
         >>> df = search_sirene(variable = ["activitePrincipaleUniteLegale", 
-        >>>                                        "codePostalEtablissement"],
-        >>>                           pattern = ["86.10Z", "75*"], kind = "siret")
+        >>>                                "codePostalEtablissement"],
+        >>>                    pattern = ["86.10Z", "75*"], kind = "siret")
         >>> #
         >>> # Get a list of companies located in Igny city whose name matches with 'pizza' using a phonetic search
         >>> df = search_sirene(variable = ["libelleCommuneEtablissement",
         >>>                            'denominationUniteLegale'],
-        >>>                          pattern = ["igny", 'pizza'], 
-        >>>                          phonetic_firstvar=True, kind = "siret")
+        >>>                    pattern = ["igny", 'pizza'], 
+        >>>                    phonetic_firstvar=True, kind = "siret")
         >>> #
         >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company) 
         >>> # and whose legal status is SAS (societe par actions simplifiee)
         >>> df = search_sirene(variable=["denominationUniteLegale",
-        >>>                                      'categorieJuridiqueUniteLegale'],                                     
-        >>>                           pattern=["sncf", '5710'], kind="siren")
+        >>>                              'categorieJuridiqueUniteLegale'],                                     
+        >>>                    pattern=["sncf", '5710'], kind="siren")
         >>> #
         >>> # Get data on Hadrien Leclerc
         >>> df = search_sirene(variable = ['prenom1UniteLegale', 'nomUniteLegale'],
         >>>                           pattern = ['hadrien', 'leclerc'],
         >>>                           kind = 'siret', only_alive = False)
+        >>> #
+        >>> # Find 2500 tobacco shops
+        >>> df = search_sirene(variable = ['denominationUniteLegale'],
+        >>>            pattern = ['tabac'], 
+        >>>            number = 2500,
+        >>>            kind = "siret")
     """        
     if (not kind == 'siret') & (not kind == 'siren') :      
         raise ValueError('!!! kind should be among : siren, siret !!!')              
