@@ -15,5 +15,5 @@ Examples
    examples/example_population_map.ipynb
    examples/example_poverty_paris_urban_area.ipynb
    examples/example_population_pyramid.ipynb
-   examples/example_sirene_insee_premises.ipynb
-   examples/example_automotive_industry.ipynb
+   examples/example_insee_premises_sirene.ipynb
+   examples/example_automotive_industry_sirene.ipynb
