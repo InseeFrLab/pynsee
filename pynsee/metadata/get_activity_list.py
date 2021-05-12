@@ -11,16 +11,18 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._paste import _paste
 from pynsee.metadata._get_naf import _get_naf
 from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
-    
-    
-@lru_cache(maxsize=None)
-def _warning_activity():
-    msg1 = "\n!!! This function uses NAF/NACE rev. 2 classification made in 2008 !!!"
-    print(msg1)
+        
+# @lru_cache(maxsize=None)
+# def _warning_activity():
+#     msg1 = "\n!!! This function uses NAF/NACE rev. 2 classification made in 2008 !!!"
+#     print(msg1)
 
 @lru_cache(maxsize=None)
-def get_activity_list(level, version='latest'):
+def get_activity_list(level, version='NAFRev2'):
     """Get a list of economic activities from NAF/NACE rev 2 2008 classification
+
+    Notes:
+        This function uses NAF/NACE rev. 2 classification made in 2008
 
     Args:
         level (str): Levels available are :  A10, A21, A38, A64, A88, A129, A138, NAF1, NAF2, NAF3, NAF4, NAF5
@@ -45,7 +47,7 @@ def get_activity_list(level, version='latest'):
     if not level in level_available:
         raise ValueError("!!! level must be in %s !!!", _paste(level_available, collapse = " "))
     
-    _warning_activity()
+    #_warning_activity()
 
     insee_folder = _create_insee_folder()
 
