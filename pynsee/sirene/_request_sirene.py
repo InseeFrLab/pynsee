@@ -81,6 +81,8 @@ def _request_sirene(query, kind, number=1001):
                         df = _make_dataframe(data_request, main_key, query_number)
                         df_nrows += len(df[kind].unique())
                         list_dataframe.append(df)
+                    else:
+                        print('{} - No more data found'.format(query_number))
             
     
         data_final = pd.concat(list_dataframe)
