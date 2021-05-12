@@ -8,7 +8,7 @@ from pynsee.utils._request_insee import _request_insee
 from pynsee.sirene._make_dataframe import _make_dataframe
 
 @lru_cache(maxsize=None)
-def _request_sirene(query, kind, number):
+def _request_sirene(query, kind, number=1001):
     
     #query = '?q=denominationUniteLegale:pizza'
     #kind = 'siret'
@@ -54,20 +54,10 @@ def _request_sirene(query, kind, number):
                
         list_header_keys = list(data_request['header'].keys())
         
-        #print(list_header_keys)
-        
         if 'curseur' in list_header_keys:
                         
             cursor = data_request['header']['curseur']
             following_cursor = data_request['header']['curseurSuivant']
-            
-            #print('cursor ' + cursor)
-            #print('following_cursor ' + following_cursor)
-            #print('df_nrows')
-            #print(df_nrows)
-            #print('number')
-            #print(number)
-            #print((following_cursor != cursor) & (request_status == 200) & (df_nrows < number))
             
             while (following_cursor != cursor) & (request_status == 200) & (df_nrows < number):
                 

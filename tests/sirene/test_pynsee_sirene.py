@@ -6,7 +6,7 @@ import sys
 
 from pynsee.sirene.get_data_from_code import get_data_from_code
 from pynsee.sirene.search_sirene import search_sirene
-from pynsee.sirene._get_data_sirene import _get_data_sirene
+from pynsee.sirene._request_sirene import _request_sirene
 
 class TestFunction(TestCase):
 
@@ -79,7 +79,7 @@ class TestFunction(TestCase):
 
 
 
-        def test_get_data_sirene(self):  
+        def test_request_sirene(self):  
             
             list_query_siren = ["?q=periode(denominationUniteLegale.phonetisation:sncf)&nombre=20",
                     '?q=sigleUniteLegale:???',
@@ -87,7 +87,7 @@ class TestFunction(TestCase):
             
             test = True
             for q in list_query_siren:
-                df = _get_data_sirene(q, kind= 'siren')
+                df = _request_sirene(q, kind= 'siren')
                 test = test & isinstance(df, pd.DataFrame)
 
             list_query_siret =['?q=denominationUniteLegale.phonetisation:oto&nombre=20&champs=denominationUniteLegale', 
@@ -99,15 +99,15 @@ class TestFunction(TestCase):
                     '?q=denominationUniteLegale.phonetisation:oto&nombre=20']
 
             for q in list_query_siret:
-                df = _get_data_sirene(q, kind= 'siret')
+                df = _request_sirene(q, kind= 'siret')
                 test = test & isinstance(df, pd.DataFrame)            
             
             q = '?q=denominationUniteLegale.phonetisation:Pernod OR denominationUniteLegale.phonetisation:Ricard'
-            df = _get_data_sirene(q, kind= 'siret')
+            df = _request_sirene(q, kind= 'siret')
             test = test & isinstance(df, pd.DataFrame)  
 
             q = '?q=periode(denominationUniteLegale.phonetisation:Dassault) OR periode(denominationUniteLegale.phonetisation:Système) AND categorieEntreprise:GE'
-            df = _get_data_sirene(q, kind= 'siren')
+            df = _request_sirene(q, kind= 'siren')
             test = test & isinstance(df, pd.DataFrame)  
                     
             self.assertTrue(test)
