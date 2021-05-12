@@ -10,7 +10,7 @@ from pynsee.sirene._make_dataframe import _make_dataframe
 @lru_cache(maxsize=None)
 def _request_sirene(query, kind, number):
     
-    #query = '?q=denominationUniteLegale.phonetisation:pizza'
+    #query = '?q=denominationUniteLegale:pizza'
     #kind = 'siret'
     #number = 2001
     
@@ -54,17 +54,27 @@ def _request_sirene(query, kind, number):
                
         list_header_keys = list(data_request['header'].keys())
         
-        if 'curseur' in list_header_keys:
+        #print(list_header_keys)
         
+        if 'curseur' in list_header_keys:
+                        
             cursor = data_request['header']['curseur']
             following_cursor = data_request['header']['curseurSuivant']
+            
+            #print('cursor ' + cursor)
+            #print('following_cursor ' + following_cursor)
+            #print('df_nrows')
+            #print(df_nrows)
+            #print('number')
+            #print(number)
+            #print((following_cursor != cursor) & (request_status == 200) & (df_nrows < number))
             
             while (following_cursor != cursor) & (request_status == 200) & (df_nrows < number):
                 
                 i_query += 1
                 query_number = '{}/{}'.format(i_query, n_query_total)
             
-                new_query = main_query + '&curseur=' + following_cursor + "&nombre={}".format(number_query_limit)
+                new_query = main_query + "&nombre={}".format(number_query_limit) + '&curseur=' + following_cursor 
                 
                 request_new = _request_insee(api_url=new_query, file_format= 'application/json;charset=utf-8')
                 
@@ -72,7 +82,7 @@ def _request_sirene(query, kind, number):
             
                 if request_status == 200:
                     
-                    data_request = request.json()
+                    data_request = request_new.json()
                     cursor = data_request['header']['curseur']
                     following_cursor = data_request['header']['curseurSuivant']
                     
