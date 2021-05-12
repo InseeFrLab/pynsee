@@ -10,7 +10,7 @@ from pynsee.sirene._request_sirene import _request_sirene
 
 @lru_cache(maxsize=None)
 def _warning_search_sirene():
-    print("!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!")
+    print("\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!")
 
 def search_sirene( variable,
                           pattern,  
