@@ -48,7 +48,7 @@ def _request_sirene(query, kind, number=1001):
         data_request = request.json()
         
         data_request_1 = _make_dataframe(data_request, main_key, '1')
-        df_nrows = len(data_request_1[kind].unique())
+        df_nrows = len(data_request_1.index)
         
         list_dataframe.append(data_request_1)       
                
@@ -79,7 +79,7 @@ def _request_sirene(query, kind, number=1001):
                     if len(data_request[main_key]) > 0:
                     
                         df = _make_dataframe(data_request, main_key, query_number)
-                        df_nrows += len(df[kind].unique())
+                        df_nrows += len(df.index)
                         list_dataframe.append(df)
                     else:
                         print('{} - No more data found'.format(query_number))
