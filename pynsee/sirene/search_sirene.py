@@ -5,7 +5,8 @@ import pandas as pd
 from functools import lru_cache
 
 from pynsee.utils._paste import _paste
-from pynsee.sirene._get_data_sirene import _get_data_sirene
+from pynsee.sirene._clean_data import _clean_data
+from pynsee.sirene._request_sirene import _request_sirene
 
 @lru_cache(maxsize=None)
 def _warning_search_sirene():
@@ -127,10 +128,11 @@ def search_sirene( variable,
         
         list_var_pattern.append(_paste(list_var_patt, collapse = " OR "))
         
-    query = "?q=" + _paste(list_var_pattern, collapse = " AND ") + "&nombre={}".format(number)
+    query = "?q=" + _paste(list_var_pattern, collapse = " AND ") 
 
+    data_final = _request_sirene(query=query, kind=kind, number=number)
 
-    df = _get_data_sirene(query = query, kind = kind, 
+    df = _clean_data(data_final, kind = kind, 
                          clean=clean, activity=activity,
                          legal=legal, only_alive=only_alive)
     

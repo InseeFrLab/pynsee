@@ -8,11 +8,9 @@ from functools import lru_cache
 
 from pynsee.metadata.get_activity_list import get_activity_list
 from pynsee.metadata.get_insee_legal_entity import get_insee_legal_entity
-#from pynsee.sirene._get_data_from_query_csv import _get_data_from_query_csv
-from pynsee.sirene._get_data_from_query_json import _get_data_from_query_json
 
 @lru_cache(maxsize=None)
-def _get_data_sirene(query, kind = 'siren', clean=True,
+def _clean_data(data_final, kind = 'siren', clean=True, 
                     activity=True, legal=True, only_alive=True):
     """Get data from any criteria-based query
 
@@ -28,12 +26,6 @@ def _get_data_sirene(query, kind = 'siren', clean=True,
     Raises:
         ValueError: If kind is not equal to 'siret' or 'siren' an error is raised.
     """            
-    INSEE_api_sirene_siren = "https://api.insee.fr/entreprises/sirene/V3"
-    
-    link = INSEE_api_sirene_siren + '/' + kind + query
-    
-    data_final = _get_data_from_query_json(link=link, kind=kind)
-#    data_final = _get_data_from_query_csv(link=link, kind=kind)
     
     # add activity metadata
     if not data_final is None:
