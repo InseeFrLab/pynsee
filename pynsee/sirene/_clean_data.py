@@ -8,6 +8,9 @@ import pandas as pd
 
 from pynsee.metadata.get_activity_list import get_activity_list
 from pynsee.metadata.get_insee_legal_entity import get_insee_legal_entity
+from pynsee.metadata.get_insee_legal_entity import get_insee_legal_entity
+from pynsee.sirene._employee_metadata import _employee_metadata
+from pynsee.sirene._street_metadata import _street_metadata
 
 #@lru_cache(maxsize=None)
 def _clean_data(data_final, kind = 'siren', clean=True, 
@@ -22,13 +25,13 @@ def _clean_data(data_final, kind = 'siren', clean=True,
             if "activitePrincipaleUniteLegale" in data_final.columns:
                 
                 naf5_merge = naf5.rename(columns={"NAF5":"activitePrincipaleUniteLegale",
-                                                    "TITLE_NAF5_FR":"activitePrincipaleUniteLegaleTitle"})
+                                                    "TITLE_NAF5_FR":"activitePrincipaleUniteLegaleLibelle"})
                 data_final = data_final.merge(naf5_merge, on ="activitePrincipaleUniteLegale", how="left")
             
             if "activitePrincipaleEtablissement" in data_final.columns:
                 
                 naf5_merge = naf5.rename(columns={"NAF5":"activitePrincipaleEtablissement",
-                                                    "TITLE_NAF5_FR":"activitePrincipaleEtablissementTitle"})
+                                                    "TITLE_NAF5_FR":"activitePrincipaleEtablissementLibelle"})
                 data_final = data_final.merge(naf5_merge, on ="activitePrincipaleEtablissement", how="left")
             
                 
@@ -45,7 +48,7 @@ def _clean_data(data_final, kind = 'siren', clean=True,
                     data_legal = get_insee_legal_entity(list_legal_code, print_err_msg=False)
                     data_legal = data_legal[['code', 'title']]
                     data_legal = data_legal.rename(columns={'code' : 'categorieJuridiqueUniteLegale',
-                                                            'title' : 'categorieJuridiqueUniteLegaleTitle'})
+                                                            'title' : 'categorieJuridiqueUniteLegaleLibelle'})
                     data_final = data_final.merge(data_legal, on = 'categorieJuridiqueUniteLegale', how='left')
                 except:
                      pass
@@ -78,17 +81,42 @@ def _clean_data(data_final, kind = 'siren', clean=True,
             other_col = [col for col in data_final if col not in first_col]
             data_final = data_final[first_col + other_col]
         
+        # add employee range metadata
+        df_empl_siren = _employee_metadata(kind='siren')
+        df_empl_siret = _employee_metadata(kind='siret')
+       
+        if 'trancheEffectifsUniteLegale' in data_final.columns:
+            data_final = data_final.merge(df_empl_siren, on ='trancheEffectifsUniteLegale', how='left')
+        
+        if 'trancheEffectifsEtablissement' in data_final.columns:
+            data_final = data_final.merge(df_empl_siret, on ='trancheEffectifsEtablissement', how='left')
+        
+        # add street metadata
+        df_street = _street_metadata()
+        if 'typeVoieEtablissement' in data_final.columns:
+            data_final = data_final.merge(df_street, on ='typeVoieEtablissement', how='left')
+        
+        def _move_col_after(df, col, col_ref):
+            if col in df.columns:
+                if col_ref in df.columns:
+                    loc_var = df.columns.get_loc(col_ref)
+                    col2insert = df[col]
+                    df = df.drop([col], axis = 1)
+                    df.insert(loc_var+1, col, col2insert)
+            return(df)
+
         # move columns title after columns containing values
         for var in ['categorieJuridiqueUniteLegale', 
                     'activitePrincipaleUniteLegale',
-                    'activitePrincipaleEtablissement']:
+                    'activitePrincipaleEtablissement',
+                    'typeVoieEtablissement']:
             
-            if var + 'Title' in data_final.columns:
-                loc_var = data_final.columns.get_loc(var)
-                col2insert = data_final[var + 'Title']
-                data_final = data_final.drop([var+ 'Title'], axis = 1)
-                data_final.insert(loc_var+1, var + 'Title', col2insert)
+            data_final = _move_col_after(data_final, var + 'Libelle', var)
         
+        for k in ['Etablissement', 'UniteLegale']:
+            data_final = _move_col_after(data_final, 'effectifsMax' + k, 'trancheEffectifs' + k)
+            data_final = _move_col_after(data_final, 'effectifsMin' + k, 'trancheEffectifs' + k)
+                
         if clean:
             data_final = data_final.dropna(axis=1, how='all')
             
