@@ -2,7 +2,7 @@
 # Copyright : INSEE, 2021
 
 import requests, re, os, base64
-from pathlib import Path
+from pathlib2 import Path
 
 from functools import lru_cache
 
