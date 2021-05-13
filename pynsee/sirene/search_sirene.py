@@ -14,7 +14,7 @@ def _warning_search_sirene():
 
 def search_sirene( variable,
                           pattern,  
-                          kind = "siren",
+                          kind = "siret",
                           phonetic_firstvar=False,
                           number = 1000,
                           clean=True,
