@@ -2,11 +2,22 @@
 # Copyright : INSEE, 2021
 
 import requests, re, os, base64
+from pathlib import Path
 
 from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def _get_token_from_insee():
+    # try to find insee keys in 'pynsee_api_credentials.py' located in HOME
+    try:
+        home = str(Path.home())
+        if os.path.exists(home):
+            list_files = os.listdir(home)
+            if 'pynsee_api_credentials.py' in list_files:        
+                parameter_file = home + '/' + 'pynsee_api_credentials.py'
+                exec(open(parameter_file).read())
+    except:
+        pass
 
     string_key = "{}:{}".format(os.environ['insee_key'], os.environ['insee_secret'])
     string_key_encoded = string_key.encode("utf-8")
