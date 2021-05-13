@@ -12,7 +12,7 @@ def _request_sirene(query, kind, number=1001):
     
     #query = '?q=denominationUniteLegale:pizza'
     #kind = 'siret'
-    #number = 2001
+    #number = 4500
     
     if kind == 'siren':        
         main_key = 'unitesLegales'
@@ -48,8 +48,12 @@ def _request_sirene(query, kind, number=1001):
         data_request = request.json()
         
         data_request_1 = _make_dataframe(data_request, main_key, '1')
-        df_nrows = len(data_request_1.index)
         
+        if 'siret' in data_request_1.columns:
+            df_nrows = len(data_request_1.siret.unique())
+        elif 'siren' in data_request_1.columns:
+            df_nrows = len(data_request_1.siren.unique())      
+              
         list_dataframe.append(data_request_1)       
                
         list_header_keys = list(data_request['header'].keys())
@@ -72,18 +76,27 @@ def _request_sirene(query, kind, number=1001):
             
                 if request_status == 200:
                     
-                    data_request = request_new.json()
-                    cursor = data_request['header']['curseur']
-                    following_cursor = data_request['header']['curseurSuivant']
+                    data_request_new = request_new.json()
+                    cursor = data_request_new['header']['curseur']
+                    following_cursor = data_request_new['header']['curseurSuivant']
                     
                     if len(data_request[main_key]) > 0:
                     
-                        df = _make_dataframe(data_request, main_key, query_number)
-                        df_nrows += len(df.index)
+                        df = _make_dataframe(data_request_new, main_key, query_number)
+                        
+                        if 'siret' in data_request_1.columns:
+                            df_nrows += len(data_request_1.siret.unique())
+                        elif 'siren' in data_request_1.columns:
+                            df_nrows += len(data_request_1.siren.unique())   
+            
                         list_dataframe.append(df)
                     else:
                         print('{} - No more data found'.format(query_number))
-            
+                    
+                    if cursor == following_cursor:
+                        i_query += 1
+                        query_number = '{}/{}'.format(i_query, n_query_total)
+                        print('{} - No more data found'.format(query_number))
     
         data_final = pd.concat(list_dataframe)
         
