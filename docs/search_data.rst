@@ -40,4 +40,6 @@ Search metadata
 Search sirene
 -------------
 
+.. autofunction:: pynsee.sirene.get_all_columns
+
 .. autofunction:: pynsee.sirene.search_sirene
