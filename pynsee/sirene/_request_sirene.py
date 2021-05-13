@@ -11,6 +11,7 @@ from pynsee.sirene._make_dataframe import _make_dataframe
 def _request_sirene(query, kind, number=1001):
     
     #query = '?q=denominationUniteLegale:pizza'
+    #query = '?q=periode(activitePrincipaleEtablissement:56.30Z) AND codePostalEtablissement:83*'
     #kind = 'siret'
     #number = 4500
     
@@ -80,14 +81,14 @@ def _request_sirene(query, kind, number=1001):
                     cursor = data_request_new['header']['curseur']
                     following_cursor = data_request_new['header']['curseurSuivant']
                     
-                    if len(data_request[main_key]) > 0:
+                    if len(data_request_new[main_key]) > 0:
                     
                         df = _make_dataframe(data_request_new, main_key, query_number)
                         
-                        if 'siret' in data_request_1.columns:
-                            df_nrows += len(data_request_1.siret.unique())
-                        elif 'siren' in data_request_1.columns:
-                            df_nrows += len(data_request_1.siren.unique())   
+                        if 'siret' in df.columns:
+                            df_nrows += len(df.siret.unique())
+                        elif 'siren' in df.columns:
+                            df_nrows += len(df.siren.unique())   
             
                         list_dataframe.append(df)
                     else:
