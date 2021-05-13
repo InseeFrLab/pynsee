@@ -36,6 +36,8 @@ Installation & Loading
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
+   # Advice : add the following lines to 'pynsee_api_credentials.py' file in your HOME directory
+   # to avoid running them manually
    import os
    os.environ['insee_key'] = "my_key"
    os.environ['insee_secret'] = "my_secret_key"
@@ -57,6 +59,8 @@ French GDP growth rate
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
+   # Advice : add the following lines to 'pynsee_api_credentials.py' file in your HOME directory
+   # to avoid running them manually
    import os
    os.environ['insee_key'] = "my_insee_key"
    os.environ['insee_secret'] = "my_insee_secret"
@@ -98,6 +102,8 @@ Poverty in Paris urban area
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
+   # Advice : add the following lines to 'pynsee_api_credentials.py' file in your HOME directory
+   # to avoid running them manually
    import os
    os.environ['insee_key'] = "my_key"
    os.environ['insee_secret'] = "my_secret_key"
@@ -161,6 +167,8 @@ How to avoid proxy issues ?
 
 .. code-block:: python
 
+   # Advice : add the following lines to 'pynsee_api_credentials.py' file in your HOME directory
+   # to avoid running them manually
    import os
    os.environ['http_proxy'] = 'http://my_proxy_server:port'
    os.environ['https_proxy'] = 'http://my_proxy_server:port'
