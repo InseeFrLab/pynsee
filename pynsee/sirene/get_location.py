@@ -1,13 +1,39 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import re, os
+import re
 import pandas as pd
 from tqdm import trange
 from datetime import datetime
+from numpy import random
 
 def get_location(df):    
-    
+    """Get latitude and longitude of French legal entities
+
+    Notes:
+        This function uses OpenStreetMap through the geopy package.
+
+        If it fails to find the exact location, by default it returns the location of the city.
+
+    Args:
+        df (DataFrame): It should be the output of the search_sirene function
+
+    Examples: 
+        >>> #  Get activity list
+        >>> naf5 = get_activity_list('NAF5')
+        >>> #
+        >>> # Get alive legal entities belonging to the automotive industry
+        >>> df = search_sirene(variable = ["activitePrincipaleEtablissement"],
+                   pattern = ['29.10Z'], kind = 'siret')
+        >>> #           
+        >>> # Keep businesses with more than 100 employees
+        >>> df = df.loc[df['effectifsMinEtablissement'] > 100]
+        >>> df = df.reset_index(drop=True)
+        >>> #
+        >>> # Get location
+        >>> df_location = get_location(df)
+
+    """    
     from geopy.geocoders import Nominatim
     
     def clean(string):
@@ -21,7 +47,7 @@ def get_location(df):
                 'typeVoieEtablissementLibelle', 'libelleVoieEtablissement',
                 'codePostalEtablissement', 'libelleCommuneEtablissement']
          
-    geolocator = Nominatim(user_agent = os.environ['USERPROFILE'] + str(datetime.now()))
+    geolocator = Nominatim(user_agent = str(random.randint(1000)) + str(datetime.now()))
     
     if set(list_col).issubset(df.columns):    
     
@@ -47,6 +73,7 @@ def get_location(df):
             try:
                 lat = location.latitude
                 long = location.longitude
+                precision = 'exact'
             except:
                 address = '{} {} FRANCE'.format(postal_code, city)           
             
@@ -55,13 +82,17 @@ def get_location(df):
                 try:
                     lat = location.latitude
                     long = location.longitude
+                    precision = 'city'
                 except:
                     lat = None
                     long = None
+                    precision = None
                 
             df_location = pd.DataFrame({'siret' : siret,   
                                         'latitude' : lat,
-                                        'longitude' : long}, index=[0])
+                                        'longitude' : long,
+                                        'precision' : precision}, index=[0])
+
             list_location.append(df_location)    
             
         df_location = pd.concat(list_location)
