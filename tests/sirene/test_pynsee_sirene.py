@@ -8,29 +8,41 @@ from pynsee.sirene.get_data_from_code import get_data_from_code
 from pynsee.sirene.search_sirene import search_sirene
 from pynsee.sirene._request_sirene import _request_sirene
 from pynsee.sirene.get_location import get_location
+from pynsee.sirene.get_all_columns import get_all_columns
 
 class TestFunction(TestCase):
-
-    def test_get_location(self):
-        df = search_sirene(variable = ["activitePrincipaleEtablissement"],
-                   pattern = ['29.10Z'], kind = 'siret')
-
-        df = df.loc[df['effectifsMinEtablissement'] > 100]
-        df = df.reset_index(drop=True)
-        df_location = get_location(df)
-        test = isinstance(df_location, pd.DataFrame)
-        self.assertTrue(test)
-
-
-    def test_get_data_from_code(self):  
-        df1 = get_data_from_code("552081317", "808332670")     
-        df2 = get_data_from_code("817899438")
-        test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
-        self.assertTrue(test)
 
     version_3_7 = (sys.version_info[0]==3) & (sys.version_info[1]==7)
     
     if version_3_7:
+
+        def test_get_all_columns(self):
+            test = True
+
+            df = get_all_columns()
+            test = test & isinstance(df, pd.DataFrame)
+            
+            df = get_all_columns('siren')
+            test = test & isinstance(df, pd.DataFrame)
+
+            self.assertTrue(test)
+
+        def test_get_location(self):
+            df = search_sirene(variable = ["activitePrincipaleEtablissement"],
+                    pattern = ['29.10Z'], kind = 'siret')
+
+            df = df.loc[df['effectifsMinEtablissement'] > 100]
+            df = df.reset_index(drop=True)
+            df_location = get_location(df)
+            test = isinstance(df_location, pd.DataFrame)
+            self.assertTrue(test)
+
+
+        def test_get_data_from_code(self):  
+            df1 = get_data_from_code("552081317", "808332670")     
+            df2 = get_data_from_code("817899438")
+            test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
+            self.assertTrue(test)
 
         def test_search_sirene(self):  
             
