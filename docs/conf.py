@@ -45,10 +45,10 @@ extensions = [
      'sphinx.ext.autodoc',
      'sphinx_copybutton',
      'nbsphinx', 
-     'sphinx.ext.mathjax',
-     'm2r2',
+     'sphinx.ext.mathjax',     
      'IPython.sphinxext.ipython_console_highlighting'
 ]
+# 'm2r2',
 #"rinoh.frontend.sphinx"
 
 # Add any paths that contain templates here, relative to this directory.
@@ -81,4 +81,4 @@ def setup(app):
     app.add_css_file('my_theme.css')
 
 #include alos md doc
-source_suffix = ['.rst', '.md']
+source_suffix = ['.rst'] #, '.md'

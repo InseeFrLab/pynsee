@@ -3,7 +3,8 @@ Search data
 ===========
 
 Search macroeconomic data
-----------------
+-------------------------
+
 .. autofunction:: pynsee.macrodata.get_dataset_list
 
 .. autofunction:: pynsee.macrodata.get_idbank_list
@@ -16,6 +17,7 @@ Search macroeconomic data
 
 Search geographic and local data
 --------------------------------
+
 .. autofunction:: pynsee.localdata.get_local_metadata
 
 .. autofunction:: pynsee.localdata.get_nivgeo_list
