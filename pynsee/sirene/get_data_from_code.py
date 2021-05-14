@@ -17,6 +17,7 @@ def get_data_from_code(*siren):
         This function may return personal data, please check and comply with the legal framework relating to personal data protection
 
     Examples:
+        >>> from pynsee.sirene import *
         >>> df = get_data_from_code("552081317")
     """    
     

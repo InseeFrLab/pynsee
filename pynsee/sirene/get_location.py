@@ -19,6 +19,9 @@ def get_location(df):
         df (DataFrame): It should be the output of the search_sirene function
 
     Examples: 
+        >>> from pynsee.metadata import get_activity_list
+        >>> from pynsee.sirene import *
+        >>> #
         >>> #  Get activity list
         >>> naf5 = get_activity_list('NAF5')
         >>> #

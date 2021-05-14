@@ -14,6 +14,7 @@ def get_insee_legal_entity(codes, print_err_msg=True):
         codes (list): list of legal entities code of 2 or 4 characters
 
     Examples:
+        >>> from pynsee.metadata import *
         >>> legal_entity = get_insee_legal_entity(codes = ['5599', '83'])
     """    
 

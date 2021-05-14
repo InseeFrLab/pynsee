@@ -46,6 +46,9 @@ def search_sirene( variable,
         This function may return personal data, please check and comply with the legal framework relating to personal data protection
 
     Examples:
+        >>> from pynsee.metadata import get_activity_list
+        >>> from pynsee.sirene import *
+        >>> #
         >>> # Get activity list (NAF rev 2)
         >>> naf5 = get_activity_list('NAF5')
         >>> #
