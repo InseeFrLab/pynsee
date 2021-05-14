@@ -85,10 +85,10 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                     
         else:
             # token is None
-            commands = "\nimport os\nos.environ['insee_key'] = 'my_key'\nos.environ['insee_secret'] = 'my_secret_key'"
+            commands = "\n\nimport os\nos.environ['insee_key'] = 'my_key'\nos.environ['insee_secret'] = 'my_secret_key'"
             msg1 = "!!! Token missing, please check your credentials on api.insee.fr !!!\n"
             msg2 = "!!! Please do the following to use your credentials : {}".format(commands)
-            msg3 = "\n!!! Advice : add the above-mentioned lines to 'pynsee_api_credentials.py' file in your HOME directory to avoid running them manually !!!"
+            msg3 = "\n\n!!! Advice : add the above-mentioned lines to 'pynsee_api_credentials.py' file in your HOME directory to avoid running them manually !!!"
             msg3bis = "\n!!! If your token still does not work, please try to clear the cache :\n from pynsee.utils import *; clear_all_cache() !!!\n"
         
             if not sdmx_url is None:
