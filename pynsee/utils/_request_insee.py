@@ -4,6 +4,7 @@
 import os
 import requests
 from pynsee.utils._get_token import _get_token
+from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', print_msg=True): 
@@ -37,7 +38,15 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
 
     if not api_url is None:
 
-        token = _get_token()
+        keys = _get_credentials()
+
+        if keys is not None:
+            insee_key = keys['insee_key']
+            insee_secret = keys['insee_secret']
+
+            token = _get_token(insee_key, insee_secret)
+        else:
+            token = None
 
         if not token is None:
             headers = {'Accept': file_format,
