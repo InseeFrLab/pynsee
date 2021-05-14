@@ -21,6 +21,8 @@ def get_insee_idbank(*idbanks,
 
     Args:
         idbanks (str or list or pd.series) : some idbanks provided bu get_idbank_list()
+
+        metadata (bool, optional): If True, some metadata is added to the data
         
         startPeriod (str, optional): start date of the data. 
         

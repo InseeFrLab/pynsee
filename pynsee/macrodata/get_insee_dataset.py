@@ -19,6 +19,8 @@ def get_insee_dataset(dataset,
 
     Args:
         dataset (str): an INSEE dataset included in the list provided by get_dataset_list()
+
+        metadata (bool, optional): If True, some metadata is added to the data
         
         filter (str, optional): Use the filter to choose only some values in a dimension. 
         It is recommended to use it for big datasets. A dimension left empty means 
