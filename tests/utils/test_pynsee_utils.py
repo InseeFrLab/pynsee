@@ -8,6 +8,7 @@ import os
 
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_envir_token import _get_envir_token
+from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._clean_insee_folder import _clean_insee_folder
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.clear_all_cache import clear_all_cache
@@ -16,8 +17,12 @@ os.environ['pynsee_query_print'] = 'True'
 
 class TestFunction(TestCase):
 
-    def test_get_token(self):        
-        token = _get_token()
+    def test_get_token(self):  
+        keys = _get_credentials()
+        insee_key = keys['insee_key']
+        insee_secret = keys['insee_secret']
+
+        token = _get_token(insee_key, insee_secret)
         self.assertTrue((token is not None))
     
     def test_request_insee_1(self):

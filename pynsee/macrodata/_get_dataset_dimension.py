@@ -14,7 +14,7 @@ from pynsee.utils._request_insee import _request_insee
 # from functools import lru_cache
 
 # @lru_cache(maxsize=None)
-def _get_dataset_dimension(dataset, update) :
+def _get_dataset_dimension(dataset, update=False) :
     
     INSEE_sdmx_link_datastructure = "https://www.bdm.insee.fr/series/sdmx/datastructure/FR1"
     INSEE_api_link_datastructure = "https://api.insee.fr/series/BDM/V1/datastructure/FR1"
