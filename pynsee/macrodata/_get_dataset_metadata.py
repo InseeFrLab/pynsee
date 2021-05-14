@@ -51,7 +51,7 @@ def _get_dataset_metadata(dataset, update=False):
             idbank_list = _download_idbank_list()
             
              # get dataset's dimensions
-            dataset_dimension = _get_dataset_dimension(dataset)
+            dataset_dimension = _get_dataset_dimension(dataset, update=update)
             
             # select only the idbanks corresponding to the dataset
             idbank_list_dataset = idbank_list[idbank_list["nomflow"] == dataset]
@@ -75,7 +75,7 @@ def _get_dataset_metadata(dataset, update=False):
                 dim_local_rep = dataset_dimension['local_representation'].iloc[irow]
                 
                 # get dimension values
-                dim_values = _get_dimension_values(dim_local_rep)
+                dim_values = _get_dimension_values(dim_local_rep, update=update)
                 
                 # drop dimension label
                 dim_values = dim_values[dim_values["id"] != dim_local_rep]

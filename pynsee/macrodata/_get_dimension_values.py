@@ -11,7 +11,7 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._hash import _hash
 
-def _get_dimension_values(cl_dimension):    
+def _get_dimension_values(cl_dimension, update):    
        
     INSEE_sdmx_link_codelist = "https://www.bdm.insee.fr/series/sdmx/codelist/FR1"
     INSEE_api_link_codelist = "https://api.insee.fr/series/BDM/V1/codelist/FR1"
@@ -22,7 +22,7 @@ def _get_dimension_values(cl_dimension):
     insee_folder = _create_insee_folder()
     file = insee_folder + "/" + _hash(INSEE_sdmx_link_codelist_dimension)
         
-    trigger_update = False
+    trigger_update = update
         
     # if the data is not saved locally, or if it is too old (>90 days)
     # then an update is triggered

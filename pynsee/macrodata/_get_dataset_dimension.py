@@ -14,7 +14,7 @@ from pynsee.utils._request_insee import _request_insee
 # from functools import lru_cache
 
 # @lru_cache(maxsize=None)
-def _get_dataset_dimension(dataset) :
+def _get_dataset_dimension(dataset, update) :
     
     INSEE_sdmx_link_datastructure = "https://www.bdm.insee.fr/series/sdmx/datastructure/FR1"
     INSEE_api_link_datastructure = "https://api.insee.fr/series/BDM/V1/datastructure/FR1"
@@ -25,7 +25,7 @@ def _get_dataset_dimension(dataset) :
     insee_folder = _create_insee_folder()
     file = insee_folder + "/" + _hash(INSEE_sdmx_link_datastructure_dataset)
         
-    trigger_update = False
+    trigger_update = update
         
     # if the data is not saved locally, or if it is too old (>90 days)
     # then an update is triggered
