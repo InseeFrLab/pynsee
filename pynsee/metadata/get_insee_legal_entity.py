@@ -16,7 +16,9 @@ def get_insee_legal_entity(codes, print_err_msg=True):
     Examples:
         >>> legal_entity = get_insee_legal_entity(codes = ['5599', '83'])
     """    
+
     list_data = []
+    
     for c in trange(len(codes), desc = 'Getting legal entities'):
         # c = '5599'
         code = codes[c]
