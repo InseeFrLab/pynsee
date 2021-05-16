@@ -52,7 +52,7 @@ def _request_sirene(query, kind, number=1001):
         
         if 'siret' in data_request_1.columns:
             df_nrows = len(data_request_1.siret.unique())
-        elif 'siren' in data_request_1.columns:
+        else:
             df_nrows = len(data_request_1.siren.unique())      
               
         list_dataframe.append(data_request_1)       
