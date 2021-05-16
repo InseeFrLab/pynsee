@@ -52,8 +52,10 @@ def _request_sirene(query, kind, number=1001):
         
         if 'siret' in data_request_1.columns:
             df_nrows = len(data_request_1.siret.unique())
+        elif 'siren' in data_request_1.columns:
+            df_nrows = len(data_request_1.siren.unique())
         else:
-            df_nrows = len(data_request_1.siren.unique())      
+            df_nrows = len(data_request_1.index.unique())
               
         list_dataframe.append(data_request_1)       
                
@@ -87,8 +89,10 @@ def _request_sirene(query, kind, number=1001):
                         
                         if 'siret' in df.columns:
                             df_nrows += len(df.siret.unique())
+                        elif 'siren' in df.columns:
+                            df_nrows += len(df.siren.unique())
                         else:
-                            df_nrows += len(df.siren.unique())   
+                            df_nrows += len(df.index.unique()) 
             
                         list_dataframe.append(df)
                     else:
