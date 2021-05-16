@@ -6,6 +6,7 @@ import pandas as pd
 from tqdm import trange
 from datetime import datetime
 from numpy import random
+from pynsee.utils._hash import _hash
 
 def get_location(df):    
     """Get latitude and longitude of French legal entities
@@ -49,8 +50,9 @@ def get_location(df):
                 'typeVoieEtablissementLibelle', 'libelleVoieEtablissement',
                 'codePostalEtablissement', 'libelleCommuneEtablissement']
          
-    geolocator = Nominatim(user_agent = str(random.randint(1000)) + str(datetime.now()))
-    
+    geolocator = Nominatim(user_agent = _hash(str(random.randint(1000)) + str(datetime.now())))
+    #geolocator = Nominatim(user_agent = 'pynsee_python_package')
+
     if set(list_col).issubset(df.columns):    
     
         list_location = []
