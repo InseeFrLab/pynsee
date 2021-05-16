@@ -87,7 +87,7 @@ def _request_sirene(query, kind, number=1001):
                         
                         if 'siret' in df.columns:
                             df_nrows += len(df.siret.unique())
-                        elif 'siren' in df.columns:
+                        else:
                             df_nrows += len(df.siren.unique())   
             
                         list_dataframe.append(df)
