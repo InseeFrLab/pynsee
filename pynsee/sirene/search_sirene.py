@@ -20,7 +20,8 @@ def search_sirene( variable,
                           clean=True,
                           activity=True,
                           legal=True,
-                          only_alive=True):   
+                          only_alive=True,
+                          query_limit=20):   
     """Get data about companies from criteria on variables
 
     Args:
@@ -41,6 +42,8 @@ def search_sirene( variable,
         legal (bool, optional): If True, legal entities title are added
         
         only_alive (bool, optional): If True, closed entities are removed from the output
+
+        query_limit(numeric, optional): maximun number of queries made by the function in a row, by default it is 20
     
     Notes:
         This function may return personal data, please check and comply with the legal framework relating to personal data protection
@@ -142,7 +145,8 @@ def search_sirene( variable,
         
     query = "?q=" + _paste(list_var_pattern, collapse = " AND ") 
 
-    data_final = _request_sirene(query=query, kind=kind, number=number)
+    data_final = _request_sirene(query=query, kind=kind,
+                                 number=number, query_limit=query_limit)
 
     df = _clean_data(data_final, kind = kind, 
                      clean=clean, activity=activity,

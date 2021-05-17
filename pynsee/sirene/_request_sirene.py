@@ -8,7 +8,7 @@ from pynsee.utils._request_insee import _request_insee
 from pynsee.sirene._make_dataframe import _make_dataframe
 
 @lru_cache(maxsize=None)
-def _request_sirene(query, kind, number=1001):
+def _request_sirene(query, kind, number=1001, query_limit=20):
     
     #query = '?q=denominationUniteLegale:pizza'
     #query = '?q=periode(activitePrincipaleEtablissement:56.30Z) AND codePostalEtablissement:83*'
@@ -66,7 +66,7 @@ def _request_sirene(query, kind, number=1001):
             cursor = data_request['header']['curseur']
             following_cursor = data_request['header']['curseurSuivant']
             
-            while (following_cursor != cursor) & (request_status == 200) & (df_nrows < number):
+            while (following_cursor != cursor) & (request_status == 200) & (df_nrows < number) & (i_query < query_limit):
                 
                 i_query += 1
                 query_number = '{}/{}'.format(i_query, n_query_total)
