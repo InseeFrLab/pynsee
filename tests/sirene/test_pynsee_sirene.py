@@ -119,13 +119,11 @@ class TestFunction(TestCase):
                 df = _request_sirene(q, kind= 'siren')
                 test = test & isinstance(df, pd.DataFrame)
 
-            list_query_siret =['?q=denominationUniteLegale.phonetisation:oto&nombre=20&champs=denominationUniteLegale', 
+            list_query_siret =['?q=denominationUniteLegale.phonetisation:oto&champs=denominationUniteLegale', 
                     '?q=prenom1UniteLegale:hadrien AND nomUniteLegale:leclerc',
                     '?q=prenom1UniteLegale.phonetisation:hadrien AND nomUniteLegale.phonetisation:leclerc',
                     '?q=activitePrincipaleUniteLegale:8*',
-                    '?q=activitePrincipaleUniteLegale:86.10Z&nombre=1000000', 
-                    '?q=activitePrincipaleUniteLegale:86.10Z AND codePostalEtablissement:75*&nombre=5000', 
-                    '?q=denominationUniteLegale.phonetisation:oto&nombre=20']
+                    '?q=activitePrincipaleUniteLegale:86.10Z AND codePostalEtablissement:75*']
 
             for q in range(len(list_query_siret)):
                 query = list_query_siret[q]
