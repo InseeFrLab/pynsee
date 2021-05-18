@@ -38,7 +38,7 @@ def get_population():
     
     list_wanted_files = ['base-pop-historiques-1876-2018.csv', 'var.csv']    
         
-    test_available_file = [f in list_files for f in list_wanted_files]
+    test_available_file = [not f in list_files for f in list_wanted_files]
     
     if any(test_available_file):
     
@@ -73,8 +73,8 @@ def get_population():
     label['YEAR'] = label['YEAR'].apply(extract_year)
     
     df = df.merge(label, on = 'VARIABLE', how = 'left')
-    df['YEAR'] = pd.to_numeric(df['YEAR'])
-    df['OBS_VALUE'] = pd.to_numeric(df['OBS_VALUE'])    
+    df['YEAR'] = pd.to_numeric(df['YEAR'], errors='coerce')
+    df['OBS_VALUE'] = pd.to_numeric(df['OBS_VALUE'], errors='coerce')    
     
     _warning_pop_data()
     
