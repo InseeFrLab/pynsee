@@ -20,7 +20,7 @@ def get_insee_idbank(*idbanks,
     """Get data from INSEE series idbank
 
     Args:
-        idbanks (str or list or pd.series) : some idbanks provided bu get_idbank_list()
+        idbanks (str or list or pd.series) : some idbanks provided by get_idbank_list()
 
         metadata (bool, optional): If True, some metadata is added to the data
         
