@@ -18,8 +18,14 @@ from pynsee.localdata.get_local_metadata import get_local_metadata
 
 from pynsee.localdata.get_map_link import get_map_link
 from pynsee.localdata.get_map import get_map
+from pynsee.localdata.get_population import get_population
 
 class TestFunction(TestCase):
+
+    def test_get_population(self):
+        df = get_population()
+        test = isinstance(df, pd.DataFrame)
+        self.assertTrue(test)
 
     version_3_7 = (sys.version_info[0]==3) & (sys.version_info[1]==7)
     
