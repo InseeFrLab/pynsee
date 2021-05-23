@@ -19,6 +19,7 @@ def get_old_city(code, date=None):
         date (str, optional): date used to analyse the data, format : 'AAAA-MM-JJ'. If date is None, by default it supposed to be the current year.
 
     Examples:
+        >>> from pynsee.localdata import *
         >>> df = get_old_city(code = '24259', date = '2018-01-01')
     """    
     INSEE_localdata_api_link = 'https://api.insee.fr/metadonnees/V1/geo/'
