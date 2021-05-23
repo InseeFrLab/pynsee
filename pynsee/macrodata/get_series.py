@@ -42,7 +42,7 @@ def get_series(*idbanks,
     Examples:
         >>> from pynsee.macrodata import *
         >>> # inflation figures in France
-        >>> df_idbank = get_idbank_list("IPC-2015")
+        >>> df_idbank = get_series_list("IPC-2015")
         >>> df_idbank = df_idbank.loc[
         >>>                    (df_idbank.FREQ == "M") & # monthly
         >>>                    (df_idbank.NATURE == "INDICE") & # index
@@ -50,7 +50,7 @@ def get_series(*idbanks,
         >>>                    (df_idbank.REF_AREA == "FE") & # all France including overseas departements
         >>>                    (df_idbank.COICOP2016.str.match("^[0-9]{2}$"))] # coicop aggregation level
         >>> # get data
-        >>> data = get_insee_idbank(df_idbank.IDBANK)
+        >>> data = get_series(df_idbank.IDBANK)
     """    
     INSEE_sdmx_link_idbank = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/"
     INSEE_api_link_idbank = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/"
