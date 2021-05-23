@@ -71,14 +71,14 @@ French GDP growth rate
    os.environ['insee_secret'] = "my_secret_key"
 
    # get series key (idbank), for Gross domestic product balance
-   id = get_idbank_list("CNT-2014-PIB-EQB-RF")
+   id = get_series_list("CNT-2014-PIB-EQB-RF")
 
    id = id.loc[(id.FREQ == "T") &
                (id.OPERATION == "PIB") &
                (id.NATURE == "TAUX") &
                (id.CORRECTION == "CVS-CJO")]
 
-   data = get_insee_idbank(id.IDBANK)
+   data = get_series(id.IDBANK)
    data = split_title(df = data, n_split=2)
    
    # define plot
