@@ -91,7 +91,7 @@ def get_dataset(dataset,
     
     if metadata:
         try:
-            idbank_list = get_idbank_list(dataset)
+            idbank_list = get_series_list(dataset)
             
             newcol = [col for col in idbank_list.columns if col not in data.columns] + ['IDBANK']
             idbank_list = idbank_list[newcol]

@@ -18,7 +18,7 @@ def split_title(df, title_col_name = ["TITLE_EN", "TITLE_FR"],
     
     Examples:  
         >>> from pynsee.macrodata import *   
-        >>> data_raw = get_insee_idbank("001577236")
+        >>> data_raw = get_series("001577236")
         >>> data = split_title(data_raw)
     """    
                 

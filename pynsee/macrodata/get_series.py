@@ -5,7 +5,7 @@ import pandas
 import math
 
 from pynsee.macrodata._get_insee import _get_insee 
-from pynsee.macrodata.get_idbank_list import get_idbank_list  
+from pynsee.macrodata.get_series_list import get_series_list  
 from pynsee.macrodata.search_macrodata import search_macrodata 
 from pynsee.utils._paste import _paste           
 
@@ -132,7 +132,7 @@ def get_series(*idbanks,
                 list_dataset = all_idbank[all_idbank.IDBANK.isin(idbank_available)]
                 list_dataset = list(list_dataset.DATASET.unique())            
                 
-                idbank_list = get_idbank_list(list_dataset)
+                idbank_list = get_series_list(list_dataset)
                 newcol = [col for col in idbank_list.columns if col not in data.columns] + ['IDBANK']
                 idbank_list = idbank_list[newcol]
                 

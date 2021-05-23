@@ -26,6 +26,7 @@ def get_series_list(*datasets, update = False):
     
     Examples:
         >>> from pynsee.macrodata import * 
+        >>> dataset_list = get_dataset_list()
         >>> idbank_ipc = get_series_list('IPC-2015', 'CLIMAT-AFFAIRES')
     """        
     insee_dataset = get_dataset_list()    
