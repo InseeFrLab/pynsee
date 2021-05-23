@@ -7,7 +7,7 @@ Search macroeconomic data
 
 .. autofunction:: pynsee.macrodata.get_dataset_list
 
-.. autofunction:: pynsee.macrodata.get_idbank_list
+.. autofunction:: pynsee.macrodata.get_series_list
 
 .. autofunction:: pynsee.macrodata.search_macrodata
 
