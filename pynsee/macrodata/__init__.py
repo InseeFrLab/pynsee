@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from .get_idbank_list import get_idbank_list
+from .get_series_list import get_series_list
 from .get_dataset_list import get_dataset_list
 from .get_last_release import get_last_release
 
-from .get_insee_idbank import get_insee_idbank
-from .get_insee_dataset import get_insee_dataset
+from .get_series import get_series
+from .get_dataset import get_dataset
 
 from .get_column_title import get_column_title
 from .split_title import split_title
 from .search_macrodata import search_macrodata
-
-__all__ = ['get_idbank_list', 'get_dataset_list', 
-           'get_insee_dataset', 'get_insee_idbank', 'get_column_title',
-           'split_title', 'search_macrodata', 'get_last_release']

@@ -11,3 +11,5 @@ from .get_included_area import get_included_area
 from .get_nivgeo_list import get_nivgeo_list
 from .get_local_metadata import get_local_metadata
 from .get_population import get_population
+from .get_old_city import get_old_city
+from .get_new_city import get_new_city
