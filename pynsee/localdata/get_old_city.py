@@ -2,9 +2,11 @@
 # Copyright : INSEE, 2021
 
 import pandas as pd
+from functools import lru_cache
 
 from pynsee.utils._request_insee import _request_insee
 
+@lru_cache(maxsize=None)
 def get_old_city(code, date=None):
     """Get data about the old cities made from the new one
 
