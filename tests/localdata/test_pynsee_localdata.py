@@ -38,7 +38,7 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(df, pd.DataFrame))
         
         def test_get_old_city(self):
-            df = get_old_city(code = '24259', date = '2018-01-01')
+            df = get_old_city(code = '24259')
             self.assertTrue(isinstance(df, pd.DataFrame))
             
         def test_get_geo_list_1(self):        
