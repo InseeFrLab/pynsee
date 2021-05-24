@@ -86,86 +86,86 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(data, pd.DataFrame))
             
             
-        def test_get_local_data_all(self):
+        # def test_get_local_data_all(self):
                         
-            data = get_local_data(dataset_version='GEO2020RP2017',
-                                   variables =  'SEXE-DIPL_19',
-                                   nivgeo = 'DEP',
-                                   geocodes = ['91','92', '976'])
-            test1 = isinstance(data, pd.DataFrame)
+        #     data = get_local_data(dataset_version='GEO2020RP2017',
+        #                            variables =  'SEXE-DIPL_19',
+        #                            nivgeo = 'DEP',
+        #                            geocodes = ['91','92', '976'])
+        #     test1 = isinstance(data, pd.DataFrame)
             
-            data = get_local_data(dataset_version='GEO2020FILO2018',
-                                   variables =  'INDICS_FILO_DISP_DET-TRAGERF',
-                                   nivgeo = 'REG',
-                                   geocodes = ['11', '01'])
-            test2 = isinstance(data, pd.DataFrame)
+        #     data = get_local_data(dataset_version='GEO2020FILO2018',
+        #                            variables =  'INDICS_FILO_DISP_DET-TRAGERF',
+        #                            nivgeo = 'REG',
+        #                            geocodes = ['11', '01'])
+        #     test2 = isinstance(data, pd.DataFrame)
             
-            data = get_local_data(dataset_version='BDCOM2017',
-                                   variables =  'INDICS_BDCOM',
-                                   nivgeo = 'REG',
-                                   geocodes = ['11'])
-            test3 = isinstance(data, pd.DataFrame)
+        #     data = get_local_data(dataset_version='BDCOM2017',
+        #                            variables =  'INDICS_BDCOM',
+        #                            nivgeo = 'REG',
+        #                            geocodes = ['11'])
+        #     test3 = isinstance(data, pd.DataFrame)
             
-            data = get_local_data(dataset_version= 'GEO2019RFD2011',
-                                   variables = 'INDICS_ETATCIVIL',
-                                   nivgeo = 'REG',
-                                   geocodes = ['11'])
-            test4 = isinstance(data, pd.DataFrame)
+        #     data = get_local_data(dataset_version= 'GEO2019RFD2011',
+        #                            variables = 'INDICS_ETATCIVIL',
+        #                            nivgeo = 'REG',
+        #                            geocodes = ['11'])
+        #     test4 = isinstance(data, pd.DataFrame)
             
-            data = get_local_data(dataset_version= 'TOUR2019',
-                                   variables = 'ETOILE',
-                                   nivgeo = 'REG',
-                                   geocodes = ['11'])
-            test5 = isinstance(data, pd.DataFrame)
+        #     data = get_local_data(dataset_version= 'TOUR2019',
+        #                            variables = 'ETOILE',
+        #                            nivgeo = 'REG',
+        #                            geocodes = ['11'])
+        #     test5 = isinstance(data, pd.DataFrame)
             
-            data = get_local_data(dataset_version= 'GEO2020FLORES2017',
-                                   variables = 'EFFECSAL5T_1_100P',
-                                   nivgeo = 'REG',
-                                   geocodes = ['11'])
-            test6 = isinstance(data, pd.DataFrame)
+        #     data = get_local_data(dataset_version= 'GEO2020FLORES2017',
+        #                            variables = 'EFFECSAL5T_1_100P',
+        #                            nivgeo = 'REG',
+        #                            geocodes = ['11'])
+        #     test6 = isinstance(data, pd.DataFrame)
             
-            data = get_local_data(dataset_version= 'GEO2019REE2018',
-                                   variables = 'NA5_B',
-                                   nivgeo = 'REG',
-                                   geocodes = ['11'])
-            test7 = isinstance(data, pd.DataFrame)
+        #     data = get_local_data(dataset_version= 'GEO2019REE2018',
+        #                            variables = 'NA5_B',
+        #                            nivgeo = 'REG',
+        #                            geocodes = ['11'])
+        #     test7 = isinstance(data, pd.DataFrame)
             
-            data = get_local_data(dataset_version= 'POPLEG2018',
-                                   variables = 'IND_POPLEGALES',
-                                   nivgeo = 'COM',
-                                   geocodes = ['91477'])
-            test8 = isinstance(data, pd.DataFrame)
+        #     data = get_local_data(dataset_version= 'POPLEG2018',
+        #                            variables = 'IND_POPLEGALES',
+        #                            nivgeo = 'COM',
+        #                            geocodes = ['91477'])
+        #     test8 = isinstance(data, pd.DataFrame)
             
-            test = test1 & test2 & test3 & test4 & test5 & test6 & test7 & test8 
-            self.assertTrue(test)
+        #     test = test1 & test2 & test3 & test4 & test5 & test6 & test7 & test8 
+        #     self.assertTrue(test)
     
-        def test_get_map_link(self):
-            map_file = get_map_link('communes')
-            map = gpd.read_file(map_file)
-            self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
+        # def test_get_map_link(self):
+        #     map_file = get_map_link('communes')
+        #     map = gpd.read_file(map_file)
+        #     self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
         
-        def test_get_map(self):
-            map = get_map('arrondissements-municipaux')
-            self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
+        # def test_get_map(self):
+        #     map = get_map('arrondissements-municipaux')
+        #     self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
         
-        def test_get_area_list_1(self):                 
-            def get_area_list_test():
-                get_area_list('a')    
-            self.assertRaises(ValueError, get_area_list_test)
+        # def test_get_area_list_1(self):                 
+        #     def get_area_list_test():
+        #         get_area_list('a')    
+        #     self.assertRaises(ValueError, get_area_list_test)
         
-        def test_get_included_area(self):   
+        # def test_get_included_area(self):   
               
-            list_available_area = ['zonesDEmploi2020', 
-                                   'airesDAttractionDesVilles2020',
-                                   'unitesUrbaines2020']
-            list_data = []
+        #     list_available_area = ['zonesDEmploi2020', 
+        #                            'airesDAttractionDesVilles2020',
+        #                            'unitesUrbaines2020']
+        #     list_data = []
             
-            for a in list_available_area:
-                df_list = get_area_list(a)
-                code = df_list.CODE[:3].to_list()
-                data = get_included_area(area_type=a, codeareas=code)
-                list_data.append(data)
+        #     for a in list_available_area:
+        #         df_list = get_area_list(a)
+        #         code = df_list.CODE[:3].to_list()
+        #         data = get_included_area(area_type=a, codeareas=code)
+        #         list_data.append(data)
                 
-            data_final = pd.concat(list_data)
+        #     data_final = pd.concat(list_data)
             
-            self.assertTrue(isinstance(data_final, pd.DataFrame))
+        #     self.assertTrue(isinstance(data_final, pd.DataFrame))
