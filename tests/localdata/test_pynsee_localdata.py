@@ -7,7 +7,7 @@ import geopandas as gpd
 import sys
 
 from pynsee.localdata._get_geo_relation import _get_geo_relation
-from pynsee.localdata.get_insee_local import get_insee_local
+from pynsee.localdata.get_local_data import get_local_data
 from pynsee.localdata.get_included_area import get_included_area
 
 from pynsee.localdata.get_geo_list import get_geo_list
@@ -70,7 +70,7 @@ class TestFunction(TestCase):
             data = get_local_metadata()
             self.assertTrue(isinstance(data, pd.DataFrame))
     
-        def test_get_insee_local_1(self):  
+        def test_get_local_data_1(self):  
     
             dep = get_geo_list('departements')
     
@@ -80,57 +80,57 @@ class TestFunction(TestCase):
             codegeos = list(dep.CODE)
             codegeos = dep.CODE.to_list()
             geo = 'DEP'
-            data = get_insee_local(variables=variables,
+            data = get_local_data(variables=variables,
                                    dataset_version=dataset, nivgeo=geo, geocodes = codegeos)
     
             self.assertTrue(isinstance(data, pd.DataFrame))
             
             
-        def test_get_insee_local_all(self):
+        def test_get_local_data_all(self):
                         
-            data = get_insee_local(dataset_version='GEO2020RP2017',
+            data = get_local_data(dataset_version='GEO2020RP2017',
                                    variables =  'SEXE-DIPL_19',
                                    nivgeo = 'DEP',
                                    geocodes = ['91','92', '976'])
             test1 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset_version='GEO2020FILO2018',
+            data = get_local_data(dataset_version='GEO2020FILO2018',
                                    variables =  'INDICS_FILO_DISP_DET-TRAGERF',
                                    nivgeo = 'REG',
                                    geocodes = ['11', '01'])
             test2 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset_version='BDCOM2017',
+            data = get_local_data(dataset_version='BDCOM2017',
                                    variables =  'INDICS_BDCOM',
                                    nivgeo = 'REG',
                                    geocodes = ['11'])
             test3 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset_version= 'GEO2019RFD2011',
+            data = get_local_data(dataset_version= 'GEO2019RFD2011',
                                    variables = 'INDICS_ETATCIVIL',
                                    nivgeo = 'REG',
                                    geocodes = ['11'])
             test4 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset_version= 'TOUR2019',
+            data = get_local_data(dataset_version= 'TOUR2019',
                                    variables = 'ETOILE',
                                    nivgeo = 'REG',
                                    geocodes = ['11'])
             test5 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset_version= 'GEO2020FLORES2017',
+            data = get_local_data(dataset_version= 'GEO2020FLORES2017',
                                    variables = 'EFFECSAL5T_1_100P',
                                    nivgeo = 'REG',
                                    geocodes = ['11'])
             test6 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset_version= 'GEO2019REE2018',
+            data = get_local_data(dataset_version= 'GEO2019REE2018',
                                    variables = 'NA5_B',
                                    nivgeo = 'REG',
                                    geocodes = ['11'])
             test7 = isinstance(data, pd.DataFrame)
             
-            data = get_insee_local(dataset_version= 'POPLEG2018',
+            data = get_local_data(dataset_version= 'POPLEG2018',
                                    variables = 'IND_POPLEGALES',
                                    nivgeo = 'COM',
                                    geocodes = ['91477'])

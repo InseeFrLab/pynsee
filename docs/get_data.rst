@@ -10,7 +10,7 @@ Get macroeconomic data
 Get geographic and local data
 -----------------------------
 
-.. autofunction:: pynsee.localdata.get_insee_local
+.. autofunction:: pynsee.localdata.get_local_data
 
 .. autofunction:: pynsee.localdata.get_map
 
@@ -23,9 +23,9 @@ Get geographic and local data
 Get metadata
 ------------
 
-.. autofunction:: pynsee.metadata.get_insee_definition
+.. autofunction:: pynsee.metadata.get_definition
 
-.. autofunction:: pynsee.metadata.get_insee_legal_entity
+.. autofunction:: pynsee.metadata.get_legal_entity
 
 Get sirene
 ----------

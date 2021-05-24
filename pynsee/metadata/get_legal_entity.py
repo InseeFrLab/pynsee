@@ -7,7 +7,7 @@ from tqdm import trange
 
 from pynsee.utils._request_insee import _request_insee
 
-def get_insee_legal_entity(codes, print_err_msg=True):      
+def get_legal_entity(codes, print_err_msg=True):      
     """Get legal entities labels
 
     Args:
@@ -15,7 +15,7 @@ def get_insee_legal_entity(codes, print_err_msg=True):
 
     Examples:
         >>> from pynsee.metadata import *
-        >>> legal_entity = get_insee_legal_entity(codes = ['5599', '83'])
+        >>> legal_entity = get_legal_entity(codes = ['5599', '83'])
     """    
 
     list_data = []
