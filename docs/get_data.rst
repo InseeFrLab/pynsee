@@ -30,6 +30,6 @@ Get metadata
 Get sirene
 ----------
 
-.. autofunction:: pynsee.sirene.get_data_from_code
+.. autofunction:: pynsee.sirene.get_data
 
 .. autofunction:: pynsee.sirene.get_location
