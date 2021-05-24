@@ -4,6 +4,7 @@
 from pynsee.utils._paste import _paste 
 from ._get_insee import _get_insee
 from .get_dataset_list import get_dataset_list 
+from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata 
 from .get_series_list import get_series_list 
 
 def get_dataset(dataset,
@@ -86,9 +87,10 @@ def get_dataset(dataset,
         else:            
             api_query = api_query +  added_param_string
 
+    # get data
     data = _get_insee(api_query=api_query, sdmx_query=sdmx_query)
-#    data = _get_insee(api_query=api_query, sdmx_query=sdmx_query)
     
+    # add metadata
     if metadata:
         try:
             idbank_list = get_series_list(dataset)
@@ -99,6 +101,11 @@ def get_dataset(dataset,
             data = data.merge(idbank_list, on = 'IDBANK', how='left')
             # remove all na columns
             data = data.dropna(axis=1, how='all')
+        except:
+            pass
+        
+        try:
+            data = _add_numeric_metadata(data)        
         except:
             pass
     

@@ -7,16 +7,17 @@ import math
 from pynsee.macrodata._get_insee import _get_insee 
 from pynsee.macrodata.get_series_list import get_series_list  
 from pynsee.macrodata.search_macrodata import search_macrodata 
+from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata 
 from pynsee.utils._paste import _paste           
 
 def get_series(*idbanks,
-                     metadata=True,
-                     startPeriod = None,
-                     endPeriod = None,
-                     firstNObservations = None,
-                     lastNObservations = None,
-                     includeHistory = None,
-                     updatedAfter = None):
+               metadata=True,
+               startPeriod = None,
+               endPeriod = None,
+               firstNObservations = None,
+               lastNObservations = None,
+               includeHistory = None,
+               updatedAfter = None):
     """Get data from INSEE series idbank
 
     Args:
@@ -140,6 +141,11 @@ def get_series(*idbanks,
                 
                 # remove all na columns
                 data = data.dropna(axis=1, how='all')
+        except:
+            pass
+        
+        try:
+            data = _add_numeric_metadata(data)        
         except:
             pass
     
