@@ -8,7 +8,7 @@ import geopandas as gpd
 import os
 
 from pynsee.metadata.get_definition_list import get_definition_list
-from pynsee.metadata.get_insee_definition import get_insee_definition
+from pynsee.metadata.get_definition import get_definition
 from pynsee.metadata.get_activity_list import get_activity_list
 
 class TestFunction(TestCase):
@@ -18,7 +18,7 @@ class TestFunction(TestCase):
         self.assertTrue(isinstance(data, pd.DataFrame))
 
     def test_get_insee_definition(self):
-        data = get_insee_definition(ids=['c1020', 'c1601'])
+        data = get_definition(ids=['c1020', 'c1601'])
         self.assertTrue(isinstance(data, pd.DataFrame))
         
     def test_get_activity_list(self):
