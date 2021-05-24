@@ -52,6 +52,9 @@ def search_sirene( variable,
         >>> from pynsee.metadata import get_activity_list
         >>> from pynsee.sirene import *
         >>> #
+        >>> # Get columns names, useful to design the search query with search_sirene
+        >>> sirene_columns = get_all_columns()
+        >>> #
         >>> # Get activity list (NAF rev 2)
         >>> naf5 = get_activity_list('NAF5')
         >>> #
