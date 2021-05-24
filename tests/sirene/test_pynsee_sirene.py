@@ -4,7 +4,7 @@ from unittest import TestCase
 from pandas import pandas as pd
 import sys
 
-from pynsee.sirene.get_data_from_code import get_data_from_code
+from pynsee.sirene.get_data import get_data
 from pynsee.sirene.search_sirene import search_sirene
 from pynsee.sirene._request_sirene import _request_sirene
 from pynsee.sirene.get_location import get_location
@@ -38,9 +38,9 @@ class TestFunction(TestCase):
             self.assertTrue(test)
 
 
-        def test_get_data_from_code(self):  
-            df1 = get_data_from_code("552081317", "808332670")     
-            df2 = get_data_from_code("817899438")
+        def test_get_data(self):  
+            df1 = get_data('32227167700021', '26930124800077', kind='siret')    
+            df2 = get_data("552081317", kind = 'siren')
             test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
             self.assertTrue(test)
 
