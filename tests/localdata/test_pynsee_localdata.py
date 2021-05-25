@@ -41,34 +41,34 @@ class TestFunction(TestCase):
             df = get_old_city(code = '24259')
             self.assertTrue(isinstance(df, pd.DataFrame))
             
-        # def test_get_geo_list_1(self):        
-        #     list_available_geo = ['communes', 'regions', 'departements',
-        #                         'communesDeleguees', 'communesAssociees',
-        #                         'arrondissements', 'arrondissementsMunicipaux']   
+        def test_get_geo_list_1(self):        
+            list_available_geo = ['communes', 'regions', 'departements',
+                                'communesDeleguees', 'communesAssociees',
+                                'arrondissements', 'arrondissementsMunicipaux']   
       
-        #     list_geo_data = []
-        #     for geo in list_available_geo:
-        #         list_geo_data.append(get_geo_list(geo))            
-        #     df = pd.concat(list_geo_data)
+            list_geo_data = []
+            for geo in list_available_geo:
+                list_geo_data.append(get_geo_list(geo))            
+            df = pd.concat(list_geo_data)
     
-        #     self.assertTrue(isinstance(df, pd.DataFrame))
+            self.assertTrue(isinstance(df, pd.DataFrame))
         
-        # def test_get_geo_list_2(self):   
-        #     self.assertRaises(ValueError, get_geo_list, 'a') 
+        def test_get_geo_list_2(self):   
+            self.assertRaises(ValueError, get_geo_list, 'a') 
     
-        # def test_get_geo_relation_1(self):    
-        #     df1 = _get_geo_relation('region', "11", 'descendants')
-        #     df2 = _get_geo_relation('departement', "91", 'ascendants')
-        #     test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
-        #     self.assertTrue(test)        
+        def test_get_geo_relation_1(self):    
+            df1 = _get_geo_relation('region', "11", 'descendants')
+            df2 = _get_geo_relation('departement', "91", 'ascendants')
+            test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
+            self.assertTrue(test)        
         
-        # def test_get_nivgeo_list(self):
-        #     data = get_nivgeo_list()
-        #     self.assertTrue(isinstance(data, pd.DataFrame))
+        def test_get_nivgeo_list(self):
+            data = get_nivgeo_list()
+            self.assertTrue(isinstance(data, pd.DataFrame))
         
-        # def test_get_local_metadata(self):
-        #     data = get_local_metadata()
-        #     self.assertTrue(isinstance(data, pd.DataFrame))
+        def test_get_local_metadata(self):
+            data = get_local_metadata()
+            self.assertTrue(isinstance(data, pd.DataFrame))
     
         # def test_get_local_data_1(self):  
     
