@@ -1,7 +1,9 @@
 name: recover
-push:
-    branches:
-      - 'recover'
+
+on:
+  push:
+      branches:
+        - 'recover'
 
 jobs:
   build:
