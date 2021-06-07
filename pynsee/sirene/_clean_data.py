@@ -4,7 +4,7 @@
 import pandas as pd
 
 from pynsee.metadata.get_activity_list import get_activity_list
-from pynsee.metadata.get_insee_legal_entity import get_insee_legal_entity
+from pynsee.metadata.get_legal_entity import get_legal_entity
 from pynsee.sirene._employee_metadata import _employee_metadata
 from pynsee.sirene._street_metadata import _street_metadata
 
@@ -42,7 +42,7 @@ def _clean_data(data_final, kind = 'siren', clean=True,
             if 'categorieJuridiqueUniteLegale' in data_final.columns:
                 try:
                     list_legal_code = data_final.categorieJuridiqueUniteLegale.unique()
-                    data_legal = get_insee_legal_entity(list_legal_code, print_err_msg=False)
+                    data_legal = get_legal_entity(list_legal_code, print_err_msg=False)
                     data_legal = data_legal[['code', 'title']]
                     data_legal = data_legal.rename(columns={'code' : 'categorieJuridiqueUniteLegale',
                                                             'title' : 'categorieJuridiqueUniteLegaleLibelle'})
