@@ -24,7 +24,7 @@ def _get_token_from_insee(insee_key, insee_secret):
         response = requests.post('https://api.insee.fr/token', headers=headers,
                                  data=data, verify=True)
     except ConnectionError:
-       print('!!! Connection to insee.fr failed !!!')
+       print('\n!!! Connection to insee.fr failed !!!\n')
     
     content = response.content.decode("utf-8")
     content_splitted = content.split(",")
