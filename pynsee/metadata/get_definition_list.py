@@ -11,7 +11,7 @@ import pandas as pd
 
 @lru_cache(maxsize=None)
 def _warning_definition_internal_data():
- msg1 = "!!! Internal package data has been used !!!\n!!! If some data is missing, please use get_insee_definition !!!"
+ msg1 = "!!! Internal package data has been used !!!\n!!! If some data is missing, please use get_definition !!!"
  print(msg1)
 
 @lru_cache(maxsize=None)
