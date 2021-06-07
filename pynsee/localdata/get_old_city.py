@@ -22,7 +22,7 @@ def get_old_city(code, date=None):
 
     Examples:
         >>> from pynsee.localdata import *
-        >>> df = get_old_city(code = '24259', date = '2018-01-01')
+        >>> df = get_old_city(code = '24259')
     """    
     INSEE_localdata_api_link = 'https://api.insee.fr/metadonnees/V1/geo/'
     
