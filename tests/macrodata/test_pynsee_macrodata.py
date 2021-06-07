@@ -138,8 +138,8 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(data, pd.DataFrame))
             
         def test_get_dataset_3(self):
-            data1 = get_dataset("IPC-2015", filter = "M......ENSEMBLE...CVS.2015")
-            data2 = get_dataset("IPC-2015", filter = "M......ENSEMBLE...CVS.2015",
+            data1 = get_dataset("IPC-2015", filter = "M......ENSEMBLE...CVS.2015.")
+            data2 = get_dataset("IPC-2015", filter = "M......ENSEMBLE...CVS.2015.",
                     includeHistory = True,
                     updatedAfter = "2017-07-11T08:45:00")        
             self.assertTrue(len(data1.index) < len(data2.index))
