@@ -20,6 +20,9 @@ from pynsee.localdata.get_map_link import get_map_link
 from pynsee.localdata.get_map import get_map
 from pynsee.localdata.get_population import get_population
 
+from pynsee.localdata.get_new_city import get_new_city
+from pynsee.localdata.get_old_city import get_old_city
+
 class TestFunction(TestCase):
 
     def test_get_population(self):
@@ -30,6 +33,14 @@ class TestFunction(TestCase):
     version_3_7 = (sys.version_info[0]==3) & (sys.version_info[1]==7)
     
     if version_3_7:
+
+        def test_get_new_city(self):
+            df = get_new_city(code = '24431', date = '2018-01-01')
+            self.assertTrue(isinstance(df, pd.DataFrame))
+        
+        def test_get_old_city(self):
+            df = get_old_city(code = '24259', date = '2018-01-01')
+            self.assertTrue(isinstance(df, pd))
     
         def test_get_geo_list_1(self):        
             list_available_geo = ['communes', 'regions', 'departements',
