@@ -1,9 +1,6 @@
-name: master
+name: pynsee package
 
-on:
-  push:
-      branches:
-        - 'master'
+on: [push]
 
 jobs:
   build:
