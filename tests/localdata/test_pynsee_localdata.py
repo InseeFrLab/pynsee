@@ -40,7 +40,7 @@ class TestFunction(TestCase):
         
         def test_get_old_city(self):
             df = get_old_city(code = '24259')
-            self.assertTrue(isinstance(df, pd))
+            self.assertTrue(isinstance(df, pd.DataFrame))
     
         def test_get_geo_list_1(self):        
             list_available_geo = ['communes', 'regions', 'departements',
