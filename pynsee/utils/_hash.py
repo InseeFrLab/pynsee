@@ -5,6 +5,6 @@ import hashlib
 
 def _hash(string):
     
-    h = hashlib.new('ripemd160')
+    h = hashlib.new('md5')
     h.update(string.encode('utf-8'))
     return(h.hexdigest())
