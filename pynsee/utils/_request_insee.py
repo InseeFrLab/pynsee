@@ -61,7 +61,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                 return(results)
             else:               
                 
-                msg1 = "\n!!! Wrong query !!!"
+                msg1 = "\n!!! An error occurred !!!"
                 
                 if print_msg:
                     
