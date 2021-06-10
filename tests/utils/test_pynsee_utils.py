@@ -13,6 +13,8 @@ from pynsee.utils._clean_insee_folder import _clean_insee_folder
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.clear_all_cache import clear_all_cache
 
+test_SDMX = False
+
 os.environ['pynsee_query_print'] = 'True'
 
 class TestFunction(TestCase):
@@ -39,19 +41,20 @@ class TestFunction(TestCase):
 
             self.assertRaises(ValueError, request_insee_test)
 
-        def test_request_insee_2(self):
-            # if credentials are not well provided but sdmx url works
-            clear_all_cache() 
+        if test_SDMX:
+            def test_request_insee_2(self):
+                # if credentials are not well provided but sdmx url works
+                clear_all_cache() 
 
-            os.environ['insee_token'] = "test"
-            os.environ['insee_key'] = "key"
-            os.environ['insee_secret'] = "secret"
-            sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
-            api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
+                os.environ['insee_token'] = "test"
+                os.environ['insee_key'] = "key"
+                os.environ['insee_secret'] = "secret"
+                sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
+                api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
 
-            results = _request_insee(api_url=api_url, sdmx_url=sdmx_url)
-            test = (results.status_code == 200)
-            self.assertTrue(test)
+                results = _request_insee(api_url=api_url, sdmx_url=sdmx_url)
+                test = (results.status_code == 200)
+                self.assertTrue(test)
         
         def test_request_insee_3(self):
             # token is none and sdmx query fails

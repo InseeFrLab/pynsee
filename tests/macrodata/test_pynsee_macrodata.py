@@ -3,7 +3,6 @@
 
 from unittest import TestCase
 from pandas import pandas as pd
-import geopandas as gpd
 
 # from datetime import timedelta 
 # from datetime import *
@@ -30,46 +29,13 @@ from pynsee.macrodata.split_title import split_title
 
 from pynsee.utils._clean_insee_folder import _clean_insee_folder
 
+test_SDMX = False
+
 class TestFunction(TestCase):
 
     version_3_7 = (sys.version_info[0]==3) & (sys.version_info[1]==7)
     
     if not version_3_7:
-
-        def test_get_dataset_metadata_1(self):  
-            from datetime import datetime
-            from datetime import timedelta
-
-            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
-            os.environ['insee_idbank_file_csv'] = "2020_correspondances_idbank_dimension.csv"
-
-            # test automatic update of metadata, when older than 3 months
-            df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-            os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
-            df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-            test1 = isinstance(df, pd.DataFrame)
-
-            # test manual update of metadata
-            df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
-            test2 = isinstance(df, pd.DataFrame)
-
-            # test date provided manually error and switch to today
-            os.environ['insee_date_test'] = "a"
-            df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-            test3 = isinstance(df, pd.DataFrame)
-
-            self.assertTrue(test1 & test2 & test3)
-        
-        def test_get_dataset_metadata_2(self):  
-            from datetime import datetime
-            from datetime import timedelta
-            # crash download_idbank_list and test the result on get_dataset_metadata
-            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/test"
-            os.environ['insee_idbank_file_csv'] = "test"
-            _clean_insee_folder()
-            df = _get_dataset_metadata('CLIMAT-AFFAIRES')        
-            test1 = isinstance(df, pd.DataFrame)
-            self.assertTrue(test1)
 
         def test_get_dataset_list(self):        
             data = get_dataset_list()
@@ -112,8 +78,44 @@ class TestFunction(TestCase):
             "001580062", "001688370", "010565692", "001580394")
             test1 = isinstance(data, pd.DataFrame)
             test2 = (_get_date(freq = 'TEST', time_period = 3) == 3)
-            self.assertTrue(test1 & test2)
+            self.assertTrue(test1 & test2)      
+
+        def test_get_dataset_metadata_1(self):  
+            from datetime import datetime
+            from datetime import timedelta
+
+            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
+            os.environ['insee_idbank_file_csv'] = "2020_correspondances_idbank_dimension.csv"
+
+            # test automatic update of metadata, when older than 3 months
+            df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+            os.environ['insee_date_test'] = str(datetime.now() + timedelta(days=91))        
+            df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+            test1 = isinstance(df, pd.DataFrame)
+
+            # test manual update of metadata
+            df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
+            test2 = isinstance(df, pd.DataFrame)
+
+            # test date provided manually error and switch to today
+            os.environ['insee_date_test'] = "a"
+            df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+            test3 = isinstance(df, pd.DataFrame)
+
+            self.assertTrue(test1 & test2 & test3)
         
+        def test_get_dataset_metadata_2(self):  
+            from datetime import datetime
+            from datetime import timedelta
+            # crash download_idbank_list and test the result on get_dataset_metadata
+            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/test"
+            os.environ['insee_idbank_file_csv'] = "test"
+            _clean_insee_folder()
+            df = _get_dataset_metadata('CLIMAT-AFFAIRES')        
+            test1 = isinstance(df, pd.DataFrame)
+            self.assertTrue(test1)
+
+       
         def test_get_insee(self):
             data = _get_insee(
                 api_query = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001769682",
@@ -231,10 +233,13 @@ class TestFunction(TestCase):
             _clean_insee_folder()
             os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/test"
             self.assertRaises(ValueError, _download_idbank_list)
+        
+        if test_SDMX:
 
-        def test_get_last_release(self):
-            data = get_last_release()
-            self.assertTrue(isinstance(data, pd.DataFrame))
+            def test_get_last_release(self):
+                data = get_last_release()
+                self.assertTrue(isinstance(data, pd.DataFrame))
+
         
         
         
