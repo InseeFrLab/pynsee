@@ -14,8 +14,13 @@ from datetime import datetime
 
 def _download_idbank_list():
     
-    file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
-    idbank_file_csv_default = "2020_correspondances_idbank_dimension.csv"
+    #file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
+    #idbank_file_csv_default = "2020_correspondances_idbank_dimension.csv"
+    #separator = ","
+    
+    file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2868055/2021_correspondance_idbank_dimension.zip"
+    idbank_file_csv_default = "2021_correspondance_idbank_dimension.csv"
+    separator = ";"
     
     insee_folder = _create_insee_folder()
     file = insee_folder + "/" + _hash(file_to_dwn_default) 
@@ -83,7 +88,10 @@ def _download_idbank_list():
         if idbank_file_csv == file_to_read[0]:
             
             file2load = dirpath + "/" + file_to_read[0]
-            data = pd.read_csv(file2load, dtype = 'str') 
+            data = pd.read_csv(file2load, dtype = 'str', sep = separator) 
+            
+            data = data.iloc[:,0:3]
+            data.columns = ["nomflow", "idbank", "cleFlow"]
 
             if os.path.exists(file2load):
                 os.remove(file2load)   
