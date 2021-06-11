@@ -92,6 +92,7 @@ def _download_idbank_list():
             
             data = data.iloc[:,0:3]
             data.columns = ["nomflow", "idbank", "cleFlow"]
+            data = data.sort_values("nomflow").reset_index(drop=True)
 
             if os.path.exists(file2load):
                 os.remove(file2load)   
