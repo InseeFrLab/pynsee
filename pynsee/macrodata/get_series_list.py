@@ -38,7 +38,7 @@ def get_series_list(*datasets, update = False):
     
     for dt in datasets:
         if not dt in insee_dataset_list:               
-            raise ValueError("%s is not a dataset from INSEE" % dt)
+            raise ValueError("\n%s is not a dataset from INSEE\nGet a dataset list with get_dataset_list function" % dt)
                 
     idbank_list_dataset = []
     
