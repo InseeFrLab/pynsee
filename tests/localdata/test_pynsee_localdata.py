@@ -2,14 +2,18 @@
 # Copyright : INSEE, 2021
 
 from unittest import TestCase
-from pandas import pandas as pd
+import pandas as pd
 import geopandas as gpd
 import sys
 
 from pynsee.localdata._get_geo_relation import _get_geo_relation
+from pynsee.localdata._get_insee_one_area import _get_insee_one_area
 from pynsee.localdata import *
 
 class TestFunction(TestCase):
+
+    def test_get_insee_one_area(self):        
+        self.assertRaises(ValueError, _get_insee_one_area("a",""))
 
     def test_get_population(self):
         df = get_population()
@@ -21,11 +25,19 @@ class TestFunction(TestCase):
     if version_3_7:
 
         def test_get_new_city(self):
+            test = True
             df = get_new_city(code = '24431', date = '2018-01-01')
+            test = test & isinstance(df, pd.DataFrame)
+            df = get_new_city(code = '24431')
+            test = test & isinstance(df, pd.DataFrame)
             self.assertTrue(isinstance(df, pd.DataFrame))
         
         def test_get_old_city(self):
+            test = True
             df = get_old_city(code = '24259')
+            test = test & isinstance(df, pd.DataFrame)
+            df = get_old_city(code = '24259', date = '2018-01-01')
+            test = test & isinstance(df, pd.DataFrame)
             self.assertTrue(isinstance(df, pd.DataFrame))
     
         def test_get_geo_list_1(self):        
