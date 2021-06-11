@@ -29,7 +29,7 @@ from pynsee.macrodata.split_title import split_title
 
 from pynsee.utils._clean_insee_folder import _clean_insee_folder
 
-test_SDMX = False
+test_SDMX = True
 
 class TestFunction(TestCase):
 
