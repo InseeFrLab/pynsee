@@ -29,6 +29,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
     except:
         proxies = {'http': '','https': ''}
 
+    # force sdmx use with a system variable
     try:
         pynsee_use_sdmx = os.environ['pynsee_use_sdmx']
         if pynsee_use_sdmx == "True":
