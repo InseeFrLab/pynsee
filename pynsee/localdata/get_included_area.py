@@ -26,10 +26,7 @@ def get_included_area(area_type, codeareas):
         >>> area_list = get_area_list()
         >>> paris_empl_area = get_included_area(area_type = 'zonesDEmploi2020', codeareas = ['1109'])
     """    
-#    codeareas = ['1109']
-#    area_type = 'zonesDEmploi2020'
-    
-    
+
     if type(codeareas) != list:
         raise ValueError("!!! codeareas must be a list !!!")
     
