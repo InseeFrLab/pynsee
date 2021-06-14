@@ -6,7 +6,7 @@ Introduction to pynsee package
 
 **Work in progress**
 
-.. image:: https://github.com/hadrilec/pynsee/actions/workflows/pynsee-test.yml/badge.svg
+.. image:: https://github.com/hadrilec/pynsee/actions/workflows/master.yml/badge.svg
    :target: https://github.com/hadrilec/pynsee/actions
    :alt: Build Status
 
