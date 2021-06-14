@@ -43,8 +43,6 @@ class TestFunction(TestCase):
             test = True
             df = get_old_city(code = '24259')
             test = test & isinstance(df, pd.DataFrame)
-            df = get_old_city(code = '24259', date = '2018-01-01')
-            test = test & isinstance(df, pd.DataFrame)
             self.assertTrue(isinstance(df, pd.DataFrame))
     
         def test_get_geo_list_1(self):        
