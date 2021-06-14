@@ -3,11 +3,7 @@
 
 from unittest import TestCase
 from pandas import pandas as pd
-
-# from datetime import timedelta 
-# from datetime import *
 import os, sys
-#from functools import lru_cache
 
 from pynsee.macrodata._get_insee import _get_insee
 from pynsee.macrodata._get_date import _get_date
@@ -17,15 +13,9 @@ from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
+from pynsee.macrodata._build_series_list import _build_series_list
 
-from pynsee.macrodata.get_column_title import get_column_title
-from pynsee.macrodata.search_macrodata import search_macrodata
-from pynsee.macrodata.get_dataset_list import get_dataset_list
-from pynsee.macrodata.get_series_list import get_series_list
-from pynsee.macrodata.get_dataset import get_dataset
-from pynsee.macrodata.get_series import get_series
-from pynsee.macrodata.get_last_release import get_last_release
-from pynsee.macrodata.split_title import split_title
+from pynsee.macrodata import *
 
 from pynsee.utils._clean_insee_folder import _clean_insee_folder
 
@@ -36,6 +26,12 @@ class TestFunction(TestCase):
     version_3_7 = (sys.version_info[0]==3) & (sys.version_info[1]==7)
     
     if not version_3_7:
+
+        def test_get_series_title(self):
+            series = search_macrodata()
+            series = series.loc[:420, "IDBANK"].to_list()
+            titles = get_series_title(series)
+            self.assertTrue(isinstance(titles, pd.DataFrame))
 
         def test_get_dataset_list(self):        
             data = get_dataset_list()

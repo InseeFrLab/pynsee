@@ -9,4 +9,5 @@ from .get_dataset import get_dataset
 
 from .get_column_title import get_column_title
 from .split_title import split_title
+from .get_series_title import get_series_title
 from .search_macrodata import search_macrodata
