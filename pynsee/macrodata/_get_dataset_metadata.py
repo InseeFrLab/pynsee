@@ -63,6 +63,10 @@ def _get_dataset_metadata(dataset, update=False):
             
             # make a dataframe from the splitted cleflow
             new_columns = dataset_dimension.dimension.to_list()
+            
+            # subset new columns in case of mismatch between idbank list and insee metadata
+            new_columns = [new_columns[c] for c in range(len(df_cleflow_splitted[0]))]
+            
             df_cleflow_splitted = pd.DataFrame(df_cleflow_splitted, columns = new_columns)
             
             # join the splitted cleflow dataframe with the former idbank list
