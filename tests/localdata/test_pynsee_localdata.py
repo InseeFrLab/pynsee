@@ -11,10 +11,7 @@ from pynsee.localdata._get_insee_one_area import _get_insee_one_area
 from pynsee.localdata import *
 
 class TestFunction(TestCase):
-
-    def test_get_insee_one_area(self):        
-        self.assertRaises(ValueError, _get_insee_one_area("a",""))
-
+        
     def test_get_population(self):
         df = get_population()
         test = isinstance(df, pd.DataFrame)
@@ -23,6 +20,16 @@ class TestFunction(TestCase):
     version_3_7 = (sys.version_info[0]==3) & (sys.version_info[1]==7)
     
     if version_3_7:
+
+        def test_get_insee_one_area_1(self):           
+            def get_insee_one_area_test(area_type="derf", codearea="c"):
+                _get_insee_one_area(area_type=area_type, codearea=codearea)
+            self.assertRaises(ValueError, get_insee_one_area_test)   
+
+        def test_get_insee_one_area_2(self):            
+            def get_insee_one_area_test(area_type="ZoneDEmploi2020", codearea="c"):
+                _get_insee_one_area(area_type=area_type, codearea=codearea)
+            self.assertRaises(ValueError, get_insee_one_area_test)   
 
         def test_get_new_city(self):
             test = True

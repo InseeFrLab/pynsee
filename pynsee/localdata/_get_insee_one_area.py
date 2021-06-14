@@ -18,6 +18,9 @@ def _get_insee_one_area(area_type, codearea):
     list_AAV20 = ['AAV2020', 'airesDAttractionDesVilles2020', 'AireDAttractionDesVilles2020']
     list_UU20 = ['UU2020' ,'unitesUrbaines2020', 'UniteUrbaine2020']
     
+    list_type2 = ['zoneDEmploi2020', 'aireDAttractionDesVilles2020',
+         'uniteUrbaine2020']
+    
     list_ZE20 = [s.lower() for s in list_ZE20]
     list_AAV20 = [s.lower() for s in list_AAV20]
     list_UU20 = [s.lower() for s in list_UU20]
@@ -30,9 +33,9 @@ def _get_insee_one_area(area_type, codearea):
         type2 = 'aireDAttractionDesVilles2020'
     if area_type in list_UU20:
         type2 = 'uniteUrbaine2020'
-    if type2 == '':
-        geo_string = _paste(['ZoneDEmploi2020', 'AireDAttractionDesVilles2020',
-         'UniteUrbaine2020'], collapse = " ")
+        
+    if not type2 in list_type2:
+        geo_string = _paste(list_type2, collapse = " ")
         msg = "!!! Please choose area_type among:\n{}".format(geo_string)
         raise ValueError(msg)
         
@@ -54,7 +57,9 @@ def _get_insee_one_area(area_type, codearea):
         
         data_area = data_area.assign(ref_area_code = codearea,
                                      ref_area_label = ref_area_label)
+        
+        return(data_area)
     else:
-        print('{} is not available in get_area_list({})'.format(codearea, area_type))
+        raise ValueError("{} is not available in get_area_list('{}')".format(codearea, area_type))
     
-    return(data_area)
+    
