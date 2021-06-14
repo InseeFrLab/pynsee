@@ -29,6 +29,13 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
     except:
         proxies = {'http': '','https': ''}
 
+    try:
+        pynsee_use_sdmx = os.environ['pynsee_use_sdmx']
+        if pynsee_use_sdmx == "True":
+            api_url = None
+    except:
+        pass       
+
     # if api_url is provided, it is used first,
     # and the sdmx url is used as a backup in two cases
     # 1- when the token is missing
