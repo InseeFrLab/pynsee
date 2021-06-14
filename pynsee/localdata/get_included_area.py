@@ -23,6 +23,7 @@ def get_included_area(area_type, codeareas):
 
     Examples:
         >>> from pynsee.localdata import *
+        >>> area_list = get_area_list()
         >>> paris_empl_area = get_included_area(area_type = 'zonesDEmploi2020', codeareas = ['1109'])
     """    
 #    codeareas = ['1109']
