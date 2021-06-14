@@ -24,7 +24,8 @@ def _get_dataset_metadata(dataset, update=False):
         
         if not os.path.exists(file_dataset_metadata): 
             trigger_update = True
-            print("%s : metadata update triggered because it is not found locally" % dataset)
+            if not update:
+                print("%s : metadata update triggered because it is not found locally" % dataset)
         else:
            
             try:
@@ -40,10 +41,11 @@ def _get_dataset_metadata(dataset, update=False):
             
             if day_lapse > 90:
                 trigger_update = True
-                print("%s : metadata update triggered because the file is older than 3 months" % dataset)   
+                if not update:
+                    print("%s : metadata update triggered because the file is older than 3 months" % dataset)   
         
         if update: 
-            trigger_update = True
+            trigger_update = True            
             print("%s : metadata update triggered manually" % dataset)
         
         if trigger_update:        
