@@ -76,5 +76,7 @@ def get_dataset_list() :
     df["Name.fr"] = df["Name.fr"].str.replace('^\\n\\s{0,}', '', regex=True)
     df = df[df["Name.en"] != ""]
     df = df[df["Name.fr"] != ""]
+
+    df = df.reset_index(drop=True)
     
     return df
