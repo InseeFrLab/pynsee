@@ -6,7 +6,7 @@ from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
 from tqdm import trange
 import os
-import pandas as pd
+import pandas as pd 
 
 def _build_series_list(dt=["CNA-2014-ERE"]):
         
