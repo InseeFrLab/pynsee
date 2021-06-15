@@ -179,9 +179,11 @@ class TestFunction(TestCase):
         def test_search_macrodata(self):
             search_all = search_macrodata()
             search_paris = search_macrodata("PARIS")
+            search_paper = search_macrodata("pâte à papier")
             test1 = isinstance(search_all, pd.DataFrame)
             test2 = isinstance(search_paris, pd.DataFrame)
-            self.assertTrue(test1 & test2)
+            test3 = isinstance(search_paper, pd.DataFrame)
+            self.assertTrue(test1 & test2 & test3)
 
         def test_get_idbank_internal_data(self):
             df = _get_idbank_internal_data()        
