@@ -93,4 +93,4 @@ def _build_series_list(dt=["CNA-2014-ERE"]):
 # 
 
 #from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data 
-#idb = _get_idbank_internal_data()    
+#idb = _get_idbank_internal_data(update=True)    
