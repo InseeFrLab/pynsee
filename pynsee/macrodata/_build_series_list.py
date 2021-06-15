@@ -2,6 +2,7 @@
 
 from pynsee.macrodata.get_dataset_list import get_dataset_list
 from pynsee.macrodata.get_series_list import get_series_list
+from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
 from tqdm import trange
 import os
@@ -10,9 +11,10 @@ import pandas as pd
 def _build_series_list(dt=["CNA-2014-ERE"]):
         
     #
-    # SET dt = None TO BUILD THE FULL DATA FRAME
+    # SET dt = None TO BUILD THE FULL DATAFRAME
     #
     
+    #os.environ['pynsee_query_print']= "True"
     os.environ['pynsee_use_sdmx'] = "True"
     
     if dt is None:
@@ -28,9 +30,10 @@ def _build_series_list(dt=["CNA-2014-ERE"]):
         
     series_list = pd.concat(list_dt)    
     # series_list.to_csv("pynsee_series_all.csv")
-    
-    os.environ['pynsee_use_sdmx'] = "False"
-    
+    # series_list = pd.read_csv("../pynsee_series_all.csv", dtype=str)
+    # col = 'Unnamed: 0'
+    # series_list = series_list.drop(columns = {col})
+            
     old_series = search_macrodata()
     old_series = old_series.drop(columns = {"KEY"})
     series_list_short = series_list[["DATASET", "IDBANK", "KEY"]]
@@ -43,23 +46,37 @@ def _build_series_list(dt=["CNA-2014-ERE"]):
     list_series_title_missing = series_list_new_title_missing.IDBANK.to_list()
     
     if len(list_series_title_missing) > 0:
-        pass
-    
-    return(series_list)
-
-#IPPMP
-#IPPMP-NF
-#ENQ-CONJ-IND-BAT
-#IPC-2015
-#IPC-PM-2015
-#IPPI-2015
-#IPPS-2015
-#IRL
-#IPCH-2015
-#NAISSANCES-FECONDITE
-#MARIAGE-NUPTIALITE
-#POPULATION-STRUCTURE
-    
-    
+        titles = get_series_title(list_series_title_missing)   
+            
+        # !!!!!!!!!!!!!!!!!!!!!!
+        # SERIES IN IDBANK FILE NOT AVAILABLE IN BDM DATABASE
+        # !!!!!!!!!!!!!!!!!!!!!!
+        # series_not_found = [l for l in list_series_title_missing if l not in titles.IDBANK.to_list()]
+        
+        if len(titles.index) > 0:
+            titles = titles.rename(columns = {"TITLE_FR" : "TITLE_FR2",
+                                              "TITLE_EN" : "TITLE_EN2"})  
+            
+            series_list_new2 = series_list_new.merge(titles, on = "IDBANK", how = "left")
+            
+            for i in range(len(series_list_new2.index)):
+                tt_fr = series_list_new2.loc[i, "TITLE_FR"]
+                tt_en = series_list_new2.loc[i, "TITLE_EN"]
+                if pd.isna(tt_fr):
+                    series_list_new2.loc[i, "TITLE_FR"] = series_list_new2.loc[i, "TITLE_FR2"]
+                
+                if pd.isna(tt_en):
+                    series_list_new2.loc[i, "TITLE_EN"] = series_list_new2.loc[i, "TITLE_EN2"]
+             
+            series_list_new2 = series_list_new2.drop(columns = {"TITLE_FR2", "TITLE_EN2"})          
+            # series_not_found2 = series_list_new2[pd.isna(series_list_new2['TITLE_FR'])]
+            series_list_new2 = series_list_new2.dropna(subset={"TITLE_FR"})
+   
+        os.environ['pynsee_use_sdmx'] = "False"
+        return(series_list_new2)
+    else:
+        os.environ['pynsee_use_sdmx'] = "False"
+        return(old_series)
+     
     
     

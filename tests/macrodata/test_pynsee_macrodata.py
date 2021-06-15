@@ -27,6 +27,11 @@ class TestFunction(TestCase):
     
     if not version_3_7:
 
+        def test_build_series_list(self):
+            df = _build_series_list()
+            test = isinstance(df, pd.DataFrame)
+            self.assertTrue(test)
+
         def test_get_series_title(self):
             series = search_macrodata()
             series = series.loc[:420, "IDBANK"].to_list()
