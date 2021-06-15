@@ -116,6 +116,7 @@ def _get_dataset_metadata(dataset, update=False):
 
         # drop the columns where all elements are NaN
         idbank_list_dataset = idbank_list_dataset.dropna(axis=1, how='all')
+        idbank_list_dataset = idbank_list_dataset.reset_index(drop=True)
         
     return(idbank_list_dataset)
    

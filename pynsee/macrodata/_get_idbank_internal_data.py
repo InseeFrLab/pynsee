@@ -31,6 +31,10 @@ def _get_idbank_internal_data(update=False):
         idbank_list = pd.read_csv(data_file, encoding = 'utf-8',
                                   quotechar='"', sep=',', dtype=str)
         
+        col = 'Unnamed: 0'
+        if col in idbank_list.columns:
+            idbank_list = idbank_list.drop(columns={col})
+        
         os.remove(data_file)
         idbank_list.to_pickle(data_final_file)
     else:  
