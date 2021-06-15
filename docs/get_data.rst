@@ -7,6 +7,8 @@ Get macroeconomic data
 
 .. autofunction:: pynsee.macrodata.get_dataset
 
+.. autofunction:: pynsee.macrodata.get_series_title
+
 Get geographic and local data
 -----------------------------
 
