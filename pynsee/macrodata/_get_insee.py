@@ -17,6 +17,10 @@ def _get_insee(api_query, sdmx_query, step = "1/1"):
     # "001694056", "001691912", "001580062", "001688370", "010565692"
     # sdmx_query = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_query = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
+    
+    # api_query = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/010752065%2B010752064%2B010752063%2B001790771%2B010551532%2B010551533%2B010551534%2B010551536%2B010551535%2B010551487"
+    # sdmx_query = None
+    
     # create temporary directory
     dirpath = _get_temp_dir()
                         
@@ -71,7 +75,8 @@ def _get_insee(api_query, sdmx_query, step = "1/1"):
             
             list_obs.append(df)
         
-        obs_series = pd.concat(list_obs)
+        if len(list_obs) > 0:
+            obs_series = pd.concat(list_obs)
         
         # 
         # collect attributes values from the series 
@@ -86,20 +91,24 @@ def _get_insee(api_query, sdmx_query, step = "1/1"):
         col_attr = list(dict_attr.keys())
         attr_series = pd.DataFrame(dict_attr, columns = col_attr, index=[0])
         
-        data_series = pd.concat([obs_series, attr_series], axis=1)
+        if len(list_obs) > 0:
+            data_series = pd.concat([obs_series, attr_series], axis=1)
+        else:
+            data_series = pd.concat([attr_series], axis=1)
         
         # 
         # add date column
         # 
         
-        freq = attr_series.FREQ[0]
-        time_period = obs_series.TIME_PERIOD.to_list()
-        
-        dates = _get_date(freq, time_period)    
-        # new column
-        data_series = data_series.assign(DATE = dates) 
-        # place DATE column in the first position
-        data_series = data_series[['DATE'] + [c for c in data_series if c not in ['DATE']]]
+        if len(list_obs) > 0:
+            freq = attr_series.FREQ[0]
+            time_period = obs_series.TIME_PERIOD.to_list()
+            
+            dates = _get_date(freq, time_period)    
+            # new column
+            data_series = data_series.assign(DATE = dates) 
+            # place DATE column in the first position
+            data_series = data_series[['DATE'] + [c for c in data_series if c not in ['DATE']]]
         
         # append series dataframe to final list
         list_series.append(data_series)
@@ -108,7 +117,8 @@ def _get_insee(api_query, sdmx_query, step = "1/1"):
     
     # index and sort dataframe by date
     # data_final = data_final.set_index('DATE')
-    data_final = data_final.sort_values(["IDBANK", "DATE"])
+    if 'DATE' in data_final.columns:
+        data_final = data_final.sort_values(["IDBANK", "DATE"])
         
     #harmonise column names
     colnames = data_final.columns
@@ -116,8 +126,9 @@ def _get_insee(api_query, sdmx_query, step = "1/1"):
     newcolnames = list(map(replace_hyphen, colnames))
     data_final.columns = newcolnames
     
-    data_final["OBS_VALUE"] = data_final["OBS_VALUE"].apply(pd.to_numeric, errors='coerce')
+    if "OBS_VALUE" in data_final.columns:
+        data_final["OBS_VALUE"] = data_final["OBS_VALUE"].apply(pd.to_numeric, errors='coerce')
     
-    print('Data has been cached\n')  
+    print('\nData has been cached\n')  
         
     return data_final
