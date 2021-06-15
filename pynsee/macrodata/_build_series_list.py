@@ -71,12 +71,26 @@ def _build_series_list(dt=["CNA-2014-ERE"]):
             series_list_new2 = series_list_new2.drop(columns = {"TITLE_FR2", "TITLE_EN2"})          
             # series_not_found2 = series_list_new2[pd.isna(series_list_new2['TITLE_FR'])]
             series_list_new2 = series_list_new2.dropna(subset={"TITLE_FR"})
+            series_list_new2 = series_list_new2[["IDBANK", "TITLE_FR", "TITLE_EN"]]
+            
+            series_list2 = series_list.merge(series_list_new2,
+                                             on = "IDBANK", how = "right")
+            
+           
+            # !!!!!!!!!
+            # CREATE FILE FOR PACKAGE INTERNAL DATA
+            # !!!!!!!!!
+            # series_list2.to_csv("idbank_list_internal.csv", encoding = "utf-8", quotechar='"', sep=',')
    
         os.environ['pynsee_use_sdmx'] = "False"
-        return(series_list_new2)
+        return(series_list2)
     else:
         os.environ['pynsee_use_sdmx'] = "False"
         return(old_series)
-     
-    
-    
+
+# 
+# TEST FUNCTION
+# 
+
+#from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data 
+#idb = _get_idbank_internal_data()    
