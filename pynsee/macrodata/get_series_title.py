@@ -16,7 +16,7 @@ def get_series_title(series):
     """        
     data = get_series(series, firstNObservations=1, metadata=False)
     
-    data = data[["IDBANK", "TITLE_FR", "TITLE_EN"]]
+    data = data[["IDBANK", "TITLE_FR", "TITLE_EN"]].reset_index(drop=True)
     
     return(data)
     
