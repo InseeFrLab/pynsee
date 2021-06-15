@@ -10,8 +10,8 @@ def get_series_title(series):
 
     Examples:
         >>> from pynsee import *
-        >>> series = search_macrodata()
-        >>> series = series.loc[:420, "IDBANK"].to_list()
+        >>> series = get_series_list("CLIMAT-AFFAIRES")
+        >>> series = series.loc[:3, "IDBANK"].to_list()
         >>> titles = get_series_title(series)
     """        
     data = get_series(series, firstNObservations=1, metadata=False)
