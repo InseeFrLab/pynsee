@@ -49,9 +49,18 @@ class TestFunction(TestCase):
         def test_get_column_title_2(self):   
             self.assertRaises(ValueError, get_column_title, dataset = ['a']) 
         
-        def test_get_series_list_1(self):        
+        def test_get_series_list_1(self):   
+            test = True
             data = get_series_list('CLIMAT-AFFAIRES')
-            self.assertTrue(isinstance(data, pd.DataFrame))
+            test = test & isinstance(data, pd.DataFrame)
+            
+            data = get_series_list("IPPI-2015", update=True)
+            test = test & isinstance(data, pd.DataFrame)
+            
+            data = get_series_list("CHOMAGE-TRIM-NATIONAL", update=True)
+            test = test & isinstance(data, pd.DataFrame)
+            
+            self.assertTrue(test)
 
         def test_get_series_list_2(self):   
             self.assertRaises(ValueError, get_series_list, 'a')   

@@ -89,8 +89,9 @@ def _get_dataset_metadata(dataset, update=False):
                 # rename columns
                 dim_values.columns = [dim_id, dim_id + '_label_fr', dim_id + '_label_en']
                 
-                idbank_list_dataset = idbank_list_dataset.merge(dim_values,
-                                                                on = dim_id, how = 'left')
+                if dim_id in idbank_list_dataset.columns:                
+                    idbank_list_dataset = idbank_list_dataset.merge(dim_values,
+                                                                    on = dim_id, how = 'left')
             # save data
             idbank_list_dataset.to_pickle(file_dataset_metadata)
             #print("Data cached")
