@@ -112,10 +112,12 @@ def get_series(*idbanks,
         if len(list_addded_param) > 0:
              sdmx_query = sdmx_query + added_param_string
              api_query = api_query + "/" + added_param_string
+        
+        df = _get_insee(api_query=api_query, #api_query
+                        sdmx_query=sdmx_query,
+                        step =  str("{0}/{1}").format(q+1, max_seq_idbank))
              
-        list_data.append(_get_insee(api_query=api_query, #api_query
-                                    sdmx_query=sdmx_query,
-                                    step =  str("{0}/{1}").format(q+1, max_seq_idbank)))
+        list_data.append(df)
     
     data = pandas.concat(list_data)
     
