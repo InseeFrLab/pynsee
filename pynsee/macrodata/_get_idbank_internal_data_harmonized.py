@@ -12,15 +12,15 @@ def _get_idbank_internal_data_harmonized():
         
     idbank_list = _get_idbank_internal_data()
     
-    col_selected = ["nomflow", "idbank", "cleFlow", "title_fr", "title_en"]
+    col_selected = ["DATASET", "IDBANK", "KEY", "TITLE_FR", "TITLE_EN"]
     idbank_col_selected = idbank_list.columns[idbank_list.columns.isin(col_selected)]
     idbank_list = idbank_list[idbank_col_selected]
     
     # all titles in lower case
-    title_fr_lower = pd.Series([str(title).lower() for title in idbank_list["title_fr"]])
+    title_fr_lower = pd.Series([str(title).lower() for title in idbank_list["TITLE_FR"]])
     idbank_list = idbank_list.assign(title_fr_lower = title_fr_lower.values)
     
-    title_en_lower = pd.Series([str(title).lower() for title in idbank_list["title_en"]])
+    title_en_lower = pd.Series([str(title).lower() for title in idbank_list["TITLE_EN"]])
     idbank_list = idbank_list.assign(title_en_lower = title_en_lower.values)
     
     # create column without accent
