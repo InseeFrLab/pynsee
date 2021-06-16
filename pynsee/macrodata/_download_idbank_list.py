@@ -10,6 +10,7 @@ import re
 from pynsee.utils._hash import _hash
 from pynsee.utils._create_insee_folder import _create_insee_folder 
 from pynsee.utils._get_temp_dir import _get_temp_dir
+from pynsee.utils._get_credentials import _get_credentials
 from datetime import datetime
 
 def _download_idbank_list():
@@ -56,6 +57,9 @@ def _download_idbank_list():
             idbank_file_csv = os.environ['insee_idbank_file_csv']
         except:
             idbank_file_csv = idbank_file_csv_default
+
+        # INSEE api credentials are not useful here, but proxy settings stored in pynsee_api_credentials are useful
+        keys = _get_credentials()
 
         #download file
         try:
