@@ -4,8 +4,8 @@
 import pandas as pd
 import re
 
-from .get_dataset_list import get_dataset_list 
-from ._get_dataset_metadata import _get_dataset_metadata
+from pynsee.macrodata.get_dataset_list import get_dataset_list 
+from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
     
 def get_series_list(*datasets, update = False):
     """Download an INSEE's series key list for one or several datasets
