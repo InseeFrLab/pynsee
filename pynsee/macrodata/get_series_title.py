@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Copyright : INSEE, 2021
 
 from pynsee.macrodata.get_series import get_series
 
