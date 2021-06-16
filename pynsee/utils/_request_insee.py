@@ -12,6 +12,9 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
     # sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
     # api_url = 'https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES/?firstNObservations=4&lastNObservations=1'
+    
+    keys = _get_credentials()
+    
     try:
         pynsee_query_print = os.environ['pynsee_query_print']
     except:
@@ -23,6 +26,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
             else:
                 if sdmx_url is not None:
                     print('\n' +sdmx_url)
+                    
     try:
         proxies = {'http': os.environ['http_proxy'],
                    'https': os.environ['http_proxy']}
@@ -45,8 +49,6 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
     # if api url is missing sdmx url is used
 
     if not api_url is None:
-
-        keys = _get_credentials()
 
         if keys is not None:
             insee_key = keys['insee_key']
