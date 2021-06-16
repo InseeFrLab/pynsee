@@ -44,6 +44,17 @@ class TestFunction(TestCase):
             test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
             self.assertTrue(test)
 
+        def test_search_sirene_error(self):  
+            
+            def search_sirene_error():
+                df = search_sirene(
+                    kind = "test",
+                    variable = ["activitePrincipaleUniteLegale"],
+                    pattern = ["86.10Z", "75*"])
+                return(df)
+            self.assertRaises(ValueError, search_sirene_error)  
+                
+
         def test_search_sirene(self):  
             
             test = True
