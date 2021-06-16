@@ -7,12 +7,12 @@ Introduction to pynsee package
 
 **Work in progress**
 
-.. image:: https://github.com/hadrilec/pynsee/actions/workflows/pynsee-test.yml/badge.svg
-   :target: https://github.com/hadrilec/pynsee/actions
+.. image:: https://github.com/InseeFrLab/Py-Insee-Data/actions/workflows/pynsee-test.yml/badge.svg
+   :target: https://github.com/InseeFrLab/Py-Insee-Data/actions
    :alt: Build Status
 
-.. image:: https://codecov.io/gh/hadrilec/pynsee/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/hadrilec/pynsee?branch=master
+.. image:: https://codecov.io/gh/InseeFrLab/Py-Insee-Data/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/InseeFrLab/Py-Insee-Data?branch=master
    :alt: Codecov test coverage
 
 .. image:: https://readthedocs.org/projects/pynsee/badge/?version=latest
@@ -32,7 +32,7 @@ Installation & Loading
 .. code-block:: python
 
    # Get the development version from GitHub
-   # pip install git+https://github.com/hadrilec/pynsee.git#egg=pynsee
+   # pip install git+https://github.com/InseeFrLab/Py-Insee-Data.git#egg=pynsee
 
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache

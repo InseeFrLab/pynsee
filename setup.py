@@ -14,7 +14,7 @@ setuptools.setup(
     long_description = long_description,
     url="https://pynsee.readthedocs.io/en/latest/",
      project_urls={
-        'Bug Tracker': 'https://github.com/hadrilec/pynsee/issues'
+        'Bug Tracker': 'https://github.com/InseeFrLab/Py-Insee-Data/issues'
     },
     packages=setuptools.find_packages(),
     license='OPEN LICENCE 2.0/LICENCE OUVERTE 2.0',

@@ -6,12 +6,12 @@ Introduction to pynsee package
 
 **Work in progress**
 
-.. image:: https://github.com/hadrilec/pynsee/actions/workflows/master.yml/badge.svg
-   :target: https://github.com/hadrilec/pynsee/actions
+.. image:: https://github.com/InseeFrLab/Py-Insee-Data/actions/workflows/master.yml/badge.svg
+   :target: https://github.com/InseeFrLab/Py-Insee-Data/actions
    :alt: Build Status
 
-.. image:: https://codecov.io/gh/hadrilec/pynsee/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/hadrilec/pynsee?branch=master
+.. image:: https://codecov.io/gh/InseeFrLab/Py-Insee-Data/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/InseeFrLab/Py-Insee-Data?branch=master
    :alt: Codecov test coverage
 
 .. image:: https://readthedocs.org/projects/pynsee/badge/?version=latest
@@ -31,7 +31,7 @@ Installation & Loading
 .. code-block:: python
 
    # Get the development version from GitHub
-   # pip install git+https://github.com/hadrilec/pynsee.git#egg=pynsee
+   # pip install git+https://github.com/InseeFrLab/Py-Insee-Data.git#egg=pynsee
 
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
@@ -46,7 +46,7 @@ Installation & Loading
 French GDP growth rate
 ----------------------
 
-.. image:: https://raw.githubusercontent.com/hadrilec/pynsee/master/docs/examples/pictures/example_gdp_picture.png
+.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/example_gdp_picture.png
 
 .. code-block:: python
 
@@ -95,7 +95,7 @@ French GDP growth rate
 Poverty in Paris urban area
 ---------------------------
 
-.. image:: https://raw.githubusercontent.com/hadrilec/pynsee/master/docs/examples/pictures/poverty_paris_urban_area.svg
+.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/poverty_paris_urban_area.svg
 
 .. code-block:: python
    
