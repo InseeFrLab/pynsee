@@ -7,18 +7,7 @@ import numpy as np
 from pynsee.localdata.get_map_link import get_map_link
 
 @lru_cache(maxsize=None)
-def _warning_map(geo):
-    if geo == 'arr' :
-        msg1 = '!!! Geographic data made on arrondissements municipaux in 2020 come from opendatasoft\n'
-        msg2 = 'https://public.opendatasoft.com/explore/dataset/arrondissements-millesimes0/information/ !!!'
-    else:
-        msg1 = '!!! Geographic data come from https://france-geojson.gregoiredavid.fr/,\n'
-        msg2 = 'It has been made in 2018 from INSEE and IGN data !!!'
-   
-    print('{}{}'.format(msg1, msg2))
-
-@lru_cache(maxsize=None)
-def get_map(geo):
+def _get_map(geo):
     """Get geopandas dataframe from French administrative area
 
     Args:
@@ -31,8 +20,9 @@ def get_map(geo):
 
     Examples:
         >>> from pynsee.localdata import *
+        >>> from pynsee.localdata._get_map import _get_map
         >>> map_list = get_map_list()
-        >>> map_departement = get_map('departements')
+        >>> map_departement = _get_map('departements')
         >>> # Draw map with random values
         >>> import matplotlib, descartes
         >>> map_departement.plot(column='value')
@@ -41,11 +31,10 @@ def get_map(geo):
     map = gpd.read_file(get_map_link(geo))
 
     if geo == 'arrondissements-municipaux':
-        _warning_map('arr')
         map = map[['code_insee', 'nom_com','geometry']]
         map.columns = ['code', 'nom', 'geometry']
     else:
-        _warning_map('other')
+        pass
 
     map['value'] = np.random.randint(1, 10, map.shape[0])
    

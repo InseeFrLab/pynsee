@@ -6,6 +6,7 @@ import pandas as pd
 import geopandas as gpd
 import sys
 
+from pynsee.localdata._get_map import _get_map
 from pynsee.localdata._get_geo_relation import _get_geo_relation
 from pynsee.localdata._get_insee_one_area import _get_insee_one_area
 from pynsee.localdata import *
@@ -149,7 +150,7 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
         
         def test_get_map(self):
-            map = get_map('arrondissements-municipaux')
+            map = _get_map('arrondissements-municipaux')
             self.assertTrue(isinstance(map, gpd.geodataframe.GeoDataFrame))
         
         def test_get_area_list_1(self):                 

@@ -4,9 +4,21 @@
 import os
 import zipfile
 import pkg_resources
+from functools import lru_cache
 
 from pynsee.localdata import get_map_list
 from pynsee.utils._create_insee_folder import _create_insee_folder
+
+@lru_cache(maxsize=None)
+def _warning_map(geo):
+    if geo == 'arr' :
+        msg1 = '!!! Geographic data made on arrondissements municipaux in 2020 come from opendatasoft\n'
+        msg2 = 'https://public.opendatasoft.com/explore/dataset/arrondissements-millesimes0/information/ !!!'
+    else:
+        msg1 = '!!! Geographic data come from https://france-geojson.gregoiredavid.fr/,\n'
+        msg2 = 'It has been made in 2018 from INSEE and IGN data !!!'
+   
+    print('{}{}'.format(msg1, msg2))
 
 def get_map_link(geo):
     """Get the link of the geojson map file stored locally
@@ -28,6 +40,11 @@ def get_map_link(geo):
         >>> map_departement_link = get_map_link('departements')
     """    
     #import geopandas as gpd
+
+    if geo == 'arrondissements-municipaux':
+        _warning_map('arr')
+    else:
+        _warning_map('other')
         
     insee_folder = _create_insee_folder()
 
