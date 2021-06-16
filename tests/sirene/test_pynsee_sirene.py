@@ -43,6 +43,13 @@ class TestFunction(TestCase):
             df2 = get_data("552081317", kind = 'siren')
             test = isinstance(df1, pd.DataFrame) & isinstance(df2, pd.DataFrame)
             self.assertTrue(test)
+        
+        def test_get_data_error(self): 
+            
+            def get_data_error():                
+                df = get_data('32227167700021', kind = 'test') 
+                return(df)
+            self.assertRaises(ValueError, get_data_error)  
 
         def test_search_sirene_error(self):  
             
