@@ -2,10 +2,10 @@
 # Copyright : INSEE, 2021
 
 from pynsee.utils._paste import _paste 
-from ._get_insee import _get_insee
-from .get_dataset_list import get_dataset_list 
+from pynsee.macrodata._get_insee import _get_insee
+from pynsee.macrodata.get_dataset_list import get_dataset_list 
 from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata 
-from .get_series_list import get_series_list 
+from pynsee.macrodata.get_series_list import get_series_list 
 
 def get_dataset(dataset,
                       metadata=True,

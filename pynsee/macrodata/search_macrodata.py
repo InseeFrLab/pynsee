@@ -3,8 +3,8 @@
 
 from functools import lru_cache
 
-from ._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
-from ._get_idbank_internal_data import _get_idbank_internal_data
+from pynsee.macrodata._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
+from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data
 
 @lru_cache(maxsize=None)
 def search_macrodata(pattern = ".*"):
