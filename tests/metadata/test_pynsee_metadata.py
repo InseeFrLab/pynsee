@@ -3,7 +3,6 @@
 
 from unittest import TestCase
 from pandas import pandas as pd
-import geopandas as gpd
 
 import os
 
