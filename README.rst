@@ -46,8 +46,7 @@ Installation & Loading
 French GDP growth rate
 ----------------------
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/example_gdp_picture.png
-
+.. image:: https://https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/example_gdp_picture.png?token=AP32AXL62GLDKN43GHFUDQTAZO7QO
 .. code-block:: python
 
    from pynsee.macrodata import *
@@ -95,7 +94,7 @@ French GDP growth rate
 Poverty in Paris urban area
 ---------------------------
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/poverty_paris_urban_area.svg
+.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/poverty_paris_urban_area.svg?token=AP32AXNFHNAH2NEK2LKWENTAZO7YY
 
 .. code-block:: python
    
