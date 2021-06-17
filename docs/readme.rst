@@ -11,7 +11,7 @@ Introduction to pynsee package
    :target: https://github.com/InseeFrLab/Py-Insee-Data/actions
    :alt: Build Status
 
-.. image:: https://codecov.io/gh/InseeFrLab/Py-Insee-Data/branch/master/graph/badge.svg
+.. image:: https://codecov.io/gh/InseeFrLab/Py-Insee-Data/branch/master/graph/badge.svg?token=TO96FMWRHK
    :target: https://codecov.io/gh/InseeFrLab/Py-Insee-Data?branch=master
    :alt: Codecov test coverage
 
