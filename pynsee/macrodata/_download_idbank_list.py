@@ -19,7 +19,7 @@ def _download_idbank_list():
     #idbank_file_csv_default = "2020_correspondances_idbank_dimension.csv"
     #separator = ","
     
-    file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2868055/2021_correspondance_idbank_dimension.zip"
+    file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2862759/2021_correspondance_idbank_dimension.zip"
     idbank_file_csv_default = "2021_correspondance_idbank_dimension.csv"
     separator = ";"
     
@@ -69,8 +69,8 @@ def _download_idbank_list():
             proxies = {'http': '', 'https': ''}
         
         try:
-            results = requests.get(file_to_dwn, proxies = proxies)
-            
+            results = requests.get(file_to_dwn, proxies = proxies)           
+                       
             # create temporary directory
             dirpath = _get_temp_dir()
             
