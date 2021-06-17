@@ -46,7 +46,7 @@ Installation & Loading
 French GDP growth rate
 ----------------------
 
-.. image:: https://https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/example_gdp_picture.png?token=AP32AXL62GLDKN43GHFUDQTAZO7QO
+.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/example_gdp_picture.png?token=AP32AXL62GLDKN43GHFUDQTAZO7QO
 .. code-block:: python
 
    from pynsee.macrodata import *
