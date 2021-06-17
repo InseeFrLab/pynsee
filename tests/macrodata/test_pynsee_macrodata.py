@@ -27,12 +27,6 @@ class TestFunction(TestCase):
     
     if not version_3_7:
 
-        # def test_build_series_list(self):
-        #     df = _build_series_list()
-        #     test = isinstance(df, pd.DataFrame)
-        #     os.environ['pynsee_use_sdmx'] = "False"
-        #     self.assertTrue(test)
-
         def test_get_series_title(self):
             series = search_macrodata()
             series = series.loc[:420, "IDBANK"].to_list()
@@ -252,6 +246,12 @@ class TestFunction(TestCase):
             def test_get_last_release(self):
                 data = get_last_release()
                 self.assertTrue(isinstance(data, pd.DataFrame))
+            
+            def test_build_series_list(self):
+                df = _build_series_list()
+                test = isinstance(df, pd.DataFrame)
+                os.environ['pynsee_use_sdmx'] = "False"
+                self.assertTrue(test)
 
         
         
