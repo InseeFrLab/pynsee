@@ -36,11 +36,14 @@ Installation & Loading
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
-   # Advice : add the following lines to 'pynsee_api_credentials.py' file in your HOME directory
-   # to avoid running them manually
+   # Advice : Put your key-secret pair in a secrets.yaml file according to the format of the
+   # secrets_template.yaml file in the root directory
    import os
-   os.environ['insee_key'] = "my_key"
-   os.environ['insee_secret'] = "my_secret_key"
+   import yaml
+   with open("secrets.yaml", "r") as creds:
+        secrets = yaml.safe_load(creds)
+   os.environ['insee_key'] = secrets["creds"]["insee_key"]
+   os.environ['insee_secret'] = secrets["creds"]["insee_secret"]
 
 
 French GDP growth rate
@@ -59,11 +62,14 @@ French GDP growth rate
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
-   # Advice : add the following lines to 'pynsee_api_credentials.py' file in your HOME directory
-   # to avoid running them manually
+   # Advice : Put your key-secret pair in a secrets.yaml file according to the format of the
+   # secrets_template.yaml file in the root directory
    import os
-   os.environ['insee_key'] = "my_insee_key"
-   os.environ['insee_secret'] = "my_insee_secret"
+   import yaml
+   with open("secrets.yaml", "r") as creds:
+        secrets = yaml.safe_load(creds)
+   os.environ['insee_key'] = secrets["creds"]["insee_key"]
+   os.environ['insee_secret'] = secrets["creds"]["insee_secret"]
 
    # get series key (idbank), for Gross domestic product balance
    id = get_series_list("CNT-2014-PIB-EQB-RF")
@@ -102,11 +108,14 @@ Poverty in Paris urban area
    # Subscribe to api.insee.fr and get your credentials!
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
-   # Advice : add the following lines to 'pynsee_api_credentials.py' file in your HOME directory
-   # to avoid running them manually
+   # Advice : Put your key-secret pair in a secrets.yaml file according to the format of the
+   # secrets_template.yaml file in the root directory
    import os
-   os.environ['insee_key'] = "my_key"
-   os.environ['insee_secret'] = "my_secret_key"
+   import yaml
+   with open("secrets.yaml", "r") as creds:
+        secrets = yaml.safe_load(creds)
+   os.environ['insee_key'] = secrets["creds"]["insee_key"]
+   os.environ['insee_secret'] = secrets["creds"]["insee_secret"]
 
    from pynsee.localdata import *
 
