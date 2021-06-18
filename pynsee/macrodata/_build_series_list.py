@@ -10,6 +10,12 @@ import os
 import pandas as pd
 
 def _build_series_list(dt=["CNA-2014-ERE"]):
+
+    #
+    # FIRST change the link, file name and separator in _download_idbank_list
+    # THEN build the package and try to use the following to make a new idbank_list file
+    # FINALLY put the file in the zip file in macrodata/data
+    #
         
     #
     # SET dt = None TO BUILD THE FULL DATAFRAME
