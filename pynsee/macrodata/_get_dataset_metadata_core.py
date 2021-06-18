@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import pandas as pd
-import os
-import warnings
-
-from datetime import datetime    
+import pandas as pd  
     
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
