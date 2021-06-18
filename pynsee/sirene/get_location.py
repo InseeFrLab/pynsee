@@ -21,7 +21,7 @@ def get_location(df):
 
     Examples: 
         >>> from pynsee.metadata import get_activity_list
-        >>> from pynsee.sirene import *
+        >>> from pynsee.sirene import search_sirene, get_location
         >>> #
         >>> #  Get activity list
         >>> naf5 = get_activity_list('NAF5')

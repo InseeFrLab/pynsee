@@ -50,7 +50,7 @@ def search_sirene( variable,
 
     Examples:
         >>> from pynsee.metadata import get_activity_list
-        >>> from pynsee.sirene import *
+        >>> from pynsee.sirene import search_sirene
         >>> #
         >>> # Get activity list (NAF rev 2)
         >>> naf5 = get_activity_list('NAF5')

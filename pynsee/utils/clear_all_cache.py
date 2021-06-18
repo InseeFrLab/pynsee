@@ -13,7 +13,7 @@ def clear_all_cache():
         it is an error. 
 
     Examples:
-        >>> from pynsee.utils import *
+        >>> from pynsee.utils import clear_all_cache
         >>> clear_all_cache()
     """    
     gc.collect()

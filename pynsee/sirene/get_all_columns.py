@@ -11,7 +11,7 @@ def get_all_columns(kind='siret'):
         kind (str, optional): Choose between siret and siren. Defaults to 'siret'.
 
     Examples:
-        >>> from pynsee.sirene import *
+        >>> from pynsee.sirene import get_all_columns
         >>> sirene_columns = get_all_columns()
     """    
     

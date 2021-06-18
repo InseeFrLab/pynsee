@@ -19,7 +19,7 @@ def get_data(*codes, kind = 'siren'):
         This function may return personal data, please check and comply with the legal framework relating to personal data protection
 
     Examples:
-        >>> from pynsee.sirene import *
+        >>> from pynsee.sirene import get_data
         >>> df = get_data("552081317", kind = 'siren')
         >>> df = get_data('32227167700021', '26930124800077', kind='siret')
     """    
