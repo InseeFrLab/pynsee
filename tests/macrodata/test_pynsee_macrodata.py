@@ -247,11 +247,11 @@ class TestFunction(TestCase):
                 data = get_last_release()
                 self.assertTrue(isinstance(data, pd.DataFrame))
             
-            def test_build_series_list(self):
-                df = _build_series_list()
-                test = isinstance(df, pd.DataFrame)
-                os.environ['pynsee_use_sdmx'] = "False"
-                self.assertTrue(test)
+            # def test_build_series_list(self):
+            #     df = _build_series_list()
+            #     test = isinstance(df, pd.DataFrame)
+            #     os.environ['pynsee_use_sdmx'] = "False"
+            #     self.assertTrue(test)
 
         
         
