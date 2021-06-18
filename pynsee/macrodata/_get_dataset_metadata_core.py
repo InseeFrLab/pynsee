@@ -12,6 +12,10 @@ from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values   
 
 def _get_dataset_metadata_core(dataset, update=False):
+    
+    # from pynsee.macrodata._get_dataset_metadata_core import _get_dataset_metadata_core
+    # test1 = _get_dataset_metadata_core('IPC-2015', update=True)
+    # test2 = _get_dataset_metadata_core('IRL', update=True)
         
     idbank_list = _download_idbank_list()
                 
