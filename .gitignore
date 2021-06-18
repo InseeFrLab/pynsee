@@ -14,3 +14,5 @@ settings.json
 *.pdf
 docs/_build/
 docs/_build/html/
+.idea/
+.ipynb_checkpoints/
