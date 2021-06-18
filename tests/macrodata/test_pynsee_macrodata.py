@@ -32,6 +32,10 @@ class TestFunction(TestCase):
             df = _get_dataset_metadata_core('IPC-2015', update=True)
             self.assertTrue(isinstance(df, pd.DataFrame))
 
+        def test_download_series_list(self):
+            df = _download_idbank_list()
+            self.assertTrue(isinstance(df, pd.DataFrame))
+
 
         def test_get_series_title(self):
             series = search_macrodata()

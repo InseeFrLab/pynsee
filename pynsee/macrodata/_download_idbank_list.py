@@ -69,29 +69,45 @@ def _download_idbank_list():
                        'https': os.environ['https_proxy']}
         except:
             proxies = {'http': '', 'https': ''}
+            
+        results = requests.get(file_to_dwn, proxies = proxies)           
+                    
+        # create temporary directory
+        # dirpath = _get_temp_dir()            
+        dirpath = insee_folder + '/idbank'
         
-        try:
-            results = requests.get(file_to_dwn, proxies = proxies)           
+        if not os.path.exists(dirpath):
+            os.makedirs(dirpath)
+        
+        idbank_zip_file = dirpath + '\\idbank_list.zip'
+        
+        with open(idbank_zip_file, 'wb') as f:
+            f.write(results.content)
+        
+        with zipfile.ZipFile(idbank_zip_file, 'r') as zip_ref:
+            zip_ref.extractall(dirpath)
+        # try:
+        #     results = requests.get(file_to_dwn, proxies = proxies)           
                        
-            # create temporary directory
-            # dirpath = _get_temp_dir()            
-            dirpath = insee_folder + '/idbank'
+        #     # create temporary directory
+        #     # dirpath = _get_temp_dir()            
+        #     dirpath = insee_folder + '/idbank'
             
-            if not os.path.exists(dirpath):
-                os.makedirs(dirpath)
+        #     if not os.path.exists(dirpath):
+        #         os.makedirs(dirpath)
             
-            idbank_zip_file = dirpath + '\\idbank_list.zip'
+        #     idbank_zip_file = dirpath + '\\idbank_list.zip'
             
-            with open(idbank_zip_file, 'wb') as f:
-                f.write(results.content)
+        #     with open(idbank_zip_file, 'wb') as f:
+        #         f.write(results.content)
             
-            with zipfile.ZipFile(idbank_zip_file, 'r') as zip_ref:
-                zip_ref.extractall(dirpath)
+        #     with zipfile.ZipFile(idbank_zip_file, 'r') as zip_ref:
+        #         zip_ref.extractall(dirpath)
 
-            if os.path.exists(idbank_zip_file):
-                os.remove(idbank_zip_file)
-        except:
-            raise ValueError("!!! Idbank zip file not found !!!\nPlease change the value of  os.environ['insee_idbank_file_to_dwn']")
+        #     if os.path.exists(idbank_zip_file):
+        #         os.remove(idbank_zip_file)
+        # except:
+        #     raise ValueError("!!! Idbank zip file not found !!!\nPlease change the value of  os.environ['insee_idbank_file_to_dwn']")
         
         file_to_read = [f for f in os.listdir(dirpath) if not re.match('.*.zip$', f)]
         
