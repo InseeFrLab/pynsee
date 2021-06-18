@@ -69,7 +69,7 @@ def _download_idbank_list():
                        'https': os.environ['https_proxy']}
         except:
             proxies = {'http': '', 'https': ''}
-            
+
         results = requests.get(file_to_dwn, proxies = proxies)           
                     
         # create temporary directory
@@ -83,7 +83,9 @@ def _download_idbank_list():
         
         with open(idbank_zip_file, 'wb') as f:
             f.write(results.content)
+            f.close()
         
+
         with zipfile.ZipFile(idbank_zip_file, 'r') as zip_ref:
             zip_ref.extractall(dirpath)
         # try:
