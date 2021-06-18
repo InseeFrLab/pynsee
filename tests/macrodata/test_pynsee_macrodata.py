@@ -29,6 +29,9 @@ class TestFunction(TestCase):
     if not version_3_7:
 
         def test_download_series_list(self):
+            #_clean_insee_folder()
+            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/2868055/2021_correspondance_idbank_dimension.zip"
+            os.environ['insee_idbank_file_csv'] = "2021_correspondance_idbank_dimension.csv"
             df = _download_idbank_list()
             self.assertTrue(isinstance(df, pd.DataFrame))
 
