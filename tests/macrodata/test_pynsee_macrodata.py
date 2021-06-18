@@ -10,7 +10,7 @@ from pynsee.macrodata._get_date import _get_date
 from pynsee.macrodata._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
 from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data
 from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
-from pynsee.macrodata._get_dataset_metadata_test import _get_dataset_metadata_test
+from pynsee.macrodata._get_dataset_metadata_core import _get_dataset_metadata_core
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
@@ -28,8 +28,8 @@ class TestFunction(TestCase):
     
     if not version_3_7:
 
-        def test_1_get_dataset_metadata_test(self):
-            df = _get_dataset_metadata_test('IPC-2015', update=True)
+        def test_get_dataset_metadata_core(self):
+            df = _get_dataset_metadata_core('IPC-2015', update=True)
             self.assertTrue(isinstance(df, pd.DataFrame))
 
 

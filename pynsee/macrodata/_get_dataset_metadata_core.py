@@ -9,12 +9,9 @@ from datetime import datetime
     
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
-from pynsee.macrodata._get_dimension_values import _get_dimension_values    
-from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data
-from pynsee.utils._hash import _hash  
-from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.macrodata._get_dimension_values import _get_dimension_values   
 
-def _get_dataset_metadata_test(dataset, update=False):
+def _get_dataset_metadata_core(dataset, update=False):
         
     idbank_list = _download_idbank_list()
                 
