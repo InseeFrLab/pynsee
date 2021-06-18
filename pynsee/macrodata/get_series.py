@@ -41,7 +41,7 @@ def get_series(*idbanks,
         DataFrame: contains the data, indexed by DATE and sorted by IDBANK
 
     Examples:
-        >>> from pynsee.macrodata import *
+        >>> from pynsee.macrodata import get_series_list, get_series
         >>> # inflation figures in France
         >>> df_idbank = get_series_list("IPC-2015")
         >>> df_idbank = df_idbank.loc[

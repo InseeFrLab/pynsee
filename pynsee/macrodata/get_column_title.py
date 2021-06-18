@@ -19,7 +19,7 @@ def get_column_title(dataset = None):
         ValueError: Dataset must belong to INSEE datasets list
     
     Examples:  
-        >>> from pynsee.macrodata import * 
+        >>> from pynsee.macrodata import get_column_title
         >>> insee_all_columns = get_column_title()
         >>> balance_paiements_columns = get_column_title("BALANCE-PAIEMENTS")
     """    

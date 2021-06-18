@@ -10,7 +10,7 @@ def get_series_title(series):
         series (list): a list of series (idbanks)
 
     Examples:
-        >>> from pynsee import *
+        >>> from pynsee import get_series_list, get_series_title
         >>> series = get_series_list("CLIMAT-AFFAIRES")
         >>> series = series.loc[:3, "IDBANK"].to_list()
         >>> titles = get_series_title(series)

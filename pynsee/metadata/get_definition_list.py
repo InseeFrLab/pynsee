@@ -19,7 +19,7 @@ def get_definition_list():
     """Get a list of concept definitions
 
     Examples:
-        >>> from pynsee.metadata import *
+        >>> from pynsee.metadata import get_definition_list
         >>> definition = get_definition_list()
     """    
         

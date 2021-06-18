@@ -26,7 +26,7 @@ def get_new_city(code, date=None):
         date (str, optional): date used to analyse the data, format : 'AAAA-MM-JJ'. If date is None, by default it supposed to be ten years before current year.
 
     Examples:
-        >>> from pynsee.localdata import *
+        >>> from pynsee.localdata import get_next_city
         >>> df = get_next_city(code = '24431', date = '2018-01-01')
     """    
     #api_link = 'https://api.insee.fr/metadonnees/V1/geo/commune/24431/suivants?date=2018-01-01'

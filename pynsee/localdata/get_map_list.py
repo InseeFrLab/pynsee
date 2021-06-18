@@ -12,7 +12,7 @@ def get_map_list():
         Only arrondissements municipaux data come from https://public.opendatasoft.com/explore/dataset/arrondissements-millesimes0/information/
     
     Examples:
-        >>> from pynsee.localdata import *
+        >>> from pynsee.localdata import get_map_list
         >>> map_list = get_map_list()
     """
    

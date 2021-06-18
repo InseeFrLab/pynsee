@@ -12,7 +12,7 @@ def get_nivgeo_list():
     """Get a list of geographic levels
     
     Examples
-        >>> from pynsee.localdata import *
+        >>> from pynsee.localdata import get_nivgeo_list
         >>> nivgeo_list = get_nivgeo_list()
     """    
     _warning_nivgeo()

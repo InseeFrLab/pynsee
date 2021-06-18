@@ -19,7 +19,7 @@ def get_local_metadata():
     """Get a list of all combinations of datasets, variables and unit measures available from INSEE Local API
     
     Examples:
-        >>> from pynsee.localdata import *
+        >>> from pynsee.localdata import get_local_metadata
         >>> metadata = get_local_metadata()
     """    
     _warning_data()

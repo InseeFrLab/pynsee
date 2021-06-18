@@ -17,7 +17,7 @@ def get_definition(ids):
         ValueError: an error is raised if ids is not a list
 
     Examples:
-        >>> from pynsee.metadata import *
+        >>> from pynsee.metadata import get_definition_list, get_definition
         >>> def_list = get_definition_list()
         >>> # geographic areas definition
         >>> geo_definitions = get_definition(['c1468', 'c1282', 'c1762',

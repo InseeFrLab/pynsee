@@ -27,7 +27,7 @@ def get_local_data(variables, dataset_version, nivgeo='FE', geocodes=['1']):
         ValueError: Error if geocodes is not a list
     
     Examples:
-        >>> from pynsee.localdata import *
+        >>> from pynsee.localdata import get_local_metadata, get_nivgeo_list, get_geo_list, get_local_data
         >>> metadata = get_local_metadata()
         >>> nivgeo = get_nivgeo_list()
         >>> departement = get_geo_list('departements')

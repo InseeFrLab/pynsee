@@ -36,7 +36,7 @@ def get_map_link(geo):
 
 
     Examples:
-        >>> from pynsee.localdata import *
+        >>> from pynsee.localdata import get_map_link
         >>> map_departement_link = get_map_link('departements')
     """    
     #import geopandas as gpd

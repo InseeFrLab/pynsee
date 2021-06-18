@@ -16,7 +16,7 @@ def get_last_release():
     """Get the datasets released in the last 30 days
 
     Examples
-        >>> from pynsee.macrodata import *
+        >>> from pynsee.macrodata import get_last_release
         >>> dataset_released = get_last_release()
     """       
     link = 'https://bdm.insee.fr/series/sdmx/rss/donnees'

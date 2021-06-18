@@ -18,7 +18,7 @@ def get_area_list(area=None):
         ValueError: Error if area is not available
     
     Examples:    
-        >>> from pynsee.localdata import *
+        >>> from pynsee.localdata import get_area_list
         >>> area_list = get_area_list()
     """    
         

@@ -25,7 +25,7 @@ def get_series_list(*datasets, update = False):
         Some metadata is stored for 3 months locally on the computer. It is updated automatically
     
     Examples:
-        >>> from pynsee.macrodata import * 
+        >>> from pynsee.macrodata import get_dataset_list, get_series_list
         >>> dataset_list = get_dataset_list()
         >>> idbank_ipc = get_series_list('IPC-2015', 'CLIMAT-AFFAIRES')
     """        

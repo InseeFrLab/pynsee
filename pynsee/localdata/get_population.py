@@ -24,7 +24,7 @@ def get_population():
         Have a look at : https://www.insee.fr/fr/statistiques/3698339#consulter
 
     Examples:
-        >>> from pynsee.localdata import *
+        >>> from pynsee.localdata import get_population
         >>> pop = get_population()
     """    
     insee_folder = _create_insee_folder()

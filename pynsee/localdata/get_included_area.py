@@ -22,7 +22,7 @@ def get_included_area(area_type, codeareas):
         ValueError: Error if codeareas is not a list
 
     Examples:
-        >>> from pynsee.localdata import *
+        >>> from pynsee.localdata import get_area_list, get_included_area
         >>> area_list = get_area_list()
         >>> paris_empl_area = get_included_area(area_type = 'zonesDEmploi2020', codeareas = ['1109'])
     """    

@@ -46,7 +46,7 @@ def get_dataset(dataset,
         DataFrame: contains the data
     
     Examples:
-        >>> from pynsee.macrodata import * 
+        >>> from pynsee.macrodata import get_dataset
         >>> ipc_data = get_dataset("IPC-2015", 
         >>>        filter = "M......ENSEMBLE...CVS.2015",
         >>>        includeHistory = True, updatedAfter = "2017-07-11T08:45:00")
