@@ -9,7 +9,7 @@ import re
 
 from pynsee.utils._hash import _hash
 from pynsee.utils._create_insee_folder import _create_insee_folder 
-from pynsee.utils._get_temp_dir import _get_temp_dir
+#from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils._get_credentials import _get_credentials
 from datetime import datetime
 
@@ -74,7 +74,11 @@ def _download_idbank_list():
             results = requests.get(file_to_dwn, proxies = proxies)           
                        
             # create temporary directory
-            dirpath = _get_temp_dir()
+            # dirpath = _get_temp_dir()            
+            dirpath = insee_folder + '/idbank'
+            
+            if not os.path.exists(dirpath):
+                os.makedirs(dirpath)
             
             idbank_zip_file = dirpath + '\\idbank_list.zip'
             
