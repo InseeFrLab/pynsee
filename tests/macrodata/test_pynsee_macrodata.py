@@ -30,7 +30,8 @@ class TestFunction(TestCase):
 
         def test_1_get_dataset_metadata_test(self):
             df = _get_dataset_metadata_test('IPC-2015', update=True)
-            
+            self.assertTrue(isinstance(df, pd.DataFrame))
+
 
         def test_get_series_title(self):
             series = search_macrodata()
