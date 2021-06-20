@@ -21,7 +21,7 @@ def _warning_map(geo):
     print('{}{}'.format(msg1, msg2))
 
 def get_map_link(geo):
-    """Get the link of the geojson map file stored locally
+    """Get the link of the geojson map file
 
     Args:
         geo (str): French administrative area (see get_map_list)
