@@ -8,14 +8,14 @@ from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata
 from pynsee.macrodata.get_series_list import get_series_list 
 
 def get_dataset(dataset,
-                      metadata=True,
-                      filter = None,
-                      startPeriod = None,
-                      endPeriod = None,
-                      firstNObservations = None,
-                      lastNObservations = None,
-                      includeHistory = None,
-                      updatedAfter = None):
+                metadata=True,
+                filter = None,
+                startPeriod = None,
+                endPeriod = None,
+                firstNObservations = None,
+                lastNObservations = None,
+                includeHistory = None,
+                updatedAfter = None):
     """Get dataset's data from INSEE BDM database
 
     Args:
