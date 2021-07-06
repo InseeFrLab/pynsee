@@ -15,4 +15,6 @@ def _get_installed_packages():
         j += 1
     
     
+    df = df.sort_values("package").reset_index(drop=True)
+    
     return(df)

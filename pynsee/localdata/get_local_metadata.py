@@ -66,9 +66,7 @@ def get_local_metadata():
                                       reshape = False,
                                       list_files = all_files,                                  
                                       folder = insee_folder_local_metadata):
-        import pandas as pd
-        import re
-        
+                
         list_files = [f for f in list_files if re.search('.*' + var + '.*', f)]
       
         if reshape == True:
