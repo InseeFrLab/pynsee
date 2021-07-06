@@ -4,15 +4,16 @@
 from pathlib2 import Path
 import os
 
+
 def _get_credentials():
 
     # try to find insee keys in 'pynsee_api_credentials.py' located in HOME
-    
+
     try:
         home = str(Path.home())
         if os.path.exists(home):
             list_files = os.listdir(home)
-            if 'pynsee_api_credentials.py' in list_files:        
+            if 'pynsee_api_credentials.py' in list_files:
                 parameter_file = home + '/' + 'pynsee_api_credentials.py'
                 exec(open(parameter_file).read())
     except:
