@@ -102,9 +102,9 @@ class TestFunction(TestCase):
         def test_get_envir_token(self):
             
             _get_envir_token.cache_clear()    
-            os.environ['insee_token'] = "a"    
-            token = _get_envir_token()  
-            test = (token is None)  
+            os.environ['insee_token'] = "a"
+            token = _get_envir_token()
+            test = (token is None)
             self.assertTrue(test)
 
         def test_clear_all_cache(self):
