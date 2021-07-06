@@ -30,12 +30,6 @@ def _get_map(geo):
     import geopandas as gpd
     map = gpd.read_file(get_map_link(geo))
 
-    if geo == 'arrondissements-municipaux':
-        map = map[['code_insee', 'nom_com','geometry']]
-        map.columns = ['code', 'nom', 'geometry']
-    else:
-        pass
-
     map['value'] = np.random.randint(1, 10, map.shape[0])
    
     return(map)
