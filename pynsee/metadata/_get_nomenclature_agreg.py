@@ -8,7 +8,6 @@ import pandas as pd
 def _get_nomenclature_agreg(file):
     
     df = pd.read_csv(file, sep=";",
-                     #encoding='latin1',
                      encoding="ISO-8859-1",
                      dtype=str)
     
@@ -22,6 +21,13 @@ def _get_nomenclature_agreg(file):
             if pd.isna(df.iloc[i,j]):
                 df.iloc[i,j] = df.iloc[i-1,j]
                 
+    def clean_TITLE(string):
+        string_cleaned = string.replace("\x92", "'")
+        return(string_cleaned)
+                
     df = df.iloc[:,1:10] 
     df.columns = ['A10', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138', 'TITLE']
+    
+    df.TITLE = df.TITLE.apply(clean_TITLE)
+    
     return(df)
