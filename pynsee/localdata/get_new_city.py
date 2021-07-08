@@ -31,7 +31,7 @@ def get_new_city(code, date=None):
         >>> from pynsee.localdata import get_next_city
         >>> df = get_next_city(code = '24431', date = '2018-01-01')
     """
-    #api_link = 'https://api.insee.fr/metadonnees/V1/geo/commune/24431/suivants?date=2018-01-01'
+    # api_link = 'https://api.insee.fr/metadonnees/V1/geo/commune/24431/suivants?date=2018-01-01'
 
     INSEE_localdata_api_link = 'https://api.insee.fr/metadonnees/V1/geo/'
 
@@ -40,7 +40,7 @@ def get_new_city(code, date=None):
     if date is not None:
         api_link = api_link + '?date=' + date
     else:
-        #print('date is None, by default it supposed to be ten years before current year')
+        # print('date is None, by default it supposed to be ten years before current year')
         _warning_get_new_city()
 
         now = datetime.datetime.now()

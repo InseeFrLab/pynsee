@@ -16,11 +16,11 @@ from datetime import datetime
 
 def _download_idbank_list():
 
-    #file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
-    #idbank_file_csv_default = "2020_correspondances_idbank_dimension.csv"
-    #separator = ","
+    # file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
+    # idbank_file_csv_default = "2020_correspondances_idbank_dimension.csv"
+    # separator = ","
 
-    #file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2862759/2021_correspondance_idbank_dimension.zip"
+    # file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2862759/2021_correspondance_idbank_dimension.zip"
     file_to_dwn_default = "https://www.insee.fr/en/statistiques/fichier/2868055/2021_correspondance_idbank_dimension.zip"
 
     idbank_file_csv_default = "2021_correspondance_idbank_dimension.csv"

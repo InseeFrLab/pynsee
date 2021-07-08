@@ -60,7 +60,7 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
         #
 
         list_obs = []
-        #trange(n_obs, desc = "2nd loop - Collecting observations")
+        # trange(n_obs, desc = "2nd loop - Collecting observations")
         # range(n_obs)
         for i in range(n_obs):
 

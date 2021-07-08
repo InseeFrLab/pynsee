@@ -22,7 +22,7 @@ def _build_series_list(dt=["CNA-2014-ERE"]):
     # SET dt = None TO BUILD THE FULL DATAFRAME
     #
 
-    #os.environ['pynsee_query_print']= "True"
+    # os.environ['pynsee_query_print']= "True"
     os.environ['pynsee_use_sdmx'] = "True"
 
     if dt is None:
@@ -102,10 +102,3 @@ def _build_series_list(dt=["CNA-2014-ERE"]):
     else:
         os.environ['pynsee_use_sdmx'] = "False"
         return(old_series)
-
-#
-# TEST FUNCTION
-#
-
-#from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data
-#idb = _get_idbank_internal_data(update=True)
