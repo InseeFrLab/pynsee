@@ -33,7 +33,7 @@ def get_old_city(code, date=None):
     if date is not None:
         api_link = api_link + '?date=' + date
 
-    #api_link = 'https://api.insee.fr/metadonnees/V1/geo/commune/24259/precedents'
+    # api_link = 'https://api.insee.fr/metadonnees/V1/geo/commune/24259/precedents'
 
     request = _request_insee(api_url=api_link, file_format='application/json')
 

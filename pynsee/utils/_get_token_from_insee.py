@@ -3,7 +3,6 @@
 
 import requests
 import re
-import os
 import base64
 
 
