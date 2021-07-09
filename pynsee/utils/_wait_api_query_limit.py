@@ -61,7 +61,7 @@ def _wait_api_query_limit(query):
 
         # print("n query in 1 min : %s" % n_query)
 
-        if n_query >= max_query_insee_api-1:
+        if n_query >= max_query_insee_api - 1:
 
             oldest_query_time_gap = max(qCount['time_gap'])
             waiting_time = math.ceil(

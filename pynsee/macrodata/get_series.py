@@ -26,15 +26,15 @@ def get_series(*idbanks,
 
         metadata (bool, optional): If True, some metadata is added to the data
 
-        startPeriod (str, optional): start date of the data. 
+        startPeriod (str, optional): start date of the data.
 
-        endPeriod (str, optional): end date of the data. 
+        endPeriod (str, optional): end date of the data.
 
-        firstNObservations (int, optional): get the first N observations for each key series (idbank). 
+        firstNObservations (int, optional): get the first N observations for each key series (idbank).
 
-        lastNObservations (int, optional): get the last N observations for each key series (idbank). 
+        lastNObservations (int, optional): get the last N observations for each key series (idbank).
 
-        includeHistory (boolean, optional): boolean to access the previous releases (not available on all series). 
+        includeHistory (boolean, optional): boolean to access the previous releases (not available on all series).
 
         updatedAfter (str, optional): starting point for querying the previous releases (format yyyy-mm-ddThh:mm:ss)
 
@@ -96,7 +96,7 @@ def get_series(*idbanks,
 
     n_idbank = len(list_idbank)
     idbank_limit = 400
-    max_seq_idbank = math.ceil(n_idbank/idbank_limit)
+    max_seq_idbank = math.ceil(n_idbank / idbank_limit)
 
     list_data = []
 
@@ -119,7 +119,7 @@ def get_series(*idbanks,
 
         df = _get_insee(api_query=api_query,  # api_query
                         sdmx_query=sdmx_query,
-                        step=str("{0}/{1}").format(q+1, max_seq_idbank))
+                        step=str("{0}/{1}").format(q + 1, max_seq_idbank))
 
         list_data.append(df)
 

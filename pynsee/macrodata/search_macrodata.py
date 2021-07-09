@@ -31,8 +31,8 @@ def search_macrodata(pattern=".*"):
         pattern = str(pattern).lower()
 
         idbank_selected = idbank_list.loc[
-            idbank_list.title_en_lower.str.contains(pattern) 
-            | idbank_list.title_fr_lower.str.contains(pattern) 
+            idbank_list.title_en_lower.str.contains(pattern)
+            | idbank_list.title_fr_lower.str.contains(pattern)
             | idbank_list.title_fr_no_accent.str.contains(pattern)]
 
     else:

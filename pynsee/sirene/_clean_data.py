@@ -109,7 +109,7 @@ def _clean_data(data_final, kind='siren', clean=True,
                     loc_var = df.columns.get_loc(col_ref)
                     col2insert = df[col]
                     df = df.drop([col], axis=1)
-                    df.insert(loc_var+1, col, col2insert)
+                    df.insert(loc_var + 1, col, col2insert)
             return(df)
 
         # move columns title after columns containing values

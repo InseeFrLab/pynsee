@@ -24,19 +24,19 @@ def get_dataset(dataset,
 
         metadata (bool, optional): If True, some metadata is added to the data
 
-        filter (str, optional): Use the filter to choose only some values in a dimension. 
-        It is recommended to use it for big datasets. A dimension left empty means 
+        filter (str, optional): Use the filter to choose only some values in a dimension.
+        It is recommended to use it for big datasets. A dimension left empty means
         all values are selected. To select multiple values in one dimension put a "+" between those values.
 
-        startPeriod (str, optional): start date of the data. 
+        startPeriod (str, optional): start date of the data.
 
-        endPeriod (str, optional): end date of the data. 
+        endPeriod (str, optional): end date of the data.
 
-        firstNObservations (int, optional): get the first N observations for each key series (idbank). 
+        firstNObservations (int, optional): get the first N observations for each key series (idbank).
 
-        lastNObservations (int, optional): get the last N observations for each key series (idbank). 
+        lastNObservations (int, optional): get the last N observations for each key series (idbank).
 
-        includeHistory (boolean, optional): boolean to access the previous releases (not available on all series). 
+        includeHistory (boolean, optional): boolean to access the previous releases (not available on all series).
 
         updatedAfter (str, optional): starting point for querying the previous releases (format yyyy-mm-ddThh:mm:ss)
 
@@ -48,7 +48,7 @@ def get_dataset(dataset,
 
     Examples:
         >>> from pynsee.macrodata import get_dataset
-        >>> ipc_data = get_dataset("IPC-2015", 
+        >>> ipc_data = get_dataset("IPC-2015",
         >>>        filter = "M......ENSEMBLE...CVS.2015",
         >>>        includeHistory = True, updatedAfter = "2017-07-11T08:45:00")
         >>> #

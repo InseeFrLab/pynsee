@@ -45,7 +45,7 @@ def _get_insee_one_area(area_type, codearea):
         api_url = 'https://api.insee.fr/metadonnees/V1/geo/'
         api_url = api_url + type2 + '/' + codearea + '/descendants'
         request = _request_insee(
-            api_url=api_url,  file_format='application/json')
+            api_url=api_url, file_format='application/json')
 
         data = request.json()
         list_data_area = []

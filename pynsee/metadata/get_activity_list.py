@@ -117,7 +117,7 @@ def get_activity_list(level, version='NAFRev2'):
                            # encoding='latin',
                            dtype=str)
 
-        mapp = mapp.iloc[:, [0]+list(range(2, 10))]
+        mapp = mapp.iloc[:, [0] + list(range(2, 10))]
         mapp = mapp[mapp.index != 0]
         # mapp.columns = ['A732', 'A615', 'A272',
         #                 'A129', 'A88', 'A64', 'A38', 'A21', 'A10']
@@ -163,13 +163,13 @@ def get_activity_list(level, version='NAFRev2'):
     if level == 'A10':
         df = df[df["A10"] == df["A138"]]
     else:
-        level_before = df.columns[icol-1]
+        level_before = df.columns[icol - 1]
         df = df[df[level] != df[level_before]]
 
     df = df.drop_duplicates(subset=level, keep='first')
 
     if not level in ['A138', 'A129', 'A88']:
-        level_after = df.columns[icol+1]
+        level_after = df.columns[icol + 1]
         df = df[df[level] == df[level_after]]
 
     seq = list(range(0, icol+1)) + [7]
