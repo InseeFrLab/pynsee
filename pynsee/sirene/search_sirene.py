@@ -74,7 +74,7 @@ def search_sirene(variable,
         >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company)
         >>> # and whose legal status is SAS (societe par actions simplifiee)
         >>> df = search_sirene(variable=["denominationUniteLegale",
-        >>>                              'categorieJuridiqueUniteLegale'],                
+        >>>                              'categorieJuridiqueUniteLegale'],          
         >>>                    pattern=["sncf", '5710'], kind="siren")
         >>> #
         >>> # Get data on Hadrien Leclerc
