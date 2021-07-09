@@ -118,7 +118,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
             else:
                 raise ValueError("{}{}{}".format(msg1, msg2, msg3))
     else:
-        #api_url is None
+        # api_url is None
         if not sdmx_url is None:
             results = requests.get(sdmx_url, proxies=proxies)
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import pandas as pd
 from functools import lru_cache
 
 from pynsee.utils._paste import _paste

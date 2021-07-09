@@ -5,13 +5,14 @@ from unittest import TestCase
 from pandas import pandas as pd
 import os
 import sys
+from datetime import datetime
+from datetime import timedelta
 
 from pynsee.macrodata._get_insee import _get_insee
 from pynsee.macrodata._get_date import _get_date
 from pynsee.macrodata._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
 from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data
 from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
-from pynsee.macrodata._get_dataset_metadata_core import _get_dataset_metadata_core
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
@@ -106,8 +107,6 @@ class TestFunction(TestCase):
             self.assertTrue(test1 & test2)
 
         def test_get_dataset_metadata_1(self):
-            from datetime import datetime
-            from datetime import timedelta
 
             os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
             os.environ['insee_idbank_file_csv'] = "2020_correspondances_idbank_dimension.csv"
@@ -131,8 +130,6 @@ class TestFunction(TestCase):
             self.assertTrue(test1 & test2 & test3)
 
         def test_get_dataset_metadata_2(self):
-            from datetime import datetime
-            from datetime import timedelta
             # crash download_idbank_list and test the result on get_dataset_metadata
             os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/test"
             os.environ['insee_idbank_file_csv'] = "test"
@@ -212,8 +209,7 @@ class TestFunction(TestCase):
             self.assertTrue(test)
 
         def test_get_dataset_dimension(self):
-            from datetime import datetime
-            from datetime import timedelta
+            
 
             df = _get_dataset_dimension('CLIMAT-AFFAIRES')
             os.environ['insee_date_test'] = str(
@@ -229,8 +225,6 @@ class TestFunction(TestCase):
             self.assertTrue(test1 & test2)
 
         def test_get_dimension_values(self):
-            from datetime import datetime
-            from datetime import timedelta
 
             df = _get_dimension_values('CL_PERIODICITE')
             os.environ['insee_date_test'] = str(
@@ -241,8 +235,6 @@ class TestFunction(TestCase):
             self.assertTrue(test1)
 
         def test_download_idbank_list_1(self):
-            from datetime import datetime
-            from datetime import timedelta
 
             try:
                 df = _download_idbank_list()

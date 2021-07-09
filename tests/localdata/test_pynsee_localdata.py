@@ -12,7 +12,6 @@ from pynsee.localdata._get_insee_one_area import _get_insee_one_area
 
 from pynsee.localdata.get_area_list import get_area_list
 from pynsee.localdata.get_geo_list import get_geo_list
-from pynsee.localdata.get_map_list import get_map_list
 from pynsee.localdata.get_map_link import get_map_link
 
 from pynsee.localdata.get_local_data import get_local_data

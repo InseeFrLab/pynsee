@@ -59,7 +59,7 @@ def _wait_api_query_limit(query):
         qCount = qCount.loc[qCount['oneMin'] == True]
         n_query = len(qCount.index)
 
-        #print("n query in 1 min : %s" % n_query)
+        # print("n query in 1 min : %s" % n_query)
 
         if n_query >= max_query_insee_api-1:
 
