@@ -71,7 +71,7 @@ def search_sirene(variable,
         >>>                    pattern = ["igny", 'pizza'],
         >>>                    phonetic_firstvar=True, kind = "siret")
         >>> #
-        >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company) 
+        >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company)
         >>> # and whose legal status is SAS (societe par actions simplifiee)
         >>> df = search_sirene(variable=["denominationUniteLegale",
         >>>                              'categorieJuridiqueUniteLegale'],                           

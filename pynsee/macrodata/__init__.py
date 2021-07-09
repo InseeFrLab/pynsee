@@ -15,4 +15,3 @@ from .search_macrodata import search_macrodata
 __all__ = ['get_series_list', 'get_dataset_list', 'get_last_release',
             'get_series', 'get_dataset', 'get_column_title', 'split_title',
             'get_series_title', 'search_macrodata']
-            

@@ -39,7 +39,7 @@ def get_population():
 
     list_wanted_files = ['base-pop-historiques-1876-2018.csv', 'var.csv']
 
-    test_available_file = [not f in list_files for f in list_wanted_files]
+    test_available_file = [f not in list_files for f in list_wanted_files]
 
     if any(test_available_file):
 

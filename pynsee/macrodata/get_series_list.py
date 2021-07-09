@@ -14,15 +14,16 @@ def get_series_list(*datasets, update=False):
     Args:       
         datasets (str) : datasets should be among the datasets list provided by get_dataset_list()
 
-        update (bool, optional): Set to True, to update manually the metadata stored locally on the computer. Defaults to False.
+        update (bool, optional): Set to True, to update manually the metadata
+        stored locally on the computer. Defaults to False.
 
     Raises:
         ValueError: datasets should be among the datasets list provided by get_dataset_list()
 
     Returns:
-        DataFrame: contains dimension columns, series keys, dataset name 
+        DataFrame: contains dimension columns, series keys, dataset name
 
-    Notes: 
+    Notes:
         Some metadata is stored for 3 months locally on the computer. It is updated automatically
 
     Examples:

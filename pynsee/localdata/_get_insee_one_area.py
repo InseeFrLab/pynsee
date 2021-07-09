@@ -36,7 +36,7 @@ def _get_insee_one_area(area_type, codearea):
     if area_type in list_UU20:
         type2 = 'uniteUrbaine2020'
 
-    if not type2 in list_type2:
+    if type2 not in list_type2:
         geo_string = _paste(list_type2, collapse=" ")
         msg = "!!! Please choose area_type among:\n{}".format(geo_string)
         raise ValueError(msg)

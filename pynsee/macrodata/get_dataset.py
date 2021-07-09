@@ -58,7 +58,7 @@ def get_dataset(dataset,
     insee_dataset_list = insee_dataset['id'].to_list()
 
     # check if the dataset exists in INSEE's list
-    if not dataset in insee_dataset_list:
+    if dataset not in insee_dataset_list:
         raise ValueError("%s is not a dataset from INSEE" % dataset)
 
     INSEE_sdmx_link_idbank = "https://bdm.insee.fr/series/sdmx/data/"
