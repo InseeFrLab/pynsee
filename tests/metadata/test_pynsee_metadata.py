@@ -8,6 +8,7 @@ from pynsee.metadata.get_definition_list import get_definition_list
 from pynsee.metadata.get_definition import get_definition
 from pynsee.metadata.get_activity_list import get_activity_list
 
+
 class TestFunction(TestCase):
 
     def test_get_definition_list(self):

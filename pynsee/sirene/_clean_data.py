@@ -16,7 +16,7 @@ def _clean_data(data_final, kind='siren', clean=True,
 
     # try:
     # add activity metadata
-    if not data_final is None:
+    if data_final is not None:
         if activity:
             naf5 = get_activity_list("NAF5")
             naf5 = naf5[["NAF5", "TITLE_NAF5_FR"]]

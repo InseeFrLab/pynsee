@@ -209,7 +209,6 @@ class TestFunction(TestCase):
             self.assertTrue(test)
 
         def test_get_dataset_dimension(self):
-            
 
             df = _get_dataset_dimension('CLIMAT-AFFAIRES')
             os.environ['insee_date_test'] = str(
