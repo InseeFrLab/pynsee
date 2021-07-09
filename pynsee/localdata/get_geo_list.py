@@ -37,7 +37,7 @@ def get_geo_list(geo=None, date=None):
 
     if geo is None:
         error_msg = True
-    elif not geo in list_available_geo:
+    elif geo not in list_available_geo:
         error_msg = True
 
     if error_msg:

@@ -11,7 +11,7 @@ from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
 def get_series_list(*datasets, update=False):
     """Download an INSEE's series key list for one or several datasets
 
-    Args:       
+    Args:
         datasets (str) : datasets should be among the datasets list provided by get_dataset_list()
 
         update (bool, optional): Set to True, to update manually the metadata

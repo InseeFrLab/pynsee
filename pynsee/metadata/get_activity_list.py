@@ -71,8 +71,7 @@ def get_activity_list(level, version='NAFRev2'):
                            'niv_agreg_naf_rev_2.csv',
                            'table_NAF2-NA.csv']
 
-    list_expected_files = [insee_folder
-                           + '/naf2008/' + f for f in list_expected_files]
+    list_expected_files = [insee_folder + '/naf2008/' + f for f in list_expected_files]
 
     list_available_file = [not os.path.exists(f) for f in list_expected_files]
 
