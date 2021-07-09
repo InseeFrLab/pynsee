@@ -7,7 +7,8 @@ from tqdm import trange
 
 from pynsee.utils._request_insee import _request_insee
 
-def get_legal_entity(codes, print_err_msg=True):      
+
+def get_legal_entity(codes, print_err_msg=True):
     """Get legal entities labels
 
     Args:
@@ -16,43 +17,45 @@ def get_legal_entity(codes, print_err_msg=True):
     Examples:
         >>> from pynsee.metadata import get_legal_entity
         >>> legal_entity = get_legal_entity(codes = ['5599', '83'])
-    """    
+    """
 
     list_data = []
-    
-    for c in trange(len(codes), desc = 'Getting legal entities'):
+
+    for c in trange(len(codes), desc='Getting legal entities'):
         # c = '5599'
         code = codes[c]
-        try:            
+        try:
             data = _get_one_legal_entity(code, print_err_msg=print_err_msg)
             list_data.append(data)
         except:
             pass
-    
+
     data_final = pd.concat(list_data).reset_index(drop=True)
-    
-    data_final = data_final.rename(columns={'intitule' : 'title'})
-    
+
+    data_final = data_final.rename(columns={'intitule': 'title'})
+
     return(data_final)
+
 
 @lru_cache(maxsize=None)
 def _get_one_legal_entity(c, print_err_msg=True):
-    
+
     if len(c) == 2:
         n = 'n2'
     elif len(c) == 4:
         n = 'n3'
     else:
-        raise ValueError('!!! Legal entity code should have 2 or 4 charaters !!!')
-        
+        raise ValueError(
+            '!!! Legal entity code should have 2 or 4 charaters !!!')
+
     INSEE_legal_entity_n3 = 'https://api.insee.fr/metadonnees/V1/codes/cj/' + n + '/'
-    
-    request = _request_insee(api_url = INSEE_legal_entity_n3 + c,
-                             file_format = 'application/json;charset=utf-8',
+
+    request = _request_insee(api_url=INSEE_legal_entity_n3 + c,
+                             file_format='application/json;charset=utf-8',
                              print_msg=print_err_msg)
-            
+
     data_request = request.json()
-    
+
     data = pd.DataFrame(data_request, index=[0])
-    
+
     return(data)

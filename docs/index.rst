@@ -11,3 +11,4 @@
    readme
    search_data
    get_data    
+   examples

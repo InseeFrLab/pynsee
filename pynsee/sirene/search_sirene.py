@@ -8,20 +8,22 @@ from pynsee.utils._paste import _paste
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
 
+
 @lru_cache(maxsize=None)
 def _warning_search_sirene():
     print("\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!")
 
-def search_sirene( variable,
-                          pattern,  
-                          kind = "siret",
-                          phonetic_firstvar=False,
-                          number = 1000,
-                          clean=True,
-                          activity=True,
-                          legal=True,
-                          only_alive=True,
-                          query_limit=20):   
+
+def search_sirene(variable,
+                  pattern,
+                  kind="siret",
+                  phonetic_firstvar=False,
+                  number=1000,
+                  clean=True,
+                  activity=True,
+                  legal=True,
+                  only_alive=True,
+                  query_limit=20):
     """Get data about companies from criteria on variables
 
     Args:
@@ -32,19 +34,19 @@ def search_sirene( variable,
         kind (str, optional): kind of companies : siren or siret. Defaults to "siren".
 
         phonetic_firstvar (bool, optional): If True phonetic search is triggered on the first variable of the list, if False the exact string is searched. Defaults to True.
-       
+
         number (int, optional): Number of companies searched. Defaults to 1000. If it is above 1000, multiple queries are triggered.
-       
+
         clean (bool, optional): If True, empty columns are deleted. Defaults to True.
-      
+
         activity (bool, optional): If True, activty title is added based on NAF/NACE. Defaults to True.
-        
+
         legal (bool, optional): If True, legal entities title are added
-        
+
         only_alive (bool, optional): If True, closed entities are removed from the output
 
         query_limit(numeric, optional): maximun number of queries made by the function in a row, by default it is 20
-    
+
     Notes:
         This function may return personal data, please check and comply with the legal framework relating to personal data protection
 
@@ -82,32 +84,32 @@ def search_sirene( variable,
         >>>            pattern = ['tabac'], 
         >>>            number = 2500,
         >>>            kind = "siret")
-    """        
-    if (not kind == 'siret') & (not kind == 'siren') :      
-        raise ValueError('!!! kind should be among : siren, siret !!!')              
+    """
+    if (not kind == 'siret') & (not kind == 'siren'):
+        raise ValueError('!!! kind should be among : siren, siret !!!')
 
     if type(variable) == str:
-        variable = [variable] 
+        variable = [variable]
 
     if type(pattern) == str:
-        pattern = [pattern] 
-        
+        pattern = [pattern]
+
     list_siren_hist_variable = [
-                                'nomUniteLegale', 
-                                'nomUsageUniteLegale',
-                                'denominationUniteLegale',
-                                'denominationUsuelle1UniteLegale',
-                                'denominationUsuelle2UniteLegale',
-                                'denominationUsuelle3UniteLegale',
-                                'categorieJuridiqueUniteLegale',                                
-                                'etatAdministratifUniteLegale'
-                                'nicSiegeUniteLegale',
-                                'activitePrincipaleUniteLegale',
-                                'caractereEmployeurUniteLegale',
-                                'economieSocialeSolidaireUniteLegale',
-                                'nomenclatureActivitePrincipaleUniteLegale'
-                                ]
-    
+        'nomUniteLegale',
+        'nomUsageUniteLegale',
+        'denominationUniteLegale',
+        'denominationUsuelle1UniteLegale',
+        'denominationUsuelle2UniteLegale',
+        'denominationUsuelle3UniteLegale',
+        'categorieJuridiqueUniteLegale',
+        'etatAdministratifUniteLegale'
+        'nicSiegeUniteLegale',
+        'activitePrincipaleUniteLegale',
+        'caractereEmployeurUniteLegale',
+        'economieSocialeSolidaireUniteLegale',
+        'nomenclatureActivitePrincipaleUniteLegale'
+    ]
+
     list_siret_hist_variable = ['denominationUsuelleEtablissement',
                                 'enseigne1Etablissement',
                                 'enseigne2Etablissement',
@@ -116,47 +118,46 @@ def search_sirene( variable,
                                 'etatAdministratifEtablissement',
                                 'nomenclatureActiviteEtablissement',
                                 'caractereEmployeurEtablissement']
-    
+
     if kind == 'siren':
         list_hist_variable = list_siren_hist_variable
     else:
         list_hist_variable = list_siret_hist_variable
-        
+
     list_var_pattern = []
-    
+
     for var, patt in zip(variable, pattern):
-        
-        phntc = ""  
+
+        phntc = ""
         if var == variable[0]:
-             if phonetic_firstvar:        
-                 phntc = ".phonetisation"
-                 
-        #if pattern has several words, split and put mutiple conditions with OR
+            if phonetic_firstvar:
+                phntc = ".phonetisation"
+
+        # if pattern has several words, split and put mutiple conditions with OR
         list_patt = patt.split(' ')
-        
+
         list_var_patt = []
         for ptt in list_patt:
             if var in list_hist_variable:
-                list_var_patt.append("periode({}{}:{})".format(var, phntc, ptt))
+                list_var_patt.append(
+                    "periode({}{}:{})".format(var, phntc, ptt))
             else:
                 list_var_patt.append("{}{}:{}".format(var, phntc, ptt))
-        
-        list_var_pattern.append(_paste(list_var_patt, collapse = " OR "))
-        
-    query = "?q=" + _paste(list_var_pattern, collapse = " AND ") 
+
+        list_var_pattern.append(_paste(list_var_patt, collapse=" OR "))
+
+    query = "?q=" + _paste(list_var_pattern, collapse=" AND ")
 
     data_final = _request_sirene(query=query, kind=kind,
                                  number=number, query_limit=query_limit)
 
-    df = _clean_data(data_final, kind = kind, 
+    df = _clean_data(data_final, kind=kind,
                      clean=clean, activity=activity,
                      legal=legal, only_alive=only_alive)
-    
+
     if not df is None:
         df = df.reset_index(drop=True)
-    
+
     _warning_search_sirene()
 
     return(df)
-    
-    

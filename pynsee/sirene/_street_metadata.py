@@ -3,12 +3,13 @@
 
 import pandas as pd
 
+
 def _street_metadata():
-    
+
     df = pd.DataFrame({
-            'typeVoieEtablissement':
-                ['AIRE','ALL', 'AV', 'BASE', 'BD',
-                 'CAMI','CAR', 'CHE',
+        'typeVoieEtablissement':
+        ['AIRE', 'ALL', 'AV', 'BASE', 'BD',
+                 'CAMI', 'CAR', 'CHE',
                  'CHEM', 'CHS', 'CITE', 'CLOS',
                  'COIN', 'COR', 'COTE', 'COUR', 'CRS',
                  'DOM', 'DSC', 'ECA', 'ESP',
@@ -22,8 +23,8 @@ def _street_metadata():
                  'VLGE', 'VOIE', 'ZA', 'ZAC',
                  'ZAD', 'ZI', 'ZONE', ' '],
             'typeVoieEtablissementLibelle':
-                ['Aire','Allée', 'Avenue', 'Base','Boulevard',
-                 'Cami','Carrefour', 'Chemin',
+                ['Aire', 'Allée', 'Avenue', 'Base', 'Boulevard',
+                 'Cami', 'Carrefour', 'Chemin',
                  'Cheminement', 'Chaussée', 'Cité', 'Clos',
                  'Coin', 'Corniche', 'Cote', 'Cour', 'Cours',
                  'Domaine', 'Descente', 'Ecart', 'Esplanade',
@@ -31,13 +32,12 @@ def _street_metadata():
                  'Ilot', 'Impasse', 'Lieu dit', 'Lotissement',
                  'Marché', 'Montée', 'Parc', 'Passage', 'Place',
                  'Plan', 'Plaine', 'Plateau', 'Pont', 'Port',
-                 'Promenade', 'Parvis', 'Quartier','Quai', 'Résidence', 'Ruelle',
+                 'Promenade', 'Parvis', 'Quartier', 'Quai', 'Résidence', 'Ruelle',
                  'Rocade', 'Rond Point', 'Route', 'Rue', 'Sentier',
                  'Square', 'Tour', 'Terre-Plein', 'Traverse', 'Villa',
                  'Village', 'Voie', 'Zone artisanale', "Zone d'aménagement concerté",
-                  "Zone d'aménagement différé", 'Zone industrielle', 'Zone', ' '
-                 ]            
-            })
-    
+                 "Zone d'aménagement différé", 'Zone industrielle', 'Zone', ' '
+                 ]
+    })
+
     return(df)
-    

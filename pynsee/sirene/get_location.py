@@ -8,7 +8,8 @@ from datetime import datetime
 from numpy import random
 from pynsee.utils._hash import _hash
 
-def get_location(df):    
+
+def get_location(df):
     """Get latitude and longitude of French legal entities
 
     Notes:
@@ -36,53 +37,55 @@ def get_location(df):
         >>> #
         >>> # Get location
         >>> df_location = get_location(df)
-    """    
+    """
     from geopy.geocoders import Nominatim
-    
+
     def clean(string):
         if pd.isna(string):
             cleaned = ''
         else:
             cleaned = string
         return(cleaned)
-    
+
     list_col = ['siret', 'numeroVoieEtablissement',
                 'typeVoieEtablissementLibelle', 'libelleVoieEtablissement',
                 'codePostalEtablissement', 'libelleCommuneEtablissement']
-         
-    geolocator = Nominatim(user_agent = _hash(str(random.randint(1000)) + str(datetime.now())))
+
+    geolocator = Nominatim(user_agent=_hash(
+        str(random.randint(1000)) + str(datetime.now())))
     #geolocator = Nominatim(user_agent = 'pynsee_python_package')
 
-    if set(list_col).issubset(df.columns):    
-    
+    if set(list_col).issubset(df.columns):
+
         list_location = []
-        
-        for i in trange(len(df.index), desc = 'Getting location'):
-        
+
+        for i in trange(len(df.index), desc='Getting location'):
+
             siret = clean(df.loc[i, 'siret'])
             nb = clean(df.loc[i, 'numeroVoieEtablissement'])
             street_type = clean(df.loc[i, 'typeVoieEtablissementLibelle'])
             street_name = clean(df.loc[i, 'libelleVoieEtablissement'])
-        
+
             postal_code = clean(df.loc[i, 'codePostalEtablissement'])
             city = clean(df.loc[i, 'libelleCommuneEtablissement'])
             city = re.sub('[0-9]|EME', '', city)
-        
-            address = '{} {} {} {} {} FRANCE'.format(nb, street_type, street_name, postal_code, city)
+
+            address = '{} {} {} {} {} FRANCE'.format(
+                nb, street_type, street_name, postal_code, city)
             address = re.sub(' L ', " L'", address)
             address = re.sub(' D ', " D'", address)
-            
+
             location = geolocator.geocode(address)
-            
+
             try:
                 lat = location.latitude
                 long = location.longitude
                 precision = 'exact'
             except:
-                address = '{} {} FRANCE'.format(postal_code, city)           
-            
+                address = '{} {} FRANCE'.format(postal_code, city)
+
                 location = geolocator.geocode(address)
-                
+
                 try:
                     lat = location.latitude
                     long = location.longitude
@@ -91,16 +94,15 @@ def get_location(df):
                     lat = None
                     long = None
                     precision = None
-                
-            df_location = pd.DataFrame({'siret' : siret,   
-                                        'latitude' : lat,
-                                        'longitude' : long,
-                                        'precision' : precision}, index=[0])
 
-            list_location.append(df_location)    
-            
+            df_location = pd.DataFrame({'siret': siret,
+                                        'latitude': lat,
+                                        'longitude': long,
+                                        'precision': precision}, index=[0])
+
+            list_location.append(df_location)
+
         df_location = pd.concat(list_location)
         df_location = df_location.reset_index(drop=True)
-        
+
         return(df_location)
-    
