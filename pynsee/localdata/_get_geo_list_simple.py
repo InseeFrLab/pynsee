@@ -33,7 +33,7 @@ def _get_geo_list_simple(geo, progress_bar=False):
 
     list_data_geo = []
 
-    if progress_bar == True:
+    if progress_bar is True:
         geo_range = trange(n_variable, desc="Getting %s" % geo)
     else:
         geo_range = range(n_variable)

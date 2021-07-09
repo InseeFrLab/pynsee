@@ -56,7 +56,7 @@ def _wait_api_query_limit(query):
             qCount.loc[r, 'oneMin'] = (
                 qCount.loc[r, 'time_gap'] < timespan_insee_api)
 
-        qCount = qCount.loc[qCount['oneMin'] == True]
+        qCount = qCount.loc[qCount['oneMin'] is True]
         n_query = len(qCount.index)
 
         # print("n query in 1 min : %s" % n_query)

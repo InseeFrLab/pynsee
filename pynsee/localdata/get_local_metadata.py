@@ -71,7 +71,7 @@ def get_local_metadata():
 
         list_files = [f for f in list_files if re.search('.*' + var + '.*', f)]
 
-        if reshape == True:
+        if reshape is True:
             list_col = ['var' if x == 'variable' else x for x in list_col]
 
         list_var_data = []
@@ -81,7 +81,7 @@ def get_local_metadata():
                 file2load = folder + '/' + list_files[f]
                 df = pd.read_csv(file2load)
 
-                if reshape == True:
+                if reshape is True:
                     df.columns = ['var' if x
                                   == 'variable' else x for x in df.columns]
 
