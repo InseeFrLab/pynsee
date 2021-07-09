@@ -79,7 +79,7 @@ def _clean_data(data_final, kind='siren', clean=True,
                          'numeroVoieEtablissement',
                          'typeVoieEtablissement',
                          'libelleVoieEtablissement', 'codePostalEtablissement',
-                         'libelleCommuneEtablissement',  'codeCommuneEtablissement']
+                         'libelleCommuneEtablissement', 'codeCommuneEtablissement']
 
         if set(first_col).issubset(data_final.columns):
             other_col = [col for col in data_final if col not in first_col]

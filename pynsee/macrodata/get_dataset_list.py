@@ -19,7 +19,7 @@ def get_dataset_list():
         DataFrame: a dataframe containing the list of datasets available
 
     Examples:
-        >>> from pynsee.macrodata import get_dataset_list 
+        >>> from pynsee.macrodata import get_dataset_list
         >>> insee_dataset = get_dataset_list()
     """
 

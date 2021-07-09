@@ -12,7 +12,7 @@ from pynsee.utils._request_insee import _request_insee
 def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
 
     count_sep = variables.count('-')
-    modalite = '.all' * (count_sep+1)
+    modalite = '.all' * (count_sep + 1)
 
     link = 'https://api.insee.fr/donnees-locales/V0.1/donnees/'
     link = link + \

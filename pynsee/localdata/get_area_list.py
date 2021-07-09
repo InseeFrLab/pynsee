@@ -59,7 +59,7 @@ def get_area_list(area=None):
         api_url = 'https://api.insee.fr/metadonnees/V1/geo/' + a + '?date=*'
 
         request = _request_insee(
-            api_url=api_url,  file_format='application/json')
+            api_url=api_url, file_format='application/json')
 
         data = request.json()
 

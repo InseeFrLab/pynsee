@@ -54,7 +54,7 @@ def get_local_metadata():
     list_files = os.listdir(insee_folder_local_metadata)
     list_files = [f for f in list_files if re.search('^doc_.*csv$', f)]
 
-    test_file_available = [not f in list_files for f in all_files]
+    test_file_available = [f not in list_files for f in all_files]
 
     if any(test_file_available):
         zip_file = pkg_resources.resource_stream(
@@ -96,8 +96,8 @@ def get_local_metadata():
                         df = pd.melt(df, id_vars=list_col2,
                                      value_vars=list_other_col)
                         # rename col variable into dataset_value
-                        df.columns = ['dataset_value' if x ==
-                                      'variable' else x for x in df.columns]
+                        df.columns = ['dataset_value' if x
+                                      == 'variable' else x for x in df.columns]
                         # drop nan in value col
                         df = df[df['value'].notna()]
                         # drop value column

@@ -16,7 +16,7 @@ def _warning_pop_data():
 
 @lru_cache(maxsize=None)
 def get_population():
-    """Get population data on all French communes (cities) 
+    """Get population data on all French communes (cities)
 
     Notes:
         Source : Insee, demographic census.
@@ -48,8 +48,8 @@ def get_population():
         with zipfile.ZipFile(zip_file, 'r') as zip_ref:
             zip_ref.extractall(insee_folder)
 
-    df = pd.read_csv(insee_folder_pop + '/' +
-                     'base-pop-historiques-1876-2018.csv', dtype=str)
+    df = pd.read_csv(insee_folder_pop + '/'
+                     + 'base-pop-historiques-1876-2018.csv', dtype=str)
     label = pd.read_csv(insee_folder_pop + '/' + 'var.csv', dtype=str)
 
     # clean data and rename columns
