@@ -32,7 +32,7 @@ def _get_date(freq, time_period):
         dates = [tp.replace("-B5", "-09-01") for tp in dates]
         dates = [tp.replace("-B6", "-11-01") for tp in dates]
 
-    if not freq in ["M", "A", "S", "T", "B"]:
+    if freq not in ["M", "A", "S", "T", "B"]:
         dates = time_period
     else:
         # dates = [datetime.strptime(date, '%Y-%m-%d').date() for date in dates]

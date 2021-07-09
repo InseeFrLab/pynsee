@@ -2,7 +2,6 @@
 # Copyright : INSEE, 2021
 
 from pynsee.sirene import search_sirene
-import pandas as pd
 
 
 def get_all_columns(kind='siret'):

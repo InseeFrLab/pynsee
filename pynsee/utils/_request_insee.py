@@ -49,7 +49,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
 
     # if api url is missing sdmx url is used
 
-    if not api_url is None:
+    if api_url is not None:
 
         if keys is not None:
             insee_key = keys['insee_key']
@@ -59,7 +59,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
         else:
             token = None
 
-        if not token is None:
+        if token is not None:
             headers = {'Accept': file_format,
                        'Authorization': 'Bearer ' + token}
 
@@ -79,7 +79,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                     print("{}".format(msg1))
                     print("Query : {}".format(api_url))
 
-                if not sdmx_url is None:
+                if sdmx_url is not None:
 
                     results = requests.get(sdmx_url, proxies=proxies)
 
@@ -103,7 +103,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
             msg3 = "\n\n!!! Advice : add the above-mentioned lines to 'pynsee_api_credentials.py' file in your HOME directory to avoid running them manually !!!"
             msg3bis = "\n!!! If your token still does not work, please try to clear the cache :\n from pynsee.utils import *; clear_all_cache() !!!\n"
 
-            if not sdmx_url is None:
+            if sdmx_url is not None:
                 msg4 = "\nSDMX web service used instead of API"
                 if print_msg:
                     print("{}{}{}{}{}".format(msg1, msg2, msg3, msg3bis, msg4))
@@ -119,7 +119,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                 raise ValueError("{}{}{}".format(msg1, msg2, msg3))
     else:
         # api_url is None
-        if not sdmx_url is None:
+        if sdmx_url is not None:
             results = requests.get(sdmx_url, proxies=proxies)
 
             if results.status_code == 200:

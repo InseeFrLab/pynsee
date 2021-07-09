@@ -32,9 +32,11 @@ def search_sirene(variable,
 
         kind (str, optional): kind of companies : siren or siret. Defaults to "siren".
 
-        phonetic_firstvar (bool, optional): If True phonetic search is triggered on the first variable of the list, if False the exact string is searched. Defaults to True.
+        phonetic_firstvar (bool, optional): If True phonetic search is triggered on the 
+        first variable of the list, if False the exact string is searched. Defaults to True.
 
-        number (int, optional): Number of companies searched. Defaults to 1000. If it is above 1000, multiple queries are triggered.
+        number (int, optional): Number of companies searched. Defaults to 1000. 
+        If it is above 1000, multiple queries are triggered.
 
         clean (bool, optional): If True, empty columns are deleted. Defaults to True.
 
@@ -44,10 +46,12 @@ def search_sirene(variable,
 
         only_alive (bool, optional): If True, closed entities are removed from the output
 
-        query_limit(numeric, optional): maximun number of queries made by the function in a row, by default it is 20
+        query_limit(numeric, optional): maximun number of queries made
+         by the function in a row, by default it is 20
 
     Notes:
-        This function may return personal data, please check and comply with the legal framework relating to personal data protection
+        This function may return personal data, please check and 
+        comply with the legal framework relating to personal data protection
 
     Examples:
         >>> from pynsee.metadata import get_activity_list
@@ -64,13 +68,13 @@ def search_sirene(variable,
         >>> # Get a list of companies located in Igny city whose name matches with 'pizza' using a phonetic search
         >>> df = search_sirene(variable = ["libelleCommuneEtablissement",
         >>>                            'denominationUniteLegale'],
-        >>>                    pattern = ["igny", 'pizza'], 
+        >>>                    pattern = ["igny", 'pizza'],
         >>>                    phonetic_firstvar=True, kind = "siret")
         >>> #
         >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company) 
         >>> # and whose legal status is SAS (societe par actions simplifiee)
         >>> df = search_sirene(variable=["denominationUniteLegale",
-        >>>                              'categorieJuridiqueUniteLegale'],                                     
+        >>>                              'categorieJuridiqueUniteLegale'],                                 
         >>>                    pattern=["sncf", '5710'], kind="siren")
         >>> #
         >>> # Get data on Hadrien Leclerc
@@ -80,7 +84,7 @@ def search_sirene(variable,
         >>> #
         >>> # Find 2500 tobacco shops
         >>> df = search_sirene(variable = ['denominationUniteLegale'],
-        >>>            pattern = ['tabac'], 
+        >>>            pattern = ['tabac'],
         >>>            number = 2500,
         >>>            kind = "siret")
     """

@@ -46,7 +46,7 @@ def get_activity_list(level, version='NAFRev2'):
     level_available = ['A10', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
                        'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5']
 
-    if not level in level_available:
+    if level not in level_available:
         raise ValueError("!!! level must be in %s !!!",
                          _paste(level_available, collapse=" "))
 
