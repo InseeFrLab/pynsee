@@ -15,12 +15,12 @@ def _get_nomenclature_agreg(file):
     for i in range(len(df.index)):
         for j in range(2, len(df.columns)):
             if pd.isna(df.iloc[i, j]):
-                df.iloc[i, j] = df.iloc[i, j-1]
+                df.iloc[i, j] = df.iloc[i, j - 1]
 
     for j in range(len(df.columns)):
         for i in range(len(df.index)):
             if pd.isna(df.iloc[i, j]):
-                df.iloc[i, j] = df.iloc[i-1, j]
+                df.iloc[i, j] = df.iloc[i - 1, j]
 
     def clean_TITLE(string):
         string_cleaned = string.replace("\x92", "'")

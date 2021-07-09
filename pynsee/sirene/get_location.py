@@ -30,7 +30,7 @@ def get_location(df):
         >>> # Get alive legal entities belonging to the automotive industry
         >>> df = search_sirene(variable = ["activitePrincipaleEtablissement"],
         >>>                    pattern = ['29.10Z'], kind = 'siret')
-        >>> #     
+        >>> #
         >>> # Keep businesses with more than 100 employees
         >>> df = df.loc[df['effectifsMinEtablissement'] > 100]
         >>> df = df.reset_index(drop=True)

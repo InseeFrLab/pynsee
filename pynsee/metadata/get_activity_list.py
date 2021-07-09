@@ -71,8 +71,8 @@ def get_activity_list(level, version='NAFRev2'):
                            'niv_agreg_naf_rev_2.csv',
                            'table_NAF2-NA.csv']
 
-    list_expected_files = [insee_folder +
-                           '/naf2008/' + f for f in list_expected_files]
+    list_expected_files = [insee_folder
+                           + '/naf2008/' + f for f in list_expected_files]
 
     list_available_file = [not os.path.exists(f) for f in list_expected_files]
 
@@ -168,11 +168,11 @@ def get_activity_list(level, version='NAFRev2'):
 
     df = df.drop_duplicates(subset=level, keep='first')
 
-    if not level in ['A138', 'A129', 'A88']:
+    if level not in ['A138', 'A129', 'A88']:
         level_after = df.columns[icol + 1]
         df = df[df[level] == df[level_after]]
 
-    seq = list(range(0, icol+1)) + [7]
+    seq = list(range(0, icol + 1)) + [7]
     df = df.iloc[:, seq]
 
     df = df.rename(columns={'TITLE': 'TITLE_' + level + '_FR'})

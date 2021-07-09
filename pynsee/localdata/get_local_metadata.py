@@ -45,7 +45,7 @@ def get_local_metadata():
 
     all_files = []
     name_dataset = ['RP', 'BDCOM', 'Popleg', 'RFD',
-                    'REE', 'FILOSOFI',  'Flores', 'TOUR']
+                    'REE', 'FILOSOFI', 'Flores', 'TOUR']
     var_name = ['var_modalite', 'mesure_croisement', 'lib_mesure', 'millesime']
     for var in var_name:
         for dt in name_dataset:
@@ -82,11 +82,11 @@ def get_local_metadata():
                 df = pd.read_csv(file2load)
 
                 if reshape == True:
-                    df.columns = ['var' if x ==
-                                  'variable' else x for x in df.columns]
+                    df.columns = ['var' if x
+                                  == 'variable' else x for x in df.columns]
 
                     list_other_col = [
-                        col for col in df.columns if not col in list_col]
+                        col for col in df.columns if col not in list_col]
 
                     if len(list_other_col) > 0:
                         list_col2 = [
@@ -165,7 +165,7 @@ def get_local_metadata():
     var_labels = var_labels.assign(variables_label="")
     icol_var_label = var_labels.columns.get_loc('variables_label')
 
-    for icol in range(len(var_labels.columns)-1):
+    for icol in range(len(var_labels.columns) - 1):
         for irow in range(len(var_labels.index)):
             val = var_labels.iloc[irow, icol]
             if not pd.isna(val):
