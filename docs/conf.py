@@ -81,4 +81,4 @@ def setup(app):
     app.add_css_file('my_theme.css')
 
 # include alos md doc
-source_suffix = ['.rst'] #, '.md'
+source_suffix = ['.rst'] # , '.md'

@@ -48,8 +48,6 @@ def get_dataset_list():
 
     list_df = []
 
-    #range(0, n_dataflow)
-
     for i in trange(n_dataflow, desc="Getting datasets list"):
 
         dataset = {'id': [next(iter(data[i].attrib.values()))],
