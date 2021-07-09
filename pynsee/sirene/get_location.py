@@ -53,7 +53,7 @@ def get_location(df):
 
     geolocator = Nominatim(user_agent=_hash(
         str(random.randint(1000)) + str(datetime.now())))
-    #geolocator = Nominatim(user_agent = 'pynsee_python_package')
+    # geolocator = Nominatim(user_agent = 'pynsee_python_package')
 
     if set(list_col).issubset(df.columns):
 

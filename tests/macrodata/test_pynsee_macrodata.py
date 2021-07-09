@@ -15,7 +15,7 @@ from pynsee.macrodata._get_dataset_metadata_core import _get_dataset_metadata_co
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
-from pynsee.macrodata._build_series_list import _build_series_list
+# from pynsee.macrodata._build_series_list import _build_series_list
 
 from pynsee.macrodata.get_series_list import get_series_list
 from pynsee.macrodata.get_dataset_list import get_dataset_list

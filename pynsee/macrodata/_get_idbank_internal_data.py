@@ -9,7 +9,7 @@ import os
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
-#from functools import lru_cache
+# from functools import lru_cache
 
 # @lru_cache(maxsize=None)
 

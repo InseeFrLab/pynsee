@@ -30,7 +30,7 @@ def get_definition(ids):
     if type(ids) != list:
         raise ValueError("!!! ids must be a list !!!")
 
-    #ids = ['c1020', 'c1601']
+    # ids = ['c1020', 'c1601']
 
     link = 'https://api.insee.fr/metadonnees/V1/concepts/definition'
 
