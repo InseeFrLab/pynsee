@@ -18,7 +18,7 @@ def get_area_list(area=None):
     Raises:
         ValueError: Error if area is not available
 
-    Examples:    
+    Examples:
         >>> from pynsee.localdata import get_area_list
         >>> area_list = get_area_list()
     """
@@ -46,7 +46,7 @@ def get_area_list(area=None):
         if area in list_UU20:
             area = 'unitesUrbaines2020'
 
-        if not area in list_available_area:
+        if area not in list_available_area:
             msg = "!!! {} is not available\nPlease choose area among:\n{}".format(
                 area, area_string)
             raise ValueError(msg)
