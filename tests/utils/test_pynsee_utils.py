@@ -2,7 +2,6 @@
 # Copyright : INSEE, 2021
 
 from unittest import TestCase
-from pandas import pandas as pd
 
 import os
 import sys
@@ -10,7 +9,6 @@ import sys
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_envir_token import _get_envir_token
 from pynsee.utils._get_credentials import _get_credentials
-from pynsee.utils._clean_insee_folder import _clean_insee_folder
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.clear_all_cache import clear_all_cache
 

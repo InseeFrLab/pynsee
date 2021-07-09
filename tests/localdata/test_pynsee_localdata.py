@@ -9,8 +9,19 @@ import sys
 from pynsee.localdata._get_map import _get_map
 from pynsee.localdata._get_geo_relation import _get_geo_relation
 from pynsee.localdata._get_insee_one_area import _get_insee_one_area
-from pynsee.localdata import *
 
+from pynsee.localdata.get_area_list import get_area_list
+from pynsee.localdata.get_geo_list import get_geo_list
+from pynsee.localdata.get_map_list import get_map_list
+from pynsee.localdata.get_map_link import get_map_link
+
+from pynsee.localdata.get_local_data import get_local_data
+from pynsee.localdata.get_included_area import get_included_area
+from pynsee.localdata.get_nivgeo_list import get_nivgeo_list
+from pynsee.localdata.get_local_metadata import get_local_metadata
+from pynsee.localdata.get_population import get_population
+from pynsee.localdata.get_old_city import get_old_city
+from pynsee.localdata.get_new_city import get_new_city
 
 class TestFunction(TestCase):
 

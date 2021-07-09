@@ -6,8 +6,10 @@ from pandas import pandas as pd
 
 import os
 
-from pynsee.metadata import *
-
+from pynsee.metadata.get_definition_list import get_definition_list
+from pynsee.metadata.get_definition import get_definition
+from pynsee.metadata.get_activity_list import get_activity_list
+from pynsee.metadata.get_legal_entity import get_legal_entity
 
 class TestFunction(TestCase):
 
