@@ -26,8 +26,6 @@ def get_local_metadata():
     """
     _warning_data()
 
-    #import geopandas as gpd
-
     insee_folder = _create_insee_folder()
 
     insee_folder_local_metadata = insee_folder + '/' + 'local_metadata'
@@ -75,7 +73,6 @@ def get_local_metadata():
 
         if reshape == True:
             list_col = ['var' if x == 'variable' else x for x in list_col]
-#            list_col_new = list_col + ['dataset_value']
 
         list_var_data = []
 
@@ -112,7 +109,7 @@ def get_local_metadata():
                 df = df.assign(dataset=file_id, tab=var)
 
             except:
-                #                print('error {} {}'.format(list_files[f], var))
+                #  print('error {} {}'.format(list_files[f], var))
                 pass
             else:
                 list_var_data.append(df)

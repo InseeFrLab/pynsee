@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-#from functools import lru_cache
-#
-# @lru_cache(maxsize=None)
-
 from pynsee.localdata._get_insee_one_area import _get_insee_one_area
 
 import pandas as pd

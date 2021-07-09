@@ -27,7 +27,6 @@ setuptools.setup(
     install_requires=[
         "pandas>=0.24.2",
         "tqdm>=4.56.0",
-        #gc, hashlib, tempfile, zipfile, math, time
         "requests>=2.25.1",
         "appdirs>=1.4.4",
         "unidecode>=1.2.0",

@@ -129,7 +129,7 @@ def _clean_data(data_final, kind='siren', clean=True,
         if clean:
             data_final = data_final.dropna(axis=1, how='all')
     # except:
-        #print('\n!!! Error : Data cleaning and harmonization failed !!!')
-        #raise ValueError('\n!!! Error : Data cleaning and harmonization failed !!!')
+        # print('\n!!! Error : Data cleaning and harmonization failed !!!')
+        # raise ValueError('\n!!! Error : Data cleaning and harmonization failed !!!')
 
     return(data_final)

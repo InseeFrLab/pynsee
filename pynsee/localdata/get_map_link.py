@@ -41,7 +41,6 @@ def get_map_link(geo):
         >>> from pynsee.localdata import get_map_link
         >>> map_departement_link = get_map_link('departements')
     """
-    #import geopandas as gpd
 
     if geo == 'arrondissements-municipaux':
         _warning_map('arr')
