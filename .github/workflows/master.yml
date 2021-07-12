@@ -4,6 +4,7 @@ on:
   push:
       branches:
         - 'master'
+        - 'remove-notebooks'
 
 jobs:
   build:
@@ -37,11 +38,12 @@ jobs:
         pytest -v --cov
         # test all notebooks
         cd docs/examples 
-        jupyter nbconvert --to script *.ipynb
+        jupytext --to py *.md
         # run all py files
         for f in *.py; do python "$f"; done
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
+      if: github.ref == 'refs/heads/master'
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
