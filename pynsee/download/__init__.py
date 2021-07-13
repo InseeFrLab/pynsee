@@ -1,9 +1,12 @@
+import warnings
+import hashlib
+import tempfile
 import os
 import requests
 import json
 import re
 from Levenshtein import distance as lev
-
+from pathlib import Path
 
 # READ ALL DATA SOURCES AVAILABLE USING JSON ONLINE FILE -------------------------------
 
@@ -25,6 +28,152 @@ def create_key(item,list_duplicated_sources):
 dict_data_source = {create_key(item, list_duplicated_sources): item for item in jsonfile} 
 
 
+data = "COG_REGION"
+date = "dernier"
+teldir = None
+
+caract = info_donnees(data, date)
+if teldir is None:
+  cache = True
+  teldir = tempfile.TemporaryDirectory()
+else:
+  Path(teldir).mkdir(parents=True, exist_ok=True)
+
+# IF DOES NOT USE API REST ------
+
+filename = "{}/{}".format(teldir.name, os.path.basename(caract['lien']))
+
+
+r = requests.get(caract['lien'])
+if r.status_code == 200:
+  open(filename, 'wb').write(r.content)
+else:
+  raise ValueError("File not found on insee.fr. Please open an issue on https://github.com/InseeFrLab/Py-Insee-Data to help improving the package")
+
+
+if hashlib.md5(open(filename, 'rb').read()).hexdigest() != caract['md5']:
+  warnings.warn("File in insee.fr modified or corrupted during download")
+
+if cache:
+  print("No destination directory defined. Data have been written there: {}".format(
+    filename
+  ))
+else:
+  print("File has been written there : {}".format(
+    filename
+  ))
+
+if caract["zip"] is True:
+  fileArchive = filename
+  fichierAImporter = "{}/{}".format(teldir, caract['fichier_donnees'])
+else:
+  fileArchive = None
+  fichierAImporter = filename
+
+if caract['type'] == "csv":
+  argsImport = {"file": fichierAImporter, "delim": caract['separateur'], "col_names": True}
+    
+    if (caract$type == "csv") {
+      argsImport <- list(file = fichierAImporter, delim = eval(parse(text = caract$separateur)), col_names = TRUE)
+      if (!is.null(caract$encoding))
+        argsImport[["locale"]] <- readr::locale(encoding = caract$encoding)
+      if (!is.null(caract$valeurs_manquantes))
+        argsImport[["na"]] <- unlist(strsplit(caract$valeurs_manquantes, "/"))
+    } else if (caract$type == "xls") {
+      argsImport <- list(path = fichierAImporter, skip = caract$premiere_ligne - 1, sheet = caract$onglet)
+      if (!is.null(caract$derniere_ligne))
+        argsImport[["n_max"]] <- caract$derniere_ligne - caract$premiere_ligne
+      if (!is.null(caract$valeurs_manquantes))
+        argsImport[["na"]] <- unlist(strsplit(caract$valeurs_manquantes, "/"))
+    } else if (caract$type == "xlsx") {
+      argsImport <- list(path = fichierAImporter, sheet = caract$onglet, skip = caract$premiere_ligne - 1)
+    }
+    
+    if (!is.null(caract$type_col)) {
+      listvar <- lapply(
+        caract$type_col,
+        function(x) eval(parse(text = paste0("readr::col_", x, "()")))
+      )
+      cols <- readr::cols()
+      cols$cols <- listvar
+      argsImport[["col_types"]] <- cols
+    }
+    
+  } else {
+    
+    ## télécharge les données sur l'API
+    
+    if (!nzchar(Sys.getenv("INSEE_APP_KEY")) || !nzchar(Sys.getenv("INSEE_APP_SECRET"))) {
+      stop("d\u00e9finir les variables d'environnement INSEE_APP_KEY et INSEE_APP_SECRET")
+    }
+    
+    if (!curl::has_internet()) stop("aucune connexion Internet")
+    
+    timestamp <- gsub("[^0-9]", "", as.character(Sys.time()))
+    dossier_json <- paste0(telDir, "/json_API_", caract$nom, "_", timestamp, "_", genererSuffixe(4))
+    dir.create(dossier_json)
+    writeLines(
+      utils::URLdecode(httr::modify_url(caract$lien, query = argsApi)),
+      file.path(dossier_json, "requete.txt")
+    )
+    
+    token <- apinsee::insee_auth()
+    if (!is.null(date))
+      argsApi <- c(date = as.character(date), argsApi)
+    if (is.null(argsApi$nombre)) {
+      argsApi[["nombre"]] <- 0
+      url <- httr::modify_url(caract$lien, query = argsApi)
+      res <- tryCatch(httr::GET(url, httr::config(token = token), 
+                                httr::write_memory()),
+                      error = function(e) message(e$message))
+      total <- tryCatch(httr::content(res)[[1]]$total,
+                        error = function(e) return(NULL))
+      if (is.null(total))
+        total <- 0
+    } else {
+      total <- argsApi[["nombre"]]
+    }
+    argsApi[["nombre"]] <- min(total, 1000)
+    if (is.null(argsApi[["tri"]]))
+      argsApi[["tri"]] <- "siren"
+    if (total > 1000)
+      argsApi[["curseur"]] <- "*"
+    nombrePages <- ceiling(total/1000)
+    url <- httr::modify_url(caract$lien, query = argsApi)
+    fichierAImporter <- sprintf("%s/results_%06i.json", dossier_json, 1)
+    res <- requeteApiSirene(url = url, fichier = fichierAImporter, token = token, 
+                            nbTentatives = 400)
+    resultat <- res$status_code
+    if (nombrePages > 1) {
+      for (k in 2:nombrePages) {
+        argsApi[["curseur"]] <-httr::content(res)$header$curseurSuivant
+        url <- httr::modify_url(caract$lien, query = argsApi)
+        fichierAImporter <- c(fichierAImporter, sprintf("%s/results_%06i.json", dossier_json, k))
+        res <- requeteApiSirene(url, fichierAImporter, token, 400)
+        resultat <- c(resultat, res$status_code)
+      }
+    }
+    dl <- NULL
+    if (all(resultat == 200) & total > 0)
+      dl <- 0
+    argsImport <- list(fichier = fichierAImporter, nom = caract$nom)
+    fileArchive <- NULL
+    
+  }
+  
+  invisible(
+    list(
+      result      = dl,
+      lien        = caract$lien,
+      zip         = caract$zip,
+      big_zip     = caract$big_zip,
+      fileArchive = fileArchive,
+      type        = caract$type,
+      argsImport  = argsImport
+    )
+  )
+  
+}
 
 
 
