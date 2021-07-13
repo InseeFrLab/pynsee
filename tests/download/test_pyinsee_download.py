@@ -16,3 +16,5 @@ class MyTestCase(unittest.TestCase):
         self.assertIsInstance(info_donnees("RP_LOGEMENT", date = 2012), dict)
         self.assertIsInstance(info_donnees("SIRENE_SIRET_NONDIFF"), dict)
 
+
+#chargerDonnees(telechargerFichier("ESTEL_T201_ENS_TBE", "dernier"))
