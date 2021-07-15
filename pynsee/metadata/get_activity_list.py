@@ -54,11 +54,6 @@ def get_activity_list(level, version='NAFRev2'):
 
     insee_folder = _create_insee_folder()
 
-    insee_folder_local_naf = insee_folder + '/' + 'naf'
-
-    if not os.path.exists(insee_folder_local_naf):
-        os.mkdir(insee_folder_local_naf)
-
     list_expected_files = ['int_courts_naf_rev_2.csv',
                            'naf2008_5_niveaux.csv',
                            'int_eng_na_2008_a10.csv',

@@ -6,13 +6,14 @@ import os
 import appdirs
 
 from pynsee.utils._get_temp_dir import _get_temp_dir
+from pynsee.utils._hash import _hash
 
 
 @lru_cache(maxsize=None)
 def _create_insee_folder():
 
     try:
-        from ._hash import _hash
+        
         # find local folder
         local_appdata_folder = appdirs.user_cache_dir()
         insee_folder = local_appdata_folder + '/insee'
@@ -37,6 +38,7 @@ def _create_insee_folder():
         test_file = insee_folder + '/' + _hash('test_file')
         with open(test_file, 'w') as f:
             f.write('')
+            f.close()
         # testing requires restricted rights on the machine
     except:
         # if error temporary folder is returned

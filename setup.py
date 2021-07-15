@@ -33,9 +33,9 @@ setuptools.setup(
         "datetime>=3.5.9"
         "pathlib2>=2.3.5"],
     include_package_data=True,
-    package_data={'pynsee_data': ['pynsee/macrodata/data/*',
-                                  'pynsee/localdata/data/*',
-                                  'pynsee/metadata/data/*']},
+    package_data={'pynsee_data': ['/macrodata/data/*',
+                                  '/localdata/data/*',
+                                  '/metadata/data/*']},
     python_requires='>=3.6',
     test_suite='nose.collector',
     tests_require=['nose']
