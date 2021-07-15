@@ -36,6 +36,7 @@ jobs:
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |     
         pytest -v --cov
+    - name: Test examples
         # test all notebooks
         cd docs/examples 
         jupytext --to py *.md
