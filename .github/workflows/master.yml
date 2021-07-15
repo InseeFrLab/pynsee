@@ -34,8 +34,12 @@ jobs:
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |     
-        pytest -v --cov
+        # run all package tests
+        # pytest -v --cov
+
         # test all notebooks
+        
+        pip install .
         cd docs/examples 
         jupyter nbconvert --to script *.ipynb
         # run all py files
