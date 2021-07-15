@@ -34,7 +34,8 @@ jobs:
       env:
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
-      run: |     
+      run: |
+        pip install jupytext     
         # test all notebooks
         cd docs/examples 
         jupytext --to py *.md
