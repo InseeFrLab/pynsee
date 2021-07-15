@@ -35,15 +35,15 @@ jobs:
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |     
         # run all package tests
-        # pytest -v --cov
+        pytest -v --cov
 
         # test all notebooks
-        
+
         pip install .
         cd docs/examples 
         jupyter nbconvert --to script *.ipynb
         # run all py files
-        for f in *.py; do python "$f"; done
+        # for f in *.py; do python "$f"; done
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
       with:
