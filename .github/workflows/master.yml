@@ -38,7 +38,8 @@ jobs:
         pip install jupytext
         pip install -r requirements.txt
         pip install .     
-        # test all notebooks
+        # test all notebooks        
+        pip install .
         cd docs/examples 
         jupytext --to py *.md
         # run all py files

@@ -113,6 +113,7 @@ Poverty in Paris urban area
    import matplotlib.cm as cm
    import matplotlib.pyplot as plt
    import descartes
+   import geopandas as gpd
 
    # get a list all data available : datasets and variables
    metadata = get_local_metadata()
@@ -140,8 +141,8 @@ Poverty in Paris urban area
    data_plot = data_plot.loc[data_plot.CODEGEO!='75056']
 
    #get communes limits
-   map_com = get_map('communes')
-   map_arr_mun = get_map('arrondissements-municipaux')
+   map_com = gpd.read_file(get_map_link('communes'))
+   map_arr_mun = gpd.read_file(get_map_link('arrondissements-municipaux'))
    map_idf = pd.concat([map_com, map_arr_mun])
 
    # merge values and geographic limits
