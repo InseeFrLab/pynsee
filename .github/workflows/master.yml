@@ -35,7 +35,6 @@ jobs:
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |     
-        pytest -v --cov
         # test all notebooks
         cd docs/examples 
         jupytext --to py *.md
