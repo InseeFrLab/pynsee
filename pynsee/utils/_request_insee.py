@@ -96,17 +96,16 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
 
         else:
             # token is None
-            commands = "\n\nimport os\nimport yaml\nwith open('secrets.yaml', 'r') as creds:\n      secrets = yaml.safe_load(creds)\nos.environ['insee_key'] = secrets['creds']['insee_key']\nos.environ['insee_secret'] = secrets['creds']['insee_secret']"
+            commands = "\n\ninit_conn(insee_key='my_insee_key', insee_secret='my_insee_secret')"
             msg1 = "!!! Token missing, please check your credentials on api.insee.fr !!!\n"
             msg2 = "!!! Please do the following to use your credentials : {}".format(
                 commands)
-            msg3 = "\n\n!!! Advice : add the above-mentioned lines to 'pynsee_api_credentials.py' file in your HOME directory to avoid running them manually !!!"
-            msg3bis = "\n!!! If your token still does not work, please try to clear the cache :\n from pynsee.utils import *; clear_all_cache() !!!\n"
+            msg3 = "\n!!! If your token still does not work, please try to clear the cache :\n from pynsee.utils import *; clear_all_cache() !!!\n"
 
             if sdmx_url is not None:
                 msg4 = "\nSDMX web service used instead of API"
                 if print_msg:
-                    print("{}{}{}{}{}".format(msg1, msg2, msg3, msg3bis, msg4))
+                    print("{}{}{}{}{}".format(msg1, msg2, msg3, msg4))
 
                 results = requests.get(sdmx_url, proxies=proxies)
 

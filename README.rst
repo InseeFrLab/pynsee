@@ -34,17 +34,12 @@ Installation & Loading
    # pip install git+https://github.com/InseeFrLab/Py-Insee-Data.git#egg=pynsee
 
    # Subscribe to api.insee.fr and get your credentials!
+   # Save your credentials with init_conn function :      
+   from pynsee.utils.init_conn import init_conn
+   init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
-   # Advice : Put your key-secret pair in a secrets.yaml file according to the format of the
-   # secrets_template.yaml file in the root directory
-   import os
-   import yaml
-   with open("secrets.yaml", "r") as creds:
-        secrets = yaml.safe_load(creds)
-   os.environ['insee_key'] = secrets["creds"]["insee_key"]
-   os.environ['insee_secret'] = secrets["creds"]["insee_secret"]
-
 
 French GDP growth rate
 ----------------------
@@ -59,16 +54,12 @@ French GDP growth rate
    import matplotlib.pyplot as plt
 
    # Subscribe to api.insee.fr and get your credentials!
+   # Save your credentials with init_conn function :      
+   from pynsee.utils.init_conn import init_conn
+   init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
-   # Advice : Put your key-secret pair in a secrets.yaml file according to the format of the
-   # secrets_template.yaml file in the root directory
-   import os
-   import yaml
-   with open("secrets.yaml", "r") as creds:
-        secrets = yaml.safe_load(creds)
-   os.environ['insee_key'] = secrets["creds"]["insee_key"]
-   os.environ['insee_secret'] = secrets["creds"]["insee_secret"]
 
    # get series key (idbank), for Gross domestic product balance
    id = get_series_list("CNT-2014-PIB-EQB-RF")
@@ -105,16 +96,12 @@ Poverty in Paris urban area
 .. code-block:: python
    
    # Subscribe to api.insee.fr and get your credentials!
+   # Save your credentials with init_conn function :      
+   from pynsee.utils.init_conn import init_conn
+   init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
-   # Advice : Put your key-secret pair in a secrets.yaml file according to the format of the
-   # secrets_template.yaml file in the root directory
-   import os
-   import yaml
-   with open("secrets.yaml", "r") as creds:
-        secrets = yaml.safe_load(creds)
-   os.environ['insee_key'] = secrets["creds"]["insee_key"]
-   os.environ['insee_secret'] = secrets["creds"]["insee_secret"]
 
    from pynsee.localdata import *
 
@@ -176,12 +163,14 @@ How to avoid proxy issues ?
 
 .. code-block:: python
 
-   # Advice : add the following lines to 'pynsee_api_credentials.py' file in your HOME directory
-   # to avoid running them manually
-   import os
-   os.environ['http_proxy'] = 'http://my_proxy_server:port'
-   os.environ['https_proxy'] = 'http://my_proxy_server:port'
+   # Use the proxy_server argument of the init_conn function to change the proxy server address   
+   from pynsee.utils.init_conn import init_conn
+   init_conn(insee_key="my_insee_key",
+             insee_secret="my_insee_secret",
+             proxy_server="http://my_proxy_server:port")
 
+   # Beware : any change to the keys should be tested after having cleared the cache
+   # Please do : from pynsee.utils import *; clear_all_cache()
 
 Support
 -------
