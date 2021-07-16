@@ -105,7 +105,7 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
             if sdmx_url is not None:
                 msg4 = "\nSDMX web service used instead of API"
                 if print_msg:
-                    print("{}{}{}{}{}".format(msg1, msg2, msg3, msg4))
+                    print("{}{}{}{}".format(msg1, msg2, msg3, msg4))
 
                 results = requests.get(sdmx_url, proxies=proxies)
 
