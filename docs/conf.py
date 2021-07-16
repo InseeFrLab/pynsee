@@ -16,7 +16,7 @@ import sphinx_copybutton
 import sphinx_rtd_theme
 import m2r2
 
-#import rinoh
+# import rinoh
 os.chdir('../')
 sys.path.insert(0, os.path.abspath('./'))
 
@@ -49,7 +49,7 @@ extensions = [
      'IPython.sphinxext.ipython_console_highlighting'
 ]
 # 'm2r2',
-#"rinoh.frontend.sphinx"
+# "rinoh.frontend.sphinx"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -71,14 +71,14 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-#html_static_path = []
+# html_static_path = []
 
-#exclude from copy button code snippet
+# exclude from copy button code snippet
 copybutton_prompt_text = ">>> "
 
-#full screen use
+# full screen use
 def setup(app):
     app.add_css_file('my_theme.css')
 
-#include alos md doc
-source_suffix = ['.rst'] #, '.md'
+# include alos md doc
+source_suffix = ['.rst'] # , '.md'

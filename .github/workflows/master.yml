@@ -4,6 +4,7 @@ on:
   push:
       branches:
         - 'master'
+        - 'remove-notebooks'
 
 jobs:
   build:
@@ -21,14 +22,28 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-cov geopandas geopy
+        pip install flake8 pytest pytest-cov geopandas geopy nbconvert matplotlib descartes geopy 
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        #flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        #flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 . --count --ignore=E722,C901 --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test examples
+      env:
+        insee_key: ${{ secrets.INSEE_KEY }}
+        insee_secret: ${{ secrets.INSEE_SECRET }}
+      run: |
+        pip install jupytext
+        pip install -r requirements.txt
+        pip install .     
+        # test all notebooks        
+        cd docs/examples 
+        jupytext --to py *.md
+        # run all py files
+        # for f in *.py; do python "$f"; done
+        cd ../..
     - name: Test with pytest
       env:
         insee_key: ${{ secrets.INSEE_KEY }}
@@ -37,7 +52,9 @@ jobs:
         pytest -v --cov
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
+      if: github.ref == 'refs/heads/master'
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
         
    

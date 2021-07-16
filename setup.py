@@ -6,14 +6,13 @@ with open("README.rst", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="pynsee", 
+    name="pynsee",
     version="0.0.1",
     author="Hadrien Leclerc",
     author_email="hadrien.leclerc@insee.fr",
     description="Tools to Easily Download Data and Metadata from INSEE APIs",
-    long_description = long_description,
+    long_description=long_description,
     url="https://pynsee.readthedocs.io/en/latest/",
-    project_urls={
         'Bug Tracker': 'https://github.com/InseeFrLab/Py-Insee-Data/issues'
     },
     packages=setuptools.find_packages(),
@@ -23,7 +22,7 @@ setuptools.setup(
         "License :: OSI Approved",
         "Operating System :: OS Independent",
     ],
-    license_files = ('LICENSE.md',),
+    license_files=('LICENSE.md',),
     install_requires=[
             "pandas>=0.24.2",
             "tqdm>=4.56.0",
@@ -34,9 +33,9 @@ setuptools.setup(
             "pathlib2>=2.3.5",
             "pyyaml>=5.4.1"],
     include_package_data=True,
-    package_data={'pynsee_data': ['pynsee/macrodata/data/*',
-                       'pynsee/localdata/data/*',
-                       'pynsee/metadata/data/*']},
+    package_data={'pynsee_data': ['/macrodata/data/*',
+                                  '/localdata/data/*',
+                                  '/metadata/data/*']},
     python_requires='>=3.6',
     test_suite='nose.collector',
     tests_require=['nose']
