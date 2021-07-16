@@ -30,10 +30,10 @@ def create_key(item,list_duplicated_sources):
 
 dict_data_source = {create_key(item, list_duplicated_sources): item for item in jsonfile} 
 
-
-data = "ESTEL_T201_ENS_TBE"
-date = "dernier"
-teldir = None
+#data = "FILOSOFI_AU2010"
+#date = "dernier"
+#teldir = None
+#telechargerFichier("RP_LOGEMENT", date = "2016")
 
 def telechargerFichier(data, date = None, teldir = None):
 
@@ -113,14 +113,19 @@ def telechargerFichier(data, date = None, teldir = None):
 def chargerDonnees(telechargementFichier: dict, vars = None):
 
   if telechargementFichier["result"]["zip"] is True:
-
-    if telechargementFichier["result"]["big_zip"] is False:
-      with zipfile.ZipFile(telechargementFichier['fileArchive'],"r") as zip_ref:
-        zip_ref.extractall("{}_temp".format(telechargementFichier["argsImport"]['file']))
+#    if telechargementFichier["result"]["big_zip"] is False:
+    with zipfile.ZipFile(telechargementFichier['fileArchive'],"r") as zip_ref:
+      zip_ref.extractall("{}_temp".format(telechargementFichier["argsImport"]['file']))
     # hack because we unzip whole dir
     copyfile("{}_temp/{}".format(telechargementFichier["argsImport"]['file'], telechargementFichier["result"]['fichier_donnees']),
           telechargementFichier["argsImport"]['file'])  
-  #  else:
+#    else:
+#      with zipfile.ZipFile(telechargementFichier['fileArchive'],"r") as zip_ref:
+#        zip_ref.extractall("{}_temp".format(telechargementFichier["argsImport"]['file']))
+#    copyfile("{}_temp/{}".format(telechargementFichier["argsImport"]['file'], telechargementFichier["result"]['fichier_donnees']),
+#          telechargementFichier["argsImport"]['file'])  
+
+
   #    raise ValueError("Not yet implemented")
 
   if os.path.isfile(telechargementFichier["fichierAImporter"]) is False:
@@ -197,4 +202,3 @@ def millesimesDisponibles(data):
   liste_possible = [list(dict_data_source.keys())[i] for i in res]
   liste_possible = {l: dict_data_source[l] for l in liste_possible}
   return liste_possible
-

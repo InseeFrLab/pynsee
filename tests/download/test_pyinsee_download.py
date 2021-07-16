@@ -1,7 +1,6 @@
 import unittest
 
-import pynsee.download.info_donnees as info_donnees
-import pynsee.download.millesimesDisponibles as millesimesDisponibles
+from pynsee.download import *
 
 class MyTestCase(unittest.TestCase):
     def test_levensthein_error(self):
@@ -18,3 +17,5 @@ class MyTestCase(unittest.TestCase):
 
 
 #chargerDonnees(telechargerFichier("ESTEL_T201_ENS_TBE", "dernier"))
+#chargerDonnees(telechargerFichier("RP_LOGEMENT", "dernier"))
+
