@@ -13,7 +13,7 @@ setuptools.setup(
     description="Tools to Easily Download Data and Metadata from INSEE APIs",
     long_description = long_description,
     url="https://pynsee.readthedocs.io/en/latest/",
-     project_urls={
+    project_urls={
         'Bug Tracker': 'https://github.com/InseeFrLab/Py-Insee-Data/issues'
     },
     packages=setuptools.find_packages(),
@@ -27,12 +27,12 @@ setuptools.setup(
     install_requires=[
             "pandas>=0.24.2",
             "tqdm>=4.56.0",
-            #gc, hashlib, tempfile, zipfile, math, time
             "requests>=2.25.1",
             "appdirs>=1.4.4",
             "unidecode>=1.2.0",
             "datetime>=3.5.9"
-            "pathlib2>=2.3.5"],
+            "pathlib2>=2.3.5",
+            "pyyaml>=5.4.1"],
     include_package_data=True,
     package_data={'pynsee_data': ['pynsee/macrodata/data/*',
                        'pynsee/localdata/data/*',
