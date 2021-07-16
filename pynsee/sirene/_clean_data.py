@@ -39,6 +39,10 @@ def _clean_data(data_final, kind='siren', clean=True,
         if only_alive:
             if 'dateFin' in data_final.columns:
                 data_final = data_final[data_final['dateFin'].isnull()]
+            if 'etatAdministratifEtablissement' in data_final.columns:
+                data_final = data_final[data_final['etatAdministratifEtablissement'] == "A"]
+            if 'etatAdministratifUniteLegale' in data_final.columns:
+                data_final = data_final[data_final['etatAdministratifUniteLegale'] == "A"]
 
         # add legal entities title
         if legal:

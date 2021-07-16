@@ -44,7 +44,8 @@ def search_sirene(variable,
 
         legal (bool, optional): If True, legal entities title are added
 
-        only_alive (bool, optional): If True, closed entities are removed from the output
+        only_alive (bool, optional): If True, closed entities are removed from the data and
+        for each legal entity only the last period for which the data is stable is displayed
 
         query_limit(numeric, optional): maximun number of queries made
          by the function in a row, by default it is 20
