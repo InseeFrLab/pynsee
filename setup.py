@@ -13,6 +13,7 @@ setuptools.setup(
     description="Tools to Easily Download Data and Metadata from INSEE APIs",
     long_description=long_description,
     url="https://pynsee.readthedocs.io/en/latest/",
+    project_urls={
         'Bug Tracker': 'https://github.com/InseeFrLab/Py-Insee-Data/issues'
     },
     packages=setuptools.find_packages(),
