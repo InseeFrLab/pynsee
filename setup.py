@@ -25,13 +25,14 @@ setuptools.setup(
     ],
     license_files=('LICENSE.md',),
     install_requires=[
-        "pandas>=0.24.2",
-        "tqdm>=4.56.0",
-        "requests>=2.25.1",
-        "appdirs>=1.4.4",
-        "unidecode>=1.2.0",
-        "datetime>=3.5.9"
-        "pathlib2>=2.3.5"],
+            "pandas>=0.24.2",
+            "tqdm>=4.56.0",
+            "requests>=2.25.1",
+            "appdirs>=1.4.4",
+            "unidecode>=1.2.0",
+            "datetime>=3.5.9"
+            "pathlib2>=2.3.5",
+            "pyyaml>=5.4.1"],
     include_package_data=True,
     package_data={'pynsee_data': ['/macrodata/data/*',
                                   '/localdata/data/*',

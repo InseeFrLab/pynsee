@@ -5,6 +5,7 @@ on:
       branches:
         - 'master'
         - 'remove-notebooks'
+        - 'secrets_load'
 
 jobs:
   build:

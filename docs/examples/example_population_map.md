@@ -27,13 +27,12 @@ import matplotlib.pyplot as plt
 import descartes
 
 # Subscribe to api.insee.fr and get your credentials!
+# Save your credentials with init_conn function :      
+from pynsee.utils.init_conn import init_conn
+init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+
 # Beware : any change to the keys should be tested after having cleared the cache
 # Please do : from pynsee.utils import *; clear_all_cache()
-# Advice : add the following lines to 'pynsee_api_credentials.py' file in your HOME directory
-# to avoid running them manually
-import os
-os.environ['insee_key'] = "my_key"
-os.environ['insee_secret'] = "my_secret_key"
 
 map = get_map('departements')
 
