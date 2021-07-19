@@ -10,6 +10,7 @@ from pathlib import Path
 from Levenshtein import distance as lev
 import pandas as pd
 from shutil import copyfile
+from tqdm import tqdm
 
 # READ ALL DATA SOURCES AVAILABLE USING JSON ONLINE FILE -------------------------------
 
@@ -33,10 +34,12 @@ dict_data_source = {create_key(item, list_duplicated_sources): item for item in 
 #data = "FILOSOFI_AU2010"
 #date = "dernier"
 #teldir = None
-#telechargerFichier("RP_LOGEMENT", date = "2016")
+#telechargerDonnees("RP_LOGEMENT", date = "2016")
 #telechargerDonnees("FILOSOFI_AU2010", "dernier")
 
-data = "FILOSOFI_AU2010"
+telechargerDonnees(telechargementFichier = telechargerFichier("RP_LOGEMENT", date = "2016"))
+
+data = "RP_LOGEMENT"
 date = "dernier"
 
 def telechargerDonnees(data, date, teldir = None, argsApi=None, vars=None, force=False):
@@ -47,6 +50,36 @@ def telechargerDonnees(data, date, teldir = None, argsApi=None, vars=None, force
     )
   except:
     raise ValueError("Download failed")
+
+
+
+def download_pb(url: str, fname: str, total: int = None):
+    """Useful function to get request with a progress bar
+
+    Borrowed from https://gist.github.com/yanqd0/c13ed29e29432e3cf3e7c38467f42f51
+
+    Arguments:
+        url {str} -- URL for the source file
+        fname {str} -- Destination where data will be written
+    """
+    resp = requests.get(url, stream=True)
+    
+    if total is None:
+      total = int(resp.headers.get('content-length', 0))
+    
+    with open(fname, 'wb') as file, tqdm(
+            desc='Downloading: ',
+            total=total,
+            unit='iB',
+            unit_scale=True,
+            unit_divisor=1024,
+    ) as bar:
+        for data in resp.iter_content(chunk_size=1024):
+            size = file.write(data)
+            bar.update(size)
+
+
+
 
 
 
@@ -67,9 +100,9 @@ def telechargerFichier(data, date = None, teldir = None):
   filename = tf.name
 
 
-  r = requests.get(caract['lien'])
+  r = requests.get(caract['lien'], stream = True)
   if r.status_code == 200:
-    open(filename, 'wb').write(r.content)
+    download_pb(url = caract['lien'], fname = filename, total = caract['size'])
   else:
     raise ValueError("File not found on insee.fr. Please open an issue on https://github.com/InseeFrLab/Py-Insee-Data to help improving the package")
 
@@ -120,6 +153,8 @@ def telechargerFichier(data, date = None, teldir = None):
           list_cols[key] = "str"
         elif value == "integer":
           list_cols[key] = "int"
+        elif value == "number":
+          list_cols[key] = "float"
   else:
     list_cols = None
   
@@ -131,20 +166,12 @@ def telechargerFichier(data, date = None, teldir = None):
 def chargerDonnees(telechargementFichier: dict, vars = None):
 
   if telechargementFichier["result"]["zip"] is True:
-#    if telechargementFichier["result"]["big_zip"] is False:
     with zipfile.ZipFile(telechargementFichier['fileArchive'],"r") as zip_ref:
       zip_ref.extractall("{}_temp".format(telechargementFichier["argsImport"]['file']))
     # hack because we unzip whole dir
     copyfile("{}_temp/{}".format(telechargementFichier["argsImport"]['file'], telechargementFichier["result"]['fichier_donnees']),
           telechargementFichier["argsImport"]['file'])  
-#    else:
-#      with zipfile.ZipFile(telechargementFichier['fileArchive'],"r") as zip_ref:
-#        zip_ref.extractall("{}_temp".format(telechargementFichier["argsImport"]['file']))
-#    copyfile("{}_temp/{}".format(telechargementFichier["argsImport"]['file'], telechargementFichier["result"]['fichier_donnees']),
-#          telechargementFichier["argsImport"]['file'])  
 
-
-  #    raise ValueError("Not yet implemented")
 
   if os.path.isfile(telechargementFichier["fichierAImporter"]) is False:
     raise ValueError("File cannot be found")
