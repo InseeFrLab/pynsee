@@ -34,6 +34,21 @@ dict_data_source = {create_key(item, list_duplicated_sources): item for item in 
 #date = "dernier"
 #teldir = None
 #telechargerFichier("RP_LOGEMENT", date = "2016")
+#telechargerDonnees("FILOSOFI_AU2010", "dernier")
+
+data = "FILOSOFI_AU2010"
+date = "dernier"
+
+def telechargerDonnees(data, date, teldir = None, argsApi=None, vars=None, force=False):
+  try:
+    return chargerDonnees(
+      telechargerFichier(data = data, date = date, teldir = teldir),
+      vars
+    )
+  except:
+    raise ValueError("Download failed")
+
+
 
 def telechargerFichier(data, date = None, teldir = None):
 
@@ -94,6 +109,9 @@ def telechargerFichier(data, date = None, teldir = None):
 
     if ('valeurs_manquantes' in list(caract.keys())):
         argsImport.update({"na": caract["valeurs_manquantes"]})
+    else:
+        argsImport.update({"na": None})
+
 
   if 'type_col' in list(caract.keys()):
     list_cols = caract["type_col"]
