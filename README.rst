@@ -177,3 +177,7 @@ Support
 
 Feel free to open an issue with any question about this package using <https://github.com/InseeFrLab/Py-Insee-Data> Github repository.
 
+Contributing
+------------
+
+All contributions, whatever their forms, are welcome. See CONTRIBUTING.md
