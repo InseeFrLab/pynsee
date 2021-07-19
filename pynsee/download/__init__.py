@@ -9,8 +9,11 @@ import zipfile
 from pathlib import Path
 from Levenshtein import distance as lev
 import pandas as pd
-from shutil import copyfile
+from shutil import copyfile, copyfileobj
+
+#import tqdm.auto as tqdma
 from tqdm import tqdm
+from tqdm.utils import CallbackIOWrapper
 
 # READ ALL DATA SOURCES AVAILABLE USING JSON ONLINE FILE -------------------------------
 
@@ -36,6 +39,7 @@ dict_data_source = {create_key(item, list_duplicated_sources): item for item in 
 #teldir = None
 #telechargerDonnees("RP_LOGEMENT", date = "2016")
 #telechargerDonnees("FILOSOFI_AU2010", "dernier")
+
 
 telechargerDonnees(telechargementFichier = telechargerFichier("RP_LOGEMENT", date = "2016"))
 
@@ -80,6 +84,19 @@ def download_pb(url: str, fname: str, total: int = None):
 
 
 
+def unzip_pb(fzip, dest, desc="Extracting"):
+    """zipfile.Zipfile(fzip).extractall(dest) with progress"""
+    dest = Path(dest).expanduser()
+    with zipfile.ZipFile(fzip) as zipf, tqdm(
+        desc=desc, unit="B", unit_scale=True, unit_divisor=1024,
+        total=sum(getattr(i, "file_size", 0) for i in zipf.infolist()),
+    ) as pbar:
+        for i in zipf.infolist():
+            if not getattr(i, "file_size", 0):  # directory
+                zipf.extract(i, os.fspath(dest))
+            else:
+                with zipf.open(i) as fi, open(os.fspath(dest / i.filename), "wb") as fo:
+                    copyfileobj(CallbackIOWrapper(pbar.update, fi), fo)
 
 
 
@@ -166,15 +183,13 @@ def telechargerFichier(data, date = None, teldir = None):
 def chargerDonnees(telechargementFichier: dict, vars = None):
 
   if telechargementFichier["result"]["zip"] is True:
-    with zipfile.ZipFile(telechargementFichier['fileArchive'],"r") as zip_ref:
-      zip_ref.extractall("{}_temp".format(telechargementFichier["argsImport"]['file']))
-    # hack because we unzip whole dir
+    unzip_pb(telechargementFichier['fileArchive'], "{}_temp".format(telechargementFichier["argsImport"]['file']))
     copyfile("{}_temp/{}".format(telechargementFichier["argsImport"]['file'], telechargementFichier["result"]['fichier_donnees']),
           telechargementFichier["argsImport"]['file'])  
 
-
   if os.path.isfile(telechargementFichier["fichierAImporter"]) is False:
     raise ValueError("File cannot be found")
+
 
 
   if telechargementFichier["result"]["type"] == "csv":
