@@ -40,12 +40,6 @@ dict_data_source = {create_key(item, list_duplicated_sources): item for item in 
 #telechargerDonnees("RP_LOGEMENT", date = "2016")
 #telechargerDonnees("FILOSOFI_AU2010", "dernier")
 
-
-telechargerDonnees(telechargementFichier = telechargerFichier("RP_LOGEMENT", date = "2016"))
-
-data = "RP_LOGEMENT"
-date = "dernier"
-
 def telechargerDonnees(data, date, teldir = None, argsApi=None, vars=None, force=False):
   try:
     return chargerDonnees(
