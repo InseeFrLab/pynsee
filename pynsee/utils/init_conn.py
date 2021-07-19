@@ -5,12 +5,12 @@ import yaml
 from pathlib2 import Path
 
 def init_conn(insee_key, insee_secret, proxy_server=""):
-    """Save your credentials to connect to INSEE APIs
+    """Save your credentials to connect to INSEE APIs, subscribe to api.insee.fr
 
     Args:
-        insee_key (str): [description]
-        insee_secret (str): [description]
-        proxy_server (str, optional): [description]. Defaults to "".
+        insee_key (str): user's key
+        insee_secret (str): user's secret
+        proxy_server (str, optional): Proxy server address, e.g. 'http://my_proxy_server:port'. Defaults to "".
 
     Examples:
         >>> from pynsee.utils.init_conn import init_conn

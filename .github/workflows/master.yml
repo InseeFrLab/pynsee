@@ -5,7 +5,7 @@ on:
       branches:
         - 'master'
         - 'remove-notebooks'
-        - 'secrets_load'
+        - 'sirene_enhancement'
 
 jobs:
   build:
