@@ -209,6 +209,9 @@ def chargerDonnees(telechargementFichier: dict, vars = None):
 
 def info_donnees(data, date = None):
 
+  if date == "latest":
+    date = "dernier"
+
   donnees = data.upper()
   liste_nom = dict_data_source.keys()
   liste_nom_no_suffix = [re.sub(r'_\d{4}$','', x) for x in liste_nom]
@@ -250,7 +253,7 @@ def millesimesDisponibles(data):
   liste_nom_no_suffix = [re.sub(r'_\d{4}$','', x) for x in liste_nom]
   res = [i for i, x in enumerate(liste_nom_no_suffix) if x == donnees]
   
-  if res is False:
+  if bool(res) is False:
     raise ValueError("Data name is mispelled or does not exist")
   
   liste_possible = [list(dict_data_source.keys())[i] for i in res]
