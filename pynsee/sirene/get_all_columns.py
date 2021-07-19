@@ -18,7 +18,6 @@ def get_all_columns(kind='siret'):
     if kind == 'siret':
         df = search_sirene(variable=['sigleUniteLegale'],
                            pattern=['INSEE'],
-                           only_alive=False,
                            kind='siret',
                            number=1, clean=False)
         col = ['siret_columns', 'example']
@@ -26,13 +25,11 @@ def get_all_columns(kind='siret'):
     else:
         df = search_sirene(variable=['sigleUniteLegale'],
                            pattern=['INSEE'], kind='siren',
-                           only_alive=False,
                            number=1, clean=False)
         col = ['siren_columns', 'example']
 
     df = df.T
     df = df.reset_index(drop=False)
-    df = df.iloc[:,[0,2]]
     df.columns = col
     name_first_col = df.columns[0]
 
