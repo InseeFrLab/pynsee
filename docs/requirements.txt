@@ -12,3 +12,4 @@ unidecode>=1.2.0
 datetime>=3.5.9
 ipython>=7.16.1
 pathlib2==2.3.5
+Jinja2==2.11
