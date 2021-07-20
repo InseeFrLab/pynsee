@@ -11,9 +11,3 @@ Examples
         
    examples/example_gdp_growth_rate_yoy.ipynb
    examples/example_deaths_births.ipynb
-   examples/example_inflation_yoy.ipynb
-   examples/example_population_map.ipynb
-   examples/example_poverty_paris_urban_area.ipynb
-   examples/example_population_pyramid.ipynb
-   examples/example_insee_premises_sirene.ipynb
-   examples/example_automotive_industry_sirene.ipynb
