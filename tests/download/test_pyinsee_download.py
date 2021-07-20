@@ -1,5 +1,8 @@
 import unittest
+
 import os.path
+import hashlib
+import pandas as pd
 
 from pynsee.download import *
 
@@ -63,6 +66,8 @@ class MyTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(path_zipped))
         self.assertTrue(os.path.isfile(path_unzipped))
         self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
+        self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
+
 
     def test_year_int(self):
         filosofi_data = telechargerFichier("FILOSOFI_COM", date = 2016)
@@ -73,6 +78,7 @@ class MyTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(path_zipped))
         self.assertTrue(os.path.isfile(path_unzipped))
         self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
+        self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
     def test_year_dernier(self):
         filosofi_data = telechargerFichier("FILOSOFI_COM", date = "dernier")
@@ -84,6 +90,7 @@ class MyTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(path_zipped))
         self.assertTrue(os.path.isfile(path_unzipped))
         self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
+        self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
     def test_year_latest(self):
         filosofi_data = telechargerFichier("FILOSOFI_COM", date = "latest")
@@ -95,13 +102,16 @@ class MyTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(path_zipped))
         self.assertTrue(os.path.isfile(path_unzipped))
         self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
+        self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
+    # telechargerDonnees ----------------------------
+
+    def test_telechargerDonnees(self):
+        df = telechargerDonnees("FILOSOFI_COM", date = "2015")
+        self.assertIsInstance(df, pd.DataFrame)
 
 
 if __name__ == '__main__':
     unittest.main()
 
-#chargerDonnees(telechargerFichier("ESTEL_T201_ENS_TBE", "dernier"))
-#chargerDonnees(telechargerFichier("RP_LOGEMENT", "dernier"))
-#telechargerDonnees("RP_LOGEMENT", date = "2016")
-#telechargerDonnees("FILOSOFI_AU2010", "dernier")
+
