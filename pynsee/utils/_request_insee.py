@@ -3,6 +3,8 @@
 
 import os
 import requests
+import ast
+
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
@@ -67,8 +69,16 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
             _wait_api_query_limit(api_url)
 
             results = requests.get(api_url, proxies=proxies, headers=headers)
-
-            if results.status_code == 200:
+            
+            success = True
+            
+            if 'status_code' not in dir(results):
+                success = False
+            else:    
+                if results.status_code != 200:
+                    success = False
+            
+            if success is True:                
                 return(results)
             else:
 
@@ -91,8 +101,13 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                     else:
                         raise ValueError(results.text + '\n' + sdmx_url)
                 else:
-                    if print_msg:
-                        print("Error %s" % results.status_code)
+                    if print_msg:                        
+                        try:
+                            print("Error %s\n" % results.status_code)
+                            print(dict(ast.literal_eval(results.text))['header']['message'])
+                        except:
+                            pass
+                            
 
         else:
             # token is None
