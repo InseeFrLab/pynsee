@@ -9,6 +9,7 @@
    :maxdepth: 2
    
    readme
+   utils
    search_data
    get_data    
    examples
