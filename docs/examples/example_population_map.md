@@ -16,7 +16,7 @@ jupyter:
 # Population Map
 
 ```python
-from pynsee.localdata import get_map
+from pynsee.localdata import *
 from pynsee.macrodata import *
 
 import geopandas as gpd
@@ -34,7 +34,7 @@ init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 # Beware : any change to the keys should be tested after having cleared the cache
 # Please do : from pynsee.utils import *; clear_all_cache()
 
-map = get_map('departements')
+map = gpd.read_file(get_map_link('departements'))
 
 dataset_list = get_dataset_list()
 
