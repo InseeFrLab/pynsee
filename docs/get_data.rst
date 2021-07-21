@@ -16,6 +16,8 @@ Get geographic and local data
 
 .. autofunction:: pynsee.localdata.get_population
 
+.. autofunction:: pynsee.localdata.get_included_area
+
 .. autofunction:: pynsee.localdata.get_old_city
 
 .. autofunction:: pynsee.localdata.get_new_city

@@ -26,8 +26,6 @@ Search geographic and local data
 
 .. autofunction:: pynsee.localdata.get_area_list
 
-.. autofunction:: pynsee.localdata.get_included_area
-
 .. autofunction:: pynsee.localdata.get_map_list
 
 .. autofunction:: pynsee.localdata.get_map_link
