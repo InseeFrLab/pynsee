@@ -7,9 +7,14 @@
 
 .. toctree::
    :maxdepth: 2
+   :caption: documentation
    
-   readme
    utils
    search_data
    get_data    
-   examples
+   
+.. toctree::
+   :maxdepth: 2
+   :caption: Examples gallery
+
+   auto_examples/index
