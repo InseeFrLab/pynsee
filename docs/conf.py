@@ -47,14 +47,14 @@ extensions = [
      'nbsphinx', 
      'sphinx.ext.mathjax',     
      'IPython.sphinxext.ipython_console_highlighting',
-     'sphinx_gallery.gen_gallery'
+     # 'sphinx_gallery.gen_gallery'
 ]
 
 
-sphinx_gallery_conf = {
-     'examples_dirs': '../examples',   # path to your example scripts
-     'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
-}
+# sphinx_gallery_conf = {
+#      'examples_dirs': '../examples',   # path to your example scripts
+#      'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
+# }
 
 
 # 'm2r2',
