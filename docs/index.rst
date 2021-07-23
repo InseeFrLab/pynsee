@@ -12,9 +12,9 @@
    utils
    search_data
    get_data    
-   
+
 .. toctree::
    :maxdepth: 2
-   :caption: Examples gallery
-
-   auto_examples/index
+   :caption: examples
+   examples
+   
