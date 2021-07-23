@@ -2,6 +2,7 @@ sphinx==3.4.3
 sphinx_rtd_theme==0.5.1
 readthedocs-sphinx-search==0.1.0rc3
 sphinx_copybutton>=0.1.1
+sphinx-gallery>=0.4.0
 nbsphinx==0.8.2
 m2r2==0.2.7
 pandas>=0.24.2
@@ -10,5 +11,7 @@ requests>=2.25.1
 appdirs>=1.4.4
 unidecode>=1.2.0
 datetime>=3.5.9
-ipython>=7.23.0
+ipython>=7.16.1
 pathlib2==2.3.5
+Jinja2==2.11
+pyyaml>=5.4.1
