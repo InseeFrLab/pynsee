@@ -39,7 +39,19 @@ Installation & Loading
    init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 
    # Beware : any change to the keys should be tested after having cleared the cache
-   # Please do : from pynsee.utils import *; clear_all_cache()
+   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
+
+Data Search and Collection Advice
+---------------------------------
+
+* **Macroeconomic data** :
+   First, use ``get_dataset_list`` to search first among the datasets.
+   Alternatively, you can make a keyword-based search with ``search_macrodata``, e.g. ``search_macrodata('GDP')``.
+   Then, get the data with ``get_dataset`` or ``get_series``
+* **Local data** : use first ``get_local_metadata``, then get data with ``get_local_data``
+* **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list`` 
+* **Sirene (French companies database)** : use first ``get_all_columns``, and then use ``search_sirene``
+For further advice, have a look at the documentation and the examples
 
 French GDP growth rate
 ----------------------
@@ -59,7 +71,10 @@ French GDP growth rate
    init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 
    # Beware : any change to the keys should be tested after having cleared the cache
-   # Please do : from pynsee.utils import *; clear_all_cache()
+   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
+
+   # get macroeconomic datasets list
+   insee_dataset = get_dataset_list()
 
    # get series key (idbank), for Gross domestic product balance
    id = get_series_list("CNT-2014-PIB-EQB-RF")
@@ -101,7 +116,7 @@ Poverty in Paris urban area
    init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 
    # Beware : any change to the keys should be tested after having cleared the cache
-   # Please do : from pynsee.utils import *; clear_all_cache()
+   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
 
    from pynsee.localdata import *
 
