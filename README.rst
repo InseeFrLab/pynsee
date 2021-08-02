@@ -46,7 +46,7 @@ Data Search and Collection Advice
 
 * **Macroeconomic data** :
    First, use ``get_dataset_list`` to search first among the datasets.
-   Alternatively, you can make a keyword-based search with ``search_macrodata`` (e.g. ``search_macrodata('GDP')``)
+   Alternatively, you can make a keyword-based search with ``search_macrodata``, e.g. ``search_macrodata('GDP')``.
    Then, get the data with ``get_dataset`` or ``get_series``
 * **Local data** : use first ``get_local_metadata``, then get data with ``get_local_data``
 * **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list`` 
