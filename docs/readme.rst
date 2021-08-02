@@ -68,6 +68,9 @@ French GDP growth rate
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
 
+   # get macroeconomic datasets list
+   insee_dataset = get_dataset_list()
+
    # get series key (idbank), for Gross domestic product balance
    id = get_idbank_list("CNT-2014-PIB-EQB-RF")
 
