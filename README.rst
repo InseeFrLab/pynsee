@@ -45,7 +45,7 @@ Data Search and Collection Advice
 ---------------------------------
 
 * Macroeconomic data :
-   First, use :py:func:`get_dataset_list` to search first among the datasets
+   First, use :py:func:`pynsee.macrodata.get_dataset_list` to search first among the datasets
    Alternatively, you can make a keyword-based search with :func:`search_macrodata` (e.g. `search_macrodata('GDP')`)
    Then, get the data with :func:`get_dataset` or :func:`get_series`
 * Local data : use first :func:`get_local_metadata` then get data with :func:`get_local_data`
