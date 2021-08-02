@@ -139,9 +139,9 @@ Poverty in Paris urban area
    code_com_paris = areaParis.code.to_list()
 
    # get numeric values from INSEE database 
-   dataParis = get_local_data(dataset='GEO2020FILO2017',
+   dataParis = get_local_data(dataset_version='GEO2020FILO2017',
                           variables =  'INDICS_FILO_DISP_DET',
-                          geo = 'COM',
+                          nivgeo = 'COM',
                           geocodes = code_com_paris)
 
    #select poverty rate data, exclude paris commune
