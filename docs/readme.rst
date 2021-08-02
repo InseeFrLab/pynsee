@@ -40,7 +40,7 @@ Installation & Loading
    init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 
    # Beware : any change to the keys should be tested after having cleared the cache
-   # Please do : from pynsee.utils import *; clear_all_cache()"
+   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()"
 
 
 French GDP growth rate
@@ -66,7 +66,7 @@ French GDP growth rate
    init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 
    # Beware : any change to the keys should be tested after having cleared the cache
-   # Please do : from pynsee.utils import *; clear_all_cache()
+   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
 
    # get series key (idbank), for Gross domestic product balance
    id = get_idbank_list("CNT-2014-PIB-EQB-RF")
@@ -113,7 +113,7 @@ Poverty in Paris urban area
    init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 
    # Beware : any change to the keys should be tested after having cleared the cache
-   # Please do : from pynsee.utils import *; clear_all_cache()
+   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
 
    from pynsee.localdata import *
 
@@ -182,7 +182,7 @@ How to avoid proxy issues ?
              proxy_server="http://my_proxy_server:port")
 
    # Beware : any change to the keys should be tested after having cleared the cache
-   # Please do : from pynsee.utils import *; clear_all_cache()
+   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
 
 
 Support
