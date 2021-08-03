@@ -26,13 +26,15 @@ Have a look at the detailed API page with the following `link <https://api.insee
 This package is a contribution to reproducible research and public data transparency. 
 It benefits from the developments made by INSEE's teams working on APIs.
 
-Installation & Loading
-----------------------
+Installation & API subscription
+-------------------------------
 
 .. code-block:: python
 
-   # Get the development version from GitHub
-   # pip install git+https://github.com/InseeFrLab/Py-Insee-Data.git#egg=pynsee
+    # Get the development version from GitHub
+   # git clone https://github.com/InseeFrLab/Py-Insee-Data.git
+   # cd Py-Insee-Data
+   # pip install .
 
    # Subscribe to api.insee.fr and get your credentials!
    # Save your credentials with init_conn function :      
