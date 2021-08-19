@@ -45,7 +45,7 @@ def _get_dataset_metadata_core(dataset, update=False):
         dim_id = dataset_dimension['dimension'].iloc[irow]
         dim_local_rep = dataset_dimension['local_representation'].iloc[irow]
 
-        # get dimension values
+        # get dimension values #
         dim_values = _get_dimension_values(dim_local_rep, update=update)
 
         # drop dimension label
