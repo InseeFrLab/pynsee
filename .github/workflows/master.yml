@@ -5,7 +5,6 @@ on:
       branches:
         - 'master'
         - 'remove-notebooks'
-        - 'sirene_enhancement'
 
 jobs:
   build:

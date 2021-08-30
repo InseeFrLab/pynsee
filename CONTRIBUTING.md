@@ -35,5 +35,5 @@ We use a DCO bot to enforce the DCO on each pull request and branch commits.
 
 ### Licence
 
-By contributing, you agree that your contributions will be licensed under the MIT license.
+By contributing, you agree that your contributions will be licensed under the OPEN LICENSE 2.0.
 
