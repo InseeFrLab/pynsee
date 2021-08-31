@@ -113,10 +113,12 @@ def unzip_pb(fzip, dest, desc="Extracting"):
         desc: Argument inherited from zipfile.ZipFile
 
     Returns:
-
+        zipfile.Zipfile(fzip).extractall(dest) with progress
     """
-    """zipfile.Zipfile(fzip).extractall(dest) with progress"""
+
     dest = Path(dest).expanduser()
+    Path(dest).mkdir(parents=True, exist_ok=True)
+
     with zipfile.ZipFile(fzip) as zipf, tqdm(
             desc=desc, unit="B", unit_scale=True, unit_divisor=1024,
             total=sum(getattr(i, "file_size", 0) for i in zipf.infolist()),
