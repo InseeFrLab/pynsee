@@ -129,6 +129,8 @@ def unzip_pb(fzip, dest, desc="Extracting"):
                     copyfileobj(CallbackIOWrapper(pbar.update, fi), fo)
 
 
+
+
 def telechargerFichier(data, date=None, teldir=None):
 
     caract = info_donnees(data, date)
@@ -180,7 +182,9 @@ def telechargerFichier(data, date=None, teldir=None):
         if 'encoding' in list(caract.keys()):
             argsImport.update({"locale": caract["encoding"]})
     elif caract['type'] in ["xls", "xlsx"]:
-        argsImport.update({'path': fichierAImporter, "skip": caract['premiere_ligne'] - 1, "sheet": caract['onglet']})
+        argsImport.update({'path': fichierAImporter, "skip": caract['premiere_ligne'] - 1})
+        if 'onglet' in list(caract.keys()):
+            argsImport.update({"sheet": caract["onglet"]})
         if 'derniere_ligne' in list(caract.keys()):
             argsImport.update({"n_max": caract["derniere_ligne"] - caract["premiere_ligne"]})
         else:
