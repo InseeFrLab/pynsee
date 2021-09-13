@@ -132,6 +132,14 @@ def unzip_pb(fzip, dest, desc="Extracting"):
 
 
 
+def initialize_temp_directory():
+        tf = tempfile.NamedTemporaryFile(delete=False)
+        teldir = tempfile.TemporaryDirectory()
+        Path(teldir.name).mkdir(parents=True, exist_ok=True)
+        print("Data will be stored in the following location: {}".format(teldir.name))
+        return tf, teldir
+
+
 
 def telechargerFichier(data, date=None, teldir=None):
 
@@ -140,9 +148,7 @@ def telechargerFichier(data, date=None, teldir=None):
 
     if teldir is None:
         cache = True
-        tf = tempfile.NamedTemporaryFile(delete=False)
-        teldir = tempfile.TemporaryDirectory()
-        Path(teldir.name).mkdir(parents=True, exist_ok=True)
+        tf, teldir = initialize_temp_directory()
     else:
         Path(teldir).mkdir(parents=True, exist_ok=True)
 
