@@ -122,6 +122,10 @@ class MyTests(unittest.TestCase):
         df = telechargerDonnees("RP_LOGEMENT", date = "2016")
         self.assertIsInstance(df, pd.DataFrame)
 
+    def test_telechargerDonnees_estel_2016(self):
+        df = telechargerDonnees("ESTEL_T202", date = "2016")
+        self.assertIsInstance(df, pd.DataFrame)
+
 
 if __name__ == '__main__':
     unittest.main()
