@@ -4,7 +4,9 @@ on:
   push:
       branches:
         - 'master'
-        - 'remove-notebooks'
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
