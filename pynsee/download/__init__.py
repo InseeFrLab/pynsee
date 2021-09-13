@@ -132,6 +132,14 @@ def unzip_pb(fzip, dest, desc="Extracting"):
 
 
 
+def initialize_temp_directory():
+        tf = tempfile.NamedTemporaryFile(delete=False)
+        teldir = tempfile.TemporaryDirectory()
+        Path(teldir.name).mkdir(parents=True, exist_ok=True)
+        print("Data will be stored in the following location: {}".format(teldir.name))
+        return tf, teldir
+
+
 
 def telechargerFichier(data, date=None, teldir=None):
 
@@ -140,9 +148,7 @@ def telechargerFichier(data, date=None, teldir=None):
 
     if teldir is None:
         cache = True
-        tf = tempfile.NamedTemporaryFile(delete=False)
-        teldir = tempfile.TemporaryDirectory()
-        Path(teldir.name).mkdir(parents=True, exist_ok=True)
+        tf, teldir = initialize_temp_directory()
     else:
         Path(teldir).mkdir(parents=True, exist_ok=True)
 
@@ -151,15 +157,15 @@ def telechargerFichier(data, date=None, teldir=None):
     # filename = "{}/{}".format(teldir.name, os.path.basename(caract['lien']))
     filename = tf.name
 
+
+    # DOWNLOAD FILE ------------------------------------------
+
     r = requests.get(caract['lien'], stream=True)
     if r.status_code == 200:
         download_pb(url=caract['lien'], fname=filename, total=caract['size'])
     else:
         raise ValueError(
             "File not found on insee.fr. Please open an issue on https://github.com/InseeFrLab/Py-Insee-Data to help improving the package")
-
-    if hashlib.md5(open(filename, 'rb').read()).hexdigest() != caract['md5']:
-        warnings.warn("File in insee.fr modified or corrupted during download")
 
     if cache:
         print("No destination directory defined. Data have been written there: {}".format(
@@ -169,6 +175,22 @@ def telechargerFichier(data, date=None, teldir=None):
         print("File has been written there : {}".format(
             filename
         ))
+
+    # CHECKSUM MD5 ------------------------------------------
+
+    if hashlib.md5(open(filename, 'rb').read()).hexdigest() != caract['md5']:
+        warnings.warn("File in insee.fr modified or corrupted during download")
+
+
+    # PREPARE PANDAS IMPORT ARGUMENTS -----------------------
+
+    pandas_read_options = import_options(caract, filename)
+
+    return {"result": caract, **pandas_read_options}
+
+
+
+def import_options(caract, filename):
 
     if caract["zip"] is True:
         fileArchive = filename
@@ -187,6 +209,8 @@ def telechargerFichier(data, date=None, teldir=None):
         argsImport.update({'path': fichierAImporter, "skip": caract['premiere_ligne'] - 1})
         if 'onglet' in list(caract.keys()):
             argsImport.update({"sheet": caract["onglet"]})
+        else:
+            argsImport.update({"sheet": 0})
         if 'derniere_ligne' in list(caract.keys()):
             argsImport.update({"n_max": caract["derniere_ligne"] - caract["premiere_ligne"]})
         else:
@@ -211,8 +235,9 @@ def telechargerFichier(data, date=None, teldir=None):
 
     argsImport.update({"dtype": list_cols})
 
-    return {"result": caract, 'fileArchive': fileArchive, 'fichierAImporter': fichierAImporter,
+    return {'fileArchive': fileArchive, 'fichierAImporter': fichierAImporter,
             'argsImport': argsImport}
+
 
 
 def chargerDonnees(telechargementFichier: dict, vars=None):
