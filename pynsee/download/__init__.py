@@ -184,13 +184,13 @@ def telechargerFichier(data, date=None, teldir=None):
 
     # PREPARE PANDAS IMPORT ARGUMENTS -----------------------
 
-    pandas_read_options = import_options(caract)
+    pandas_read_options = import_options(caract, filename)
 
     return {"result": caract, **pandas_read_options}
 
 
 
-def import_options(caract):
+def import_options(caract, filename):
 
     if caract["zip"] is True:
         fileArchive = filename
