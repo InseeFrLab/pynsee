@@ -193,6 +193,8 @@ def telechargerFichier(data, date=None, teldir=None):
         argsImport.update({'path': fichierAImporter, "skip": caract['premiere_ligne'] - 1})
         if 'onglet' in list(caract.keys()):
             argsImport.update({"sheet": caract["onglet"]})
+        else:
+            argsImport.update({"sheet": 0})
         if 'derniere_ligne' in list(caract.keys()):
             argsImport.update({"n_max": caract["derniere_ligne"] - caract["premiere_ligne"]})
         else:
