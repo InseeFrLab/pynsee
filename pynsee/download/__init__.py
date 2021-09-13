@@ -157,15 +157,15 @@ def telechargerFichier(data, date=None, teldir=None):
     # filename = "{}/{}".format(teldir.name, os.path.basename(caract['lien']))
     filename = tf.name
 
+
+    # DOWNLOAD FILE ------------------------------------------
+
     r = requests.get(caract['lien'], stream=True)
     if r.status_code == 200:
         download_pb(url=caract['lien'], fname=filename, total=caract['size'])
     else:
         raise ValueError(
             "File not found on insee.fr. Please open an issue on https://github.com/InseeFrLab/Py-Insee-Data to help improving the package")
-
-    if hashlib.md5(open(filename, 'rb').read()).hexdigest() != caract['md5']:
-        warnings.warn("File in insee.fr modified or corrupted during download")
 
     if cache:
         print("No destination directory defined. Data have been written there: {}".format(
@@ -175,6 +175,22 @@ def telechargerFichier(data, date=None, teldir=None):
         print("File has been written there : {}".format(
             filename
         ))
+
+    # CHECKSUM MD5 ------------------------------------------
+
+    if hashlib.md5(open(filename, 'rb').read()).hexdigest() != caract['md5']:
+        warnings.warn("File in insee.fr modified or corrupted during download")
+
+
+    # PREPARE PANDAS IMPORT ARGUMENTS -----------------------
+
+    pandas_read_options = import_options(caract)
+
+    return {"result": caract, **pandas_read_options}
+
+
+
+def import_options(caract):
 
     if caract["zip"] is True:
         fileArchive = filename
@@ -219,8 +235,9 @@ def telechargerFichier(data, date=None, teldir=None):
 
     argsImport.update({"dtype": list_cols})
 
-    return {"result": caract, 'fileArchive': fileArchive, 'fichierAImporter': fichierAImporter,
+    return {'fileArchive': fileArchive, 'fichierAImporter': fichierAImporter,
             'argsImport': argsImport}
+
 
 
 def chargerDonnees(telechargementFichier: dict, vars=None):
