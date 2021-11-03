@@ -9,6 +9,8 @@ from pynsee.download import *
 class MyTests(unittest.TestCase):
 
     # info_donnees ---------------------------------
+
+    print("Testing info_donnees --------------------")
         
     def test_levensthein_error_typo(self):
         with self.assertRaises(ValueError):
@@ -21,7 +23,6 @@ class MyTests(unittest.TestCase):
     def test_info_no_date(self):
         with self.assertRaises(ValueError):
             info_donnees("RP_LOGEMENT")
-
 
 
     def test_date_info_donnees_dernier(self):
@@ -42,6 +43,8 @@ class MyTests(unittest.TestCase):
 
     # millesimesDisponibles -------------------------
 
+    print("Testing millesimesDisponibles --------------------")
+
     def test_error_millesimesDisponibles_typo(self):
         with self.assertRaises(ValueError):
             millesimesDisponibles("randomword")
@@ -52,6 +55,8 @@ class MyTests(unittest.TestCase):
         )
 
     # telechargerFichier ----------------------------
+
+    print("Testing telechargerFichier --------------------")
 
     def test_error_multiple_data_no_year(self):
         with self.assertRaises(ValueError):
@@ -106,6 +111,8 @@ class MyTests(unittest.TestCase):
 
     # telechargerDonnees ----------------------------
 
+    print("Testing telechargerDonnees --------------------")
+
     def test_telechargerDonnees(self):
         df = telechargerDonnees("FILOSOFI_COM", date = "2015")
         self.assertIsInstance(df, pd.DataFrame)
@@ -126,6 +133,43 @@ class MyTests(unittest.TestCase):
         df = telechargerDonnees("ESTEL_T202", date = "2016")
         self.assertIsInstance(df, pd.DataFrame)
 
+
+    # telecharger_pop_legale ---------------------------
+
+    print("Testing telecharger_pop_legale --------------------")
+
+
+    def test_pop_legale_error(self):
+        df = telecharger_pop_legale("error_to_come")
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_pop_legale(self):
+        df = telecharger_pop_legale()
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_pop_legale_regions(self):
+        df = telecharger_pop_legale("regions")
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_pop_legale_departements(self):
+        df = telecharger_pop_legale("departements")
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_pop_legale_arrondissements(self):
+        df = telecharger_pop_legale("arrondissements")
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_pop_legale_cantons(self):
+        df = telecharger_pop_legale("cantons")
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_pop_legale_fractions_cantonales(self):
+        df = telecharger_pop_legale("fractions_cantonales")
+        self.assertIsInstance(df, pd.DataFrame)
+
+    def test_pop_legale_fractions_outre_mer(self):
+        df = telecharger_pop_legale("outre_mer")
+        self.assertIsInstance(df, pd.DataFrame)
 
 if __name__ == '__main__':
     unittest.main()

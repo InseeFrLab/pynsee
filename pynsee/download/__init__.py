@@ -141,9 +141,24 @@ def initialize_temp_directory():
 
 
 
-def telechargerFichier(data, date=None, teldir=None):
+def telechargerFichier(data = None, date=None, teldir=None, url = None, force = False):
 
-    caract = info_donnees(data, date)
+    caract = None
+
+    if (data is None) & (url is None):
+        raise ValueError("data and url cannot be both None")
+
+    if data.startswith("http"):
+        print("data argument seems to be an URL. Assuming you meant data = None, url = {url}".format(url = url))
+        print('Use force = True to avoid this behavior')
+        if force is False:
+            url = data
+            data = None
+            caract = None
+
+    if data is not None:
+        caract = info_donnees(data, date)
+
     cache = False
 
     if teldir is None:
@@ -157,12 +172,17 @@ def telechargerFichier(data, date=None, teldir=None):
     # filename = "{}/{}".format(teldir.name, os.path.basename(caract['lien']))
     filename = tf.name
 
+    if url is None:
+        url = caract['lien']
+        size = caract['size']
+    else:
+        size = None
 
     # DOWNLOAD FILE ------------------------------------------
 
-    r = requests.get(caract['lien'], stream=True)
+    r = requests.get(url, stream=True)
     if r.status_code == 200:
-        download_pb(url=caract['lien'], fname=filename, total=caract['size'])
+        download_pb(url=url, fname=filename, total=size)
     else:
         raise ValueError(
             "File not found on insee.fr. Please open an issue on https://github.com/InseeFrLab/Py-Insee-Data to help improving the package")
@@ -178,9 +198,12 @@ def telechargerFichier(data, date=None, teldir=None):
 
     # CHECKSUM MD5 ------------------------------------------
 
-    if hashlib.md5(open(filename, 'rb').read()).hexdigest() != caract['md5']:
-        warnings.warn("File in insee.fr modified or corrupted during download")
-
+    if data is not None: 
+        if hashlib.md5(open(filename, 'rb').read()).hexdigest() != caract['md5']:
+            warnings.warn("File in insee.fr modified or corrupted during download")
+    
+    if caract is None:
+        return {"source": url, "fileArchive": filename, 'argsImport': {'file': filename}, 'result': {"fichier_donnees": teldir.name}}
 
     # PREPARE PANDAS IMPORT ARGUMENTS -----------------------
 
@@ -320,3 +343,34 @@ def millesimesDisponibles(data):
     liste_possible = [list(dict_data_source.keys())[i] for i in res]
     liste_possible = {l: dict_data_source[l] for l in liste_possible}
     return liste_possible
+
+
+def telecharger_pop_legale(level = "communes", url = "https://www.insee.fr/fr/statistiques/fichier/4989724/ensemble.zip"):
+
+    telechargementFichier = telechargerFichier(url)
+
+    unzip_pb(telechargementFichier['fileArchive'], "{}_temp".format(telechargementFichier["argsImport"]['file']))
+
+
+    dict_corresp = {'communes': 'Communes.csv',
+                    'departements': 'Departements.csv',
+                    'regions':  'Regions.csv',
+                    'arrondissements': 'Arrondissements.csv',
+                    'cantons': 'Cantons_et_metropoles.csv',
+                    'fractions_cantonales': 'Fractions_cantonales.csv',
+                    'communes_associees' : 'Communes_associees_ou_deleguees.csv',
+                    'outre_mer' : 'Collectivites_d_outre_mer.csv'
+    }
+
+    if level not in dict_corresp.keys():
+        levels_allowed = ", ".join(dict_corresp.keys())
+        raise ValueError("level as no correspondance. You should use one of the following levels: {}".format(levels_allowed))
+
+
+    df = pd.read_csv("{tempdir}/{filename}".format(
+                    tempdir = "{}_temp".format(telechargementFichier["argsImport"]['file']),
+                    filename = dict_corresp[level]), encoding = "utf-8", sep = ";", dtype = {'CODCOM': 'str'}
+    )
+    if level == "communes":
+        df['code_insee'] = df['CODDEP'].astype(str) + df['CODCOM'].astype(str)
+    return df
