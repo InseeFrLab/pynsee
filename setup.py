@@ -38,9 +38,6 @@ setuptools.setup(
             "datetime>=3.5.9",
             "pathlib2>=2.3.5",
             "pyyaml>=5.4.1"],
-    package_data={'pynsee_data': ['/macrodata/data/*',
-                                  '/localdata/data/*',
-                                  '/metadata/data/*']},
     python_requires='>=3.6',
     test_suite='nose.collector',
     tests_require=['nose']
