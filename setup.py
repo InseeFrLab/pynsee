@@ -38,6 +38,8 @@ setuptools.setup(
             "datetime>=3.5.9",
             "pathlib2>=2.3.5",
             "pyyaml>=5.4.1"],
+    package_data={
+        "": ["*.zip"]},
     python_requires='>=3.6',
     test_suite='nose.collector',
     tests_require=['nose']
