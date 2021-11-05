@@ -271,6 +271,7 @@ def load_data_from_schema(telechargementFichier: dict, vars=None):
 
 
 def info_donnees(data, date=None):
+
     if date == "latest":
         date = "dernier"
 
@@ -293,7 +294,7 @@ def info_donnees(data, date=None):
 
     # 2 - gestion millésimes
 
-    possible = millesimesDisponibles(donnees)
+    possible = check_year_available(donnees)
 
     if (len(possible) > 1) & (date is None):
         raise ValueError("Several versions of this dataset exist, please specify a year")
@@ -307,7 +308,7 @@ def info_donnees(data, date=None):
     return possible
 
 
-def millesimesDisponibles(data):
+def check_year_available(data):
     donnees = data.upper()
     liste_nom = dict_data_source.keys()
     liste_nom_no_suffix = [re.sub(r'_\d{4}$', '', x) for x in liste_nom]
@@ -350,4 +351,11 @@ def telechargerDonnees(data, date, teldir=None,
     """)
     return load_data(data = data, date = date, teldir=teldir, variables_names=variables_names)
 
+def millesimesDisponibles(data):
+    warnings.warn("""
+        /!\/!\/!\ \n
+        millesimesDisponibles was an experimental name and might be deprecated in the future\n
+        Please use the new function name 'check_year_available' instead
+    """)
+    return check_year_available(data = data)
 
