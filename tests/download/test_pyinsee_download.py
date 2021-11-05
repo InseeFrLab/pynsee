@@ -51,14 +51,14 @@ class MyTests(unittest.TestCase):
         list(millesimesDisponibles("RP_LOGEMENT").keys())
         )
 
-    # telechargerFichier ----------------------------
+    # download_store_file ----------------------------
 
     def test_error_multiple_data_no_year(self):
         with self.assertRaises(ValueError):
-            telechargerFichier("FILOSOFI_COM")        
+            download_store_file("FILOSOFI_COM")        
 
     def test_year_string(self):
-        filosofi_data = telechargerFichier("FILOSOFI_COM", date = "2016")
+        filosofi_data = download_store_file("FILOSOFI_COM", date = "2016")
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_COM_2016"])
         path_unzipped = filosofi_data["fichierAImporter"]
@@ -70,7 +70,7 @@ class MyTests(unittest.TestCase):
 
 
     def test_year_int(self):
-        filosofi_data = telechargerFichier("FILOSOFI_COM", date = 2016)
+        filosofi_data = download_store_file("FILOSOFI_COM", date = 2016)
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_COM_2016"])
         path_unzipped = filosofi_data["fichierAImporter"]
@@ -81,7 +81,7 @@ class MyTests(unittest.TestCase):
         self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
     def test_year_dernier(self):
-        filosofi_data = telechargerFichier("FILOSOFI_COM", date = "dernier")
+        filosofi_data = download_store_file("FILOSOFI_COM", date = "dernier")
         latest = list(millesimesDisponibles("FILOSOFI_COM").keys())[-1]
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source[latest])
@@ -93,7 +93,7 @@ class MyTests(unittest.TestCase):
         self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
     def test_year_latest(self):
-        filosofi_data = telechargerFichier("FILOSOFI_COM", date = "latest")
+        filosofi_data = download_store_file("FILOSOFI_COM", date = "latest")
         latest = list(millesimesDisponibles("FILOSOFI_COM").keys())[-1]
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source[latest])
@@ -106,24 +106,24 @@ class MyTests(unittest.TestCase):
 
     # telechargerDonnees ----------------------------
 
-    def test_telechargerDonnees(self):
-        df = telechargerDonnees("FILOSOFI_COM", date = "2015")
+    def test_load_data(self):
+        df = load_data("FILOSOFI_COM", date = "2015")
         self.assertIsInstance(df, pd.DataFrame)
 
-    def test_telechargerDonnees_no_onglet(self):
-        df = telechargerDonnees("FILOSOFI_DISP_COM", date = "dernier")
+    def test_load_data_no_onglet(self):
+        df = load_data("FILOSOFI_DISP_COM", date = "dernier")
         self.assertIsInstance(df, pd.DataFrame)
 
-    def test_telechargerDonnees_FILOSOFI_AU2010(self):
-        df = telechargerDonnees("FILOSOFI_AU2010", date = "dernier")
+    def test_load_data_FILOSOFI_AU2010(self):
+        df = load_data("FILOSOFI_AU2010", date = "dernier")
         self.assertIsInstance(df, pd.DataFrame)
 
-    def test_telechargerDonnees_RPLOGEMENT2016(self):
-        df = telechargerDonnees("RP_LOGEMENT", date = "2016")
+    def test_load_data_RPLOGEMENT2016(self):
+        df = load_data("RP_LOGEMENT", date = "2016")
         self.assertIsInstance(df, pd.DataFrame)
 
-    def test_telechargerDonnees_estel_2016(self):
-        df = telechargerDonnees("ESTEL_T202", date = "2016")
+    def test_load_data_estel_2016(self):
+        df = load_data("ESTEL_T202", date = "2016")
         self.assertIsInstance(df, pd.DataFrame)
 
 

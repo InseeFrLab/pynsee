@@ -50,10 +50,10 @@ dict_data_source = {create_key(item, list_duplicated_sources): item for item in 
 # data = "FILOSOFI_AU2010"
 # date = "dernier"
 # teldir = None
-# telechargerDonnees("RP_LOGEMENT", date = "2016")
-# telechargerDonnees("FILOSOFI_AU2010", "dernier")
+# load_data("RP_LOGEMENT", date = "2016")
+# load_data("FILOSOFI_AU2010", "dernier")
 
-def telechargerDonnees(data, date, teldir=None, #argsApi=None,
+def load_data(data, date, teldir=None, #argsApi=None,
                        variables_names=None #,force=False
                        ):
     """
@@ -70,8 +70,8 @@ def telechargerDonnees(data, date, teldir=None, #argsApi=None,
 
     """
     try:
-        return chargerDonnees(
-            telechargerFichier(data=data, date=date, teldir=teldir),
+        return load_data_from_schema(
+            download_store_file(data=data, date=date, teldir=teldir),
             variables_names
         )
     except:
@@ -140,8 +140,7 @@ def initialize_temp_directory():
         return tf, teldir
 
 
-
-def telechargerFichier(data, date=None, teldir=None):
+def download_store_file(data, date=None, teldir=None):
 
     caract = info_donnees(data, date)
     cache = False
@@ -240,7 +239,7 @@ def import_options(caract, filename):
 
 
 
-def chargerDonnees(telechargementFichier: dict, vars=None):
+def load_data_from_schema(telechargementFichier: dict, vars=None):
     if telechargementFichier["result"]["zip"] is True:
         unzip_pb(telechargementFichier['fileArchive'], "{}_temp".format(telechargementFichier["argsImport"]['file']))
         copyfile("{}_temp/{}".format(telechargementFichier["argsImport"]['file'],
@@ -320,3 +319,35 @@ def millesimesDisponibles(data):
     liste_possible = [list(dict_data_source.keys())[i] for i in res]
     liste_possible = {l: dict_data_source[l] for l in liste_possible}
     return liste_possible
+
+
+
+# deprecated names ----------------
+
+def telechargerFichier(data, date=None, teldir=None):
+    warnings.warn("""
+        /!\/!\/!\ \n
+        telechargerFichier was an experimental name and might be deprecated in the future\n
+        Please use the new function name 'download_store_file' instead
+    """)
+    return download_store_file(data = data, date = date, teldir = None)
+
+def chargerDonnees(telechargementFichier: dict, vars=None):
+    warnings.warn("""
+        /!\/!\/!\ \n
+        chargerDonnees was an experimental name and might be deprecated in the future\n
+        Please use the new function name 'load_data_from_schema' instead
+    """)
+    return load_data_from_schema(telechargementFichier = telechargementFichier, vars=vars)
+
+def telechargerDonnees(data, date, teldir=None,
+                       variables_names=None
+                       ):
+    warnings.warn("""
+        /!\/!\/!\ \n
+        telechargerDonnees was an experimental name and might be deprecated in the future\n
+        Please use the new function name 'load_data' instead
+    """)
+    return load_data(data = data, date = date, teldir=teldir, variables_names=variables_names):
+
+
