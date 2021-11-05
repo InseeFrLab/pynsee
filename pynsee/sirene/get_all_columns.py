@@ -15,25 +15,27 @@ def get_all_columns(kind='siret'):
         >>> sirene_columns = get_all_columns()
     """
 
+    if kind not in ['siret','siren']:
+        raise ValueError("kind must be siret (default) or siren")
+
     if kind == 'siret':
         df = search_sirene(variable=['sigleUniteLegale'],
                            pattern=['INSEE'],
                            only_alive=False,
                            kind='siret',
                            number=1, clean=False)
-        col = ['siret_columns', 'example']
-
+        col_to_keep = 0
     else:
         df = search_sirene(variable=['sigleUniteLegale'],
                            pattern=['INSEE'], kind='siren',
                            only_alive=False,
                            number=1, clean=False)
-        col = ['siren_columns', 'example']
+        col_to_keep = 1
 
     df = df.T
     df = df.reset_index(drop=False)
-    df = df.iloc[:,[0,2]]
-    df.columns = col
+    df = df.loc[:,["index",col_to_keep]]
+    df.columns = ['siret_columns', 'example']
     name_first_col = df.columns[0]
 
     list_added_col = ['categorieJuridiqueUniteLegale',
