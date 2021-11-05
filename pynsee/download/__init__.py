@@ -133,14 +133,37 @@ def unzip_pb(fzip, dest, desc="Extracting"):
 
 
 def initialize_temp_directory():
-        tf = tempfile.NamedTemporaryFile(delete=False)
-        teldir = tempfile.TemporaryDirectory()
-        Path(teldir.name).mkdir(parents=True, exist_ok=True)
-        print("Data will be stored in the following location: {}".format(teldir.name))
-        return tf, teldir
+        """A wrapper to initialize temporary directories
+
+        Returns:
+            Nothing, just creates the temporay directories
+        """
+    tf = tempfile.NamedTemporaryFile(delete=False)
+    teldir = tempfile.TemporaryDirectory()
+    Path(teldir.name).mkdir(parents=True, exist_ok=True)
+    print("Data will be stored in the following location: {}".format(teldir.name))
+    return tf, teldir
 
 
-def download_store_file(data, date=None, teldir=None):
+def download_store_file(data: str, date=None, teldir=None):
+    """Download requested file and return some metadata that will
+    be used
+
+    Arguments:
+        data {str} -- The name of the dataset desired
+
+    Keyword Arguments:
+        date -- Optional argument to specify desired year (default: {None})
+        teldir -- Desired location where data should be stored (default: {None})
+
+    Raises:
+        ValueError: When the desired dataset
+        is not found on insee.fr,
+        an error is raised
+
+    Returns:
+        dict -- If everything works well, returns a dictionary
+    """
 
     caract = info_donnees(data, date)
     cache = False
@@ -189,7 +212,18 @@ def download_store_file(data, date=None, teldir=None):
 
 
 
-def import_options(caract, filename):
+def import_options(caract: dict, filename: str):
+    """ Internal to generate a dictionary of options
+    required to import files
+
+    Arguments:
+        caract {dict} -- Dictionary returned by `download_store_file`
+        filename {str} -- Filename of the object that is going to be imported
+
+    Returns:
+        dict -- A dictionary listing options to control
+         import with `pandas`
+    """
 
     if caract["zip"] is True:
         fileArchive = filename
@@ -238,8 +272,21 @@ def import_options(caract, filename):
             'argsImport': argsImport}
 
 
-
 def load_data_from_schema(telechargementFichier: dict, vars=None):
+    """Using options derived from `download_store_file`, import dataset in python
+
+    Arguments:
+        telechargementFichier {dict} -- Options needed for import
+
+    Keyword Arguments:
+        vars {list} -- A subset of variables that should be used (default: {None})
+
+    Raises:
+        ValueError: If the file is not found, an error is raised
+
+    Returns:
+        pd.DataFrame -- The required dataset is returned as pd.DataFrame object
+    """
     if telechargementFichier["result"]["zip"] is True:
         unzip_pb(telechargementFichier['fileArchive'], "{}_temp".format(telechargementFichier["argsImport"]['file']))
         copyfile("{}_temp/{}".format(telechargementFichier["argsImport"]['file'],
@@ -270,7 +317,20 @@ def load_data_from_schema(telechargementFichier: dict, vars=None):
     return df
 
 
-def info_donnees(data, date=None):
+def info_donnees(data : str, date=None):
+    """Get some info regarding datasets available
+
+    Arguments:
+        data {str} -- Dataset name
+
+    Keyword Arguments:
+        date -- Desired year for the dataset (default: {None})
+
+
+    Returns:
+        For instance, looks for closed match in the
+         keyword given to download_store_file
+    """
 
     if date == "latest":
         date = "dernier"
