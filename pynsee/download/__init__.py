@@ -348,6 +348,6 @@ def telechargerDonnees(data, date, teldir=None,
         telechargerDonnees was an experimental name and might be deprecated in the future\n
         Please use the new function name 'load_data' instead
     """)
-    return load_data(data = data, date = date, teldir=teldir, variables_names=variables_names):
+    return load_data(data = data, date = date, teldir=teldir, variables_names=variables_names)
 
 
