@@ -62,12 +62,12 @@ Regarding APIs:
 * **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list`` 
 * **Sirene (French companies database)** : use first ``get_all_columns``, and then use ``search_sirene``
 
-Regarding data that can be downloaded directly from the website, the main entry point is ``telechargerDonnees``:
+Regarding data that can be downloaded directly from the website, the main entry point is ``load_data``:
 
 .. code-block:: python
 
-   from pynsee.download import telechargerDonnees
-   df = telechargerDonnees("FILOSOFI_COM", date = "2015")
+   from pynsee.download import load_data
+   df = load_data("FILOSOFI_COM", date = "2015")
 
 
 For further advice, have a look at the documentation and the examples
