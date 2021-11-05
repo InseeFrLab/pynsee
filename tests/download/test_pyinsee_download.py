@@ -125,6 +125,16 @@ class MyTests(unittest.TestCase):
     def test_load_data_estel_2016(self):
         df = load_data("ESTEL_T202", date = "2016")
         self.assertIsInstance(df, pd.DataFrame)
+    
+    def test_deprecation_notice_telechargerDonnees(self):
+        with self.assertWarns(Warning):
+            telechargerDonnees("ESTEL_T202", date = "2016")      
+
+    def test_equivalence_loaddata_telechargerDonnees(self):
+        df1 = telechargerDonnees("ESTEL_T202", date = "2016")  
+        df2 = load_data("ESTEL_T202", date = "2016")
+        with self.assertWarns(Warning):
+            self.assertTrue(pd.testing.assert_frame_equal(df1,df2))   
 
 
 if __name__ == '__main__':
