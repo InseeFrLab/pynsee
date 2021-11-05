@@ -133,9 +133,7 @@ class MyTests(unittest.TestCase):
     def test_equivalence_loaddata_telechargerDonnees(self):
         df1 = telechargerDonnees("ESTEL_T202", date = "2016")  
         df2 = load_data("ESTEL_T202", date = "2016")
-        with self.assertWarns(Warning):
-            self.assertTrue(pd.testing.assert_frame_equal(df1,df2))   
-
+        pd.testing.assert_frame_equal(df1,df2)
 
 if __name__ == '__main__':
     unittest.main()
