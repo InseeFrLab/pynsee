@@ -9,7 +9,7 @@ import zipfile
 from pathlib import Path
 from Levenshtein import distance as lev
 import pandas as pd
-from shutil import copyfile, copyfileobj
+from shutil import move, copyfileobj
 
 # import tqdm.auto as tqdma
 from tqdm import tqdm
@@ -243,7 +243,7 @@ def import_options(caract, filename):
 def chargerDonnees(telechargementFichier: dict, vars=None):
     if telechargementFichier["result"]["zip"] is True:
         unzip_pb(telechargementFichier['fileArchive'], "{}_temp".format(telechargementFichier["argsImport"]['file']))
-        copyfile("{}_temp/{}".format(telechargementFichier["argsImport"]['file'],
+        move("{}_temp/{}".format(telechargementFichier["argsImport"]['file'],
                                      telechargementFichier["result"]['fichier_donnees']),
                  telechargementFichier["argsImport"]['file'])
 
