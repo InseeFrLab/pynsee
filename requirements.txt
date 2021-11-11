@@ -8,4 +8,4 @@ pathlib2>=2.3.5
 python-Levenshtein
 pyyaml>=5.4.1
 openpyxl
-xlrd
+xlrd==1.2.0
