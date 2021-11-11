@@ -24,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-cov pytest-timeout geopandas geopy nbconvert matplotlib descartes geopy 
+        pip install flake8 pytest pytest-cov pytest-timeout pytest-xdist geopandas geopy nbconvert matplotlib descartes geopy 
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
@@ -51,7 +51,7 @@ jobs:
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |
-        pytest -v --timeout=600 --cov
+        pytest -v -n 3 --timeout=6000 --cov
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
       if: github.ref == 'refs/heads/master'
