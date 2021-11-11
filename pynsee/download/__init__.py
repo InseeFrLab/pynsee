@@ -251,7 +251,11 @@ def chargerDonnees(telechargementFichier: dict, vars=None):
         raise ValueError("File cannot be found")
 
     if telechargementFichier["result"]["type"] == "csv":
-        df = pd.read_csv(telechargementFichier["fichierAImporter"],
+        if os.path.getsize(telechargementFichier["fichierAImporter"])>=1000000000:
+            chunk=pd.read_csv(telechargementFichier["fichierAImporter"],chunksize=1000000)
+            df=pd.concat(chunk)
+        else:
+            df = pd.read_csv(telechargementFichier["fichierAImporter"],
                          delimiter=telechargementFichier["argsImport"]["delim"],
                          dtype=telechargementFichier["argsImport"]["dtype"],
                          usecols=vars
