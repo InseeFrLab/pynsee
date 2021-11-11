@@ -51,7 +51,7 @@ jobs:
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |     
-        pytest -v -timeout=600 --cov
+        pytest -v --timeout=600 --cov
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
       if: github.ref == 'refs/heads/master'
