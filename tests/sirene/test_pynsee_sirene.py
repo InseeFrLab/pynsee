@@ -29,8 +29,8 @@ class TestFunction(TestCase):
             self.assertTrue(test)
         
         def test_error_get_all_columns(self):
-        with self.assertRaises(ValueError):
-            get_all_columns('sirène')
+            with self.assertRaises(ValueError):
+                get_all_columns('sirène')
 
         def test_get_location(self):
             df = search_sirene(variable=["activitePrincipaleEtablissement"],
