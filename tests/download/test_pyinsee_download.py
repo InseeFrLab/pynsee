@@ -46,10 +46,10 @@ class MyTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             millesimesDisponibles("randomword")
 
-    def test_keys_json_millesimesDisponibles(self):
-        self.assertEqual([k for k in dict_data_source.keys() if k.startswith("RP_LOGEMENT")],
-        list(millesimesDisponibles("RP_LOGEMENT").keys())
-        )
+   # def test_keys_json_millesimesDisponibles(self):
+   #     self.assertEqual([k for k in dict_data_source.keys() if k.startswith("RP_LOGEMENT")],
+   #     list(millesimesDisponibles("RP_LOGEMENT").keys())
+   #     )
 
     # download_store_file ----------------------------
 
