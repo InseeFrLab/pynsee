@@ -57,58 +57,58 @@ class MyTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             telechargerFichier("FILOSOFI_COM")        
 
-    def test_year_string(self):
-        filosofi_data = telechargerFichier("FILOSOFI_COM", date = "2016")
-        self.assertIsInstance(filosofi_data, dict)
-        self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_COM_2016"])
-        path_unzipped = filosofi_data["fichierAImporter"]
-        path_zipped = filosofi_data["fileArchive"]
-        self.assertTrue(os.path.isfile(path_zipped))
-        self.assertTrue(os.path.isfile(path_unzipped))
-        self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
-        self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
+    # def test_year_string(self):
+    #     filosofi_data = telechargerFichier("FILOSOFI_COM", date = "2016")
+    #     self.assertIsInstance(filosofi_data, dict)
+    #     self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_COM_2016"])
+    #     path_unzipped = filosofi_data["fichierAImporter"]
+    #     path_zipped = filosofi_data["fileArchive"]
+    #     self.assertTrue(os.path.isfile(path_zipped))
+    #     self.assertTrue(os.path.isfile(path_unzipped))
+    #     self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
+    #     self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
 
-    def test_year_int(self):
-        filosofi_data = telechargerFichier("FILOSOFI_COM", date = 2016)
-        self.assertIsInstance(filosofi_data, dict)
-        self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_COM_2016"])
-        path_unzipped = filosofi_data["fichierAImporter"]
-        path_zipped = filosofi_data["fileArchive"]
-        self.assertTrue(os.path.isfile(path_zipped))
-        self.assertTrue(os.path.isfile(path_unzipped))
-        self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
-        self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
+    # def test_year_int(self):
+    #     filosofi_data = telechargerFichier("FILOSOFI_COM", date = 2016)
+    #     self.assertIsInstance(filosofi_data, dict)
+    #     self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_COM_2016"])
+    #     path_unzipped = filosofi_data["fichierAImporter"]
+    #     path_zipped = filosofi_data["fileArchive"]
+    #     self.assertTrue(os.path.isfile(path_zipped))
+    #     self.assertTrue(os.path.isfile(path_unzipped))
+    #     self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
+    #     self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
-    def test_year_dernier(self):
-        filosofi_data = telechargerFichier("FILOSOFI_COM", date = "dernier")
-        latest = list(millesimesDisponibles("FILOSOFI_COM").keys())[-1]
-        self.assertIsInstance(filosofi_data, dict)
-        self.assertEqual(filosofi_data['result'], dict_data_source[latest])
-        path_unzipped = filosofi_data["fichierAImporter"]
-        path_zipped = filosofi_data["fileArchive"]
-        self.assertTrue(os.path.isfile(path_zipped))
-        self.assertTrue(os.path.isfile(path_unzipped))
-        self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
-        self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
+    # def test_year_dernier(self):
+    #     filosofi_data = telechargerFichier("FILOSOFI_COM", date = "dernier")
+    #     latest = list(millesimesDisponibles("FILOSOFI_COM").keys())[-1]
+    #     self.assertIsInstance(filosofi_data, dict)
+    #     self.assertEqual(filosofi_data['result'], dict_data_source[latest])
+    #     path_unzipped = filosofi_data["fichierAImporter"]
+    #     path_zipped = filosofi_data["fileArchive"]
+    #     self.assertTrue(os.path.isfile(path_zipped))
+    #     self.assertTrue(os.path.isfile(path_unzipped))
+    #     self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
+    #     self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
-    def test_year_latest(self):
-        filosofi_data = telechargerFichier("FILOSOFI_COM", date = "latest")
-        latest = list(millesimesDisponibles("FILOSOFI_COM").keys())[-1]
-        self.assertIsInstance(filosofi_data, dict)
-        self.assertEqual(filosofi_data['result'], dict_data_source[latest])
-        path_unzipped = filosofi_data["fichierAImporter"]
-        path_zipped = filosofi_data["fileArchive"]
-        self.assertTrue(os.path.isfile(path_zipped))
-        self.assertTrue(os.path.isfile(path_unzipped))
-        self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
-        self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
+    # def test_year_latest(self):
+    #     filosofi_data = telechargerFichier("FILOSOFI_COM", date = "latest")
+    #     latest = list(millesimesDisponibles("FILOSOFI_COM").keys())[-1]
+    #     self.assertIsInstance(filosofi_data, dict)
+    #     self.assertEqual(filosofi_data['result'], dict_data_source[latest])
+    #     path_unzipped = filosofi_data["fichierAImporter"]
+    #     path_zipped = filosofi_data["fileArchive"]
+    #     self.assertTrue(os.path.isfile(path_zipped))
+    #     self.assertTrue(os.path.isfile(path_unzipped))
+    #     self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
+    #     self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
     # telechargerDonnees ----------------------------
 
-    def test_telechargerDonnees(self):
-        df = telechargerDonnees("FILOSOFI_COM", date = "2015")
-        self.assertIsInstance(df, pd.DataFrame)
+    # def test_telechargerDonnees(self):
+    #     df = telechargerDonnees("FILOSOFI_COM", date = "2015")
+    #     self.assertIsInstance(df, pd.DataFrame)
 
     def test_telechargerDonnees_no_onglet(self):
         df = telechargerDonnees("FILOSOFI_DISP_COM", date = "dernier")
