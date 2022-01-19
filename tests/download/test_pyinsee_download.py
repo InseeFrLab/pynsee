@@ -114,9 +114,9 @@ class MyTests(unittest.TestCase):
         df = telechargerDonnees("FILOSOFI_DISP_COM", date = "dernier")
         self.assertIsInstance(df, pd.DataFrame)
 
-    def test_telechargerDonnees_FILOSOFI_AU2010(self):
-        df = telechargerDonnees("FILOSOFI_AU2010", date = "dernier")
-        self.assertIsInstance(df, pd.DataFrame)
+    # def test_telechargerDonnees_FILOSOFI_AU2010(self):
+    #    df = telechargerDonnees("FILOSOFI_AU2010", date = "dernier")
+    #    self.assertIsInstance(df, pd.DataFrame)
 
     def test_telechargerDonnees_RPLOGEMENT2016(self):
         df = telechargerDonnees("RP_LOGEMENT", date = "2016")
