@@ -26,6 +26,10 @@ def _get_credentials():
         key_dict = {'insee_key': os.environ['insee_key'],
                     'insee_secret': os.environ['insee_secret']}
     except:
-        key_dict = None
+        try:
+            key_dict = {'insee_key': os.environ['INSEE_KEY'],
+                        'insee_secret': os.environ['INSEE_SECRET']}
+        except:
+            key_dict = None
 
     return(key_dict)
