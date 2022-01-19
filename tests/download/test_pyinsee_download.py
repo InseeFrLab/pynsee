@@ -114,17 +114,17 @@ class MyTests(unittest.TestCase):
         df = telechargerDonnees("FILOSOFI_DISP_COM", date = "dernier")
         self.assertIsInstance(df, pd.DataFrame)
 
-    def test_telechargerDonnees_FILOSOFI_AU2010(self):
-        df = telechargerDonnees("FILOSOFI_AU2010", date = "dernier")
-        self.assertIsInstance(df, pd.DataFrame)
+    # def test_telechargerDonnees_FILOSOFI_AU2010(self):
+    #     df = telechargerDonnees("FILOSOFI_AU2010", date = "dernier")
+    #     self.assertIsInstance(df, pd.DataFrame)
 
-    def test_telechargerDonnees_RPLOGEMENT2016(self):
-        df = telechargerDonnees("RP_LOGEMENT", date = "2016")
-        self.assertIsInstance(df, pd.DataFrame)
+    # def test_telechargerDonnees_RPLOGEMENT2016(self):
+    #     df = telechargerDonnees("RP_LOGEMENT", date = "2016")
+    #     self.assertIsInstance(df, pd.DataFrame)
 
-    def test_telechargerDonnees_estel_2016(self):
-        df = telechargerDonnees("ESTEL_T202", date = "2016")
-        self.assertIsInstance(df, pd.DataFrame)
+    # def test_telechargerDonnees_estel_2016(self):
+    #     df = telechargerDonnees("ESTEL_T202", date = "2016")
+    #     self.assertIsInstance(df, pd.DataFrame)
 
 
 if __name__ == '__main__':
