@@ -15,8 +15,6 @@ def _dwn_idbank_files():
     todays_date = date.today()
 
     main_link = "https://www.insee.fr/en/statistiques/fichier/2868055/"
-
-    separator = ";"
         
     curr_year = todays_date.year
     last_year = curr_year - 1
@@ -50,6 +48,8 @@ def _dwn_idbank_files():
 
 
 def _dwn_idbank_file(file_to_dwn):
+    
+    separator = ";"
 
     try:
         proxies = {'http': os.environ['http_proxy'],
