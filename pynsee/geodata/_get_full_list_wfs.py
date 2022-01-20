@@ -6,9 +6,7 @@ import xml.etree.ElementTree as ET
 import re
 
 from pynsee.geodata._get_capabilities import _get_capabilities
-
-def _clean_str(string):
-    return(re.sub('\{.*\}','', string))
+from pynsee.utils._clean_str import _clean_str
 
 @lru_cache(maxsize=None)
 def _get_full_list_wfs(topic, version='2.0.0'):
