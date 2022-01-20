@@ -50,8 +50,8 @@ def get_geodata_list(update=False):
             if 'Name' in data_list.columns:
                 data_list.rename(columns={'Name':'Identifier'}, inplace=True)
                 
-            data_list['DataFormat'] = f
-            data_list['Topic'] = tp
+            data_list['DataFormat'] = format
+            data_list['Topic'] = topic
             data_list['ApiVersion'] = version                  
             
         data_all = data_list.reset_index(drop=True)
@@ -66,8 +66,7 @@ def get_geodata_list(update=False):
             os.remove(file_name)
             data_all = get_geodata_list(update=True)
         else:
-            if warning is True:
-                _warning_cached_data(file_name)
+            _warning_cached_data(file_name)
     
     # set column order
     first_col = ['Topic', 'DataFormat', 'ApiVersion', 'Identifier', 'Abstract', 'Title', 'ZoomRange']
