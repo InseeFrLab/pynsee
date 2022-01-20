@@ -5,10 +5,10 @@ import re
 import pandas as pd
 from tqdm import trange
 
-from pynsee.geodata._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_full_list_wfs import _get_full_list_wfs
 from pynsee.geodata._get_tilematrix import _get_tilematrix
 
+from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
@@ -21,7 +21,7 @@ def get_geodata_list(update=False):
     pynsee_folder = _create_insee_folder()
     file_name = pynsee_folder + '/' +  _hash("".join(topic + format)) + ".csv"  
     
-    if (not os.) | (update is True):
+    if (not os.path.exists(file_name)) | (update is True):
                 
         data_full_list = _get_full_list_wfs(topic=topic, version=version)
                     
