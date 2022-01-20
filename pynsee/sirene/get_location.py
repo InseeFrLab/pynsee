@@ -7,6 +7,7 @@ from tqdm import trange
 from datetime import datetime
 from numpy import random
 from pynsee.utils._hash import _hash
+from geopy.geocoders import Nominatim
 
 
 def get_location(df):
@@ -38,7 +39,6 @@ def get_location(df):
         >>> # Get location
         >>> df_location = get_location(df)
     """
-    from geopy.geocoders import Nominatim
 
     def clean(string):
         if pd.isna(string):
@@ -51,8 +51,6 @@ def get_location(df):
                 'typeVoieEtablissementLibelle', 'libelleVoieEtablissement',
                 'codePostalEtablissement', 'libelleCommuneEtablissement']
 
-    geolocator = Nominatim(user_agent=_hash(
-        str(random.randint(1000)) + str(datetime.now())))
     # geolocator = Nominatim(user_agent = 'pynsee_python_package')
 
     if set(list_col).issubset(df.columns):
@@ -75,6 +73,9 @@ def get_location(df):
             address = re.sub(' L ', " L'", address)
             address = re.sub(' D ', " D'", address)
 
+            geolocator = Nominatim(user_agent=_hash(
+                str(random.randint(1000)) + str(datetime.now())))
+                
             location = geolocator.geocode(address)
 
             try:
