@@ -37,7 +37,7 @@ setuptools.setup(
             "unidecode>=1.2.0",
             'python-Levenshtein',
             "geopy",
-            "shapely",
+            "shapely==1.7.1",
             "datetime>=3.5.9",
             "pathlib2>=2.3.5",
             "pyyaml>=5.4.1"],

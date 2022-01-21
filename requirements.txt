@@ -9,4 +9,4 @@ python-Levenshtein
 pyyaml>=5.4.1
 openpyxl
 geopy
-shapely
+shapely==1.7.1
