@@ -13,6 +13,8 @@ from pynsee.geodata.GeoDataframe import GeoDataframe
 from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox
+from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
+from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
@@ -75,10 +77,21 @@ def get_geodata(id,
             list_bbox = _get_bbox_list(polygon=polygon,
                                        update=update)
 
-            list_data = []
-            for i in tqdm.trange(len(list_bbox)):                
-                df = _get_data_with_bbox(link=link0, list_bbox=list_bbox[i])
-                list_data.append(df)
+            Nprocesses = min(4, multiprocessing.cpu_count())
+            
+            args = [link0, list_bbox]
+            irange = range(len(list_bbox))
+
+            with multiprocessing.Pool(initializer= _set_global_var,
+                                    initargs=(args,),
+                                    processes=Nprocesses) as pool:
+
+                list_data = list(tqdm.tqdm(pool.imap(_get_data_with_bbox2, irange),
+                                        total=len(list_bbox)))
+            # list_data = []
+            # for i in tqdm.trange(len(list_bbox)):                
+            #     df = _get_data_with_bbox(link=link0, list_bbox=list_bbox[i])
+            #     list_data.append(df)
                 
             data_all = pd.concat(list_data).reset_index(drop=True) 
 

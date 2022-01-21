@@ -5,6 +5,16 @@ import pandas as pd
 from pynsee.geodata._geojson_parser import _geojson_parser
 from pynsee.geodata._distance import _distance
 
+def _set_global_var(args):
+    global link0, list_bbox_full
+    link0 = args[0]
+    list_bbox_full = args[1]
+
+def _get_data_with_bbox2(i):
+    link = link0
+    list_bbox = list_bbox_full[i]
+    return _get_data_with_bbox(link, list_bbox)
+
 def _get_data_with_bbox(link, list_bbox):
         
     bounds = [str(b) for b in list_bbox]
