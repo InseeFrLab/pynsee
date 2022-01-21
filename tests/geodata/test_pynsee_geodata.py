@@ -16,10 +16,11 @@ class TestFunction(TestCase):
         self.assertTrue(isinstance(df, pd.DataFrame))
     
     def test_get_geodata(self):
-        df = get_geodata_list()
+        df = get_geodata_list(update=True)
         ids = df.Identifier.to_list()
 
         list_geom_type = []
+        # id = 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:epci'
 
         for id in ids:
             data = get_geodata(id=id)
