@@ -43,8 +43,6 @@ class TestFunction(TestCase):
 
         def test_download_series_list(self):
             # _clean_insee_folder()
-            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/2868055/2021_correspondance_idbank_dimension.zip"
-            os.environ['insee_idbank_file_csv'] = "2021_correspondance_idbank_dimension.csv"
             df = _download_idbank_list()
             self.assertTrue(isinstance(df, pd.DataFrame))
 
@@ -108,9 +106,6 @@ class TestFunction(TestCase):
 
         def test_get_dataset_metadata_1(self):
 
-            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
-            os.environ['insee_idbank_file_csv'] = "2020_correspondances_idbank_dimension.csv"
-
             # test automatic update of metadata, when older than 3 months
             df = _get_dataset_metadata('CLIMAT-AFFAIRES')
             os.environ['insee_date_test'] = str(
@@ -131,8 +126,6 @@ class TestFunction(TestCase):
 
         def test_get_dataset_metadata_2(self):
             # crash download_idbank_list and test the result on get_dataset_metadata
-            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/test"
-            os.environ['insee_idbank_file_csv'] = "test"
             _clean_insee_folder()
             df = _get_dataset_metadata('CLIMAT-AFFAIRES')
             test1 = isinstance(df, pd.DataFrame)
@@ -249,11 +242,6 @@ class TestFunction(TestCase):
         def test_download_idbank_list_2(self):
             _clean_insee_folder()
             os.environ['insee_idbank_file_csv'] = "test_file"
-            self.assertRaises(ValueError, _download_idbank_list)
-
-        def test_download_idbank_list_3(self):
-            _clean_insee_folder()
-            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/test"
             self.assertRaises(ValueError, _download_idbank_list)
 
         if test_SDMX:
