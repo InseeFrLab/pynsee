@@ -26,7 +26,7 @@ def _get_bbox_list(polygon=None, update=False):
 
         if polygon is not None:
         
-            for i in range(len(bbox_list_full)):
+            for i in range(len(bbox)):
                 square = [Point(bbox[i][0], bbox[i][1]),
                                 Point(bbox[i][2], bbox[i][1]),   
                                 Point(bbox[i][2], bbox[i][3]),   
