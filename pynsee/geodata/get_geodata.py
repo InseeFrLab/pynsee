@@ -8,7 +8,7 @@ import multiprocessing
 import tqdm 
 import shapely.wkt
 
-from pynsee.geodata import GeoDataframe
+from pynsee.geodata.GeoDataframe import GeoDataframe
     
 from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
@@ -35,7 +35,7 @@ def get_geodata(id,
     Service = 'SERVICE=' + service + '&'
     version = 'VERSION=' + Version + '&'
     request = 'REQUEST=GetFeature&'
-    typename = 'TYPENAME=' + identifier + '&'
+    typename = 'TYPENAME=' + id + '&'
         
     link0 = geoportail + '/wfs?' + Service + version + request + typename \
                + 'OUTPUTFORMAT=application/json&COUNT=1000' 
@@ -50,10 +50,10 @@ def get_geodata(id,
     else:
         link = link0
             
-    insee_folder = _create_insee_folder(folder='data', subfolder=False, s3=use_s3())
+    insee_folder = _create_insee_folder()
     file_name = insee_folder + '/' +  _hash(link) + ".csv"       
     
-    if (not _check_file_exists(file_name, insee_folder)) | (update is True):
+    if (not os.path.exists(file_name)) | (update is True):
 
         data = requests.get(link)
         
@@ -133,7 +133,7 @@ def get_geodata(id,
             data_all_clean = pd.read_pickle(file_name)
         except:
             os.remove(file_name)
-            data_all_clean = get_data(id=id,
+            data_all_clean = get_geodata(id=id,
                                       polygon=polygon,
                                       update=True)
         else:
