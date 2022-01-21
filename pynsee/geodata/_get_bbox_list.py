@@ -6,7 +6,7 @@ import requests
 import pickle
 from shapely.geometry import Point, Polygon, MultiPolygon
 
-from pynsee.geoservices._geojson_parser import _geojson_parser
+from pynsee.geodata._geojson_parser import _geojson_parser
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash

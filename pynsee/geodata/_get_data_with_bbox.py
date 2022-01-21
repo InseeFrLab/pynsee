@@ -2,8 +2,8 @@
 
 import requests
 import pandas as pd
-from pynsee.geoservices._geojson_parser import _geojson_parser
-from pynsee.geoservices._distance import _distance
+from pynsee.geodata._geojson_parser import _geojson_parser
+from pynsee.geodata._distance import _distance
 
 def _get_data_with_bbox(link, list_bbox):
         
