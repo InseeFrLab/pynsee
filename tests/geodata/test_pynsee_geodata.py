@@ -21,6 +21,7 @@ class TestFunction(TestCase):
 
         list_geom_type = []
         # ident = 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:epci'
+        # ident = 'ADMINEXPRESS-COG-CARTO.LATEST:commune'
 
         for id in range(len(ids)):
             
