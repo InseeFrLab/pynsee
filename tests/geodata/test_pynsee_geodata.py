@@ -23,7 +23,8 @@ class TestFunction(TestCase):
         # id = 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:epci'
 
         for id in ids:
-            data = get_geodata(id=id)
+            data = get_geodata(id=id, update=True)
+            
             geom = data.get_geom()
             list_geom_type += [type(geom)]
 

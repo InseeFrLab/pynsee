@@ -1,7 +1,12 @@
 
+import os
+import pickle
 from shapely.geometry import Polygon, Point
 
 from pynsee.geodata._get_bbox_list_full import _get_bbox_list_full
+
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._hash import _hash
 
 def _get_bbox_list(polygon=None, update=False):
 
