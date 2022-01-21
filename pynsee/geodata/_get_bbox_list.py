@@ -18,7 +18,7 @@ def _get_bbox_list(polygon=None, update=False):
     insee_folder = _create_insee_folder()
     file_name = insee_folder + '/' +  _hash(name)
     
-    bbox_list_full = _get_bbox_list_full()
+    bbox = _get_bbox_list_full()
 
     if (not os.path.exists(file_name)) | (update is True):
 
@@ -45,7 +45,7 @@ def _get_bbox_list(polygon=None, update=False):
                         if list_intersect_bounds[p] not in bbox_list_final:
                             bbox_list_final.append(list_intersect_bounds[p])
         else:
-            bbox_list_final = bbox_list_full
+            bbox_list_final = bbox
 
         open_file = open(file_name, "wb")
         pickle.dump(bbox_list_final, open_file)
