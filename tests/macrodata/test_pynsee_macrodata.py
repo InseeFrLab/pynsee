@@ -239,11 +239,6 @@ class TestFunction(TestCase):
             test1 = isinstance(df, pd.DataFrame)
             self.assertTrue(test1)
 
-        def test_download_idbank_list_2(self):
-            _clean_insee_folder()
-            os.environ['insee_idbank_file_csv'] = "test_file"
-            self.assertRaises(ValueError, _download_idbank_list)
-
         if test_SDMX:
 
             def test_get_last_release(self):
