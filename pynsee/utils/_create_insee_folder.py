@@ -22,7 +22,7 @@ def _create_insee_folder():
         if not os.path.exists(insee_folder):
             os.mkdir(insee_folder)
 
-        insee_folder = insee_folder + '/py_insee'
+        insee_folder = insee_folder + '/pynsee'
 
         # create insee folder
         if not os.path.exists(insee_folder):
