@@ -110,9 +110,9 @@ class MyTests(unittest.TestCase):
     #     df = telechargerDonnees("FILOSOFI_COM", date = "2015")
     #     self.assertIsInstance(df, pd.DataFrame)
 
-    def test_telechargerDonnees_no_onglet(self):
-        df = telechargerDonnees("FILOSOFI_DISP_COM", date = "dernier")
-        self.assertIsInstance(df, pd.DataFrame)
+    # def test_telechargerDonnees_no_onglet(self):
+    #     df = telechargerDonnees("FILOSOFI_DISP_COM", date = "dernier")
+    #     self.assertIsInstance(df, pd.DataFrame)
 
     # def test_telechargerDonnees_FILOSOFI_AU2010(self):
     #     df = telechargerDonnees("FILOSOFI_AU2010", date = "dernier")

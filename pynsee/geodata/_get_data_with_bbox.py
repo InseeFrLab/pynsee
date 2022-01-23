@@ -6,6 +6,7 @@ from pynsee.geodata._geojson_parser import _geojson_parser
 from pynsee.geodata._distance import _distance
 
 def _set_global_var(args):
+
     global link0, list_bbox_full, session
     link0 = args[0]
     list_bbox_full = args[1]
