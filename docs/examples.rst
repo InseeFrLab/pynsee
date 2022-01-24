@@ -18,3 +18,4 @@ Examples
    examples/example_population_pyramid.ipynb
    examples/example_insee_premises_sirene.ipynb
    examples/example_automotive_industry_sirene.ipynb
+   examples/example_download_website.ipynb
