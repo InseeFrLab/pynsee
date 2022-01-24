@@ -9,6 +9,7 @@ from shapely.geometry import Point, Polygon, MultiPolygon, MultiLineString, Mult
 
 from pynsee.geodata.get_geodata_list import get_geodata_list
 from pynsee.geodata.get_geodata import get_geodata
+from pynsee.geodata.GeoDataframe import GeoDataframe
 class TestFunction(TestCase):
 
     def test_get_geodata_list(self):
@@ -36,9 +37,10 @@ class TestFunction(TestCase):
             geom = data.get_geom()
             list_geom_type += [type(geom)]
 
-            datapoly = get_geodata(id=ident, update=True, polygon=geom)            
-            geompoly = datapoly.get_geom()
-            list_geom_type += [type(geompoly)]
+            datapoly = get_geodata(id=ident, update=True, polygon=geom)   
+            if type(datapoly) == GeoDataframe:        
+                geompoly = datapoly.get_geom()
+                list_geom_type += [type(geompoly)]
 
         print(list_geom_type)            
 
