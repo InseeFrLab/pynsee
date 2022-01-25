@@ -61,7 +61,7 @@ def get_geodata(id,
         data = requests.get(link)
 
         if data.status_code == 502:
-            time.sleep(5) 
+            time.sleep(2) 
             data = requests.get(link)
         
         if data.status_code != 200:

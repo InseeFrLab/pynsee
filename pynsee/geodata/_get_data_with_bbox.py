@@ -26,6 +26,10 @@ def _get_data_with_bbox(link, list_bbox):
     link_query = link + BBOX
 
     data = requests.get(link_query)
+
+    if data.status_code == 502:
+        time.sleep(2) 
+        data = requests.get(link)
     
     data_json = data.json()   
 
