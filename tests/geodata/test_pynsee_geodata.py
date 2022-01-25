@@ -37,7 +37,7 @@ class TestFunction(TestCase):
 
             data = get_geodata(id=ident, update=True)
 
-            if type(datapoly) == GeoDataframe:    
+            if type(data) == GeoDataframe:    
                 geom = data.get_geom()
                 list_geom_type += [type(geom)]
 
