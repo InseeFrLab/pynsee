@@ -27,6 +27,7 @@ class TestFunction(TestCase):
         dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True)
         dep29 = dep29[dep29["insee_dep"] == "29"]
         geodep29 = dep29.get_geom()
+        data = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', polygon = geodep29, update=True)     
        
         for id in range(len(ids)):
             
@@ -36,11 +37,6 @@ class TestFunction(TestCase):
             data = get_geodata(id=ident, update=True)            
             geom = data.get_geom()
             list_geom_type += [type(geom)]
-
-            datapoly = get_geodata(id=ident, update=True, polygon=geom)   
-            if type(datapoly) == GeoDataframe:        
-                geompoly = datapoly.get_geom()
-                list_geom_type += [type(geompoly)]
 
         print(list_geom_type)            
 
