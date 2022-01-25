@@ -11,7 +11,7 @@ from pynsee.metadata.get_activity_list import get_activity_list
 
 class TestFunction(TestCase):
 
-    if False:
+    if True:
 
         def test_get_definition_list(self):
             data = get_definition_list()

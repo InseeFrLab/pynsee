@@ -31,7 +31,7 @@ class TestFunction(TestCase):
 
     version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
 
-    if False:
+    if version_3_7:
 
         def test_get_insee_one_area_1(self):
             def get_insee_one_area_test(area_type="derf", codearea="c"):
