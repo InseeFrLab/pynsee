@@ -65,7 +65,7 @@ class TestFunction(TestCase):
                 ident = ids[id]
                 print("%s %s" % (id, ident))
 
-                datapoly = get_geodata(id=ident, update=True, polygon=geom) 
+                datapoly = get_geodata(id=ident, update=True, polygon=geodep29) 
 
                 if type(datapoly) == GeoDataframe:        
                         geompoly = datapoly.get_geom()
