@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import time
 import pandas as pd
 import requests
 import os
@@ -58,6 +59,10 @@ def get_geodata(id,
     if (not os.path.exists(file_name)) | (update is True):
 
         data = requests.get(link)
+
+        if data.status_code == 502:
+            time.sleep(5) 
+            data = requests.get(link)
         
         if data.status_code != 200:
             print('Query:\n%s' % link)
