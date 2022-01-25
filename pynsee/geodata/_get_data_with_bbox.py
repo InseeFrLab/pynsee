@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import time
 import requests
 import pandas as pd
 from pynsee.geodata._geojson_parser import _geojson_parser
