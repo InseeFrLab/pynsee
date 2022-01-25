@@ -25,21 +25,14 @@ def _get_data_with_bbox(link, list_bbox):
     
     link_query = link + BBOX
 
-    data = requests.get(link_query)
-
-    if data.status_code == 502:
-        time.sleep(2) 
-        data = requests.get(link)
-    
-    data_json = data.json()   
-
     with session.get(link_query) as r:                
         data_json = r.json()
+    
+    if r.status_code == 502:
+        time.sleep(2) 
+        with session.get(link_query) as r:                
+            data_json = r.json()
         
-    # data = requests.get(link_query)
-    
-    # data_json = data.json()   
-    
     if 'features' in data_json.keys():
         
         json = data_json['features']      
