@@ -39,7 +39,7 @@ class TestFunction(TestCase):
 
     version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
 
-    if False:
+    if not version_3_7:
 
         def test_download_series_list(self):
             # _clean_insee_folder()
