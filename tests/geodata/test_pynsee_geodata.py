@@ -9,6 +9,8 @@ from shapely.geometry import Point, Polygon, MultiPolygon, MultiLineString, Mult
 
 from pynsee.geodata.get_geodata_list import get_geodata_list
 from pynsee.geodata.get_geodata import get_geodata
+
+from pynsee.geodata.GeoDataframe import GeoDataframe
 class TestFunction(TestCase):
 
     def test_get_geodata_list(self):
@@ -23,6 +25,10 @@ class TestFunction(TestCase):
         # ident = 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:epci'
         # ident = 'ADMINEXPRESS-COG-CARTO.LATEST:commune'
 
+        dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True)
+        dep29 = dep29[dep29["insee_dep"] == "29"]
+        geodep29 = dep29.get_geom()
+       
         for id in range(len(ids)):
             
             ident = ids[id]
@@ -33,7 +39,19 @@ class TestFunction(TestCase):
             geom = data.get_geom()
             list_geom_type += [type(geom)]
 
+            data = get_geodata(id=ident, update=True)            
+            geom = data.get_geom()
+            list_geom_type += [type(geom)]
+
+            datapoly = get_geodata(id=ident, update=True, polygon=geom)   
+            if type(datapoly) == GeoDataframe:        
+                geompoly = datapoly.get_geom()
+                list_geom_type += [type(geompoly)]
+
         print(list_geom_type)            
+
+        # test with a localisation constraint
+        
         test = all([typegeo in [Polygon, MultiPolygon, MultiLineString, MultiPoint] for typegeo in list_geom_type])
 
         self.assertTrue(test)
