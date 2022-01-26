@@ -29,7 +29,7 @@ def _get_data_with_bbox(link, list_bbox):
         data_json = r.json()
     
     if r.status_code == 502:
-        time.sleep(2) 
+        time.sleep(1) 
         with session.get(link_query) as r:                
             data_json = r.json()
         
