@@ -33,20 +33,7 @@ def get_geodata_list(update=False):
                 
             data_list = data_full_list[list_col]
             data_list = data_list.drop_duplicates().reset_index(drop=True)
-            
-            # for wmts data compute Zoom range available from TileMatrix
-            if 'TileMatrix' in data_full_list.columns:
-                
-                list_zooms = []
-                for i in range(len(data_list)):
-                    idf = data_list.loc[i, 'Identifier']
-                    zooms = list(data_full_list.loc[data_full_list['Identifier'] == idf, 'TileMatrix'])
-                    zooms = [int(z) for z in zooms]
-                    
-                    list_zooms.append([min(zooms), max(zooms)])
-                    
-                data_list['ZoomRange'] = list_zooms
-                        
+                                
             if 'Name' in data_list.columns:
                 data_list.rename(columns={'Name':'Identifier'}, inplace=True)
                 

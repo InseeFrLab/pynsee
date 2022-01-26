@@ -25,10 +25,13 @@ class TestFunction(TestCase):
         # ident = 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:epci'
         # ident = 'ADMINEXPRESS-COG-CARTO.LATEST:commune'
 
+        data = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
+        list_geom_type += [type(data.get_geom())]
+
         dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True)
         dep29 = dep29[dep29["insee_dep"] == "29"]
-        geodep29 = dep29.get_geom()
-        data = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', polygon = geodep29, update=True)     
+        geodep29 = dep29.get_geom()   
+        list_geom_type += [type(geodep29)]         
        
         for id in range(len(ids)):
             

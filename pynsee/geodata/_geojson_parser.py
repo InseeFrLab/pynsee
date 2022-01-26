@@ -24,27 +24,25 @@ def _geojson_parser(data):
                 except:
                     pass        
         
-        try:
-            geom = data[c]['geometry']['coordinates']
-            
-            data_type = data[c]['geometry']['type']
-            
-            multipolygon = shape({"type": data_type,
-                                "coordinates": geom})
-    
-            if data_type in ['LineString', 'Polygon', 'Point']:
-                df2['geometry'] = multipolygon
-            elif data_type in ['MultiLineString','MultiPolygon', 'MultiPoint']:
-                df2['geometry'] = [multipolygon]
+        
+        geom = data[c]['geometry']['coordinates']
+        
+        data_type = data[c]['geometry']['type']
+        
+        Shape = shape({"type": data_type,
+                            "coordinates": geom})
+
+        if data_type in ['LineString', 'Polygon', 'Point']:
+            df2['geometry'] = Shape
+        elif data_type in ['MultiLineString','MultiPolygon', 'MultiPoint']:
+            df2['geometry'] = [Shape]
+        else:
+            geo_Shape = Shape.geoms
+            if (len(geo_Shape) > 1):
+                df2['geometry'] = [Shape]
             else:
-                geo_multipoly = multipolygon.geoms
-                if (len(geo_multipoly) > 1):
-                    df2['geometry'] = [multipolygon]
-                else:
-                    df2['geometry'] = multipolygon
-        except:
-            print("!! No coordinates found for {} !!".format(c))
-            pass        
+                df2['geometry'] = Shape
+                
         data_list.append(df2)
                 
     data_all = pd.concat(data_list).reset_index(drop=True)
