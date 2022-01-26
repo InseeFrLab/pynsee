@@ -6,7 +6,6 @@ import pandas as pd
 from tqdm import trange
 
 from pynsee.geodata._get_full_list_wfs import _get_full_list_wfs
-from pynsee.geodata._get_tilematrix import _get_tilematrix
 
 from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.utils._create_insee_folder import _create_insee_folder
