@@ -38,12 +38,17 @@ def _get_bbox_list(polygon=None, update=False):
                 if polygon.intersects(poly_bbox):
                     
                     intersection = polygon.intersection(poly_bbox) 
-                    
-                    list_intersect_bounds = [intersection.geoms[i].bounds for i in range(len(intersection.geoms))]
-                    
-                    for p in range(len(list_intersect_bounds)):
-                        if list_intersect_bounds[p] not in bbox_list_final:
-                            bbox_list_final.append(list_intersect_bounds[p])
+
+                    if hasattr(intersection, 'geoms'):
+
+                        list_intersect_bounds = [intersection.geoms[i].bounds for i in range(len(intersection.geoms))]
+                        
+                        for p in range(len(list_intersect_bounds)):
+                            if list_intersect_bounds[p] not in bbox_list_final:
+                                bbox_list_final.append(list_intersect_bounds[p])
+
+            if len(bbox_list_final):
+                bbox_list_final = bbox
         else:
             bbox_list_final = bbox
 
