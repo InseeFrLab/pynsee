@@ -47,7 +47,7 @@ def _get_bbox_list(polygon=None, update=False):
                             if list_intersect_bounds[p] not in bbox_list_final:
                                 bbox_list_final.append(list_intersect_bounds[p])
 
-            if len(bbox_list_final):
+            if len(bbox_list_final) == 0:
                 bbox_list_final = bbox
         else:
             bbox_list_final = bbox
