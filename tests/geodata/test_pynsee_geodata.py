@@ -13,39 +13,62 @@ from pynsee.geodata.get_geodata import get_geodata
 from pynsee.geodata.GeoDataframe import GeoDataframe
 class TestFunction(TestCase):
 
-    def test_get_geodata_list(self):
-        df = get_geodata_list()
-        self.assertTrue(isinstance(df, pd.DataFrame))
-    
-    def test_get_geodata(self):
+    def test_get_geodata_short(self):
         df = get_geodata_list(update=True)
+        self.assertTrue(isinstance(df, pd.DataFrame))
+
         ids = df.Identifier.to_list()
 
         list_geom_type = []
-        # ident = 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:epci'
-        # ident = 'ADMINEXPRESS-COG-CARTO.LATEST:commune'
 
         data = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
-        list_geom_type += [type(data.get_geom())]
+        self.assertTrue(isinstance(data, GeoDataframe))
+        geo = data.get_geom()
+        self.assertTrue(isinstance(geo, MultiPolygon))
 
         dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True)
-        dep29 = dep29[dep29["insee_dep"] == "29"]
-        geodep29 = dep29.get_geom()   
-        list_geom_type += [type(geodep29)]         
-       
-        for id in range(len(ids)):
-            
-            ident = ids[id]
-            print("%s %s" % (id, ident))
+        self.assertTrue(isinstance(dep29, GeoDataframe))
+        geo29 = dep29.get_geom()
+        self.assertTrue(isinstance(geo29, MultiPolygon))
 
-            data = get_geodata(id=ident, update=True, polygon=geodep29)
+        com29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29) 
+        self.assertTrue(isinstance(com29, GeoDataframe))
+        geocom29 = data.get_geom()
+        self.assertTrue(isinstance(geocom29, MultiPolygon))
+    
+    version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
 
-            if type(data) == GeoDataframe:    
-                geom = data.get_geom()
-                list_geom_type += [type(geom)]
+    if version_3_8:
 
-        print(list_geom_type)            
+        def test_get_geodata_all(self):
+            df = get_geodata_list(update=True)
+            ids = df.Identifier.to_list()
+
+            list_geom_type = []
+            # ident = 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:epci'
+            # ident = 'ADMINEXPRESS-COG-CARTO.LATEST:commune'
+
+            data = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
+            list_geom_type += [type(data.get_geom())]
+
+            dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True)
+            dep29 = dep29[dep29["insee_dep"] == "29"]
+            geodep29 = dep29.get_geom()   
+            list_geom_type += [type(geodep29)]         
         
-        test = all([typegeo in [Polygon, MultiPolygon, MultiLineString, MultiPoint] for typegeo in list_geom_type])
+            for id in range(len(ids)):
+                
+                ident = ids[id]
+                print("%s %s" % (id, ident))
 
-        self.assertTrue(test)
+                data = get_geodata(id=ident, update=True, polygon=geodep29)
+
+                if type(data) == GeoDataframe:    
+                    geom = data.get_geom()
+                    list_geom_type += [type(geom)]
+
+            print(list_geom_type)            
+            
+            test = all([typegeo in [Polygon, MultiPolygon, MultiLineString, MultiPoint] for typegeo in list_geom_type])
+
+            self.assertTrue(test)
