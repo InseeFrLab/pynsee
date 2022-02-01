@@ -38,7 +38,7 @@ class TestFunction(TestCase):
     
     version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
 
-    if version_3_8:
+    if False:
 
         def test_get_geodata_all(self):
             df = get_geodata_list(update=True)
