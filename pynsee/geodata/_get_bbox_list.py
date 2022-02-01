@@ -27,7 +27,7 @@ def _get_bbox_list(polygon=None, update=False):
         if polygon is not None:
         
             for i in range(len(bbox)):
-                print(i)
+                # print(i)
 
                 square = [Point(bbox[i][0], bbox[i][1]),
                                 Point(bbox[i][2], bbox[i][1]),   
@@ -39,8 +39,11 @@ def _get_bbox_list(polygon=None, update=False):
                 # select only intersect between bbox grid and the polygon
                 if polygon.intersects(poly_bbox):
                     
-                    polygon = polygon.buffer(0)
-                    intersection = polygon.intersection(poly_bbox) 
+                    try:
+                        intersection = polygon.intersection(poly_bbox) 
+                    except:
+                        polygon = polygon.buffer(0)
+                        intersection = polygon.intersection(poly_bbox) 
 
                     if hasattr(intersection, 'geoms'):
 
