@@ -7,18 +7,19 @@ import pandas as pd
 from tqdm import trange
 from datetime import datetime
 from numpy import random
-from pynsee.utils._hash import _hash
-from geopy.geocoders import Nominatim
-
-
 from functools import lru_cache
+import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
+from pynsee.sirene._get_location_openstreetmap import _get_location_openstreetmap
 
 @lru_cache(maxsize=None)
 def _warning_get_location():
     print("This function relies on OpenStreetMap (geopy package)\nPlease, change timeSleep argument if the maximum number of queries is reached\nIn the long run, this function may be depreciated")
 
 
-def _get_location(df, timeSleep=2):
+def _get_location(df, timeSleep=1):
     """Get latitude and longitude of French legal entities
 
     Notes:
@@ -61,11 +62,15 @@ def _get_location(df, timeSleep=2):
                 'typeVoieEtablissementLibelle', 'libelleVoieEtablissement',
                 'codePostalEtablissement', 'libelleCommuneEtablissement']
 
-    # geolocator = Nominatim(user_agent = 'pynsee_python_package')
-
     if set(list_col).issubset(df.columns):
 
         list_location = []
+
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=timeSleep)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
 
         for i in trange(len(df.index), desc='Getting location'):
 
@@ -78,41 +83,25 @@ def _get_location(df, timeSleep=2):
             city = clean(df.loc[i, 'libelleCommuneEtablissement'])
             city = re.sub('[0-9]|EME', '', city)
 
-            address = '{} {} {} {} {} FRANCE'.format(
+            address = '{}+{}+{}+{}+{}+FRANCE'.format(
                 nb, street_type, street_name, postal_code, city)
             address = re.sub(' L ', " L'", address)
             address = re.sub(' D ', " D'", address)
-
-            geolocator = Nominatim(user_agent=_hash(
-                str(random.randint(1000)) + str(datetime.now())))
-                
-            time.sleep(timeSleep)
-            location = geolocator.geocode(address)
-
            
-
             try:
-                lat = location.latitude
-                long = location.longitude
-                precision = 'exact'
+                lat, lon, category, typeLoc = _get_location_openstreetmap(query=address, session=session)
             except:
-                address = '{} {} FRANCE'.format(postal_code, city)
-
-                location = geolocator.geocode(address)
-
+                address = '{}+{}+FRANCE'.format(postal_code, city)
                 try:
-                    lat = location.latitude
-                    long = location.longitude
-                    precision = 'city'
+                    lat, lon, category, typeLoc = _get_location_openstreetmap(query=address, session=session)
                 except:
-                    lat = None
-                    long = None
-                    precision = None
-
+                    lat, lon, category, typeLoc = (None, None, None, None)
+                
             df_location = pd.DataFrame({'siret': siret,
                                         'latitude': lat,
-                                        'longitude': long,
-                                        'precision': precision}, index=[0])
+                                        'longitude': lon,
+                                        'category': category,
+                                        'type': typeLoc}, index=[0])
 
             list_location.append(df_location)
 
