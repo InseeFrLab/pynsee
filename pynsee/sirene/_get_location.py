@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import time
 import re
 import pandas as pd
 from tqdm import trange
@@ -10,7 +11,14 @@ from pynsee.utils._hash import _hash
 from geopy.geocoders import Nominatim
 
 
-def get_location(df):
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def _warning_get_location():
+    print("This function relies on OpenStreetMap (geopy package)\nPlease, change timeSleep argument if the maximum number of queries is reached\nIn the long run, this function may be depreciated")
+
+
+def _get_location(df, timeSleep=2):
     """Get latitude and longitude of French legal entities
 
     Notes:
@@ -39,6 +47,8 @@ def get_location(df):
         >>> # Get location
         >>> df_location = get_location(df)
     """
+
+    _warning_get_location()
 
     def clean(string):
         if pd.isna(string):
@@ -76,7 +86,10 @@ def get_location(df):
             geolocator = Nominatim(user_agent=_hash(
                 str(random.randint(1000)) + str(datetime.now())))
                 
+            time.sleep(timeSleep)
             location = geolocator.geocode(address)
+
+           
 
             try:
                 lat = location.latitude
