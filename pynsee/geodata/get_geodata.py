@@ -145,9 +145,7 @@ def get_geodata(id,
         data_all_clean.to_pickle(file_name)
         print("Data saved: {}".format(file_name))
     else:        
-        try:
-            data_all_clean = pd.read_pickle(file_name)
-                
+        try:              
             data_all_clean = pd.read_pickle(file_name)
         except:
             os.remove(file_name)
