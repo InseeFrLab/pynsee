@@ -11,6 +11,8 @@ from pynsee.utils._get_envir_token import _get_envir_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.clear_all_cache import clear_all_cache
+from pynsee.utils.init_conn import init_conn
+from pynsee.utils._get_credentials import _get_credentials
 
 test_SDMX = True
 
@@ -27,6 +29,9 @@ class TestFunction(TestCase):
             keys = _get_credentials()
             insee_key = keys['insee_key']
             insee_secret = keys['insee_secret']
+
+            init_conn(insee_key=insee_key, insee_secret=insee_secret)
+            keys = _get_credentials()
 
             token = _get_token(insee_key, insee_secret)
             self.assertTrue((token is not None))

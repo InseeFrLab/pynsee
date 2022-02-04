@@ -35,6 +35,9 @@ class TestFunction(TestCase):
         self.assertTrue(isinstance(com29, GeoDataframe))
         geocom29 = data.get_geom()
         self.assertTrue(isinstance(geocom29, MultiPolygon))
+
+        data = get_geodata(id='test', update=True) 
+        self.assertTrue(isinstance(data, pd.DataFrame))
     
     version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
 
