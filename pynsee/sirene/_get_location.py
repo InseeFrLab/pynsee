@@ -16,7 +16,7 @@ from pynsee.sirene._get_location_openstreetmap import _get_location_openstreetma
 
 @lru_cache(maxsize=None)
 def _warning_get_location():
-    print("This function relies on OpenStreetMap (geopy package)\nPlease, change timeSleep argument if the maximum number of queries is reached\nIn the long run, this function may be depreciated")
+    print("!!!\nThis function relies on OpenStreetMap\nPlease, change timeSleep argument if the maximum number of queries is reached\nBeware, maintenance of this function should not be taken for granted!\n!!!")
 
 
 def _get_location(df, timeSleep=1):
@@ -83,17 +83,33 @@ def _get_location(df, timeSleep=1):
             city = clean(df.loc[i, 'libelleCommuneEtablissement'])
             city = re.sub('[0-9]|EME', '', city)
 
-            address = '{}+{}+{}+{}+{}+FRANCE'.format(
-                nb, street_type, street_name, postal_code, city)
-            address = re.sub(' L ', " L'", address)
-            address = re.sub(' D ', " D'", address)
-           
+            city = re.sub(' D ', " D'", re.sub(' L ', " L'", city))
+            street_name = re.sub(' D ', " D'", re.sub(' L ', " L'", street_name))
+            street_type = re.sub(' D ', " D'", re.sub(' L ', " L'", street_type))
+
+            list_var = []
+            for var in [nb, street_type, street_name, postal_code, city]:
+                if var != "":
+                    list_var += [re.sub(' ', '+', var)]
+            
+            query = "+".join(list_var)
+            if query != "":
+                query += '+FRANCE'
+
+            list_var_backup = []
+            for var in [postal_code, city]:
+                if var != "":
+                    list_var_backup += [re.sub(' ', '+', var)]
+            
+            query_backup = "+".join(list_var)
+            if query_backup != "":
+                query_backup += '+FRANCE'
+                           
             try:
-                lat, lon, category, typeLoc = _get_location_openstreetmap(query=address, session=session)
-            except:
-                address = '{}+{}+FRANCE'.format(postal_code, city)
+                lat, lon, category, typeLoc = _get_location_openstreetmap(query=query, session=session)
+            except:                
                 try:
-                    lat, lon, category, typeLoc = _get_location_openstreetmap(query=address, session=session)
+                    lat, lon, category, typeLoc = _get_location_openstreetmap(query=query_backup, session=session)
                 except:
                     lat, lon, category, typeLoc = (None, None, None, None)
                 
