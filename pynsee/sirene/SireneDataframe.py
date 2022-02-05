@@ -5,6 +5,7 @@ import pandas as pd
 from tqdm import trange
 from datetime import datetime
 from numpy import random
+import numpy as np
 from functools import lru_cache
 import requests
 from requests.adapters import HTTPAdapter
@@ -118,7 +119,7 @@ class SireneDataframe(pd.DataFrame):
                     try:
                         lat, lon, category, typeLoc, importance = _get_location_openstreetmap(query=query_backup, session=session)
                     except:
-                        lat, lon, category, typeLoc, importance = (None, None, None, None)
+                        lat, lon, category, typeLoc, importance = (None, None, None, None, None)
                     
                 df_location = pd.DataFrame({'siret': siret,
                                             'latitude': lat,
@@ -134,6 +135,19 @@ class SireneDataframe(pd.DataFrame):
 
             sirene_df = pd.merge(self, df_location, on = 'siret', how = 'left')
             
+            sirene_df['latitude'] = pd.to_numeric(sirene_df['latitude'])
+            sirene_df['longitude'] = pd.to_numeric(sirene_df['longitude'])
+            list_points = []
+
+            for i in range(len(sirene_df.index)):
+
+                if (sirene_df.loc[i,'latitude'] is None) or np.isnan(sirene_df.loc[i,'latitude']):                
+                    list_points += [None]
+                else:
+                    list_points += [Point(sirene_df.loc[i,'latitude'], sirene_df.loc[i,'longitude'])]
+           
+            sirene_df['geometry'] = list_points
+
             GeoDF = GeoDataframe(sirene_df)
 
-            return(GeoDF)
+            return(sirene_df)
