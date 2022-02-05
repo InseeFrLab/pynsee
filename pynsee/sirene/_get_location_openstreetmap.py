@@ -48,7 +48,8 @@ def _get_location_openstreetmap(query, session=None):
 
     data_final = pd.concat(list_dataframe).reset_index(drop=True)
 
-    lat, lon, category, typeLoc = (data_final["lat"][0], data_final["lon"][0], 
-                                data_final["category"][0], data_final["type"][0])
+    lat, lon, category, typeLoc, importance = (data_final["lat"][0], data_final["lon"][0], 
+                                data_final["category"][0], data_final["type"][0],
+                                data_final["importance"][0])
 
-    return lat, lon, category, typeLoc
+    return lat, lon, category, typeLoc, importance
