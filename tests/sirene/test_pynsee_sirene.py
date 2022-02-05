@@ -39,7 +39,7 @@ class TestFunction(TestCase):
         def test_get_location(self):
             df = search_sirene(variable=["activitePrincipaleEtablissement"],
                                pattern=['29.10Z'], kind='siret')
-            # df = df.loc[df['effectifsMinEtablissement'] > 100]
+            df = df.loc[df['effectifsMinEtablissement'] > 100]
             df = df.reset_index(drop=True)
 
             test = True
@@ -47,7 +47,8 @@ class TestFunction(TestCase):
             sirdf = df.get_location()
             sirf = test & isinstance(sirdf, GeoDataframe)
             geo = sirdf.get_geom()            
-            test = test & (type(geo) in [Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint])
+            test = test & (type(geo) in [Point, Polygon, MultiPolygon, 
+                                LineString, MultiLineString, MultiPoint])
             
             self.assertTrue(test)
 
