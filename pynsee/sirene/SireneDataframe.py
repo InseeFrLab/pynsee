@@ -57,7 +57,7 @@ class SireneDataframe(pd.DataFrame):
 
         df = self
 
-        _warning_get_location()
+        # _warning_get_location()
 
         def clean(string):
             if pd.isna(string):
@@ -144,7 +144,7 @@ class SireneDataframe(pd.DataFrame):
                 if (sirene_df.loc[i,'latitude'] is None) or np.isnan(sirene_df.loc[i,'latitude']):                
                     list_points += [None]
                 else:
-                    list_points += [Point(sirene_df.loc[i,'latitude'], sirene_df.loc[i,'longitude'])]
+                    list_points += [Point(sirene_df.loc[i,'longitude'], sirene_df.loc[i,'latitude'])]
            
             sirene_df['geometry'] = list_points
 
