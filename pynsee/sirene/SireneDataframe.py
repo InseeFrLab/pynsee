@@ -150,4 +150,4 @@ class SireneDataframe(pd.DataFrame):
 
             GeoDF = GeoDataframe(sirene_df)
 
-            return(sirene_df)
+            return(GeoDF)
