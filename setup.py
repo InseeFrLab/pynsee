@@ -36,7 +36,6 @@ setuptools.setup(
             "appdirs>=1.4.4",
             "unidecode>=1.2.0",
             'python-Levenshtein',
-            "geopy",
             "shapely==1.7.1",
             "datetime>=3.5.9",
             "pathlib2>=2.3.5",

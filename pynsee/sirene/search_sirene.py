@@ -6,7 +6,7 @@ from functools import lru_cache
 from pynsee.utils._paste import _paste
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
-
+from pynsee.sirene.SireneDataframe import SireneDataframe
 
 @lru_cache(maxsize=None)
 def _warning_search_sirene():
@@ -168,4 +168,6 @@ def search_sirene(variable,
 
     _warning_search_sirene()
 
-    return(df)
+    SireneDF = SireneDataframe(df)
+
+    return(SireneDF)
