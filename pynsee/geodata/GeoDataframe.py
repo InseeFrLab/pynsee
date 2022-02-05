@@ -16,17 +16,23 @@ class GeoDataframe(pd.DataFrame):
             geoList = []
             geoListType = []
 
+            none_detected = False
+
             for i in range(len(self.index)):
-                poly = self['geometry'][i]
-                geoListType.append(type(poly))
+                poly = self['geometry'][i]                
                 if type(poly) in [Polygon, Point, LineString]:
                     geoList += [poly]
+                    geoListType.append(type(poly))
                 elif type(poly) in [MultiPolygon, MultiLineString, MultiPoint]:
                     for j in range(len(poly.geoms)):
                         geoList += [poly.geoms[j]]
+                    geoListType.append(type(poly))
                 else:
-                    shapes = ["MultiPolygon", "MultiLineString", "MultiPoint"] + ["Polygon", "Point", "LineString"]
-                    print('!!! one shape in geometry column is not among supported shapely classes:\n %s' % ', '.join(shapes))
+                    none_detected = True
+            
+            if none_detected:
+                shapes = ["MultiPolygon", "MultiLineString", "MultiPoint"] + ["Polygon", "Point", "LineString"]
+                print('!!! one shape in geometry column is not among supported shapely classes or is None:\n %s' % ', '.join(shapes))
 
             geoListType = list(dict.fromkeys(geoListType))
 
