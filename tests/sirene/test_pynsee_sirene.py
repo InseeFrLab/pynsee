@@ -2,13 +2,17 @@
 
 from unittest import TestCase
 from pandas import pandas as pd
+import numpy as np
 import sys
+
+from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint
 
 from pynsee.sirene.get_data import get_data
 from pynsee.sirene.search_sirene import search_sirene
 from pynsee.sirene._request_sirene import _request_sirene
-from pynsee.sirene._get_location import _get_location
 from pynsee.sirene.get_all_columns import get_all_columns
+from pynsee.sirene.SireneDataframe import SireneDataframe
+from pynsee.geodata.GeoDataframe import GeoDataframe
 
 
 class TestFunction(TestCase):
@@ -35,10 +39,16 @@ class TestFunction(TestCase):
         def test_get_location(self):
             df = search_sirene(variable=["activitePrincipaleEtablissement"],
                                pattern=['29.10Z'], kind='siret')
-            df = df.loc[df['effectifsMinEtablissement'] > 100]
+            # df = df.loc[df['effectifsMinEtablissement'] > 100]
             df = df.reset_index(drop=True)
-            df_location = _get_location(df)
-            test = isinstance(df_location, pd.DataFrame)
+
+            test = True
+            sirf = test & isinstance(df, SireneDataframe)
+            sirdf = df.get_location()
+            sirf = test & isinstance(sirdf, GeoDataframe)
+            geo = sirdf.get_geom()            
+            test = test & (type(geo) in [Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint])
+            
             self.assertTrue(test)
 
         def test_get_data(self):
