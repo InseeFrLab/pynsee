@@ -47,7 +47,6 @@ jobs:
         # for f in *.py; do python "$f"; done
         cd ../..
     - name: Test with pytest
-      uses: actions/setup-python@v2
       if: github.ref != 'refs/heads/doc'
       with:      
         insee_key: ${{ secrets.INSEE_KEY }}
