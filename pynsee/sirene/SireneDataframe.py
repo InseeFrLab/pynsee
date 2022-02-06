@@ -20,13 +20,16 @@ def _warning_get_location():
     print("!!!\nThis function relies on OpenStreetMap\nPlease, change timeSleep argument if the maximum number of queries is reached\nBeware, maintenance of this function should not be taken for granted!\n!!!")
 
 class SireneDataframe(pd.DataFrame):
+    """Class for handling dataframes built from INSEE SIRENE API's data
+
+    """    
 
     @property
     def _constructor(self):
         return SireneDataframe
     
     def get_location(self, timeSleep=1):
-        """Get latitude and longitude of French legal entities
+        """Get latitude and longitude, add geometry column and turn SireneDataframe into GeoDataframe
 
         Notes:
             This function uses OpenStreetMap through the geopy package.

@@ -24,6 +24,17 @@ from pynsee.utils._hash import _hash
 def get_geodata(id,
             polygon=None,
             update=False):
+    """Get geographical data from an identifier and IGN API
+
+    Examples:
+        >>> from pynsee.geodata import get_geodata_list, get_geodata
+        >>> #
+        >>> # Get a list of geographical limits of French administrative areas from IGN API
+        >>> geodata_list = get_geodata_list()
+        >>> #
+        >>> # Get geographical limits of departments
+        >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
+    """            
           
     topic = "administratif"
     service = 'WFS'
