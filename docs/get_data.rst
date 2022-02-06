@@ -12,7 +12,7 @@ Get macroeconomic data
 Get geographical data
 ---------------------
 
-.. autofunction:: pynsee.sirene.get_geodata
+.. autofunction:: pynsee.geodata.get_geodata
 
 
 Get local data

@@ -38,7 +38,7 @@ class SireneDataframe(pd.DataFrame):
 
         Examples:
             >>> from pynsee.metadata import get_activity_list
-            >>> from pynsee.sirene import search_sirene, get_location
+            >>> from pynsee.sirene import search_sirene
             >>> #
             >>> #  Get activity list
             >>> naf5 = get_activity_list('NAF5')
@@ -52,7 +52,7 @@ class SireneDataframe(pd.DataFrame):
             >>> df = df.reset_index(drop=True)
             >>> #
             >>> # Get location
-            >>> df_location = get_location(df)
+            >>> df = df.get_location()
         """
 
         df = self
