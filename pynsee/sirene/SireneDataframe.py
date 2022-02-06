@@ -29,7 +29,7 @@ class SireneDataframe(pd.DataFrame):
         return SireneDataframe
     
     def get_location(self, timeSleep=1):
-        """Get latitude and longitude, add geometry column and turn SireneDataframe into GeoDataframe
+        """Get latitude and longitude from OpenStreetMap, add geometry column and turn SireneDataframe into GeoDataframe
 
         Notes:
             This function uses OpenStreetMap through the geopy package.
@@ -37,7 +37,7 @@ class SireneDataframe(pd.DataFrame):
             If it fails to find the exact location, by default it returns the location of the city.
 
         Args:
-            df (DataFrame): It should be the output of the search_sirene function
+            df (SireneDataframe): It should be a SireneDataframe from search_data or get_data
 
         Examples:
             >>> from pynsee.metadata import get_activity_list
