@@ -40,4 +40,3 @@ Get sirene
 
 .. autofunction:: pynsee.sirene.get_data
 
-.. autofunction:: pynsee.sirene.get_location
