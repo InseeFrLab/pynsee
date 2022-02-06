@@ -4,9 +4,11 @@ on:
   push:
       branches:
         - 'master'
+        - '!doc'
   pull_request:
     branches:
       - master
+      - '!doc'
 
 jobs:
   build:
@@ -47,8 +49,7 @@ jobs:
         # for f in *.py; do python "$f"; done
         cd ../..
     - name: Test with pytest
-      if: github.ref != 'refs/heads/doc'
-      with:      
+      env:      
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |     
