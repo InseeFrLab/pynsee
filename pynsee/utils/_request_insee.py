@@ -107,6 +107,10 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                             print(dict(ast.literal_eval(results.text))['header']['message'])
                         except:
                             pass
+                    if results.status_code == 200:
+                        return(results)
+                    else:
+                        raise ValueError(results.text + '\n' + sdmx_url)
                             
 
         else:
