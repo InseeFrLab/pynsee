@@ -31,7 +31,7 @@ class SireneDataframe(pd.DataFrame):
         Notes:
             This function uses OpenStreetMap through the geopy package.
 
-            If it fails to find the exact location, by default it returns the location of the city.
+            If it fails to find the exact location, by default it returns the location of the city and importance dimension is set to None.
 
         Args:
             df (DataFrame): It should be the output of the search_sirene function
@@ -120,6 +120,7 @@ class SireneDataframe(pd.DataFrame):
                 except:                
                     try:
                         lat, lon, category, typeLoc, importance = _get_location_openstreetmap(query=query_backup, session=session)
+                        importance = None
                     except:
                         lat, lon, category, typeLoc, importance = (None, None, None, None, None)
                     
