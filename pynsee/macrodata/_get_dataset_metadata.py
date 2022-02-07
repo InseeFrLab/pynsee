@@ -18,7 +18,7 @@ def _get_dataset_metadata(dataset, update=False):
     try:
         insee_folder = _create_insee_folder()
         file_dataset_metadata = insee_folder + \
-            "/" + _hash("idbank_list" + dataset)
+            "/" + _hash("idbank_list" + dataset) + ".json" 
 
         trigger_update = False
 
@@ -58,19 +58,11 @@ def _get_dataset_metadata(dataset, update=False):
                 dataset=dataset, update=update)
 
             # save data
-            idbank_list_dataset.to_pickle(file_dataset_metadata)
+            idbank_list_dataset.to_json(file_dataset_metadata)
             # print("Data cached")
         else:
-            # pickle format depends on python version
-            # then read_pickle can fail, if so
-            # the file is removed and the function is launched again
-            # testing requires multiple python versions
-            try:
-                idbank_list_dataset = pd.read_pickle(file_dataset_metadata)
-            except:
-                os.remove(file_dataset_metadata)
-                idbank_list_dataset = _get_dataset_metadata(
-                    dataset, update=update)
+            idbank_list_dataset = pd.read_json(file_dataset_metadata, dtype=False)
+            
 
             # print("Cached data has been used")
     except:

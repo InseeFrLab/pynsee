@@ -7,7 +7,6 @@ import time
 import math
 import pandas as pd
 from datetime import datetime
-#    from tqdm import trange
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
@@ -25,7 +24,7 @@ def _wait_api_query_limit(query):
 
     insee_folder = _create_insee_folder()
 
-    file = insee_folder + '/' + _hash('queries_count')
+    file = insee_folder + '/' + _hash('queries_count') + ".json"
 
     date_time_now = datetime.now()
 
@@ -36,19 +35,10 @@ def _wait_api_query_limit(query):
             "run_time": date_time_now
         }, index=[0])
 
-        qCount.to_pickle(file)
+        qCount.to_json(file)
 
     else:
-        try:
-            qCount = pd.read_pickle(file)
-        except:
-            os.remove(file)
-            qCount = pd.DataFrame({
-                "query": query,
-                "run_time": date_time_now
-            }, index=[0])
-
-            qCount.to_pickle(file)
+        qCount = pd.read_json(file, dtype=False)
 
         for r in range(len(qCount.index)):
             qCount.loc[r, 'time_gap'] = (
@@ -59,18 +49,14 @@ def _wait_api_query_limit(query):
         qCount = qCount.loc[qCount['oneMin'] == True]
         n_query = len(qCount.index)
 
-        # print("n query in 1 min : %s" % n_query)
-
         if n_query >= max_query_insee_api - 1:
 
             oldest_query_time_gap = max(qCount['time_gap'])
             waiting_time = math.ceil(
                 timespan_insee_api - oldest_query_time_gap + 1)
 
-#            for t in trange(waiting_time, desc = "Waiting time - %s secs" % waiting_time):
-#                time.sleep(1)
             _warning_query_limit()
-            # print("\nWai!ting time - %s secs" % waiting_time)'
+            
             time.sleep(waiting_time)
 
         new_query_time = pd.DataFrame({
@@ -81,6 +67,6 @@ def _wait_api_query_limit(query):
         qCount = pd.concat([qCount, new_query_time]).reset_index(drop=True)
         qCount = qCount[['query', 'run_time', 'time_gap', 'oneMin']]
 
-        qCount.to_pickle(file)
+        qCount.to_json(file)
 
         return(qCount)

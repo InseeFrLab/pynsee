@@ -23,7 +23,7 @@ def _download_idbank_list():
     file_to_dwn_default = 'idbank_' + str(todays_date.year) + str(todays_date.month)
 
     insee_folder = _create_insee_folder()
-    file = insee_folder + "/" + _hash(file_to_dwn_default)
+    
     file_json = insee_folder + "/" + _hash(file_to_dwn_default) + ".json"
 
     trigger_update = False
@@ -31,7 +31,7 @@ def _download_idbank_list():
     # if the data is not saved locally, or if it is too old (>90 days)
     # then an update is triggered
 
-    if not os.path.exists(file):
+    if not os.path.exists(file_json):
         trigger_update = True
     else:
         try:
@@ -43,7 +43,7 @@ def _download_idbank_list():
             insee_date_time_now = datetime.now()
 
         # file date creation
-        file_date_last_modif = datetime.fromtimestamp(os.path.getmtime(file))
+        file_date_last_modif = datetime.fromtimestamp(os.path.getmtime(file_json))
         day_lapse = (insee_date_time_now - file_date_last_modif).days
 
         if day_lapse > 90:

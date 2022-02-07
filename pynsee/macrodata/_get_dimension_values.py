@@ -21,7 +21,7 @@ def _get_dimension_values(cl_dimension, update=False):
     INSEE_api_link_codelist_dimension = INSEE_api_link_codelist + '/' + cl_dimension
 
     insee_folder = _create_insee_folder()
-    file = insee_folder + "/" + _hash(INSEE_sdmx_link_codelist_dimension)
+    file = insee_folder + "/" + _hash(INSEE_sdmx_link_codelist_dimension) + ".json"
 
     trigger_update = update
 
@@ -124,16 +124,8 @@ def _get_dimension_values(cl_dimension, update=False):
         df_dimension_values = pd.concat(list_values)
 
         # save data
-        df_dimension_values.to_pickle(file)
+        df_dimension_values.to_json(file)
     else:
-        # pickle format depends on python version
-        # then read_pickle can fail, if so
-        # the file is removed and the function is launched again
-        # testing requires multiple python versions
-        try:
-            df_dimension_values = pd.read_pickle(file)
-        except:
-            os.remove(file)
-            df_dimension_values = _get_dimension_values(cl_dimension)
+        df_dimension_values = pd.read_json(file, dtype=False)
 
     return df_dimension_values

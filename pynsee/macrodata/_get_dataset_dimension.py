@@ -25,14 +25,14 @@ def _get_dataset_dimension(dataset, update=False):
     INSEE_api_link_datastructure_dataset = INSEE_api_link_datastructure + '/' + dataset
 
     insee_folder = _create_insee_folder()
-    file = insee_folder + "/" + _hash(INSEE_sdmx_link_datastructure_dataset)
+    file_json = insee_folder + "/" + _hash(INSEE_sdmx_link_datastructure_dataset) + ".json"
 
     trigger_update = update
 
     # if the data is not saved locally, or if it is too old (>90 days)
     # then an update is triggered
 
-    if not os.path.exists(file):
+    if not os.path.exists(file_json):
         trigger_update = True
     else:
         try:
@@ -44,7 +44,7 @@ def _get_dataset_dimension(dataset, update=False):
             insee_date_time_now = datetime.now()
 
         # file date creation
-        file_date_last_modif = datetime.fromtimestamp(os.path.getmtime(file))
+        file_date_last_modif = datetime.fromtimestamp(os.path.getmtime(file_json))
         day_lapse = (insee_date_time_now - file_date_last_modif).days
 
         if day_lapse > 90:
@@ -107,17 +107,9 @@ def _get_dataset_dimension(dataset, update=False):
         dimension_df_all = dimension_df_all.dropna()
 
         # save data
-        dimension_df_all.to_pickle(file)
+        dimension_df_all.to_json(file_json)
 
     else:
-        # pickle format depends on python version
-        # then read_pickle can fail, if so
-        # the file is removed and the function is launched again
-        # testing requires multiple python versions
-        try:
-            dimension_df_all = pd.read_pickle(file)
-        except:
-            os.remove(file)
-            dimension_df_all = _get_dataset_dimension(dataset)
+        dimension_df_all = pd.read_json(file_json, dtype=False)
 
     return dimension_df_all
