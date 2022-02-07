@@ -73,23 +73,14 @@ Regarding data that can be downloaded directly from the website, the main entry 
 For further advice, have a look at the documentation and the examples
 
 
-French GDP growth rate
-----------------------
-
-Below is an example to easily download and display French GDP growth series
-
 .. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/example_gdp_picture.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
 
-.. mdinclude:: examples/example_gdp_growth_rate_yoy.md
+.. mdinclude:: docs/examples/example_gdp_growth_rate_yoy.md
 
-Poverty in Paris urban area
----------------------------
-
-Below is an example to easily download and represent French GDP growth series
 
 .. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/poverty_paris_urban_area.svg?token=AP32AXNFHNAH2NEK2LKWENTAZO7YY
 
-.. mdinclude:: examples/example_poverty_paris_urban_area.md
+.. mdinclude:: docs/examples/example_poverty_paris_urban_area.md
 
 How to avoid proxy issues ?
 ---------------------------

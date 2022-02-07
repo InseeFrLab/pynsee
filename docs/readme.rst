@@ -57,18 +57,12 @@ Data Search and Collection Advice
 
 For further advice, have a look at the documentation and the examples
   
-French GDP growth rate
-----------------------
 
 .. image:: examples/pictures/example_gdp_picture.png
    :target: examples/pictures/example_gdp_picture.png
    :alt: 
 
 .. mdinclude:: examples/example_gdp_growth_rate_yoy.md
-
-
-Poverty in Paris urban area
----------------------------
 
 .. image:: examples/pictures/poverty_paris_urban_area.svg
    :target: examples/pictures/poverty_paris_urban_area.svg
