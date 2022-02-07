@@ -1,35 +1,27 @@
----
-jupyter:
-  jupytext:
-    text_representation:
-      extension: .md
-      format_name: markdown
-      format_version: '1.3'
-      jupytext_version: 1.11.3
-  kernelspec:
-    display_name: Python 3
-    language: python
-    name: python3
----
-
 
 # GDP growth rate
+
+```python
+# Subscribe to api.insee.fr and get your credentials!
+# Save your credentials with init_conn function :
+from pynsee.utils.init_conn import init_conn
+init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+
+# Beware : any change to the keys should be tested after having cleared the cache
+# Please do : from pynsee.utils import clear_all_cache; clear_all_cache()"
+```
 
 ```python
 from pynsee.macrodata import * 
 
 import pandas as pd
 import matplotlib.ticker as ticker
-#%matplotlib inline
+%matplotlib inline
 import matplotlib.pyplot as plt
 
-# Subscribe to api.insee.fr and get your credentials!
-# Save your credentials with init_conn function :      
-from pynsee.utils.init_conn import init_conn
-init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
-
-# Beware : any change to the keys should be tested after having cleared the cache
-# Please do : from pynsee.utils import *; clear_all_cache()
+# get macroeconomic datasets list
+insee_dataset = get_dataset_list()
+insee_dataset.head()
 
 # get series key (idbank), for Gross domestic product balance
 id = get_series_list("CNT-2014-PIB-EQB-RF")

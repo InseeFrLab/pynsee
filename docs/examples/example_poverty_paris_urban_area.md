@@ -5,33 +5,37 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.11.3
+      jupytext_version: 1.13.6
   kernelspec:
-    display_name: Python 3
+    display_name: Python 3 (ipykernel)
     language: python
     name: python3
 ---
-
 
 # Poverty in Paris urban area
 
 ```python
 # Subscribe to api.insee.fr and get your credentials!
-# Save your credentials with init_conn function :      
-from pynsee.utils.init_conn import init_conn
-init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+# Save your credentials with init_conn function :
+# from pynsee.utils.init_conn import init_conn
+# init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 
 # Beware : any change to the keys should be tested after having cleared the cache
-# Please do : from pynsee.utils import *; clear_all_cache()
+# Please do : from pynsee.utils import clear_all_cache; clear_all_cache()"
+```
 
+```python
 from pynsee.localdata import *
+from pynsee.geodata import *
 
 import pandas as pd
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import descartes
 import geopandas as gpd
+```
 
+```python
 # get a list all data available : datasets and variables
 metadata = get_local_metadata()
 
@@ -48,25 +52,44 @@ areaParis = get_included_area('unitesUrbaines2020', ['00851'])
 code_com_paris = areaParis.code.to_list()
 
 # get numeric values from INSEE database 
-dataParis = get_insee_local(dataset='GEO2020FILO2017',
+dataParis = get_local_data(dataset_version='GEO2020FILO2017',
                        variables =  'INDICS_FILO_DISP_DET',
-                       geo = 'COM',
+                       nivgeo = 'COM',
                        geocodes = code_com_paris)
 
 #select poverty rate data, exclude paris commune
 data_plot = dataParis.loc[dataParis.UNIT=='TP60']
 data_plot = data_plot.loc[data_plot.CODEGEO!='75056']
 
-#get communes limits
-map_com = gpd.read_file(get_map_link('communes'))
-map_arr_mun = gpd.read_file(get_map_link('arrondissements-municipaux'))
+```
 
-map_idf = pd.concat([map_com, map_arr_mun])
+```python
+# get geographical data list
+geodata_list = get_geodata_list()
 
+# get departments geographical limits
+com = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:commune')
+comIdf = com[com['insee_reg'] == '11']
+comIdf = comIdf[['id', 'nom_m', 'insee_com', 'geometry']]
+comIdf = comIdf.rename(columns={'insee_com': 'CODEGEO'})
+
+# get arrondissement geographical limits
+arr = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:arrondissement_municipal')
+arr75 = arr[arr.insee_com.str.startswith('75')]
+arr75 = arr75[['id', 'nom_m', 'insee_arm', 'geometry']]
+arr75 = arr75.rename(columns={'insee_arm': 'CODEGEO'})
+
+# make ile de frande map by concatenation
+mapidf = pd.concat([comIdf, arr75]).reset_index()
+```
+
+```python
 # merge values and geographic limits
-mapparis = map_idf.merge(data_plot, how = 'right',
-                     left_on = 'code', right_on = 'CODEGEO')
+mapparis = mapidf.merge(data_plot, how = 'right', on = 'CODEGEO')
+mapparis = gpd.GeoDataFrame(mapparis).set_crs("EPSG:4326")
+```
 
+```python
 #plot
 fig, ax = plt.subplots(1,1,figsize=[15,15])
 mapparis.plot(column='OBS_VALUE', cmap=cm.viridis, 
@@ -78,5 +101,4 @@ fig.savefig('poverty_paris_urban_area.svg',
             format='svg', dpi=1200,
             bbox_inches = 'tight',
             pad_inches = 0)
-
 ```
