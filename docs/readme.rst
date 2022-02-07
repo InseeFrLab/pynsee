@@ -64,52 +64,8 @@ French GDP growth rate
    :target: examples/pictures/example_gdp_picture.png
    :alt: 
 
+.. mdinclude:: examples/example_gdp_growth_rate_yoy.md
 
-
-.. code-block:: python
-
-   from pynsee.macrodata import * 
-  
-   import pandas as pd
-   import matplotlib.ticker as ticker
-   import matplotlib.pyplot as plt
-
-   # Subscribe to api.insee.fr and get your credentials!
-   # Save your credentials with init_conn function :      
-   from pynsee.utils.init_conn import init_conn
-   init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
-
-   # Beware : any change to the keys should be tested after having cleared the cache
-   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
-
-   # get macroeconomic datasets list
-   insee_dataset = get_dataset_list()
-
-   # get series key (idbank), for Gross domestic product balance
-   id = get_idbank_list("CNT-2014-PIB-EQB-RF")
-
-   id = id.loc[(id.FREQ == "T") &
-               (id.OPERATION == "PIB") &
-               (id.NATURE == "TAUX") &
-               (id.CORRECTION == "CVS-CJO")]
-
-   data = get_series(id.IDBANK)
-   data = split_title(df = data, n_split=2)
-   
-   # define plot
-   ax = data.plot(kind='bar', x="TIME_PERIOD", stacked=True, y="OBS_VALUE", figsize=(15,5))
-   #add title
-   plt.title("French GDP growth rate, quarter-on-quarter, sa-wda")
-   # customize x-axis tickers
-   ticklabels = ['']*len(data.TIME_PERIOD)
-   ticklabels[::12] = [item for item in data.TIME_PERIOD[::12]]
-   ax.xaxis.set_major_formatter(ticker.FixedFormatter(ticklabels))
-   plt.gcf().autofmt_xdate()
-   #remove legend
-   ax.get_legend().remove()
-   #remove x-axistitle
-   ax.xaxis.label.set_visible(False)
-   plt.show()
 
 Poverty in Paris urban area
 ---------------------------
@@ -120,72 +76,7 @@ Poverty in Paris urban area
    :target: examples/pictures/poverty_paris_urban_area.svg
    :alt: 
 
-
-
-.. code-block:: python
-
-   # Subscribe to api.insee.fr and get your credentials!
-   # Save your credentials with init_conn function :      
-   from pynsee.utils.init_conn import init_conn
-   init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
-
-   # Beware : any change to the keys should be tested after having cleared the cache
-   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
-
-   from pynsee.localdata import *
-
-   import pandas as pd
-   import matplotlib.cm as cm
-   import matplotlib.pyplot as plt
-   import descartes
-   import geopandas as gpd
-
-   # get a list all data available : datasets and variables
-   metadata = get_local_metadata()
-
-   # geographic metadata
-   nivgeo = get_nivgeo_list()
-
-   # get geographic area list
-   area = get_area_list()
-
-   # get all communes in Paris urban area
-   areaParis = get_included_area('unitesUrbaines2020', ['00851'])
-
-   # get selected communes identifiers
-   code_com_paris = areaParis.code.to_list()
-
-   # get numeric values from INSEE database 
-   dataParis = get_local_data(dataset_version='GEO2020FILO2017',
-                          variables =  'INDICS_FILO_DISP_DET',
-                          nivgeo = 'COM',
-                          geocodes = code_com_paris)
-
-   #select poverty rate data, exclude paris commune
-   data_plot = dataParis.loc[dataParis.UNIT=='TP60']
-   data_plot = data_plot.loc[data_plot.CODEGEO!='75056']
-
-   #get communes limits
-   map_com = gpd.read_file(get_map_link('communes'))
-   map_arr_mun = gpd.read_file(get_map_link('arrondissements-municipaux'))
-   map_idf = pd.concat([map_com, map_arr_mun])
-
-   # merge values and geographic limits
-   mapparis = map_idf.merge(data_plot, how = 'right',
-                        left_on = 'code', right_on = 'CODEGEO')
-
-   #plot
-   fig, ax = plt.subplots(1,1,figsize=[15,15])
-   mapparis.plot(column='OBS_VALUE', cmap=cm.viridis, 
-       legend=True, ax=ax, legend_kwds={'shrink': 0.3})
-   ax.set_axis_off()
-   ax.set(title='Poverty rate in Paris urban area in 2017')
-   plt.show()
-   fig.savefig('poverty_paris_urban_area.svg',
-               format='svg', dpi=1200,
-               bbox_inches = 'tight',
-               pad_inches = 0)
-
+.. mdinclude:: examples/example_poverty_paris_urban_area.md
 
 How to avoid proxy issues ?
 ---------------------------
