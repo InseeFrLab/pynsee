@@ -17,7 +17,7 @@ from pynsee.sirene._get_location_openstreetmap import _get_location_openstreetma
 
 @lru_cache(maxsize=None)
 def _warning_get_location():
-    print("!!!\nThis function relies on OpenStreetMap\nPlease, change timeSleep argument if the maximum number of queries is reached\nBeware, maintenance of this function should not be taken for granted!\n!!!")
+    print("!!!\nThis function relies on OpenStreetMap\nBeware, maintenance of this function should not be taken for granted!\n!!!")
 
 class SireneDataframe(pd.DataFrame):
 
@@ -25,7 +25,7 @@ class SireneDataframe(pd.DataFrame):
     def _constructor(self):
         return SireneDataframe
     
-    def get_location(self, timeSleep=1):
+    def get_location(self):
         """Get latitude and longitude of French legal entities
 
         Notes:
@@ -74,6 +74,8 @@ class SireneDataframe(pd.DataFrame):
 
             list_location = []
 
+            timeSleep = 1
+
             session = requests.Session()
             retry = Retry(connect=3, backoff_factor=timeSleep)
             adapter = HTTPAdapter(max_retries=retry)
@@ -109,7 +111,7 @@ class SireneDataframe(pd.DataFrame):
                     if var != "":
                         list_var_backup += [re.sub(' ', '+', var)]
                 
-                query_backup = "+".join(list_var)
+                query_backup = "+".join(list_var_backup)
                 if query_backup != "":
                     query_backup += '+FRANCE'
                             
