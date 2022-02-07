@@ -73,4 +73,5 @@ def get_column_title(dataset=None):
         list_column.append(dim_values)
 
     df_column_final = pd.concat(list_column).reset_index(drop=True)
+    
     return(df_column_final)

@@ -6,8 +6,6 @@ from pynsee.macrodata._get_dimension_values import _get_dimension_values
 
 def _add_numeric_metadata(data):
 
-    # data = get_dataset('CLIMAT-AFFAIRES')
-
     list_numeric_col_metadata = ['OBS_STATUS', 'OBS_REV', 'OBS_CONF',
                                  'OBS_TYPE', 'OBS_QUAL']
 
