@@ -31,7 +31,7 @@ Installation & API subscription
 
 .. code-block:: python
 
-    # Get the development version from GitHub
+   # Get the development version from GitHub
    # git clone https://github.com/InseeFrLab/Py-Insee-Data.git
    # cd Py-Insee-Data
    # pip install .
@@ -69,8 +69,6 @@ French GDP growth rate
 
 Poverty in Paris urban area
 ---------------------------
-
-:raw-html-m2r:`<!-- ![](../examples/pictures/example_poverty_paris_uu.png) -->`
 
 .. image:: examples/pictures/poverty_paris_urban_area.svg
    :target: examples/pictures/poverty_paris_urban_area.svg
