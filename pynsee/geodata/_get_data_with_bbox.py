@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import time
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 import pandas as pd
 from pynsee.geodata._geojson_parser import _geojson_parser
 from pynsee.geodata._distance import _distance
@@ -10,7 +12,13 @@ def _set_global_var(args):
     global link0, list_bbox_full, session
     link0 = args[0]
     list_bbox_full = args[1]
+
     session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=1)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    
 
 def _get_data_with_bbox2(i):
     link = link0

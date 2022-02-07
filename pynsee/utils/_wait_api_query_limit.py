@@ -78,7 +78,7 @@ def _wait_api_query_limit(query):
             "run_time": date_time_now
         }, index=[0])
 
-        qCount = qCount.append(new_query_time).reset_index(drop=True)
+        qCount = pd.concat([qCount, new_query_time]).reset_index(drop=True)
         qCount = qCount[['query', 'run_time', 'time_gap', 'oneMin']]
 
         qCount.to_pickle(file)
