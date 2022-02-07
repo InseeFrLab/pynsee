@@ -24,6 +24,7 @@ def _download_idbank_list():
 
     insee_folder = _create_insee_folder()
     file = insee_folder + "/" + _hash(file_to_dwn_default)
+    file_json = insee_folder + "/" + _hash(file_to_dwn_default) + ".json"
 
     trigger_update = False
 
@@ -59,17 +60,10 @@ def _download_idbank_list():
         data.columns = ["nomflow", "idbank", "cleFlow"]
         data = data.sort_values("nomflow").reset_index(drop=True)
 
-        data.to_pickle(file)
+        data.to_json(file_json)
      
     else:
-        # pickle format depends on python version
-        # then read_pickle can fail, if so
-        # the file is removed and the function is launched again
-        # testing requires multiple python versions
-        try:
-            data = pd.read_pickle(file)
-        except:
-            os.remove(file)
-            data = _download_idbank_list()
+                
+        data = pd.read_json(file_json, dtype=False)
 
     return data
