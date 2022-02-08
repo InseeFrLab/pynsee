@@ -31,6 +31,7 @@ from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
 
 from pynsee.utils._clean_insee_folder import _clean_insee_folder
+from pynsee.utils.clear_all_cache import clear_all_cache
 
 test_SDMX = True
 
@@ -149,6 +150,7 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(data, pd.DataFrame))
 
         def test_get_dataset_2(self):
+            clear_all_cache()
             data = get_dataset("CNA-2014-CPEB",
                                filter="A.CNA_CPEB.A38-CB.VAL.D39.VALEUR_ABSOLUE.FE.EUROS_COURANTS.BRUT",
                                lastNObservations=1)
