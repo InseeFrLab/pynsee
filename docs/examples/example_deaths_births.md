@@ -5,10 +5,9 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.11.3
+      jupytext_version: 1.13.6
   kernelspec:
-    display_name: Python 3
-    language: python
+    display_name: 'Python 3.6.13 64-bit (''env_pynsee'': conda)'
     name: python3
 ---
 
@@ -17,12 +16,12 @@ jupyter:
 
 ```python
 # Subscribe to api.insee.fr and get your credentials!
-# Save your credentials with init_conn function :      
+# Save your credentials with init_conn function :
 from pynsee.utils.init_conn import init_conn
 init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 
 # Beware : any change to the keys should be tested after having cleared the cache
-# Please do : from pynsee.utils import *; clear_all_cache()
+# Please do : from pynsee.utils import clear_all_cache; clear_all_cache()"
 ```
 
 ```python
@@ -30,7 +29,7 @@ from pynsee.macrodata import *
 
 import numpy as np
 import pandas as pd
-#%matplotlib inline
+%matplotlib inline
 import matplotlib.pyplot as plt
 
 insee_data = get_dataset_list()

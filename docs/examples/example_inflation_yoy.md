@@ -5,29 +5,29 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.3'
-      jupytext_version: 1.11.3
+      jupytext_version: 1.13.6
   kernelspec:
-    display_name: Python 3
-    language: python
-    name: python3
+    display_name: 'Python 3.7.4 64-bit (''base'': conda)'
+    name: python374jvsc74a57bd0655652149c5fdd0f5c7c48d16656641802585a8a627e3aab203bd35409ed56ff
 ---
-
 
 # Inflation annual growth rate
 
 ```python
 # Subscribe to api.insee.fr and get your credentials!
+# Save your credentials with init_conn function :
+from pynsee.utils.init_conn import init_conn
+init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+
 # Beware : any change to the keys should be tested after having cleared the cache
-# Please do : from pynsee.utils import *; clear_all_cache()
-# Advice : add the following lines to 'pynsee_api_credentials.py' file in your HOME directory
-# to avoid running them manually
-import os
-os.environ['insee_key'] = "my_key"
-os.environ['insee_secret'] = "my_secret_key"
+# Please do : from pynsee.utils import clear_all_cache; clear_all_cache()"
+```
+
+```python
 
 from pynsee.macrodata import *
 
-#%matplotlib inline
+%matplotlib inline
 import matplotlib.pyplot as plt
 from textwrap import wrap
 
