@@ -5,8 +5,6 @@
 sphinx:
   configuration: docs/conf.py
 
-formats: all
-
 conda:
   environment: docs/environment.yml
 
