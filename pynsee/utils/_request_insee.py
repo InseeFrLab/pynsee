@@ -103,12 +103,12 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                 else:
                     if print_msg:                        
                         try:
-                            print("Error %s\n" % results.status_code)
-                            print(dict(ast.literal_eval(results.text))['header']['message'])
+                            print("Error %s\n" % results.status_code)                            
                         except:
                             pass
-                            
 
+                    raise ValueError(results.text)
+                                          
         else:
             # token is None
             commands = "\n\ninit_conn(insee_key='my_insee_key', insee_secret='my_insee_secret')"

@@ -24,11 +24,7 @@ from pynsee.utils._hash import _hash
 def get_geodata(id,
             polygon=None,
             update=False):
-       
-    # topic = 'administratif'
-    # id = 'ADMINEXPRESS-COG-CARTO.LATEST:commune'
-    # id = 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:departement'
-   
+          
     topic = "administratif"
     service = 'WFS'
     Version = "2.0.0"
@@ -93,11 +89,7 @@ def get_geodata(id,
 
                 list_data = list(tqdm.tqdm(pool.imap(_get_data_with_bbox2, irange),
                                         total=len(list_bbox)))
-            # list_data = []
-            # for i in tqdm.trange(len(list_bbox)):                
-            #     df = _get_data_with_bbox(link=link0, list_bbox=list_bbox[i])
-            #     list_data.append(df)
-                
+                            
             data_all = pd.concat(list_data).reset_index(drop=True) 
 
         elif len(json) != 0:
