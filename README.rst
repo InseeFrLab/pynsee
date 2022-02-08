@@ -130,67 +130,78 @@ GDP growth rate
 
 .. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/poverty_paris_urban_area.svg?token=AP32AXNFHNAH2NEK2LKWENTAZO7YY
 
-
-Population Map by Communes
---------------------------
+Poverty in Paris urban area
+---------------------------
 
 .. code-block:: python
 
+   from pynsee.localdata import *
    from pynsee.geodata import *
 
-   import geopandas as gpd
    import pandas as pd
-   from pandas.api.types import CategoricalDtype
    import matplotlib.cm as cm
    import matplotlib.pyplot as plt
    import descartes
-   
+   import geopandas as gpd
+
+   # get a list all data available : datasets and variables
+   metadata = get_local_metadata()
+
+   # geographic metadata
+   nivgeo = get_nivgeo_list()
+
+   # get geographic area list
+   area = get_area_list()
+
+   # get all communes in Paris urban area
+   areaParis = get_included_area('unitesUrbaines2020', ['00851'])
+
+   # get selected communes identifiers
+   code_com_paris = areaParis.code.to_list()
+
+   # get numeric values from INSEE database 
+   dataParis = get_local_data(dataset_version='GEO2020FILO2017',
+                          variables =  'INDICS_FILO_DISP_DET',
+                          nivgeo = 'COM',
+                          geocodes = code_com_paris)
+
+   #select poverty rate data, exclude paris commune
+   data_plot = dataParis.loc[dataParis.UNIT=='TP60']
+   data_plot = data_plot.loc[data_plot.CODEGEO!='75056']
+
    # get geographical data list
    geodata_list = get_geodata_list()
+
    # get departments geographical limits
    com = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:commune')
+   comIdf = com[com['insee_reg'] == '11']
+   comIdf = comIdf[['id', 'nom_m', 'insee_com', 'geometry']]
+   comIdf = comIdf.rename(columns={'insee_com': 'CODEGEO'})
 
-   geodata_list.head()
-   com.head()
+   # get arrondissement geographical limits
+   arr = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:arrondissement_municipal')
+   arr75 = arr[arr.insee_com.str.startswith('75')]
+   arr75 = arr75[['id', 'nom_m', 'insee_arm', 'geometry']]
+   arr75 = arr75.rename(columns={'insee_arm': 'CODEGEO'})
 
-   # remove overseas departments
-   comfrm = com[~com['insee_dep'].isin(['971', '972', '973', '974', '976'])]
+   # make ile de frande map by concatenation
+   mapidf = pd.concat([comIdf, arr75]).reset_index()
 
-   map = gpd.GeoDataFrame(comfrm).set_crs("EPSG:4326")
-   map['REF_AREA'] = 'D' + map['insee_dep']
+   # merge values and geographic limits
+   mapparis = mapidf.merge(data_plot, how = 'right', on = 'CODEGEO')
+   mapparis = gpd.GeoDataFrame(mapparis).set_crs("EPSG:4326")
 
-   map = map.to_crs(epsg=3035)
-   map["area"] = map['geometry'].area / 10**6
-   map = map.to_crs(epsg=4326)
-
-   map['density'] = map['population'] / map["area"]
-
-   map.loc[map.density < 40, 'range'] = "< 40"
-   map.loc[map.density >= 20000, 'range'] = "> 20 000"
-
-   density_ranges = [40, 50, 70, 100, 120, 160, 200, 240, 260, 410, 600, 1000, 5000, 20000]
-   list_ranges = []
-   list_ranges.append( "< 40")
-
-   for i in range(len(density_ranges)-1):
-       min = density_ranges[i]
-       max = density_ranges[i+1]
-       range_string = "[{}, {}[".format(min, max)
-       map.loc[(map.density >= min) & (map.density < max), 'range'] = range_string
-       list_ranges.append(range_string)
-
-   list_ranges.append("> 20 000")
-
-   map['range'] = map['range'].astype( CategoricalDtype(categories=list_ranges, ordered=True))
-
-   fig, ax = plt.subplots(1,1,figsize=[10,10])
-   map.plot(column='range', cmap=cm.viridis, 
-       legend=True, ax=ax,
-       legend_kwds={'bbox_to_anchor': (1.1, 0.8),
-                    'title':'density per km2'})
+   #plot
+   fig, ax = plt.subplots(1,1,figsize=[15,15])
+   mapparis.plot(column='OBS_VALUE', cmap=cm.viridis, 
+       legend=True, ax=ax, legend_kwds={'shrink': 0.3})
    ax.set_axis_off()
-   ax.set(title='Distribution of population in metropolitan France')
+   ax.set(title='Poverty rate in Paris urban area in 2017')
    plt.show()
+   fig.savefig('poverty_paris_urban_area.svg',
+               format='svg', dpi=1200,
+               bbox_inches = 'tight',
+               pad_inches = 0)
 
 
 How to avoid proxy issues ?
