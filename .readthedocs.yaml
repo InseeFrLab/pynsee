@@ -5,7 +5,7 @@
 version: 2
 
 conda:
-  environment: environment.yaml
+  environment: docs/environment.yml
 
 python:
   version: 3.8
