@@ -80,7 +80,7 @@ For further advice, have a look at the documentation and the examples
 
 .. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/poverty_paris_urban_area.svg?token=AP32AXNFHNAH2NEK2LKWENTAZO7YY
 
-.. mdinclude:: docs/examples/example_poverty_paris_urban_area.md
+.. mdinclude:: https://github.com/InseeFrLab/pynsee/tree/doc/docs/examples/example_poverty_paris_urban_area.md
 
 How to avoid proxy issues ?
 ---------------------------
