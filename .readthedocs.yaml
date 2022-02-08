@@ -3,7 +3,7 @@
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
 
 sphinx:
-  configuration: docs/source/conf.py
+  configuration: docs/conf.py
 
 formats: all
 
