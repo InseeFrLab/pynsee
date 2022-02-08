@@ -15,9 +15,9 @@ from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLine
 from pynsee.geodata.GeoDataframe import GeoDataframe
 from pynsee.sirene._get_location_openstreetmap import _get_location_openstreetmap
 
-@lru_cache(maxsize=None)
-def _warning_get_location():
-    print("!!!\nThis function relies on OpenStreetMap\nPlease, change timeSleep argument if the maximum number of queries is reached\nBeware, maintenance of this function should not be taken for granted!\n!!!")
+# @lru_cache(maxsize=None)
+# def _warning_get_location():
+#     print("!!!\nThis function relies on OpenStreetMap\nPlease, change timeSleep argument if the maximum number of queries is reached\nBeware, maintenance of this function should not be taken for granted!\n!!!")
 
 class SireneDataframe(pd.DataFrame):
 
@@ -25,13 +25,13 @@ class SireneDataframe(pd.DataFrame):
     def _constructor(self):
         return SireneDataframe
     
-    def get_location(self, timeSleep=1):
+    def get_location(self):
         """Get latitude and longitude of French legal entities
 
         Notes:
             This function uses OpenStreetMap through the geopy package.
 
-            If it fails to find the exact location, by default it returns the location of the city.
+            If it fails to find the exact location, by default it returns the location of the city and importange is set to None.
 
         Args:
             df (DataFrame): It should be the output of the search_sirene function
@@ -52,7 +52,7 @@ class SireneDataframe(pd.DataFrame):
             >>> df = df.reset_index(drop=True)
             >>> #
             >>> # Get location
-            >>> df_location = get_location(df)
+            >>> df_location = df.get_location(df)
         """
 
         df = self
@@ -118,6 +118,7 @@ class SireneDataframe(pd.DataFrame):
                 except:                
                     try:
                         lat, lon, category, typeLoc, importance = _get_location_openstreetmap(query=query_backup, session=session)
+                        importance = None
                     except:
                         lat, lon, category, typeLoc, importance = (None, None, None, None, None)
                     
