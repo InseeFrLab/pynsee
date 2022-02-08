@@ -73,7 +73,7 @@ class SireneDataframe(pd.DataFrame):
         if set(list_col).issubset(df.columns):
 
             list_location = []
-
+            timeSleep = 1
             session = requests.Session()
             retry = Retry(connect=3, backoff_factor=timeSleep)
             adapter = HTTPAdapter(max_retries=retry)
