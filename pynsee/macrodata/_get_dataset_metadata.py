@@ -76,7 +76,13 @@ def _get_dataset_metadata(dataset, update=False):
     except:
         # if the download of the idbank file and the build of the metadata fail
         # package's internal data is provided to the user, should be exceptional, used as a backup
-        warnings.warn("!!! Warning: Package's internal data has been used !!!")
+        warnings.warn("!!! Warning: Package's internal data has been used !!!\n")
+        print("!!! Idbank file download failed, have a look at the following page and find the new link !!!\n")
+        print("https://www.insee.fr/en/information/2868055\n")
+        print("!!! You may change the downloaded file changing the following environment variable !!!\n")
+        print("import os; os.environ['pynsee_idbank_file'] = 'my_new_idbank_file'\n")
+        print("!!! Please contact the package maintainer if this error persists !!!\n")
+
         idbank_list_dataset = _get_idbank_internal_data()
         idbank_list_dataset = idbank_list_dataset[idbank_list_dataset["DATASET"] == dataset]
 
