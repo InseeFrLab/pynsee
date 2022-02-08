@@ -76,7 +76,8 @@ For further advice, have a look at the documentation and the examples
 
 .. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/example_gdp_picture.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
 
-# GDP growth rate
+GDP growth rate
+---------------
 
 .. code-block:: python
 
@@ -130,9 +131,11 @@ For further advice, have a look at the documentation and the examples
 .. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/poverty_paris_urban_area.svg?token=AP32AXNFHNAH2NEK2LKWENTAZO7YY
 
 
-# Population Map by Communes
+Population Map by Communes
+--------------------------
 
 .. code-block:: python
+
    from pynsee.geodata import *
 
    import geopandas as gpd
