@@ -7,7 +7,7 @@ nbsphinx==0.8.2
 m2r2==0.2.7
 ipython>=7.16.1
 Jinja2==2.11
-sphinxcontrib-svg2pdfconverter==1.2.0
+sphinxcontrib-svg2pdfconverter
 pandas>=0.24.2
 tqdm>=4.56.0
 requests>=2.25.1
