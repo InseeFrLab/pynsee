@@ -9,7 +9,7 @@ setuptools.setup(
     name="pynsee",
     version="0.0.1",
     author="Hadrien Leclerc",
-    author_email="hadrien.leclerc@insee.fr",
+    author_email="leclerc.hadrien@gmail.com",
     description="Tools to Easily Download Data and Metadata from INSEE APIs",
     long_description=long_description,
     url="https://pynsee.readthedocs.io/en/latest/",

@@ -40,6 +40,10 @@ def _get_data_with_bbox(link, list_bbox):
         time.sleep(1) 
         with session.get(link_query) as r:                
             data_json = r.json()
+    
+    if r.status_code == 502:
+        print(f"!!! The following query failed, some data might be missing !!!\n{link_query}")
+        return pd.DataFrame()
         
     if 'features' in data_json.keys():
         
