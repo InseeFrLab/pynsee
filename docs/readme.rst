@@ -109,8 +109,8 @@ For further advice, have a look at the documentation and the examples
    ax.xaxis.label.set_visible(False)
    plt.show()
 
-.. image:: examples/pictures/poverty_paris_urban_area.svg
-   :target: examples/pictures/poverty_paris_urban_area.svg
+.. image:: examples/pictures/poverty_paris_urban_area.png
+   :target: examples/pictures/poverty_paris_urban_area.png
    :alt: 
 
 .. code-block:: python
