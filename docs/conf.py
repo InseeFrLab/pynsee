@@ -48,7 +48,7 @@ extensions = [
      'nbsphinx', 
      "m2r2",
      'sphinx.ext.mathjax',  
-     "sphinxcontrib-svg2pdfconverter",
+     "sphinxcontrib.rsvgconverter",
      #'sphinx.ext.imgconverter',   
      'IPython.sphinxext.ipython_console_highlighting',
      # 'sphinx_gallery.gen_gallery'
