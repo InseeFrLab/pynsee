@@ -13,7 +13,7 @@ def _get_capabilities(key, version='1.0.0', service='wmts', tweak =''):
     
     link = 'https://wxs.ign.fr/{}/geoportail/{}{}?SERVICE={}&VERSION={}&REQUEST=GetCapabilities'.format(key, tweak, service, service_upper, version)
     
-     try:
+    try:
         proxies = {'http': os.environ['http_proxy'],
                    'https': os.environ['http_proxy']}
     except:
