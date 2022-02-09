@@ -15,6 +15,7 @@ import sys
 import sphinx_copybutton
 import sphinx_rtd_theme
 import m2r2
+import sphinxcontrib
 
 # import rinoh
 os.chdir('../')
