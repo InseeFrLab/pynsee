@@ -43,13 +43,16 @@ def search_macrodata(pattern=".*", metadata=True):
         "DATASET", "IDBANK", "KEY", "TITLE_FR", "TITLE_EN"]]
 
     if metadata:
-        list_dataset = list(idbank_selected.DATASET.unique())
-        metata_df = get_series_list(list_dataset)
-        newcol = [col for col in metata_df.columns if col not in idbank_selected.columns] + ['IDBANK']
-        metata_df = metata_df[newcol]
+        try:
+            list_dataset = list(idbank_selected.DATASET.unique())
+            metata_df = get_series_list(list_dataset)
+            newcol = [col for col in metata_df.columns if col not in idbank_selected.columns] + ['IDBANK']
+            metata_df = metata_df[newcol]
 
-        idbank_selected = idbank_selected.merge(metata_df, on='IDBANK', how='left')
-        # remove all na columns
-        idbank_selected = idbank_selected.dropna(axis=1, how='all')
+            idbank_selected = idbank_selected.merge(metata_df, on='IDBANK', how='left')
+            # remove all na columns
+            idbank_selected = idbank_selected.dropna(axis=1, how='all')
+        except:
+            pass
 
     return(idbank_selected)
