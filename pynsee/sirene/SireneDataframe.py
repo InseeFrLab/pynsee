@@ -20,6 +20,9 @@ from pynsee.sirene._get_location_openstreetmap import _get_location_openstreetma
 #     print("!!!\nThis function relies on OpenStreetMap\nPlease, change timeSleep argument if the maximum number of queries is reached\nBeware, maintenance of this function should not be taken for granted!\n!!!")
 
 class SireneDataframe(pd.DataFrame):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @property
     def _constructor(self):
