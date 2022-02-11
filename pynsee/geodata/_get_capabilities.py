@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import requests
 import tempfile
 
@@ -11,8 +12,14 @@ def _get_capabilities(key, version='1.0.0', service='wmts', tweak =''):
     service_upper = service.upper()
     
     link = 'https://wxs.ign.fr/{}/geoportail/{}{}?SERVICE={}&VERSION={}&REQUEST=GetCapabilities'.format(key, tweak, service, service_upper, version)
-        
-    results = requests.get(link)
+    
+    try:
+        proxies = {'http': os.environ['http_proxy'],
+                   'https': os.environ['http_proxy']}
+    except:
+        proxies = {'http': '', 'https': ''}
+
+    results = requests.get(link, proxies=proxies)
     
     raw_data_file = tempfile.mkdtemp() + '\\' + "raw_data_file"
 
