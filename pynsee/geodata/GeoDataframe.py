@@ -11,5 +11,6 @@ class GeoDataframe(pd.DataFrame):
     
     from pynsee.geodata.get_geom import get_geom
     from pynsee.geodata.translate_overseas import translate_overseas
+    from pynsee.geodata.zoom_paris import zoom_paris
 
     

@@ -59,4 +59,4 @@ def _get_dataset_metadata_core(dataset, update=False):
             idbank_list_dataset = idbank_list_dataset.merge(dim_values,
                                                             on=dim_id, how='left')
 
-            return(idbank_list_dataset)
+    return(idbank_list_dataset)
