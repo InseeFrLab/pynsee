@@ -17,7 +17,7 @@ def _get_dataset_metadata_core(dataset, update=False):
     idbank_list = _download_idbank_list()
 
     # get dataset's dimensions
-    dataset_dimension = _get_dataset_dimension(dataset, update=update)
+    dataset_dimension = _get_dataset_dimension(dataset, update=update).reset_index(drop=True)
 
     # select only the idbanks corresponding to the dataset
     idbank_list_dataset = idbank_list[idbank_list["nomflow"] == dataset]
@@ -59,4 +59,4 @@ def _get_dataset_metadata_core(dataset, update=False):
             idbank_list_dataset = idbank_list_dataset.merge(dim_values,
                                                             on=dim_id, how='left')
 
-            return(idbank_list_dataset)
+    return(idbank_list_dataset)
