@@ -81,7 +81,7 @@ def get_geodata(id,
             list_bbox = _get_bbox_list(polygon=polygon,
                                        update=update)
 
-            Nprocesses = min(4, multiprocessing.cpu_count())
+            Nprocesses = min(6, multiprocessing.cpu_count())
             
             args = [link0, list_bbox]
             irange = range(len(list_bbox))
