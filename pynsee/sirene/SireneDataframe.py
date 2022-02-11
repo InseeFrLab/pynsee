@@ -28,7 +28,7 @@ class SireneDataframe(pd.DataFrame):
     def _constructor(self):
         return SireneDataframe
     
-    def get_location(self, timeSleep=1):
+    def get_location(self):
         """Get latitude and longitude from OpenStreetMap, add geometry column and turn SireneDataframe into GeoDataframe
 
         Notes:
@@ -76,7 +76,7 @@ class SireneDataframe(pd.DataFrame):
         if set(list_col).issubset(df.columns):
 
             list_location = []
-
+            timeSleep = 1
             session = requests.Session()
             retry = Retry(connect=3, backoff_factor=timeSleep)
             adapter = HTTPAdapter(max_retries=retry)
@@ -121,6 +121,7 @@ class SireneDataframe(pd.DataFrame):
                 except:                
                     try:
                         lat, lon, category, typeLoc, importance = _get_location_openstreetmap(query=query_backup, session=session)
+                        importance = None
                     except:
                         lat, lon, category, typeLoc, importance = (None, None, None, None, None)
                     

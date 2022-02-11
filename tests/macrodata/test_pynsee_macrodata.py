@@ -16,7 +16,6 @@ from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
-# from pynsee.macrodata._build_series_list import _build_series_list
 
 from pynsee.macrodata.get_series_list import get_series_list
 from pynsee.macrodata.get_dataset_list import get_dataset_list
@@ -121,6 +120,15 @@ class TestFunction(TestCase):
             os.environ['insee_date_test'] = "a"
             df = _get_dataset_metadata('CLIMAT-AFFAIRES')
             test3 = isinstance(df, pd.DataFrame)
+
+            # test backup data for idbank in case insee.fr delete files
+            os.environ['pynsee_idbank_file'] = "test"
+            os.environ['pynsee_idbank_loop_url'] = "False"
+            df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
+            test3 = test3 & isinstance(df, pd.DataFrame)
+
+            os.environ['pynsee_idbank_loop_url'] = "True"
+            
 
             self.assertTrue(test1 & test2 & test3)
 
