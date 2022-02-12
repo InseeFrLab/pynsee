@@ -11,9 +11,9 @@ def zoom_paris(self):
 
     if all([x in df.columns for x in ['insee_dep', 'geometry']]):
         
-        paris = df[df['insee_dep'].isin(['75','92', '93','94'])]        
+        paris = df[df['insee_dep'].isin(['75','92', '93','94', '91', '78', '77', '95'])]        
         paris = paris.reset_index(drop=True)
-        paris = _rescale_geom(df = paris, factor = 4)
+        paris = _rescale_geom(df = paris, factor = 1.5)
         
         dep29 =  df[df['insee_dep'].isin(['29'])]
         dep29 = dep29.reset_index(drop=True)
