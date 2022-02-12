@@ -32,6 +32,10 @@ class TestFunction(TestCase):
         geo29 = dep29.get_geom()
         self.assertTrue(isinstance(geo29, MultiPolygon))
 
+        map_translated = dep29.translate_overseas()
+        map_translated = map_translated.zoom_paris()
+        self.assertTrue(isinstance(map_translated, GeoDataframe))
+
         com29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29) 
         self.assertTrue(isinstance(com29, GeoDataframe))
         geocom29 = data.get_geom()
