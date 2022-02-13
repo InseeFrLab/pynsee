@@ -25,7 +25,7 @@ from pynsee.macrodata.get_series import get_series
 from pynsee.macrodata.get_dataset import get_dataset
 
 from pynsee.macrodata.get_column_title import get_column_title
-from .MacroDataframe import MacroDataframe
+from pynsee.macrodata.MacroDataframe import MacroDataframe
 from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
 
@@ -178,8 +178,6 @@ class TestFunction(TestCase):
             df1 = data.split_title()
             # main test
             test1 = isinstance(df1, pd.DataFrame)
-            # test is object is dataframe
-            test2 = (split_title(1) == 1)
             # test if title column exists
             df3 = data.split_title(title_col_name=['ABC'])
             test3 = (len(df3.columns) < len(df1.columns))
