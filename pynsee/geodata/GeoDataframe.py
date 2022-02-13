@@ -4,6 +4,9 @@ from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLine
 
 class GeoDataframe(pd.DataFrame):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     @property
     def _constructor(self):
         return GeoDataframe
