@@ -4,15 +4,15 @@
 from pynsee.sirene import search_sirene
 
 
-def get_all_columns(kind='siret'):
+def get_dimension_list(kind='siret'):
     """Get a list of all columns useful to make queries with search_sirene
 
     Args:
         kind (str, optional): Choose between siret and siren. Defaults to 'siret'.
 
     Examples:
-        >>> from pynsee.sirene import get_all_columns
-        >>> sirene_columns = get_all_columns()
+        >>> from pynsee.sirene import get_dimension_list
+        >>> sirene_dimension = get_dimension_list()
     """
 
     if kind not in ['siret','siren']:
