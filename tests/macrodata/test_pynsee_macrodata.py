@@ -178,15 +178,19 @@ class TestFunction(TestCase):
             df1 = data.split_title()
             # main test
             test1 = isinstance(df1, pd.DataFrame)
+            
             # test if title column exists
             df3 = data.split_title(title_col_name=['ABC'])
             test3 = (len(df3.columns) < len(df1.columns))
+            
             # test if n_split is not doable
             df4 = data.split_title(n_split=100)
             test4 = isinstance(df4, pd.DataFrame)
+            
             df5 = data.split_title(n_split=-10)
             test5 = isinstance(df5, pd.DataFrame)
-            self.assertTrue(test1 & test2 & test3 & test4 & test5)
+            
+            self.assertTrue(test1 & test3 & test4 & test5)
 
         def test_search_macrodata(self):
             search_all = search_macrodata()
