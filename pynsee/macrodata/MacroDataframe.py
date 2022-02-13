@@ -10,4 +10,4 @@ class MacroDataframe(pd.DataFrame):
     def _constructor(self):
         return MacroDataframe
 
-    from pynsee.macrodatas.split_title import split_title
+    from pynsee.macrodata.split_title import split_title
