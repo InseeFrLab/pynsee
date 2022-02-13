@@ -25,7 +25,7 @@ from pynsee.macrodata.get_series import get_series
 from pynsee.macrodata.get_dataset import get_dataset
 
 from pynsee.macrodata.get_column_title import get_column_title
-from pynsee.macrodata.split_title import split_title
+from .MacroDataframe import MacroDataframe
 from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
 
@@ -175,18 +175,18 @@ class TestFunction(TestCase):
 
         def test_split_title(self):
             data = get_series("001769682", "001769683")
-            df1 = split_title(data)
+            df1 = data.split_title()
             # main test
             test1 = isinstance(df1, pd.DataFrame)
             # test is object is dataframe
             test2 = (split_title(1) == 1)
             # test if title column exists
-            df3 = split_title(data, title_col_name=['ABC'])
+            df3 = data.split_title(title_col_name=['ABC'])
             test3 = (len(df3.columns) < len(df1.columns))
             # test if n_split is not doable
-            df4 = split_title(data, n_split=100)
+            df4 = data.split_title(n_split=100)
             test4 = isinstance(df4, pd.DataFrame)
-            df5 = split_title(data, n_split=-10)
+            df5 = data.split_title(n_split=-10)
             test5 = isinstance(df5, pd.DataFrame)
             self.assertTrue(test1 & test2 & test3 & test4 & test5)
 
