@@ -6,11 +6,22 @@ from tqdm import trange
 import pandas as pd
 
 from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
-
+from pynsee.localdata.get_geo_list import get_geo_list
 
 @lru_cache(maxsize=None)
 def _warning_future_dev():
-    print("\n!!! This function is still at an early development stage,\nfuture changes are likely !!!")
+    print("\n!!! This underlying API is still at an early development stage,\nfuture changes are likely !!!")
+
+@lru_cache(maxsize=None)
+def _warning_nivgeo(nivgeo):
+    if nivgeo == "DEP":
+        nivgeo_label = "departements"
+        print(f"By default, the query is on all {nivgeo_label}")
+    elif nivgeo == "REG":
+        nivgeo_label = "regions"
+        print(f"By default, the query is on all {nivgeo_label}")
+    elif nivgeo == "FE":
+        print("By default, the query is on all France territory")
 
 
 def get_local_data(variables, dataset_version, nivgeo='FE', geocodes=['1']):
@@ -45,6 +56,20 @@ def get_local_data(variables, dataset_version, nivgeo='FE', geocodes=['1']):
 
     if type(geocodes) != list:
         raise ValueError("!!! geocodes must be a list !!!")
+    
+    if (geocodes == ["1"]) or (geocodes == ["all"]) or (geocodes == "all"):
+        if nivgeo == "DEP":            
+            departement = get_geo_list('departements')
+            geocodes = departement.CODE.to_list()
+            _warning_nivgeo(nivgeo)          
+        elif nivgeo == "REG":            
+            reg = get_geo_list('regions')
+            geocodes = reg.CODE.to_list()
+            _warning_nivgeo(nivgeo)
+        elif (nivgeo == "FE"):
+            _warning_nivgeo(_warning_nivgeo) 
+        elif (nivgeo != "METRODOM"):
+            print("!!! Please, provide a list with geocodes argument !!!")            
 
     list_data_all = []
 

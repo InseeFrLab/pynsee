@@ -12,7 +12,7 @@ def get_dimension_list(kind='siret'):
 
     Examples:
         >>> from pynsee.sirene import get_dimension_list
-        >>> sirene_dimensions = get_dimension_list()
+        >>> sirene_dimension = get_dimension_list()
     """
 
     if kind not in ['siret','siren']:

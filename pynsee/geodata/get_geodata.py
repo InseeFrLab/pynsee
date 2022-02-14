@@ -4,13 +4,16 @@ import time
 import pandas as pd
 import requests
 import os
+import math
 import multiprocessing
 import tqdm 
+import shapely.wkt
 
 from pynsee.geodata.GeoDataframe import GeoDataframe
     
 from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
+from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
@@ -47,13 +50,13 @@ def get_geodata(id,
         link = link0
             
     insee_folder = _create_insee_folder()
-    file_name = insee_folder + '/' +  _hash(link) + ".csv"  
+    file_name = insee_folder + '/' +  _hash(link) + ".csv"    
 
     try:
         proxies = {'http': os.environ['http_proxy'],
                    'https': os.environ['http_proxy']}
     except:
-        proxies = {'http': '', 'https': ''}    
+        proxies = {'http': '', 'https': ''}   
     
     if (not os.path.exists(file_name)) | (update is True):
 
