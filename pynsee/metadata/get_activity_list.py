@@ -12,6 +12,7 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._paste import _paste
 from pynsee.metadata._get_naf import _get_naf
 from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
+from pynsee.metadata._add_A17 import _add_A17
 
 # @lru_cache(maxsize=None)
 # def _warning_activity():
@@ -151,7 +152,11 @@ def get_activity_list(level, version='NAFRev2'):
 
     #
     df = _get_nomenclature_agreg(file=list_expected_files[9])
-
+    
+    level_origin = level
+    if level == "A17":
+        level = "A38"
+        
     icol = df.columns.get_loc(level)
 
     if level == 'A10':
@@ -171,6 +176,11 @@ def get_activity_list(level, version='NAFRev2'):
 
     df = df.rename(columns={'TITLE': 'TITLE_' + level + '_FR'})
     df[level] = df[level].apply(drop_space)
+
+    if "A38" in df.columns:
+        df = _add_A17(df).reset_index(drop=True)
+
+    level = level_origin
 
     if level == 'A138':
         ifile = 8
@@ -222,17 +232,25 @@ def get_activity_list(level, version='NAFRev2'):
         first_col = 0
         label_list_col = ['', 'A10', '', 'TITLE_A10_EN', 'TITLE_A10_FR']
         col_merged = ['A10', 'TITLE_A10_EN']
-
+    
+    if level == 'A17':
+        ifile = 3
+        
     label = pd.read_csv(list_expected_files[ifile], sep=";",
-                        # encoding='latin1',
                         encoding="ISO-8859-1",
                         dtype=str)
-    label = label.iloc[:, first_col:ncol]
-    label.columns = label_list_col
-    label = label.dropna(how='all')
 
-    label[level] = label[level].apply(drop_space)
+    if level != "A17":
+        label = label.iloc[:, first_col:ncol]
+        label.columns = label_list_col
+        label = label.dropna(how='all')
 
-    df = df.merge(label[col_merged], on=level, how='left')
+        label[level] = label[level].apply(drop_space)
+        df = df.merge(label[col_merged], on=level, how='left')
+    else:
+        label = label.iloc[:,[0,5,6]]
+        label.columns = ["A17", "TITLE_A17_EN", "TITLE_A17_FR"]
+        df = df[["A10", "A17"]].reset_index(drop=True).drop_duplicates()
+        df = df.merge(label, on = "A17", how="left")    
 
     return(df)
