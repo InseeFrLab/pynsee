@@ -10,7 +10,7 @@ from pynsee.localdata.get_geo_list import get_geo_list
 
 @lru_cache(maxsize=None)
 def _warning_future_dev():
-    print("\n!!! This underlying API is still at an early development stage,\nfuture changes are likely !!!")
+    print("\n!!! The underlying API is still at an early development stage,\nfuture changes are likely !!!")
 
 @lru_cache(maxsize=None)
 def _warning_nivgeo(nivgeo):
