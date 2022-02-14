@@ -6,7 +6,6 @@ from pynsee.macrodata._get_insee import _get_insee
 from pynsee.macrodata.get_dataset_list import get_dataset_list
 from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata
 from pynsee.macrodata.get_series_list import get_series_list
-from pynsee.macrodata.MacroDataframe import MacroDataframe
 
 
 def get_dataset(dataset,
@@ -112,6 +111,5 @@ def get_dataset(dataset,
         except:
             pass
 
-    macrodata = MacroDataframe(data)
     
-    return macrodata
+    return data

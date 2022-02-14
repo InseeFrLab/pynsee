@@ -108,8 +108,6 @@ Below is an example to easily download and represent French GDP growth series
 
    data = get_series(id.IDBANK)
 
-   data = split_title(df = data, n_split=2)
-
    # define plot
    ax = data.plot(kind='bar', x="TIME_PERIOD", stacked=True, y="OBS_VALUE", figsize=(15,5))
    #add title
