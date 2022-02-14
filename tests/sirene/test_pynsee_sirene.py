@@ -10,7 +10,7 @@ from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLine
 from pynsee.sirene.get_data import get_data
 from pynsee.sirene.search_sirene import search_sirene
 from pynsee.sirene._request_sirene import _request_sirene
-from pynsee.sirene.get_all_columns import get_all_columns
+from pynsee.sirene.get_dimension_list import get_dimension_list
 from pynsee.sirene.SireneDataframe import SireneDataframe
 from pynsee.geodata.GeoDataframe import GeoDataframe
 
@@ -21,20 +21,20 @@ class TestFunction(TestCase):
 
     if version_3_7:
 
-        def test_get_all_columns(self):
+        def test_get_dimension_list(self):
             test = True
 
-            df = get_all_columns()
+            df = get_dimension_list()
             test = test & isinstance(df, pd.DataFrame)
 
-            df = get_all_columns('siren')
+            df = get_dimension_list('siren')
             test = test & isinstance(df, pd.DataFrame)
 
             self.assertTrue(test)
         
-        def test_error_get_all_columns(self):
+        def test_error_get_dimension_list(self):
             with self.assertRaises(ValueError):
-                get_all_columns('sirène')
+                get_dimension_list('sirène')
 
         def test_get_location(self):
             df = search_sirene(variable=["activitePrincipaleEtablissement"],

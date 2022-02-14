@@ -26,22 +26,42 @@ def _dwn_idbank_files():
     patterns = [y + x + patt for y in years for x in months]
     files = [main_link + f + ".zip" for f in patterns]
 
-    i = 0
     try:
-        data = _dwn_idbank_file(file_to_dwn = files[i])
+        file_to_dwn = os.environ["pynsee_idbank_file"]
+    except:
+        file_to_dwn = "https://www.insee.fr/en/statistiques/fichier/2868055/202201_correspondance_idbank_dimension.zip"
+
+    try:
+        data = _dwn_idbank_file(file_to_dwn = file_to_dwn)
     except:
         idbank_file_not_found = True
     else:
         idbank_file_not_found = False
+    
+    i = 0
 
-    while (idbank_file_not_found & (i<=len(files)-1)):
-        i += 1
+    pynsee_idbank_loop_url = True
+
+    try:
+        pynsee_idbank_loop_url = os.environ["pynsee_idbank_loop_url"]        
+    except:
         try:
-            data = _dwn_idbank_file(file_to_dwn = files[i])
+            pynsee_idbank_loop_url = os.environ["PYNSEE_IDBANK_LOOP_URL"]        
         except:
-            idbank_file_not_found = True
-        else:
-            idbank_file_not_found = False
+            pass
+    
+    if (pynsee_idbank_loop_url == 'False') or (pynsee_idbank_loop_url == 'FALSE'):
+            pynsee_idbank_loop_url = False
+
+    if pynsee_idbank_loop_url:
+        while (idbank_file_not_found & (i<=len(files)-1)):        
+            try:
+                data = _dwn_idbank_file(file_to_dwn = files[i])
+            except:
+                idbank_file_not_found = True
+            else:
+                idbank_file_not_found = False
+            i += 1
 
     return data
 

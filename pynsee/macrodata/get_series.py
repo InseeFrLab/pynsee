@@ -158,4 +158,5 @@ def get_series(*idbanks,
         except:
             pass
 
+
     return data
