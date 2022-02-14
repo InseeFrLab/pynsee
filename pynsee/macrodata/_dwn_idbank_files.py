@@ -44,7 +44,7 @@ def _dwn_idbank_files():
 
     try:
         pynsee_idbank_loop_url = os.environ["pynsee_idbank_loop_url"]
-        if pynsee_idbank_loop_url == 'False':
+        if (pynsee_idbank_loop_url == 'False') or (pynsee_idbank_loop_url == 'FALSE'):
             pynsee_idbank_loop_url = False
     except:
         pass

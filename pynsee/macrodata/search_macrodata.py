@@ -6,7 +6,7 @@ from functools import lru_cache
 from pynsee.macrodata._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
 from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data
 from pynsee.macrodata.get_series_list import get_series_list
-
+from pynsee.macrodata.MacroDataframe import MacroDataframe
 
 @lru_cache(maxsize=None)
 def search_macrodata(pattern=".*", metadata=True):
@@ -55,4 +55,6 @@ def search_macrodata(pattern=".*", metadata=True):
         except:
             pass
 
-    return(idbank_selected)
+    macrodata = MacroDataframe(idbank_selected)
+
+    return(macrodata)

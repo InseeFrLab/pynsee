@@ -21,6 +21,9 @@ from pynsee.sirene._get_location_openstreetmap import _get_location_openstreetma
 
 class SireneDataframe(pd.DataFrame):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     @property
     def _constructor(self):
         return SireneDataframe

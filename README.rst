@@ -37,8 +37,8 @@ API credentials can be created <https://api.insee.fr/catalogue/>
 .. code-block:: python
 
    # Get the development version from GitHub
-   # git clone https://github.com/InseeFrLab/Py-Insee-Data.git
-   # cd Py-Insee-Data
+   # git clone https://github.com/InseeFrLab/pynsee.git
+   # cd pynsee
    # pip install .
 
    # Subscribe to api.insee.fr and get your credentials!

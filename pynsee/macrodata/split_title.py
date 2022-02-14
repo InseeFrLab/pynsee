@@ -4,7 +4,7 @@
 import pandas as pd
 
 
-def split_title(df, title_col_name=["TITLE_EN", "TITLE_FR"],
+def split_title(self, title_col_name=["TITLE_EN", "TITLE_FR"],
                 pattern=" – | — | - ", n_split=-1):
     """Split the title columns
 
@@ -19,9 +19,11 @@ def split_title(df, title_col_name=["TITLE_EN", "TITLE_FR"],
 
     Examples:
         >>> from pynsee.macrodata import get_series, split_title
-        >>> data_raw = get_series("001577236")
-        >>> data = split_title(data_raw)
+        >>> data = get_series("001577236")
+        >>> data = data.split_title()
     """
+
+    df = self
 
     if isinstance(df, pd.DataFrame):
         for title in title_col_name:
