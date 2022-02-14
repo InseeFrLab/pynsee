@@ -12,6 +12,7 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._paste import _paste
 from pynsee.metadata._get_naf import _get_naf
 from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
+from pynsee.metadata._add_A17 import _add_A17
 
 # @lru_cache(maxsize=None)
 # def _warning_activity():
@@ -151,7 +152,11 @@ def get_activity_list(level, version='NAFRev2'):
 
     #
     df = _get_nomenclature_agreg(file=list_expected_files[9])
-
+    
+    level_origin = level
+    if level == "A17":
+        level = "A38"
+        
     icol = df.columns.get_loc(level)
 
     if level == 'A10':
@@ -171,6 +176,9 @@ def get_activity_list(level, version='NAFRev2'):
 
     df = df.rename(columns={'TITLE': 'TITLE_' + level + '_FR'})
     df[level] = df[level].apply(drop_space)
+
+    if level_origin == "A17":
+        df2 = _add_A17(df)
 
     if level == 'A138':
         ifile = 8
