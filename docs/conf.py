@@ -15,6 +15,7 @@ import sys
 import sphinx_copybutton
 import sphinx_rtd_theme
 import m2r2
+import sphinxcontrib
 
 # import rinoh
 os.chdir('../')
@@ -45,7 +46,10 @@ extensions = [
      'sphinx.ext.autodoc',
      'sphinx_copybutton',
      'nbsphinx', 
-     'sphinx.ext.mathjax',     
+     "m2r2",
+     'sphinx.ext.mathjax',  
+     "sphinxcontrib.rsvgconverter",
+     #'sphinx.ext.imgconverter',   
      'IPython.sphinxext.ipython_console_highlighting',
      # 'sphinx_gallery.gen_gallery'
 ]

@@ -3,6 +3,9 @@ import pandas as pd
 from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint
 
 class GeoDataframe(pd.DataFrame):
+    """Class for handling dataframes built from IGN's geographical data
+
+    """    
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -12,6 +15,20 @@ class GeoDataframe(pd.DataFrame):
         return GeoDataframe
 
     def get_geom(self):
+        """Extract a shape (Polygon, Point ...) from a GeoDataframe
+
+        Examples:
+            >>> from pynsee.geodata import get_geodata_list, get_geodata
+            >>> #
+            >>> # Get a list of geographical limits of French administrative areas from IGN API
+            >>> geodata_list = get_geodata_list()
+            >>> #
+            >>> # Get geographical limits of departments
+            >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
+            >>> # 
+            >>> # Extract a polygon from the GeoDataframe
+            >>> geo = df.get_geom()
+        """        
 
         self = self.reset_index(drop=True)
         
