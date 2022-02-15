@@ -7,6 +7,7 @@ from pynsee.metadata.get_activity_list import get_activity_list
 from pynsee.metadata.get_legal_entity import get_legal_entity
 from pynsee.sirene._employee_metadata import _employee_metadata
 from pynsee.sirene._street_metadata import _street_metadata
+from pynsee.utils._move_col_after import _move_col_after
 
 # @lru_cache(maxsize=None)
 
@@ -106,15 +107,6 @@ def _clean_data(data_final, kind='siren', clean=True,
         if 'typeVoieEtablissement' in data_final.columns:
             data_final = data_final.merge(
                 df_street, on='typeVoieEtablissement', how='left')
-
-        def _move_col_after(df, col, col_ref):
-            if col in df.columns:
-                if col_ref in df.columns:
-                    loc_var = df.columns.get_loc(col_ref)
-                    col2insert = df[col]
-                    df = df.drop([col], axis=1)
-                    df.insert(loc_var + 1, col, col2insert)
-            return(df)
 
         # move columns title after columns containing values
         for var in ['categorieJuridiqueUniteLegale',

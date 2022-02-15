@@ -43,11 +43,8 @@ def _dwn_idbank_files():
     pynsee_idbank_loop_url = True
 
     try:
-        pynsee_idbank_loop_url = os.environ["pynsee_idbank_loop_url"]
-        if pynsee_idbank_loop_url == 'False':
-            pynsee_idbank_loop_url = False
+        pynsee_idbank_loop_url = os.environ["pynsee_idbank_loop_url"]        
     except:
-        pass
 
     if pynsee_idbank_loop_url:
         while (idbank_file_not_found & (i<=len(files)-1)):        

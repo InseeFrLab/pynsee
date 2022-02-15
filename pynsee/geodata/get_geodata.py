@@ -61,15 +61,21 @@ def get_geodata(id,
         link = link0
             
     insee_folder = _create_insee_folder()
-    file_name = insee_folder + '/' +  _hash(link) + ".csv"       
+    file_name = insee_folder + '/' +  _hash(link) + ".csv"    
+
+    try:
+        proxies = {'http': os.environ['http_proxy'],
+                   'https': os.environ['http_proxy']}
+    except:
+        proxies = {'http': '', 'https': ''}   
     
     if (not os.path.exists(file_name)) | (update is True):
 
-        data = requests.get(link)
+        data = requests.get(link, proxies=proxies)
 
         if data.status_code == 502:
             time.sleep(1) 
-            data = requests.get(link)
+            data = requests.get(link, proxies=proxies)
         
         if data.status_code != 200:
             print('Query:\n%s' % link)
@@ -89,7 +95,7 @@ def get_geodata(id,
             list_bbox = _get_bbox_list(polygon=polygon,
                                        update=update)
 
-            Nprocesses = min(4, multiprocessing.cpu_count())
+            Nprocesses = min(6, multiprocessing.cpu_count())
             
             args = [link0, list_bbox]
             irange = range(len(list_bbox))

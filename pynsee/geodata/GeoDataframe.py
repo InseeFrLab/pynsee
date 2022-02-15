@@ -5,11 +5,13 @@ class GeoDataframe(pd.DataFrame):
 
     """    
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     @property
     def _constructor(self):
         return GeoDataframe
     
     from pynsee.geodata.get_geom import get_geom
-    from pynsee.geodata.translate_overseas import translate_overseas
 
     

@@ -14,33 +14,36 @@ from pynsee.geodata.GeoDataframe import GeoDataframe
 
 class TestFunction(TestCase):
 
-    def test_get_geodata_short(self):
-        df = get_geodata_list(update=True)
-        self.assertTrue(isinstance(df, pd.DataFrame))
+    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
 
-        ids = df.Identifier.to_list()
+    if version_3_7:
+        def test_get_geodata_short(self):
+            df = get_geodata_list(update=True)
+            self.assertTrue(isinstance(df, pd.DataFrame))
 
-        list_geom_type = []
+            ids = df.Identifier.to_list()
 
-        data = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
-        self.assertTrue(isinstance(data, GeoDataframe))
-        geo = data.get_geom()
-        self.assertTrue(isinstance(geo, MultiPolygon))
+            list_geom_type = []
 
-        dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True)
-        self.assertTrue(isinstance(dep29, GeoDataframe))
-        geo29 = dep29.get_geom()
-        self.assertTrue(isinstance(geo29, MultiPolygon))
+            data = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
+            self.assertTrue(isinstance(data, GeoDataframe))
+            geo = data.get_geom()
+            self.assertTrue(isinstance(geo, MultiPolygon))
 
-        com29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29) 
-        self.assertTrue(isinstance(com29, GeoDataframe))
-        geocom29 = data.get_geom()
-        self.assertTrue(isinstance(geocom29, MultiPolygon))
+            dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True)
+            self.assertTrue(isinstance(dep29, GeoDataframe))
+            geo29 = dep29.get_geom()
+            self.assertTrue(isinstance(geo29, MultiPolygon))
 
-        data = get_geodata(id='test', update=True) 
-        self.assertTrue(isinstance(data, pd.DataFrame))
-    
-    version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
+            com29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29) 
+            self.assertTrue(isinstance(com29, GeoDataframe))
+            geocom29 = data.get_geom()
+            self.assertTrue(isinstance(geocom29, MultiPolygon))
+
+            data = get_geodata(id='test', update=True) 
+            self.assertTrue(isinstance(data, pd.DataFrame))
+        
+        
 
     if False:
 
