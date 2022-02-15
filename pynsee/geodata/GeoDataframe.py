@@ -7,6 +7,9 @@ class GeoDataframe(pd.DataFrame):
 
     """    
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     @property
     def _constructor(self):
         return GeoDataframe

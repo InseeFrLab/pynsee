@@ -38,8 +38,8 @@ API credentials can be created <https://api.insee.fr/catalogue/>
 .. code-block:: python
 
    # Get the development version from GitHub
-   # git clone https://github.com/InseeFrLab/Py-Insee-Data.git
-   # cd Py-Insee-Data
+   # git clone https://github.com/InseeFrLab/pynsee.git
+   # cd pynsee
    # pip install .
 
    # Subscribe to api.insee.fr and get your credentials!
@@ -109,7 +109,6 @@ GDP growth rate
                (id.CORRECTION == "CVS-CJO")]
 
    data = get_series(id.IDBANK)
-   data = split_title(df = data, n_split=2)
 
    # define plot
    ax = data.plot(kind='bar', x="TIME_PERIOD", stacked=True, y="OBS_VALUE", figsize=(15,5))

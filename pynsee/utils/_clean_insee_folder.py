@@ -8,7 +8,7 @@ import os
 def _clean_insee_folder():
 
     local_appdata_folder = appdirs.user_cache_dir()
-    insee_folder = local_appdata_folder + '/insee' + '/py_insee'
+    insee_folder = local_appdata_folder + '/pynsee' + '/pynsee'
 
     # delete all files in the folder
     if os.path.exists(insee_folder):

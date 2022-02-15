@@ -15,13 +15,6 @@ from pynsee.utils._get_temp_dir import _get_temp_dir
 @lru_cache(maxsize=None)
 def _get_insee(api_query, sdmx_query, step="1/1"):
 
-    # "001694056", "001691912", "001580062", "001688370", "010565692"
-    # sdmx_query = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
-    # api_query = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
-
-    # api_query = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/010752065%2B010752064%2B010752063%2B001790771%2B010551532%2B010551533%2B010551534%2B010551536%2B010551535%2B010551487"
-    # sdmx_query = None
-
     # create temporary directory
     dirpath = _get_temp_dir()
 

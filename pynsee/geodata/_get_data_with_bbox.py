@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import time
 import requests
 from requests.adapters import HTTPAdapter
@@ -33,13 +34,23 @@ def _get_data_with_bbox(link, list_bbox):
     
     link_query = link + BBOX
 
-    with session.get(link_query) as r:                
+    try:
+        proxies = {'http': os.environ['http_proxy'],
+                   'https': os.environ['http_proxy']}
+    except:
+        proxies = {'http': '', 'https': ''}
+
+    with session.get(link_query, proxies=proxies) as r:                
         data_json = r.json()
     
     if r.status_code == 502:
         time.sleep(1) 
-        with session.get(link_query) as r:                
+        with session.get(link_query, proxies=proxies) as r:                
             data_json = r.json()
+    
+    if r.status_code == 502:
+        print(f"!!! The following query failed, some data might be missing !!!\n{link_query}")
+        return pd.DataFrame()
         
     if 'features' in data_json.keys():
         
