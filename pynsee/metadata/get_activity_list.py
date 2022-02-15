@@ -177,8 +177,10 @@ def get_activity_list(level, version='NAFRev2'):
     df = df.rename(columns={'TITLE': 'TITLE_' + level + '_FR'})
     df[level] = df[level].apply(drop_space)
 
-    if level_origin == "A17":
-        df2 = _add_A17(df)
+    if "A38" in df.columns:
+        df = _add_A17(df).reset_index(drop=True)
+
+    level = level_origin
 
     if level == 'A138':
         ifile = 8
@@ -230,17 +232,25 @@ def get_activity_list(level, version='NAFRev2'):
         first_col = 0
         label_list_col = ['', 'A10', '', 'TITLE_A10_EN', 'TITLE_A10_FR']
         col_merged = ['A10', 'TITLE_A10_EN']
-
+    
+    if level == 'A17':
+        ifile = 3
+        
     label = pd.read_csv(list_expected_files[ifile], sep=";",
-                        # encoding='latin1',
                         encoding="ISO-8859-1",
                         dtype=str)
-    label = label.iloc[:, first_col:ncol]
-    label.columns = label_list_col
-    label = label.dropna(how='all')
 
-    label[level] = label[level].apply(drop_space)
+    if level != "A17":
+        label = label.iloc[:, first_col:ncol]
+        label.columns = label_list_col
+        label = label.dropna(how='all')
 
-    df = df.merge(label[col_merged], on=level, how='left')
+        label[level] = label[level].apply(drop_space)
+        df = df.merge(label[col_merged], on=level, how='left')
+    else:
+        label = label.iloc[:,[0,5,6]]
+        label.columns = ["A17", "TITLE_A17_EN", "TITLE_A17_FR"]
+        df = df[["A10", "A17"]].reset_index(drop=True).drop_duplicates()
+        df = df.merge(label, on = "A17", how="left")    
 
     return(df)
