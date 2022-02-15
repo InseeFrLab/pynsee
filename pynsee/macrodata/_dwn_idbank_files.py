@@ -45,13 +45,6 @@ def _dwn_idbank_files():
     try:
         pynsee_idbank_loop_url = os.environ["pynsee_idbank_loop_url"]        
     except:
-        try:
-            pynsee_idbank_loop_url = os.environ["PYNSEE_IDBANK_LOOP_URL"]        
-        except:
-            pass
-    
-    if (pynsee_idbank_loop_url == 'False') or (pynsee_idbank_loop_url == 'FALSE'):
-            pynsee_idbank_loop_url = False
 
     if pynsee_idbank_loop_url:
         while (idbank_file_not_found & (i<=len(files)-1)):        

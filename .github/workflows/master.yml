@@ -47,6 +47,7 @@ jobs:
         # for f in *.py; do python "$f"; done
         cd ../..
     - name: Test with pytest
+      timeout-minutes: 480
       env:
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
