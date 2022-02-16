@@ -12,7 +12,8 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._paste import _paste
 from pynsee.metadata._get_naf import _get_naf
 from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
-from pynsee.metadata._add_A17 import _add_A17
+from pynsee.metadata._add_A17_activity import _add_A17_activity
+from pynsee.metadata._add_A5_activity import _get_A5_activity_label, _add_A5_activity
 
 # @lru_cache(maxsize=None)
 # def _warning_activity():
@@ -28,7 +29,7 @@ def get_activity_list(level, version='NAFRev2'):
         This function uses NAF/NACE rev. 2 classification made in 2008
 
     Args:
-        level (str): Levels available are :  A10, A21, A38, A64, A88, A129, A138, NAF1, NAF2, NAF3, NAF4, NAF5
+        level (str): Levels available are :  A5, A10, A17, A21, A38, A64, A88, A129, A138, NAF1, NAF2, NAF3, NAF4, NAF5
 
         version (str, optional): Defaults to 'NAFRev2'.
 
@@ -44,12 +45,16 @@ def get_activity_list(level, version='NAFRev2'):
 
     level = level.upper()
 
-    level_available = ['A10', 'A17', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
+    level_available = ["A5" ,'A10', 'A17', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
                     'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5']
 
     if level not in level_available:
         raise ValueError("!!! level must be in %s !!!",
                         _paste(level_available, collapse=" "))
+
+    A5_activity_list = _get_A5_activity_label()
+    if level == "A5":
+        return A5_activity_list
 
     # _warning_activity()
 
@@ -148,6 +153,15 @@ def get_activity_list(level, version='NAFRev2'):
         naf = naf.drop(columns=['len_code'])
         naf = naf.merge(mapp, on=level, how='left')
 
+        if "A38" in naf.columns:
+            naf = _add_A17_activity(naf)
+        
+        if 'A10' in naf.columns:
+            naf = _add_A5_activity(naf)
+
+        # sort columns alphabetically
+        naf = naf.reindex(sorted(naf.columns), axis=1).reset_index(drop=True)
+
         return(naf)
 
     #
@@ -178,7 +192,7 @@ def get_activity_list(level, version='NAFRev2'):
     df[level] = df[level].apply(drop_space)
 
     if "A38" in df.columns:
-        df = _add_A17(df).reset_index(drop=True)
+        df = _add_A17_activity(df).reset_index(drop=True)
 
     level = level_origin
 
@@ -252,5 +266,9 @@ def get_activity_list(level, version='NAFRev2'):
         label.columns = ["A17", "TITLE_A17_EN", "TITLE_A17_FR"]
         df = df[["A10", "A17"]].reset_index(drop=True).drop_duplicates()
         df = df.merge(label, on = "A17", how="left")    
+
+    # add A5 activity
+    if 'A10' in df.columns:
+        df = _add_A5_activity(df)
 
     return(df)

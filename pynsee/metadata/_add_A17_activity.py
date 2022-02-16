@@ -2,7 +2,7 @@
 import pandas as pd
 from pynsee.utils._move_col_after import _move_col_after
 
-def _add_A17(df):
+def _add_A17_activity(df):
 
     df2 = df.copy()
     df2["A17"] = df2["A38"].copy()
