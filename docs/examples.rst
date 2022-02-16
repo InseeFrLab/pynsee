@@ -14,6 +14,7 @@ Examples
    examples/example_inflation_yoy.ipynb
    examples/example_population_map_com.ipynb
    examples/example_poverty_paris_urban_area.ipynb
+   examples/example_empl_sector_dep.ipynb
    examples/example_population_pyramid.ipynb
    examples/example_insee_premises_sirene.ipynb
    examples/example_automotive_industry_sirene.ipynb
