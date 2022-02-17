@@ -42,10 +42,10 @@ def get_local_metadata():
                      "Fichier localisé des rémunérations et de l'emploi salarié",
                      "Tourisme (offre d'hébergement)"
                      ]
-
     all_files = []
     name_dataset = ['RP', 'BDCOM', 'Popleg', 'RFD',
                     'REE', 'FILOSOFI', 'Flores', 'TOUR']
+                    
     var_name = ['var_modalite', 'mesure_croisement', 'lib_mesure', 'millesime']
     for var in var_name:
         for dt in name_dataset:
@@ -79,7 +79,7 @@ def get_local_metadata():
         for f in range(len(list_files)):
             try:
                 file2load = folder + '/' + list_files[f]
-                df = pd.read_csv(file2load)
+                df = pd.read_csv(file2load, sep =";", encoding="ISO-8859-1")
 
                 if reshape is True:
                     df.columns = ['var' if x
