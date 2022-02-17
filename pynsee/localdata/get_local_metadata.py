@@ -190,15 +190,6 @@ def get_local_metadata(update=False):
     lib_mesure = lib_mesure.drop_duplicates()
     variables = variables.merge(lib_mesure, on='mesure', how='left')
 
-    # lib_tableau = extract_data_from_excel_sheet(var='lib_tableau',
-    #                                           list_col=['nom_tab','lib_tab'])
-    #
-    # lib_filtre_stat = extract_data_from_excel_sheet(var='lib_filtre_stat',
-    #                                           list_col=['filtre_stat','lib_filtre_stat'])
-    #
-    # lib_filtre_geo = extract_data_from_excel_sheet(var='lib_filtre_geo',
-    #                                           list_col=['filtre_geo','lib_filtre_geo'])
-
     #
     # add metadata on millesime to variables list: geo data date and data date
     #
@@ -217,14 +208,12 @@ def get_local_metadata(update=False):
     datasets = pd.DataFrame(dataset_dict)
     variables = variables.merge(datasets, on='dataset', how='left')
 
-
-#    variables.columns = ['variables', 'unit', 'dataset_version', 'dataset',
-#                         'variables_label', 'unit_label', 'geo_date', 'data_date', 'dataset_label']
-
     variables.columns = ['VARIABLES', 'UNIT', 'DATASET_VERSION', 'DATASET',
                          'VARIABLES_label', 'UNIT_label', 'GEO_DATE',
                          'DATA_DATE', 'DATASET_label']
 
-    variables = variables.dropna(subset=['GEO_DATE'])
-
+    # variables = variables.dropna(subset=['GEO_DATE'])
+    variables = variables[~variables.DATASET_VERSION.str.contains('filtre_geo ')]
+    variables = variables.reset_index(drop=True)
+    
     return(variables)
