@@ -17,7 +17,7 @@ def _warning_data():
 
 
 @lru_cache(maxsize=None)
-def get_local_metadata(update=False):
+def get_local_metadata():
     """Get a list of all combinations of datasets, variables and unit measures available from INSEE Local API
 
     Examples:
