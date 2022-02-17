@@ -79,7 +79,7 @@ def get_local_metadata():
         for f in range(len(list_files)):
             try:
                 file2load = folder + '/' + list_files[f]
-                df = pd.read_csv(file2load, sep =";", encoding="ISO-8859-1")
+                df = pd.read_csv(file2load, sep =",", encoding="UTF-8")
 
                 if reshape is True:
                     df.columns = ['var' if x
