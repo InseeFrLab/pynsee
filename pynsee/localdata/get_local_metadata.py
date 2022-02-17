@@ -17,7 +17,7 @@ def _warning_data():
 
 
 @lru_cache(maxsize=None)
-def get_local_metadata():
+def get_local_metadata(update=False):
     """Get a list of all combinations of datasets, variables and unit measures available from INSEE Local API
 
     Examples:
@@ -55,8 +55,8 @@ def get_local_metadata():
     list_files = [f for f in list_files if re.search('^doc_.*csv$', f)]
 
     test_file_available = [f not in list_files for f in all_files]
-
-    if any(test_file_available):
+    #any(test_file_available)
+    if True:
         zip_file = pkg_resources.resource_stream(
             __name__, 'data/local_metadata.zip')
 
