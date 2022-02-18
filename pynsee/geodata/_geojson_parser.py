@@ -3,12 +3,16 @@
 #from tqdm import trange
 import pandas as pd
 from shapely.geometry import shape
+from shapely.geometry import LineString, Point, Polygon, MultiPolygon, MultiLineString, MultiPoint
 
 def _geojson_parser(data):
         
     data_list = []
+    list_shapes = []
     
-    for c in range(len(data)): 
+    for c in range(len(data)):
+
+        print(c) 
            
         df = data[c]['properties']
         
@@ -29,23 +33,18 @@ def _geojson_parser(data):
         
         data_type = data[c]['geometry']['type']
         
-        Shape = shape({"type": data_type,
-                            "coordinates": geom})
+        Shape = shape({"type": data_type, "coordinates": geom})
+        # list_shapes = [Shape.geoms[x] for x in range(len(Shape.geoms))]
 
-        if data_type in ['LineString', 'Polygon', 'Point']:
-            df2['geometry'] = Shape
-        elif data_type in ['MultiLineString','MultiPolygon', 'MultiPoint']:
-            df2['geometry'] = [Shape]
-        else:
-            geo_Shape = Shape.geoms
-            if (len(geo_Shape) > 1):
-                df2['geometry'] = [Shape]
-            else:
-                df2['geometry'] = Shape
-                
-        data_list.append(df2)
-                
-    data_all = pd.concat(data_list).reset_index(drop=True)
+        if data_type in ['MultiLineString','MultiPolygon', 'MultiPoint','LineString', 'Polygon', 'Point']:
+            list_shapes += [Shape]
+            data_list.append(df2)
+        else:            
+            print(f"Unsupported shape {data_type} has been removed")
+                    
+
+    data_all = pd.concat(data_list)
+    data_all["geometry"] = list_shapes
     
     return data_all
          
