@@ -12,5 +12,5 @@ class GeoDataframe(pd.DataFrame):
     @property
     def _constructor(self):
         return GeoDataframe
-    
+
     from pynsee.geodata.get_geom import get_geom

@@ -8,10 +8,9 @@ import numpy as np
 
 from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
 from pynsee.localdata.get_geo_list import get_geo_list
+
 from pynsee.localdata._warning_local_data import _warning_local_data
 
-
-@lru_cache(maxsize=None)
 def _warning_nivgeo(nivgeo):
     if nivgeo == "DEP":
         nivgeo_label = "departements"
