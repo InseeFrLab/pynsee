@@ -3,7 +3,6 @@
 
 from unittest import TestCase
 import pandas as pd
-import geopandas as gpd
 import sys
 
 from pynsee.localdata._get_geo_relation import _get_geo_relation
@@ -101,56 +100,64 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(data, pd.DataFrame))
 
         def test_get_local_data_all(self):
+            test = True
 
             data = get_local_data(dataset_version='GEO2020RP2017',
                                   variables='SEXE-DIPL_19',
                                   nivgeo='DEP',
                                   geocodes=['91', '92', '976'])
-            test1 = isinstance(data, pd.DataFrame)
+            test = test & isinstance(data, pd.DataFrame)
 
             data = get_local_data(dataset_version='GEO2020FILO2018',
                                   variables='INDICS_FILO_DISP_DET-TRAGERF',
                                   nivgeo='REG',
                                   geocodes=['11', '01'])
-            test2 = isinstance(data, pd.DataFrame)
+            test = test & isinstance(data, pd.DataFrame)
 
             data = get_local_data(dataset_version='BDCOM2017',
                                   variables='INDICS_BDCOM',
                                   nivgeo='REG',
                                   geocodes=['11'])
-            test3 = isinstance(data, pd.DataFrame)
+            test = test & isinstance(data, pd.DataFrame)
 
             data = get_local_data(dataset_version='GEO2019RFD2011',
                                   variables='INDICS_ETATCIVIL',
                                   nivgeo='REG',
                                   geocodes=['11'])
-            test4 = isinstance(data, pd.DataFrame)
+            test = test & isinstance(data, pd.DataFrame)
 
             data = get_local_data(dataset_version='TOUR2019',
                                   variables='ETOILE',
                                   nivgeo='REG',
                                   geocodes=['11'])
-            test5 = isinstance(data, pd.DataFrame)
+            test = test & isinstance(data, pd.DataFrame)
 
             data = get_local_data(dataset_version='GEO2020FLORES2017',
                                   variables='EFFECSAL5T_1_100P',
                                   nivgeo='REG',
                                   geocodes=['11'])
-            test6 = isinstance(data, pd.DataFrame)
+            test = test & isinstance(data, pd.DataFrame)
 
             data = get_local_data(dataset_version='GEO2019REE2018',
                                   variables='NA5_B',
                                   nivgeo='REG',
                                   geocodes=['11'])
-            test7 = isinstance(data, pd.DataFrame)
+            test = test & isinstance(data, pd.DataFrame)
 
             data = get_local_data(dataset_version='POPLEG2018',
                                   variables='IND_POPLEGALES',
                                   nivgeo='COM',
                                   geocodes=['91477'])
-            test8 = isinstance(data, pd.DataFrame)
+            test = test & isinstance(data, pd.DataFrame)
 
-            test = test1 & test2 & test3 & test4 & test5 & test6 & test7 & test8
+            for geo in ["DEP", "REG", "FE", "METRODOM"]:
+                data = get_local_data(dataset_version = 'GEO2020FLORES2017',
+                                    variables =  'NA17',
+                                    nivgeo = geo)
+                test = test & isinstance(data, pd.DataFrame)
+
+            test = test & isinstance(data, pd.DataFrame)
+
             self.assertTrue(test)
 
         def test_get_area_list_1(self):
