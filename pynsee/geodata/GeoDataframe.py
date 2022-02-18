@@ -1,4 +1,5 @@
 
+import pandas as pd
 
 class GeoDataframe(pd.DataFrame):
     """Class for handling dataframes built from IGN's geographical data
@@ -13,5 +14,3 @@ class GeoDataframe(pd.DataFrame):
         return GeoDataframe
     
     from pynsee.geodata.get_geom import get_geom
-
-    
