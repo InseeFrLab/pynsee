@@ -34,7 +34,7 @@ class TestFunction(TestCase):
 
             com29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29) 
             self.assertTrue(isinstance(com29, GeoDataframe))
-            geocom29 = data.get_geom()
+            geocom29 = com29.get_geom()
             self.assertTrue(isinstance(geocom29, MultiPolygon))
 
             data = get_geodata(id='test', update=True) 
