@@ -42,9 +42,7 @@ class TestFunction(TestCase):
 
             data = get_geodata(id='test', update=True) 
             self.assertTrue(isinstance(data, pd.DataFrame))
-        
-        
-
+                
     if False:
 
         def test_get_geodata_all(self):
