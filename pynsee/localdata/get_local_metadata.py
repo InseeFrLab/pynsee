@@ -13,7 +13,7 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 
 @lru_cache(maxsize=None)
 def _warning_data():
-    print("!!! This function renders only package's internal data, it might not be the most up-to-date\nHave a look at api.insee.fr !!!")
+    print("!!! This function renders only package's internal data,\nit might not be the most up-to-date\nHave a look at api.insee.fr !!!")
 
 
 @lru_cache(maxsize=None)
