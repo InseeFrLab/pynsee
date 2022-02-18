@@ -16,7 +16,7 @@ class TestFunction(TestCase):
 
     version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
 
-    if version_3_7:
+    if version_3_7 is False:
         def test_get_geodata_short(self):
             df = get_geodata_list(update=True)
             self.assertTrue(isinstance(df, pd.DataFrame))
