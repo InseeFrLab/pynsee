@@ -9,7 +9,7 @@ from shapely.geometry import Polygon, MultiPolygon, MultiLineString, MultiPoint
 
 from pynsee.geodata.get_geodata_list import get_geodata_list
 from pynsee.geodata.get_geodata import get_geodata
-
+from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata.GeoDataframe import GeoDataframe
 
 class TestFunction(TestCase):
@@ -36,6 +36,9 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(com29, GeoDataframe))
             geocom29 = com29.get_geom()
             self.assertTrue(isinstance(geocom29, MultiPolygon))
+
+            bbox = _get_bbox_list(polygon=geo29, update=True)
+            self.assertTrue(isinstance(bbox, list))
 
             data = get_geodata(id='test', update=True) 
             self.assertTrue(isinstance(data, pd.DataFrame))
