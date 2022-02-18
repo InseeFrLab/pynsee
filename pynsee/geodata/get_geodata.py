@@ -4,16 +4,13 @@ import time
 import pandas as pd
 import requests
 import os
-import math
 import multiprocessing
 import tqdm 
-import shapely.wkt
 
 from pynsee.geodata.GeoDataframe import GeoDataframe
     
 from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
-from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
@@ -106,16 +103,12 @@ def get_geodata(id,
 
                 list_data = list(tqdm.tqdm(pool.imap(_get_data_with_bbox2, irange),
                                         total=len(list_bbox)))
-            # list_data = []
-            # for i in tqdm.trange(len(list_bbox)):                
-            #     df = _get_data_with_bbox(link=link0, list_bbox=list_bbox[i])
-            #     list_data.append(df)
-                
+                            
             data_all = pd.concat(list_data).reset_index(drop=True) 
 
         elif len(json) != 0:
 
-            data_all = _geojson_parser(json)
+            data_all = _geojson_parser(json).reset_index(drop=True)
 
         else:
             msg = '!!! Query is correct but no data found !!!'
