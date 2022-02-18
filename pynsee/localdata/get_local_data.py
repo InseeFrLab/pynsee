@@ -4,13 +4,12 @@
 from functools import lru_cache
 from tqdm import trange
 import pandas as pd
+import numpy as np
 
 from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
 from pynsee.localdata.get_geo_list import get_geo_list
+from pynsee.localdata._warning_local_data import _warning_local_data
 
-@lru_cache(maxsize=None)
-def _warning_future_dev():
-    print("\n!!! The underlying API is still at an early development stage,\nfuture changes are likely !!!")
 
 @lru_cache(maxsize=None)
 def _warning_nivgeo(nivgeo):
@@ -76,14 +75,16 @@ def get_local_data(variables, dataset_version, nivgeo='FE', geocodes=['1']):
     for cdg in trange(len(geocodes), desc="Getting data"):
 
         codegeo = geocodes[cdg]
-
-        df = _get_insee_local_onegeo(
-            variables, dataset_version, nivgeo, codegeo)
+        try:
+            df = _get_insee_local_onegeo(
+                variables, dataset_version, nivgeo, codegeo)
+        except:
+            df = pd.DataFrame({'CODEGEO': codegeo, 'OBS_VALUE': np.nan}, index=[0])
 
         list_data_all.append(df)
 
     data_final = pd.concat(list_data_all).reset_index(drop=True)
 
-    _warning_future_dev()
+    _warning_local_data()
 
     return(data_final)

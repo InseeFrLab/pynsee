@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from functools import lru_cache
-import os
-import zipfile
-import pkg_resources
-import pandas as pd
 
 from pynsee.geodata.get_geodata import get_geodata
 
