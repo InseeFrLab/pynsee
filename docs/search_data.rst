@@ -18,7 +18,7 @@ Search macroeconomic data
 Search geographical data
 ------------------------
 
-.. autofunction:: pynsee.sirene.get_geodata_list
+.. autofunction:: pynsee.geodata.get_geodata_list
 
 Search local data
 -----------------
@@ -41,6 +41,6 @@ Search metadata
 Search sirene
 -------------
 
-.. autofunction:: pynsee.sirene.get_all_columns
+.. autofunction:: pynsee.sirene.get_dimension_list
 
 .. autofunction:: pynsee.sirene.search_sirene

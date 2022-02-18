@@ -4,16 +4,13 @@ import time
 import pandas as pd
 import requests
 import os
-import math
 import multiprocessing
 import tqdm 
-import shapely.wkt
 
 from pynsee.geodata.GeoDataframe import GeoDataframe
     
 from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
-from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
@@ -24,6 +21,17 @@ from pynsee.utils._hash import _hash
 def get_geodata(id,
             polygon=None,
             update=False):
+    """Get geographical data from an identifier and IGN API
+
+    Examples:
+        >>> from pynsee.geodata import get_geodata_list, get_geodata
+        >>> #
+        >>> # Get a list of geographical limits of French administrative areas from IGN API
+        >>> geodata_list = get_geodata_list()
+        >>> #
+        >>> # Get geographical limits of departments
+        >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
+    """            
           
     topic = "administratif"
     service = 'WFS'
@@ -100,7 +108,7 @@ def get_geodata(id,
 
         elif len(json) != 0:
 
-            data_all = _geojson_parser(json)
+            data_all = _geojson_parser(json).reset_index(drop=True)
 
         else:
             msg = '!!! Query is correct but no data found !!!'
