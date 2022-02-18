@@ -16,6 +16,7 @@ from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
+from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files
 
 from pynsee.macrodata.get_series_list import get_series_list
 from pynsee.macrodata.get_dataset_list import get_dataset_list
@@ -35,9 +36,9 @@ test_SDMX = True
 
 class TestFunction(TestCase):
 
-    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
+    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)      
 
-    if not version_3_7:
+    if (not version_3_7) and (not version_3_10):
 
         def test_download_series_list(self):
             # _clean_insee_folder()
@@ -118,17 +119,15 @@ class TestFunction(TestCase):
             # test date provided manually error and switch to today
             os.environ['insee_date_test'] = "a"
             df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-            test3 = isinstance(df, pd.DataFrame)
+            test3 = isinstance(df, pd.DataFrame)      
 
-            # test backup data for idbank in case insee.fr delete files
+            # test idbank file download crash and backup internal data
             os.environ['pynsee_idbank_file'] = "test"
             os.environ['pynsee_idbank_loop_url'] = "False"
             df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
             test3 = test3 & isinstance(df, pd.DataFrame)
-
-            os.environ['pynsee_idbank_loop_url'] = "True"
+            os.environ['pynsee_idbank_loop_url'] = "True"     
             
-
             self.assertTrue(test1 & test2 & test3)
 
         def test_get_dataset_metadata_2(self):
