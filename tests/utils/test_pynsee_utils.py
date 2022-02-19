@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import unittest
 from unittest import TestCase
 
 import os
@@ -25,10 +26,12 @@ class TestFunction(TestCase):
 
     if not version_3_7:
 
-        def test_get_token(self):
-            keys = _get_credentials()
-            insee_key = keys['insee_key']
-            insee_secret = keys['insee_secret']
+        StartKeys = _get_credentials()
+
+        def test_get_token(self, StartKeys=StartKeys):
+
+            insee_key = StartKeys['insee_key']
+            insee_secret = StartKeys['insee_secret']
 
             init_conn(insee_key=insee_key, insee_secret=insee_secret)
             keys = _get_credentials()
@@ -63,6 +66,9 @@ class TestFunction(TestCase):
 
         def test_request_insee_3(self):
             # token is none and sdmx query fails
+            
+            init_conn(insee_key = "test", insee_secret="test")
+
             _get_token.cache_clear()
             _get_envir_token.cache_clear()
 
@@ -117,3 +123,7 @@ class TestFunction(TestCase):
             except BaseException:
                 test = False
             self.assertTrue(test)
+
+
+if __name__ == '__main__':
+    unittest.main()
