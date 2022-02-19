@@ -127,7 +127,7 @@ GDP growth rate
 
 
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/poverty_paris_urban_area.png?token=AP32AXNFHNAH2NEK2LKWENTAZO7YY
+.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/poverty_paris_urban_area.svg?token=AP32AXNFHNAH2NEK2LKWENTAZO7YY
 
 Poverty in Paris urban area
 ---------------------------
