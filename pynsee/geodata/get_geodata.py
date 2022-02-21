@@ -14,6 +14,7 @@ from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
+from pynsee.geodata.get_geodata_list import get_geodata_list
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
@@ -161,7 +162,13 @@ def get_geodata(id,
         else:
             _warning_cached_data(file_name)
     
-    data_all_clean = GeoDataframe(data_all_clean)
+    # get crs for id
+    geodata_list = get_geodata_list()
+    crs = geodata_list.loc[geodata_list["Identifier"]== id, "DefaultCRS"].iloc[0]
+    crs = crs.replace("urn:ogc:def:crs:", "").replace("::", ":")
+    data_all_clean["crs"] = crs
     
+    data_all_clean = GeoDataframe(data_all_clean)
+        
     return data_all_clean
 

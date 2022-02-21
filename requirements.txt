@@ -9,3 +9,4 @@ python-Levenshtein
 pyyaml>=5.4.1
 openpyxl
 shapely<2.0
+pyproj

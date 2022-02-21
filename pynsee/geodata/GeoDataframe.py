@@ -1,6 +1,5 @@
 
 import pandas as pd
-from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint
 
 class GeoDataframe(pd.DataFrame):
     """Class for handling dataframes built from IGN's geographical data
@@ -15,3 +14,4 @@ class GeoDataframe(pd.DataFrame):
         return GeoDataframe
 
     from pynsee.geodata.get_geom import get_geom
+    from pynsee.geodata.translate_overseas import translate_overseas
