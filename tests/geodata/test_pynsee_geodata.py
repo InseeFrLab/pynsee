@@ -22,9 +22,9 @@ class TestFunction(TestCase):
             df = get_geodata_list(update=True)
             self.assertTrue(isinstance(df, pd.DataFrame))
 
-            data = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
-            self.assertTrue(isinstance(data, GeoDataframe))
-            geo = data.get_geom()
+            com = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
+            self.assertTrue(isinstance(com, GeoDataframe))
+            geo = com.get_geom()
             self.assertTrue(isinstance(geo, MultiPolygon))
 
             dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True)
