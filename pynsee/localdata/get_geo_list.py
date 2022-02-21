@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import os
 import pandas as pd
 from tqdm import trange
 
