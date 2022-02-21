@@ -39,7 +39,7 @@ class TestFunction(TestCase):
             geocom29 = com29.get_geom()
             self.assertTrue(isinstance(geocom29, MultiPolygon))
 
-            ovdep = com29.translate_overseas()
+            ovdep = com.translate_overseas()
             self.assertTrue(isinstance(ovdep, GeoDataframe))
 
             geo_ovdep = ovdep.get_geom()
