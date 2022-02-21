@@ -12,7 +12,7 @@ from pynsee.geodata._get_center import _get_center
 
 def translate_overseas(self, 
                         overseas = ['971', '972', '973', '974', '976'], 
-                        factors = [None, None, None, 0.25, None],
+                        factors = [None, None, None, 0.35, None],
                         center = (-1.2, 47.181903), 
                         length = 6,
                         pishare = 1/10):
