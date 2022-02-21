@@ -13,7 +13,7 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 
 @lru_cache(maxsize=None)
 def _warning_data():
-    print("!!! This function renders only package's internal data, it might not be the most up-to-date\nHave a look at api.insee.fr !!!")
+    print("!!! This function renders only package's internal data,\nit might not be the most up-to-date\nHave a look at api.insee.fr !!!")
 
 
 @lru_cache(maxsize=None)
@@ -209,8 +209,8 @@ def get_local_metadata():
     variables = variables.merge(datasets, on='dataset', how='left')
 
     variables.columns = ['VARIABLES', 'UNIT', 'DATASET_VERSION', 'DATASET',
-                         'VARIABLES_label', 'UNIT_label', 'GEO_DATE',
-                         'DATA_DATE', 'DATASET_label']
+                         'VARIABLES_label_fr', 'UNIT_label_fr', 'GEO_DATE',
+                         'DATA_DATE', 'DATASET_label_fr']
 
     # variables = variables.dropna(subset=['GEO_DATE'])
     variables = variables[~variables.DATASET_VERSION.str.contains('filtre_geo ')]

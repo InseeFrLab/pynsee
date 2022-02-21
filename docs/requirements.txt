@@ -18,6 +18,7 @@ pathlib2>=2.3.5
 python-Levenshtein
 pyyaml>=5.4.1
 openpyxl
-shapely==1.7.1
+shapely<2.0
 seaborn
 pyproj
+markupsafe==2.0.1

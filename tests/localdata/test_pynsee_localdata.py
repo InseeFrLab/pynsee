@@ -132,6 +132,13 @@ class TestFunction(TestCase):
                                   geocodes=['11'])
             test = test & isinstance(data, pd.DataFrame)
 
+            # repeat same query to test locally saved data use
+            data = get_local_data(dataset_version='TOUR2019',
+                                  variables='ETOILE',
+                                  nivgeo='REG',
+                                  geocodes=['11'])
+            test = test & isinstance(data, pd.DataFrame)
+
             data = get_local_data(dataset_version='GEO2020FLORES2017',
                                   variables='EFFECSAL5T_1_100P',
                                   nivgeo='REG',
