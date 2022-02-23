@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import time
 import pandas as pd
 import requests
@@ -163,7 +164,11 @@ def get_geodata(id,
             _warning_cached_data(file_name)
     
     # get crs for id
+    # disable/enable print vefore/after get_geodata_list use
+    sys.stdout = open(os.devnull, 'w')
     geodata_list = get_geodata_list()
+    sys.stdout = sys.__stdout__
+
     crs = geodata_list.loc[geodata_list["Identifier"]== id, "DefaultCRS"].iloc[0]
     crs = crs.replace("urn:ogc:def:crs:", "").replace("::", ":")
     data_all_clean["crs"] = crs

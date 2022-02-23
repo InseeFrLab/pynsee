@@ -1,8 +1,9 @@
 
+import tqdm
 import math
+import multiprocessing
 from shapely.affinity import translate
 from shapely.geometry import Point
-from pandas.api.types import CategoricalDtype
 import pandas as pd
 
 from pynsee.geodata._convert_polygon import _convert_polygon
@@ -43,8 +44,9 @@ def translate_overseas(self,
             yoff = offshore_points[d].coords.xy[1][0] - center_y         
 
             newgeo = translate(geo_3857, xoff=xoff, yoff=yoff)   
+            ovdep["geometry"] = [newgeo] * len(ovdep.index)
 
-            list_new_dep += [newgeo]
+            list_new_dep += [ovdep]
         
         else:
             print(f"!!! {overseas[d]} is missing from insee_dep column !!!")
@@ -52,14 +54,26 @@ def translate_overseas(self,
     if len(list_new_dep) > 0 :
 
         mainGeo = df[~df['insee_dep'].isin(overseas)].reset_index(drop=True)       
-        ovdepGeo = df[df['insee_dep'].isin(overseas)]
+        ovdepGeo = pd.concat(list_new_dep)
+                        
+        Nprocesses = min(6, multiprocessing.cpu_count())
         
-        ovdepGeo.loc[:,"insee_dep"] = ovdepGeo["insee_dep"].astype(CategoricalDtype(categories = overseas, ordered=True))
-        ovdepGeo = ovdepGeo.sort_values(["insee_dep"])
+        list_geom = list(mainGeo["geometry"])
+        args = [list_geom]
+        irange = range(len(list_geom))        
         
-        ovdepGeo.loc[:,"geometry"] = list_new_dep
+        def _set_global(args):
+            global list_geom
+            list_geom = args[0]
         
-        mainGeo.loc[:,"geometry"] = mainGeo["geometry"].apply(lambda x: _convert_polygon(x))
+        with multiprocessing.Pool(tqdm.tqdm(initializer= _set_global,
+                                initargs=(args,),
+                                processes=Nprocesses)) as pool:
+
+            list_geom_converted = list(pool.imap(_convert_polygon, irange),
+                                    total=len(list_geom))
+                        
+        mainGeo["geometry"] = list_geom_converted
         
         finalDF = pd.concat([ovdepGeo, mainGeo])
         finalDF["crs"] = 'EPSG:3857'
