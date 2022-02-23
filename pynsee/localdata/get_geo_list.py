@@ -46,6 +46,7 @@ def get_geo_list(geo=None, date=None, update=False):
     if error_msg:
         msg = "!!! Please choose geo among:\n{}".format(geo_string)
         raise ValueError(msg)
+        
 
     date_hash = ""
     if date is not None:
@@ -55,7 +56,6 @@ def get_geo_list(geo=None, date=None, update=False):
     insee_folder = _create_insee_folder()
     file_localdata = insee_folder + "/" + filename
 
-    if (not os.path.exists(file_localdata)) or update:
 
         reg = _get_geo_list_simple('regions', progress_bar=True)
         reg.columns = ['TITLE', 'TYPE', 'DATECREATION',
@@ -171,6 +171,5 @@ def get_geo_list(geo=None, date=None, update=False):
             df_geo = get_geo_list(geo=geo, date=date, update=True)
         else:
             print(f'Locally saved data has been used\nSet update=True to trigger an update')
-
 
     return(df_geo)
