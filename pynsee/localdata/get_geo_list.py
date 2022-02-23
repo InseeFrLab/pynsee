@@ -55,7 +55,8 @@ def get_geo_list(geo=None, date=None, update=False):
     filename = _hash("get_geo_list" + geo + date_hash)
     insee_folder = _create_insee_folder()
     file_localdata = insee_folder + "/" + filename
-
+    
+    if (not os.path.exists(file_localdata)) or update:
 
         reg = _get_geo_list_simple('regions', progress_bar=True)
         reg.columns = ['TITLE', 'TYPE', 'DATECREATION',
