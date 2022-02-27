@@ -7,6 +7,9 @@ import requests
 import os
 import multiprocessing
 import tqdm 
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+from pathlib2 import Path
 
 from pynsee.geodata.GeoDataframe import GeoDataframe
     
@@ -62,19 +65,33 @@ def get_geodata(id,
     insee_folder = _create_insee_folder()
     file_name = insee_folder + '/' +  _hash(link) + ".csv"    
 
+    session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=1)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+
+    try:
+        home = str(Path.home())
+        user_agent = os.path.basename(home)
+    except:
+        user_agent = ""
+
+    headers = {'User-Agent': 'python_package_pynsee_' + user_agent.replace("/", "")}
+
     try:
         proxies = {'http': os.environ['http_proxy'],
                    'https': os.environ['http_proxy']}
     except:
-        proxies = {'http': '', 'https': ''}   
+        proxies = {'http': '', 'https': ''}
     
     if (not os.path.exists(file_name)) | (update is True):
 
-        data = requests.get(link, proxies=proxies)
+        data = session.get(link, proxies=proxies, headers=headers)
 
         if data.status_code == 502:
             time.sleep(1) 
-            data = requests.get(link, proxies=proxies)
+            data = session.get(link, proxies=proxies, headers=headers)
         
         if data.status_code != 200:
             print('Query:\n%s' % link)
