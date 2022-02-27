@@ -21,6 +21,11 @@ class TestFunction(TestCase):
             
             df = get_geodata_list(update=True)
             self.assertTrue(isinstance(df, pd.DataFrame))
+            
+            chflieu = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune_associee_ou_deleguee', update=True) 
+            self.assertTrue(isinstance(chflieu, GeoDataframe))
+            geo = chflieu.get_geom()
+            self.assertTrue(isinstance(geo, MultiPoint))
 
             com = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
             self.assertTrue(isinstance(com, GeoDataframe))
@@ -41,9 +46,11 @@ class TestFunction(TestCase):
 
             ovdep = com.translate_overseas()
             self.assertTrue(isinstance(ovdep, GeoDataframe))
-
             geo_ovdep = ovdep.get_geom()
             self.assertTrue(isinstance(geo_ovdep, MultiPolygon))
+            
+            chflieu_ovdep = chflieu.translate_overseas()
+            self.assertTrue(isinstance(chflieu_ovdep, GeoDataframe))    
 
             bbox = _get_bbox_list(polygon=geo29, update=True)
             self.assertTrue(isinstance(bbox, list))
