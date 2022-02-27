@@ -64,7 +64,7 @@ def translate_overseas(self,
     
             mainGeo = df[~df['insee_dep'].isin(overseas)].reset_index(drop=True)     
             
-            ids = df['Id'].to_list()
+            ids = df['id'].to_list()
 
             filename = _hash("".join(ids + overseas))
             insee_folder = _create_insee_folder()
