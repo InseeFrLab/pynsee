@@ -1,24 +1,27 @@
 
+import os
 import tqdm
 import math
-import multiprocessing
 from shapely.affinity import translate
 from shapely.geometry import Point
 import pandas as pd
 
 from pynsee.geodata._convert_polygon import _convert_polygon
-from pynsee.geodata._convert_polygon import _convert_polygon_list
-from pynsee.geodata._convert_polygon import _set_global_translate_overseas
+from pynsee.geodata._convert_main import _convert_main
 from pynsee.geodata._make_offshore_points import _make_offshore_points
 from pynsee.geodata._rescale_geom import _rescale_geom
 from pynsee.geodata._get_center import _get_center
+
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._hash import _hash
 
 def translate_overseas(self, 
                         overseas = ['971', '972', '973', '974', '976'], 
                         factors = [None, None, None, 0.35, None],
                         center = (-1.2, 47.181903), 
                         length = 6,
-                        pishare = 1/10):
+                        pishare = 1/10,
+                        update=False):
     
     df = self
     
@@ -56,25 +59,27 @@ def translate_overseas(self,
                 print(f"!!! {overseas[d]} is missing from insee_dep column !!!")
         
         if len(list_new_dep) > 0 :
+
+            ovdepGeo = pd.concat(list_new_dep) 
     
-            mainGeo = df[~df['insee_dep'].isin(overseas)].reset_index(drop=True)       
-            ovdepGeo = pd.concat(list_new_dep)
+            mainGeo = df[~df['insee_dep'].isin(overseas)].reset_index(drop=True)     
             
-            
-            Nprocesses = min(6, multiprocessing.cpu_count())
-            
-            list_geom = list(mainGeo["geometry"])
-            args = [list_geom]
-            irange = range(len(list_geom))        
-                   
-            with multiprocessing.Pool(initializer= _set_global_translate_overseas,
-                                    initargs=(args,),
-                                    processes=Nprocesses) as pool:
-    
-                list_geom_converted = list(tqdm.tqdm(pool.imap(_convert_polygon_list, irange),
-                                        total=len(list_geom)))
-                            
-            mainGeo["geometry"] = list_geom_converted
+            ids = df['Id'].to_list()
+
+            filename = _hash("".join(ids + overseas))
+            insee_folder = _create_insee_folder()
+            file_geodata = insee_folder + "/" + filename
+
+            if (not os.path.exists(file_geodata)) or update:            
+                mainGeo = _convert_main(mainGeo=mainGeo, file_geodata=file_geodata)
+            else:
+                try:
+                    mainGeo = pd.read_pickle(file_geodata)
+                except:
+                    os.remove(file_geodata)
+                    mainGeo = _convert_main(mainGeo=mainGeo, file_geodata=file_geodata)
+                else:
+                    print(f'Locally saved data has been used\nSet update=True to trigger an update')
             
             finalDF = pd.concat([ovdepGeo, mainGeo])
             finalDF["crs"] = 'EPSG:3857'
