@@ -7,6 +7,8 @@ from shapely.geometry import Point
 import pandas as pd
 
 from pynsee.geodata._convert_polygon import _convert_polygon
+from pynsee.geodata._convert_polygon import _convert_polygon_list
+from pynsee.geodata._convert_polygon import _set_global_translate_overseas
 from pynsee.geodata._make_offshore_points import _make_offshore_points
 from pynsee.geodata._rescale_geom import _rescale_geom
 from pynsee.geodata._get_center import _get_center
@@ -55,25 +57,27 @@ def translate_overseas(self,
 
         mainGeo = df[~df['insee_dep'].isin(overseas)].reset_index(drop=True)       
         ovdepGeo = pd.concat(list_new_dep)
+        
+        mainGeo.loc[:,"geometry"] = mainGeo["geometry"].apply(lambda x: _convert_polygon(x))
+                
+        #g = mainGeo.get_geom()
+        #g_converted = _convert_polygon(g)
+        
+        
+        #Nprocesses = min(6, multiprocessing.cpu_count())
+        
+        #list_geom = list(mainGeo["geometry"])
+        #args = [list_geom]
+        #irange = range(len(list_geom))        
+               
+        #with multiprocessing.Pool(initializer= _set_global_translate_overseas,
+        #                        initargs=(args,),
+        ##                        processes=Nprocesses) as pool:
+#
+        #    list_geom_converted = list(tqdm.tqdm(pool.imap(_convert_polygon_list, irange),
+        #                            total=len(list_geom)))
                         
-        Nprocesses = min(6, multiprocessing.cpu_count())
-        
-        list_geom = list(mainGeo["geometry"])
-        args = [list_geom]
-        irange = range(len(list_geom))        
-        
-        def _set_global(args):
-            global list_geom
-            list_geom = args[0]
-        
-        with multiprocessing.Pool(tqdm.tqdm(initializer= _set_global,
-                                initargs=(args,),
-                                processes=Nprocesses)) as pool:
-
-            list_geom_converted = list(pool.imap(_convert_polygon, irange),
-                                    total=len(list_geom))
-                        
-        mainGeo["geometry"] = list_geom_converted
+        #mainGeo["geometry"] = list_geom_converted
         
         finalDF = pd.concat([ovdepGeo, mainGeo])
         finalDF["crs"] = 'EPSG:3857'

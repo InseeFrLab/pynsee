@@ -12,4 +12,11 @@ def _convert_polygon(geo,crs_in='EPSG:4326', crs_out='EPSG:3857'):
     
     return geo_converted
 
+def _convert_polygon_list(i):    
+    return _convert_polygon(list_geom[i])
+
+def _set_global_translate_overseas(args):
+    global list_geom
+    list_geom = args[0]
+
 
