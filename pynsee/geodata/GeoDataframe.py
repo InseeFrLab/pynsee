@@ -14,3 +14,4 @@ class GeoDataframe(pd.DataFrame):
         return GeoDataframe
 
     from pynsee.geodata.get_geom import get_geom
+    from pynsee.geodata.translate_overseas import translate_overseas

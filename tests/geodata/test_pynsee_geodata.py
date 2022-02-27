@@ -18,12 +18,18 @@ class TestFunction(TestCase):
 
     if version_3_7 is False:
         def test_get_geodata_short(self):
+            
             df = get_geodata_list(update=True)
             self.assertTrue(isinstance(df, pd.DataFrame))
+            
+            chflieu = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune_associee_ou_deleguee', update=True) 
+            self.assertTrue(isinstance(chflieu, GeoDataframe))
+            geo = chflieu.get_geom()
+            self.assertTrue(isinstance(geo, MultiPoint))
 
-            data = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
-            self.assertTrue(isinstance(data, GeoDataframe))
-            geo = data.get_geom()
+            com = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
+            self.assertTrue(isinstance(com, GeoDataframe))
+            geo = com.get_geom()
             self.assertTrue(isinstance(geo, MultiPolygon))
 
             dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True)
@@ -34,11 +40,23 @@ class TestFunction(TestCase):
 
             com29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29) 
             self.assertTrue(isinstance(com29, GeoDataframe))
+            
             geocom29 = com29.get_geom()
             self.assertTrue(isinstance(geocom29, MultiPolygon))
 
+            ovdep = com.translate_overseas()
+            self.assertTrue(isinstance(ovdep, GeoDataframe))
+            geo_ovdep = ovdep.get_geom()
+            self.assertTrue(isinstance(geo_ovdep, MultiPolygon))
+            
+            chflieu_ovdep = chflieu.translate_overseas()
+            self.assertTrue(isinstance(chflieu_ovdep, GeoDataframe))    
+
             bbox = _get_bbox_list(polygon=geo29, update=True)
             self.assertTrue(isinstance(bbox, list))
+            bbox = _get_bbox_list(polygon=geo29)
+            self.assertTrue(isinstance(bbox, list))
+
             bbox = _get_bbox_list(polygon=geo29)
             self.assertTrue(isinstance(bbox, list))
 
