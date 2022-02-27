@@ -63,7 +63,7 @@ def get_geodata(id,
         link = link0
             
     insee_folder = _create_insee_folder()
-    file_name = insee_folder + '/' +  _hash(link) + ".csv"    
+    file_name = insee_folder + '/' +  _hash(link) 
 
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=1)
