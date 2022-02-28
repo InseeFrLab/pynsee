@@ -3,7 +3,7 @@ import hashlib
 import tempfile
 import os
 import requests
-import json
+# import json
 import re
 import zipfile
 from pathlib import Path
@@ -15,15 +15,18 @@ from shutil import copyfile, copyfileobj
 from tqdm import tqdm
 from tqdm.utils import CallbackIOWrapper
 
-# READ ALL DATA SOURCES AVAILABLE USING JSON ONLINE FILE -------------------------------
+# READ ALL DATA SOURCES AVAILABLE USING JSON ONLINE FILE ----------------
 
-url_data_list = "https://raw.githubusercontent.com/InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"
+url_data_list = "https://raw.githubusercontent.com/" + \
+    "InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"
 jsonfile = requests.get(url_data_list).json()
 
 # HACK BECAUSE OF DUPLICATED ENTRIES -------------------------------
 
 potential_keys = [items['nom'] for items in jsonfile]
-list_duplicated_sources = list(set([x for x in potential_keys if potential_keys.count(x) > 1]))
+list_duplicated_sources = list(
+    set([x for x in potential_keys if potential_keys.count(x) > 1])
+    )
 
 
 def create_key(item, duplicate_sources):
@@ -44,7 +47,9 @@ def create_key(item, duplicate_sources):
     return '{}_{}'.format(item['nom'], year)
 
 
-dict_data_source = {create_key(item, list_duplicated_sources): item for item in jsonfile}
+dict_data_source = {
+    create_key(item, list_duplicated_sources): item for item in jsonfile
+    }
 
 
 # data = "FILOSOFI_AU2010"
@@ -53,17 +58,17 @@ dict_data_source = {create_key(item, list_duplicated_sources): item for item in 
 # load_data("RP_LOGEMENT", date = "2016")
 # load_data("FILOSOFI_AU2010", "dernier")
 
-def load_data(data, date, teldir=None, #argsApi=None,
-                       variables_names=None #,force=False
-                       ):
+def load_data(data, date, teldir=None, variables_names=None):
     """
     User level function to download datasets from insee.fr
 
     Args:
         data: Dataset name
-        date: Year. Can be an integer. Can also be 'recent' or 'latest' to get latest dataset
+        date: Year. Can be an integer. Can also be 'recent' or 'latest'
+                 to get latest dataset
         teldir: Where output should be written
-        variables_names: Subset of variable names to use. If None (default), ignored
+        variables_names: Subset of variable names to use.
+                 If None (default), ignored
 
     Returns:
         Returns the request dataframe as a pandas object
@@ -81,7 +86,8 @@ def load_data(data, date, teldir=None, #argsApi=None,
 def download_pb(url: str, fname: str, total: int = None):
     """Useful function to get request with a progress bar
 
-    Borrowed from https://gist.github.com/yanqd0/c13ed29e29432e3cf3e7c38467f42f51
+    Borrowed from
+    https://gist.github.com/yanqd0/c13ed29e29432e3cf3e7c38467f42f51
 
     Arguments:
         url {str} -- URL for the source file
@@ -131,7 +137,6 @@ def unzip_pb(fzip, dest, desc="Extracting"):
                     copyfileobj(CallbackIOWrapper(pbar.update, fi), fo)
 
 
-
 def initialize_temp_directory():
     """A wrapper to initialize temporary directories
 
@@ -141,7 +146,8 @@ def initialize_temp_directory():
     tf = tempfile.NamedTemporaryFile(delete=False)
     teldir = tempfile.TemporaryDirectory()
     Path(teldir.name).mkdir(parents=True, exist_ok=True)
-    print("Data will be stored in the following location: {}".format(teldir.name))
+    print("Data will be stored in the following location: {}".format(
+        teldir.name))
     return tf, teldir
 
 
@@ -154,7 +160,8 @@ def download_store_file(data: str, date=None, teldir=None):
 
     Keyword Arguments:
         date -- Optional argument to specify desired year (default: {None})
-        teldir -- Desired location where data should be stored (default: {None})
+        teldir -- Desired location where data
+            should be stored (default: {None})
 
     Raises:
         ValueError: When the desired dataset
@@ -179,7 +186,6 @@ def download_store_file(data: str, date=None, teldir=None):
     # filename = "{}/{}".format(teldir.name, os.path.basename(caract['lien']))
     filename = tf.name
 
-
     # DOWNLOAD FILE ------------------------------------------
 
     r = requests.get(caract['lien'], stream=True)
@@ -187,10 +193,16 @@ def download_store_file(data: str, date=None, teldir=None):
         download_pb(url=caract['lien'], fname=filename, total=caract['size'])
     else:
         raise ValueError(
-            "File not found on insee.fr. Please open an issue on https://github.com/InseeFrLab/Py-Insee-Data to help improving the package")
+            """
+            File not found on insee.fr.
+            Please open an issue on
+            https://github.com/InseeFrLab/Py-Insee-Data to help
+            improving the package
+            """)
 
     if cache:
-        print("No destination directory defined. Data have been written there: {}".format(
+        print("""No destination directory defined.
+            "Data have been written there: {}""".format(
             filename
         ))
     else:
@@ -203,13 +215,11 @@ def download_store_file(data: str, date=None, teldir=None):
     if hashlib.md5(open(filename, 'rb').read()).hexdigest() != caract['md5']:
         warnings.warn("File in insee.fr modified or corrupted during download")
 
-
     # PREPARE PANDAS IMPORT ARGUMENTS -----------------------
 
     pandas_read_options = import_options(caract, filename)
 
     return {"result": caract, **pandas_read_options}
-
 
 
 def import_options(caract: dict, filename: str):
