@@ -40,15 +40,23 @@ class MyTests(unittest.TestCase):
     #   self.assertIsInstance(info_donnees("SIRENE_SIRET_NONDIFF"), dict)
 
 
-    # millesimesDisponibles -------------------------
+    # check_year_available -------------------------
 
-    def test_error_millesimesDisponibles_typo(self):
+    def test_error_check_year_available_typo(self):
         with self.assertRaises(ValueError):
-            millesimesDisponibles("randomword")
+            check_year_available("randomword")
 
-   # def test_keys_json_millesimesDisponibles(self):
+    def test_deprecation_millesimesDisponibles(self):
+        with warnings.catch_warnings(record=True) as ws:
+            warnings.simplefilter("always", DeprecationWarning)
+            millesimesDisponibles("FILOSOFI_COM")
+        self.assertEqual(len(ws), 1)
+
+            
+
+   # def test_keys_json_check_year_available(self):
    #     self.assertEqual([k for k in dict_data_source.keys() if k.startswith("RP_LOGEMENT")],
-   #     list(millesimesDisponibles("RP_LOGEMENT").keys())
+   #     list(check_year_available("RP_LOGEMENT").keys())
    #     )
 
     # download_store_file ----------------------------
@@ -82,7 +90,7 @@ class MyTests(unittest.TestCase):
 
     def test_year_dernier(self):
         filosofi_data = download_store_file("FILOSOFI_COM", date = "dernier")
-        latest = list(millesimesDisponibles("FILOSOFI_COM").keys())[-1]
+        latest = list(check_year_available("FILOSOFI_COM").keys())[-1]
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source[latest])
         path_unzipped = filosofi_data["fichierAImporter"]
@@ -94,7 +102,7 @@ class MyTests(unittest.TestCase):
 
     def test_year_latest(self):
         filosofi_data = download_store_file("FILOSOFI_COM", date = "latest")
-        latest = list(millesimesDisponibles("FILOSOFI_COM").keys())[-1]
+        latest = list(check_year_available("FILOSOFI_COM").keys())[-1]
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source[latest])
         path_unzipped = filosofi_data["fichierAImporter"]

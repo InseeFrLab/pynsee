@@ -133,11 +133,11 @@ def unzip_pb(fzip, dest, desc="Extracting"):
 
 
 def initialize_temp_directory():
-        """A wrapper to initialize temporary directories
+    """A wrapper to initialize temporary directories
 
         Returns:
             Nothing, just creates the temporay directories
-        """
+    """
     tf = tempfile.NamedTemporaryFile(delete=False)
     teldir = tempfile.TemporaryDirectory()
     Path(teldir.name).mkdir(parents=True, exist_ok=True)
@@ -416,6 +416,6 @@ def millesimesDisponibles(data):
         /!\/!\/!\ \n
         millesimesDisponibles was an experimental name and might be deprecated in the future\n
         Please use the new function name 'check_year_available' instead
-    """)
+    """, DeprecationWarning)
     return check_year_available(data = data)
 
