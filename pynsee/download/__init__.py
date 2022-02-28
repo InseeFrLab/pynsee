@@ -237,7 +237,10 @@ def import_options(caract: dict, filename: str):
 
     if caract["zip"] is True:
         fileArchive = filename
-        fichierAImporter = "{}/{}".format(tempfile.gettempdir(), caract['fichier_donnees'])
+        fichierAImporter = "{}/{}".format(
+            tempfile.gettempdir(),
+            caract['fichier_donnees']
+            )
     else:
         fileArchive = None
         fichierAImporter = filename
@@ -299,23 +302,26 @@ def load_data_from_schema(telechargementFichier: dict, vars=None):
     """
     if telechargementFichier["result"]["zip"] is True:
         unzip_pb(telechargementFichier['fileArchive'], "{}_temp".format(telechargementFichier["argsImport"]['file']))
-        move("{}_temp/{}".format(telechargementFichier["argsImport"]['file'],
-                                     telechargementFichier["result"]['fichier_donnees']),
-                 telechargementFichier["argsImport"]['file'])
+        move("{}_temp/{}".format(
+            telechargementFichier["argsImport"]['file'],
+            telechargementFichier["result"]['fichier_donnees']),
+            telechargementFichier["argsImport"]['file']
+            )
 
     if os.path.isfile(telechargementFichier["fichierAImporter"]) is False:
         raise ValueError("File cannot be found")
 
     if telechargementFichier["result"]["type"] == "csv":
-        if os.path.getsize(telechargementFichier["fichierAImporter"])>=1000000000:
-            chunk=pd.read_csv(telechargementFichier["fichierAImporter"],chunksize=1000000)
-            df=pd.concat(chunk)
+        if os.path.getsize(telechargementFichier["fichierAImporter"]) >= 1000000000:
+            chunk = pd.read_csv(telechargementFichier["fichierAImporter"], chunksize = 1000000)
+            df = pd.concat(chunk)
         else:
-            df = pd.read_csv(telechargementFichier["fichierAImporter"],
-                         delimiter=telechargementFichier["argsImport"]["delim"],
-                         dtype=telechargementFichier["argsImport"]["dtype"],
-                         usecols=vars
-                         )
+            df = pd.read_csv(
+                telechargementFichier["fichierAImporter"],
+                delimiter=telechargementFichier["argsImport"]["delim"],
+                dtype=telechargementFichier["argsImport"]["dtype"],
+                usecols=vars
+                )
     elif telechargementFichier["result"]["type"] in ["xls", "xlsx"]:
         df = pd.read_excel(telechargementFichier["fichierAImporter"],
                            sheet_name=telechargementFichier["argsImport"]["sheet"],
@@ -331,7 +337,7 @@ def load_data_from_schema(telechargementFichier: dict, vars=None):
     return df
 
 
-def info_data(data : str, date=None):
+def info_data(data: str, date=None):
     """Get some info regarding datasets available
 
     Arguments:
@@ -356,10 +362,11 @@ def info_data(data : str, date=None):
 
     if not len(res):
         # looking for close match (Levenshtein distance)
-        dist = dict(zip(liste_nom_no_suffix, [lev(donnees, l) for l in liste_nom_no_suffix]))
+        dist = dict(zip(liste_nom_no_suffix, [lev(donnees, lname) for lname in liste_nom_no_suffix]))
         suggestions = []
         for key, value in dist.items():
-            if value < 6: suggestions += ['\"{}\"'.format(key)]
+            if value < 6:
+                suggestions += ['\"{}\"'.format(key)]
         if suggestions:
             error_message = "Data name is mispelled, potential values are: {}".format(", ".join(suggestions))
         else:
@@ -392,7 +399,7 @@ def check_year_available(data):
         raise ValueError("Data name is mispelled or does not exist")
 
     liste_possible = [list(dict_data_source.keys())[i] for i in res]
-    liste_possible = {l: dict_data_source[l] for l in liste_possible}
+    liste_possible = {lname: dict_data_source[lname] for lname in liste_possible}
     return liste_possible
 
 
