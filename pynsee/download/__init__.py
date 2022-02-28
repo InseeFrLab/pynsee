@@ -165,7 +165,7 @@ def download_store_file(data: str, date=None, teldir=None):
         dict -- If everything works well, returns a dictionary
     """
 
-    caract = info_donnees(data, date)
+    caract = info_data(data, date)
     cache = False
 
     if teldir is None:
@@ -317,7 +317,7 @@ def load_data_from_schema(telechargementFichier: dict, vars=None):
     return df
 
 
-def info_donnees(data : str, date=None):
+def info_data(data : str, date=None):
     """Get some info regarding datasets available
 
     Arguments:
@@ -390,7 +390,7 @@ def telechargerFichier(data, date=None, teldir=None):
         /!\/!\/!\ \n
         telechargerFichier was an experimental name and might be deprecated in the future\n
         Please use the new function name 'download_store_file' instead
-    """)
+    """, DeprecationWarning)
     return download_store_file(data = data, date = date, teldir = None)
 
 def chargerDonnees(telechargementFichier: dict, vars=None):
@@ -398,7 +398,7 @@ def chargerDonnees(telechargementFichier: dict, vars=None):
         /!\/!\/!\ \n
         chargerDonnees was an experimental name and might be deprecated in the future\n
         Please use the new function name 'load_data_from_schema' instead
-    """)
+    """, DeprecationWarning)
     return load_data_from_schema(telechargementFichier = telechargementFichier, vars=vars)
 
 def telechargerDonnees(data, date, teldir=None,
@@ -408,7 +408,7 @@ def telechargerDonnees(data, date, teldir=None,
         /!\/!\/!\ \n
         telechargerDonnees was an experimental name and might be deprecated in the future\n
         Please use the new function name 'load_data' instead
-    """)
+    """, DeprecationWarning)
     return load_data(data = data, date = date, teldir=teldir, variables_names=variables_names)
 
 def millesimesDisponibles(data):

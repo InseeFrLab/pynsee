@@ -8,36 +8,36 @@ from pynsee.download import *
 
 class MyTests(unittest.TestCase):
 
-    # info_donnees ---------------------------------
+    # info_data ---------------------------------
         
     def test_levensthein_error_typo(self):
         with self.assertRaises(ValueError):
-            info_donnees("SIRENE_SIRET_NONDIFg")
+            info_data("SIRENE_SIRET_NONDIFg")
 
     def test_levensthein_error_big_typo(self):
         with self.assertRaises(ValueError):
-            info_donnees("randomword")
+            info_data("randomword")
 
     def test_info_no_date(self):
         with self.assertRaises(ValueError):
-            info_donnees("RP_LOGEMENT")
+            info_data("RP_LOGEMENT")
 
 
 
-    def test_date_info_donnees_dernier(self):
-        self.assertIsInstance(info_donnees("RP_LOGEMENT", date = "dernier"), dict)
+    def test_date_info_data_dernier(self):
+        self.assertIsInstance(info_data("RP_LOGEMENT", date = "dernier"), dict)
 
-    def test_date_info_donnees_latest(self):
-        self.assertIsInstance(info_donnees("RP_LOGEMENT", date = "latest"), dict)
+    def test_date_info_data_latest(self):
+        self.assertIsInstance(info_data("RP_LOGEMENT", date = "latest"), dict)
 
-    def test_date_info_donnees_str(self):
-        self.assertIsInstance(info_donnees("RP_LOGEMENT", date = "2012"), dict)
+    def test_date_info_data_str(self):
+        self.assertIsInstance(info_data("RP_LOGEMENT", date = "2012"), dict)
 
-    def test_date_info_donnees_int(self):
-        self.assertIsInstance(info_donnees("RP_LOGEMENT", date = 2012), dict)
+    def test_date_info_data_int(self):
+        self.assertIsInstance(info_data("RP_LOGEMENT", date = 2012), dict)
 
     # def test_nodate(self):
-    #   self.assertIsInstance(info_donnees("SIRENE_SIRET_NONDIFF"), dict)
+    #   self.assertIsInstance(info_data("SIRENE_SIRET_NONDIFF"), dict)
 
 
     # check_year_available -------------------------
@@ -112,6 +112,14 @@ class MyTests(unittest.TestCase):
         self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
         self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
+
+    def test_deprecation_telechargerFichier(self):
+        with warnings.catch_warnings(record=True) as ws:
+            warnings.simplefilter("always", DeprecationWarning)
+            telechargerFichier("FILOSOFI_COM", date = "latest")
+        self.assertEqual(len(ws), 1)
+
+
     # telechargerDonnees ----------------------------
 
     def test_load_data(self):
@@ -142,6 +150,8 @@ class MyTests(unittest.TestCase):
         df1 = telechargerDonnees("ESTEL_T202", date = "2016")  
         df2 = load_data("ESTEL_T202", date = "2016")
         pd.testing.assert_frame_equal(df1,df2)
+
+        
 if __name__ == '__main__':
     unittest.main()
 
