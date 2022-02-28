@@ -18,14 +18,15 @@ from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
-from pynsee.geodata.get_geodata_list import get_geodata_list
+#from pynsee.geodata.get_geodata_list import get_geodata_list
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
 def get_geodata(id,
             polygon=None,
-            update=False):
+            update=False,
+            crs='EPSG:3857'):
     """Get geographical data from an identifier and IGN API
 
     Examples:
@@ -37,7 +38,10 @@ def get_geodata(id,
         >>> # Get geographical limits of departments
         >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
     """            
-          
+    list_crs = ['EPSG:3857', 'EPSG:4326']
+    if crs not in list_crs:
+        raise ValueError(f'crs must be in {list_crs}')
+
     topic = "administratif"
     service = 'WFS'
     Version = "2.0.0"
@@ -48,8 +52,9 @@ def get_geodata(id,
     version = 'VERSION=' + Version + '&'
     request = 'REQUEST=GetFeature&'
     typename = 'TYPENAME=' + id + '&'
+    Crs = 'srsName=' + crs + '&'
         
-    link0 = geoportail + '/wfs?' + Service + version + request + typename \
+    link0 = geoportail + '/wfs?' + Service + version + request + typename + Crs \
                + 'OUTPUTFORMAT=application/json&COUNT=1000' 
     
     # add bounding box to link if polygon provided
@@ -182,12 +187,12 @@ def get_geodata(id,
     
     # get crs for id
     # disable/enable print vefore/after get_geodata_list use
-    sys.stdout = open(os.devnull, 'w')
-    geodata_list = get_geodata_list()
-    sys.stdout = sys.__stdout__
+    #sys.stdout = open(os.devnull, 'w')
+    #geodata_list = get_geodata_list()
+    #sys.stdout = sys.__stdout__
 
-    crs = geodata_list.loc[geodata_list["Identifier"]== id, "DefaultCRS"].iloc[0]
-    crs = crs.replace("urn:ogc:def:crs:", "").replace("::", ":")
+    #crs = geodata_list.loc[geodata_list["Identifier"]== id, "DefaultCRS"].iloc[0]
+    #crs = crs.replace("urn:ogc:def:crs:", "").replace("::", ":")
     data_all_clean["crs"] = crs
     
     data_all_clean = GeoDataframe(data_all_clean)
