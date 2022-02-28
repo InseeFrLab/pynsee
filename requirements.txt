@@ -8,6 +8,6 @@ pathlib2>=2.3.5
 python-Levenshtein
 pyyaml>=5.4.1
 openpyxl
-xlrd>= 1.0.0
+xlrd==1.2.0
 shapely<2.0
 pyproj

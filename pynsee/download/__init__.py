@@ -9,7 +9,7 @@ import zipfile
 from pathlib import Path
 from Levenshtein import distance as lev
 import pandas as pd
-from shutil import copyfile, copyfileobj
+from shutil import move, copyfileobj
 
 # import tqdm.auto as tqdma
 from tqdm import tqdm
@@ -299,7 +299,7 @@ def load_data_from_schema(telechargementFichier: dict, vars=None):
     """
     if telechargementFichier["result"]["zip"] is True:
         unzip_pb(telechargementFichier['fileArchive'], "{}_temp".format(telechargementFichier["argsImport"]['file']))
-        copyfile("{}_temp/{}".format(telechargementFichier["argsImport"]['file'],
+        move("{}_temp/{}".format(telechargementFichier["argsImport"]['file'],
                                      telechargementFichier["result"]['fichier_donnees']),
                  telechargementFichier["argsImport"]['file'])
 
@@ -307,7 +307,11 @@ def load_data_from_schema(telechargementFichier: dict, vars=None):
         raise ValueError("File cannot be found")
 
     if telechargementFichier["result"]["type"] == "csv":
-        df = pd.read_csv(telechargementFichier["fichierAImporter"],
+        if os.path.getsize(telechargementFichier["fichierAImporter"])>=1000000000:
+            chunk=pd.read_csv(telechargementFichier["fichierAImporter"],chunksize=1000000)
+            df=pd.concat(chunk)
+        else:
+            df = pd.read_csv(telechargementFichier["fichierAImporter"],
                          delimiter=telechargementFichier["argsImport"]["delim"],
                          dtype=telechargementFichier["argsImport"]["dtype"],
                          usecols=vars
