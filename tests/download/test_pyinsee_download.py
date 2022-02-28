@@ -36,8 +36,8 @@ class MyTests(unittest.TestCase):
     def test_date_info_donnees_int(self):
         self.assertIsInstance(info_donnees("RP_LOGEMENT", date = 2012), dict)
 
-    def test_nodate(self):
-        self.assertIsInstance(info_donnees("SIRENE_SIRET_NONDIFF"), dict)
+    # def test_nodate(self):
+    #   self.assertIsInstance(info_donnees("SIRENE_SIRET_NONDIFF"), dict)
 
 
     # millesimesDisponibles -------------------------
@@ -134,7 +134,6 @@ class MyTests(unittest.TestCase):
         df1 = telechargerDonnees("ESTEL_T202", date = "2016")  
         df2 = load_data("ESTEL_T202", date = "2016")
         pd.testing.assert_frame_equal(df1,df2)
-
 if __name__ == '__main__':
     unittest.main()
 

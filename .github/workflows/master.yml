@@ -4,6 +4,7 @@ on:
   push:
       branches:
         - 'master'
+        - '!doc'
   pull_request:
     branches:
       - master
@@ -47,7 +48,7 @@ jobs:
         # for f in *.py; do python "$f"; done
         cd ../..
     - name: Test with pytest
-      env:
+      env:      
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |     

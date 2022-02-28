@@ -87,6 +87,7 @@ def _request_sirene(query, kind, number=1001, query_limit=20):
                     data_request_new = request_new.json()
                     cursor = data_request_new['header']['curseur']
                     following_cursor = data_request_new['header']['curseurSuivant']
+                    # print(f'cursor:{cursor}, next_cursor:{following_cursor}\n')
 
                     if len(data_request_new[main_key]) > 0:
 
@@ -108,6 +109,12 @@ def _request_sirene(query, kind, number=1001, query_limit=20):
                         i_query += 1
                         query_number = '{}/{}'.format(i_query, n_query_total)
                         print('{} - No more data found'.format(query_number))
+                    
+                    if df_nrows == number:
+                        print('!!! maximum reached, increase value of number argument !!!')
+
+                    if i_query == query_limit:
+                        print('!!! maximum reached, increase value of query_limit argument !!!')
 
         data_final = pd.concat(list_dataframe)
 
