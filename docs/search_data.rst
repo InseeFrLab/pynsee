@@ -15,8 +15,13 @@ Search macroeconomic data
 
 .. autofunction:: pynsee.macrodata.get_column_title
 
-Search geographic and local data
---------------------------------
+Search geographical data
+------------------------
+
+.. autofunction:: pynsee.geodata.get_geodata_list
+
+Search local data
+-----------------
 
 .. autofunction:: pynsee.localdata.get_local_metadata
 
@@ -25,10 +30,6 @@ Search geographic and local data
 .. autofunction:: pynsee.localdata.get_geo_list
 
 .. autofunction:: pynsee.localdata.get_area_list
-
-.. autofunction:: pynsee.localdata.get_map_list
-
-.. autofunction:: pynsee.localdata.get_map_link
 
 Search metadata
 ---------------
@@ -40,6 +41,6 @@ Search metadata
 Search sirene
 -------------
 
-.. autofunction:: pynsee.sirene.get_all_columns
+.. autofunction:: pynsee.sirene.get_dimension_list
 
 .. autofunction:: pynsee.sirene.search_sirene

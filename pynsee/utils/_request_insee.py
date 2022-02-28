@@ -103,15 +103,15 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                 else:
                     if print_msg:                        
                         try:
-                            print("Error %s\n" % results.status_code)
-                            print(dict(ast.literal_eval(results.text))['header']['message'])
+                            print("Error %s\n" % results.status_code)                            
                         except:
                             pass
-                            
 
+                    raise ValueError(results.text)
+                                          
         else:
             # token is None
-            commands = "\n\ninit_conn(insee_key='my_insee_key', insee_secret='my_insee_secret')"
+            commands = "\n\ninit_conn(insee_key='my_insee_key', insee_secret='my_insee_secret')\n"
             msg1 = "!!! Token missing, please check your credentials on api.insee.fr !!!\n"
             msg2 = "!!! Please do the following to use your credentials : {}".format(
                 commands)

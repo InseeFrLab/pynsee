@@ -107,7 +107,7 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
         data.rename(columns={'@codgeo': 'CODEGEO',
                              '@nivgeo': 'NIVGEO',
                              '@code': 'UNIT',
-                             '$': 'UNIT_label'}, inplace=True)
+                             '$': 'UNIT_label_fr'}, inplace=True)
 
         data['OBS_VALUE'] = pd.to_numeric(data['OBS_VALUE'])
 

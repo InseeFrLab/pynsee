@@ -19,6 +19,7 @@ Introduction to pynsee package
    :target: https://pynsee.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
+
 The pynsee package contains tools to easily download data and metadata from INSEE APIs.
 Pynsee gives a quick access to more than 150 000 macroeconomic series,
 a dozen datasets of local data, key metadata and SIRENE database containing data on all French companies.
@@ -31,7 +32,7 @@ Installation & API subscription
 
 .. code-block:: python
 
-    # Get the development version from GitHub
+   # Get the development version from GitHub
    # git clone https://github.com/InseeFrLab/Py-Insee-Data.git
    # cd Py-Insee-Data
    # pip install .
@@ -54,38 +55,37 @@ Data Search and Collection Advice
 * **Local data** : use first ``get_local_metadata``, then get data with ``get_local_data``
 * **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list`` 
 * **Sirene (French companies database)** : use first ``get_all_columns``, and then use ``search_sirene``
+
 For further advice, have a look at the documentation and the examples
   
-French GDP growth rate
-----------------------
 
 .. image:: examples/pictures/example_gdp_picture.png
    :target: examples/pictures/example_gdp_picture.png
    :alt: 
 
-
-
 .. code-block:: python
 
-   from pynsee.macrodata import * 
-  
-   import pandas as pd
-   import matplotlib.ticker as ticker
-   import matplotlib.pyplot as plt
-
    # Subscribe to api.insee.fr and get your credentials!
-   # Save your credentials with init_conn function :      
+   # Save your credentials with init_conn function :
    from pynsee.utils.init_conn import init_conn
    init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 
    # Beware : any change to the keys should be tested after having cleared the cache
-   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
+   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()"
+
+   from pynsee.macrodata import *
+
+   import pandas as pd
+   import matplotlib.ticker as ticker
+   %matplotlib inline
+   import matplotlib.pyplot as plt
 
    # get macroeconomic datasets list
    insee_dataset = get_dataset_list()
+   insee_dataset.head()
 
    # get series key (idbank), for Gross domestic product balance
-   id = get_idbank_list("CNT-2014-PIB-EQB-RF")
+   id = get_series_list("CNT-2014-PIB-EQB-RF")
 
    id = id.loc[(id.FREQ == "T") &
                (id.OPERATION == "PIB") &
@@ -94,7 +94,7 @@ French GDP growth rate
 
    data = get_series(id.IDBANK)
    data = split_title(df = data, n_split=2)
-   
+
    # define plot
    ax = data.plot(kind='bar', x="TIME_PERIOD", stacked=True, y="OBS_VALUE", figsize=(15,5))
    #add title
@@ -110,28 +110,14 @@ French GDP growth rate
    ax.xaxis.label.set_visible(False)
    plt.show()
 
-Poverty in Paris urban area
----------------------------
-
-:raw-html-m2r:`<!-- ![](../examples/pictures/example_poverty_paris_uu.png) -->`
-
-.. image:: examples/pictures/poverty_paris_urban_area.svg
-   :target: examples/pictures/poverty_paris_urban_area.svg
+.. image:: examples/pictures/poverty_paris_urban_area.png
+   :target: examples/pictures/poverty_paris_urban_area.png
    :alt: 
-
-
 
 .. code-block:: python
 
-   # Subscribe to api.insee.fr and get your credentials!
-   # Save your credentials with init_conn function :      
-   from pynsee.utils.init_conn import init_conn
-   init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
-
-   # Beware : any change to the keys should be tested after having cleared the cache
-   # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
-
    from pynsee.localdata import *
+   from pynsee.geodata import *
 
    import pandas as pd
    import matplotlib.cm as cm
@@ -154,29 +140,42 @@ Poverty in Paris urban area
    # get selected communes identifiers
    code_com_paris = areaParis.code.to_list()
 
-   # get numeric values from INSEE database 
+   # get numeric values from INSEE database
    dataParis = get_local_data(dataset_version='GEO2020FILO2017',
-                          variables =  'INDICS_FILO_DISP_DET',
-                          nivgeo = 'COM',
-                          geocodes = code_com_paris)
+                        variables =  'INDICS_FILO_DISP_DET',
+                        nivgeo = 'COM',
+                        geocodes = code_com_paris)
 
    #select poverty rate data, exclude paris commune
    data_plot = dataParis.loc[dataParis.UNIT=='TP60']
    data_plot = data_plot.loc[data_plot.CODEGEO!='75056']
 
-   #get communes limits
-   map_com = gpd.read_file(get_map_link('communes'))
-   map_arr_mun = gpd.read_file(get_map_link('arrondissements-municipaux'))
-   map_idf = pd.concat([map_com, map_arr_mun])
+   # get geographical data list
+   geodata_list = get_geodata_list()
+
+   # get departments geographical limits
+   com = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:commune')
+   comIdf = com[com['insee_reg'] == '11']
+   comIdf = comIdf[['id', 'nom_m', 'insee_com', 'geometry']]
+   comIdf = comIdf.rename(columns={'insee_com': 'CODEGEO'})
+
+   # get arrondissement geographical limits
+   arr = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:arrondissement_municipal')
+   arr75 = arr[arr.insee_com.str.startswith('75')]
+   arr75 = arr75[['id', 'nom_m', 'insee_arm', 'geometry']]
+   arr75 = arr75.rename(columns={'insee_arm': 'CODEGEO'})
+
+   # make ile de frande map by concatenation
+   mapidf = pd.concat([comIdf, arr75]).reset_index()
 
    # merge values and geographic limits
-   mapparis = map_idf.merge(data_plot, how = 'right',
-                        left_on = 'code', right_on = 'CODEGEO')
+   mapparis = mapidf.merge(data_plot, how = 'right', on = 'CODEGEO')
+   mapparis = gpd.GeoDataFrame(mapparis).set_crs("EPSG:4326")
 
    #plot
    fig, ax = plt.subplots(1,1,figsize=[15,15])
-   mapparis.plot(column='OBS_VALUE', cmap=cm.viridis, 
-       legend=True, ax=ax, legend_kwds={'shrink': 0.3})
+   mapparis.plot(column='OBS_VALUE', cmap=cm.viridis,
+      legend=True, ax=ax, legend_kwds={'shrink': 0.3})
    ax.set_axis_off()
    ax.set(title='Poverty rate in Paris urban area in 2017')
    plt.show()
@@ -184,7 +183,6 @@ Poverty in Paris urban area
                format='svg', dpi=1200,
                bbox_inches = 'tight',
                pad_inches = 0)
-
 
 How to avoid proxy issues ?
 ---------------------------

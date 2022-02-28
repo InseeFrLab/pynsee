@@ -12,6 +12,8 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._paste import _paste
 from pynsee.metadata._get_naf import _get_naf
 from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
+from pynsee.metadata._add_A17_activity import _add_A17_activity
+from pynsee.metadata._add_A5_activity import _get_A5_activity_label, _add_A5_activity
 
 # @lru_cache(maxsize=None)
 # def _warning_activity():
@@ -27,7 +29,7 @@ def get_activity_list(level, version='NAFRev2'):
         This function uses NAF/NACE rev. 2 classification made in 2008
 
     Args:
-        level (str): Levels available are :  A10, A21, A38, A64, A88, A129, A138, NAF1, NAF2, NAF3, NAF4, NAF5
+        level (str): Levels available are :  A5, A10, A17, A21, A38, A64, A88, A129, A138, NAF1, NAF2, NAF3, NAF4, NAF5
 
         version (str, optional): Defaults to 'NAFRev2'.
 
@@ -43,35 +45,40 @@ def get_activity_list(level, version='NAFRev2'):
 
     level = level.upper()
 
-    level_available = ['A10', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
-                       'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5']
+    level_available = ["A5" ,'A10', 'A17', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
+                    'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5']
 
     if level not in level_available:
         raise ValueError("!!! level must be in %s !!!",
-                         _paste(level_available, collapse=" "))
+                        _paste(level_available, collapse=" "))
+
+    A5_activity_list = _get_A5_activity_label()
+    if level == "A5":
+        return A5_activity_list
 
     # _warning_activity()
 
     insee_folder = _create_insee_folder()
 
     list_expected_files = ['int_courts_naf_rev_2.csv',
-                           'naf2008_5_niveaux.csv',
-                           'int_eng_na_2008_a10.csv',
-                           'int_eng_na_2008_a17.csv',
-                           'int_eng_na_2008_a21.csv',
-                           'int_eng_na_2008_a38.csv',
-                           'int_eng_na_2008_a64.csv',
-                           'int_eng_na_2008_a88.csv',
-                           'int_eng_na_2008_a138.csv',
-                           'niv_agreg_naf_rev_2.csv',
-                           'table_NAF2-NA.csv']
+                        'naf2008_5_niveaux.csv',
+                        'int_eng_na_2008_a10.csv',
+                        'int_eng_na_2008_a17.csv',
+                        'int_eng_na_2008_a21.csv',
+                        'int_eng_na_2008_a38.csv',
+                        'int_eng_na_2008_a64.csv',
+                        'int_eng_na_2008_a88.csv',
+                        'int_eng_na_2008_a138.csv',
+                        'niv_agreg_naf_rev_2.csv',
+                        'table_NAF2-NA.csv']
 
     list_expected_files = [insee_folder + '/naf2008/' + f for f in list_expected_files]
 
     list_available_file = [not os.path.exists(f) for f in list_expected_files]
 
     # unzipping raw files
-    if any(list_available_file):
+    # any(list_available_file)
+    if True:
 
         zip_file = pkg_resources.resource_stream(__name__, 'data/naf.zip')
 
@@ -101,15 +108,15 @@ def get_activity_list(level, version='NAFRev2'):
         naf = _get_naf(file=list_expected_files[0])
 
         naf = naf.rename(columns={"CODE": level,
-                                  "TITLE_FR": "TITLE_" + level + "_FR",
-                                  "TITLE_65CH_FR": "TITLE_" + level + "_65CH_FR",
-                                  "TITLE_40CH_FR": "TITLE_" + level + "_40CH_FR"})
+                                "TITLE_FR": "TITLE_" + level + "_FR",
+                                "TITLE_65CH_FR": "TITLE_" + level + "_65CH_FR",
+                                "TITLE_40CH_FR": "TITLE_" + level + "_40CH_FR"})
 
         mapp = pd.read_csv(list_expected_files[10],
-                           sep=";",
-                           encoding="ISO-8859-1",
-                           # encoding='latin',
-                           dtype=str)
+                        sep=";",
+                        encoding="ISO-8859-1",
+                        # encoding='latin',
+                        dtype=str)
 
         mapp = mapp.iloc[:, [0] + list(range(2, 10))]
         mapp = mapp[mapp.index != 0]
@@ -147,11 +154,24 @@ def get_activity_list(level, version='NAFRev2'):
         naf = naf.drop(columns=['len_code'])
         naf = naf.merge(mapp, on=level, how='left')
 
+        if "A38" in naf.columns:
+            naf = _add_A17_activity(naf)
+        
+        if 'A10' in naf.columns:
+            naf = _add_A5_activity(naf)
+
+        # sort columns alphabetically
+        naf = naf.reindex(sorted(naf.columns), axis=1).reset_index(drop=True)
+
         return(naf)
 
     #
     df = _get_nomenclature_agreg(file=list_expected_files[9])
-
+    
+    level_origin = level
+    if level == "A17":
+        level = "A38"
+        
     icol = df.columns.get_loc(level)
 
     if level == 'A10':
@@ -171,6 +191,11 @@ def get_activity_list(level, version='NAFRev2'):
 
     df = df.rename(columns={'TITLE': 'TITLE_' + level + '_FR'})
     df[level] = df[level].apply(drop_space)
+
+    if "A38" in df.columns:
+        df = _add_A17_activity(df).reset_index(drop=True)
+
+    level = level_origin
 
     if level == 'A138':
         ifile = 8
@@ -209,7 +234,7 @@ def get_activity_list(level, version='NAFRev2'):
         label_list_col = ['A38', 'NAF', 'TITLE_A38_EN', 'TITLE_A38_FR']
         col_merged = ['A38', 'TITLE_A38_EN']
 
-    if level == 'A21':
+    if  level == 'A21':
         ifile = 4
         ncol = 4
         first_col = 1
@@ -222,17 +247,29 @@ def get_activity_list(level, version='NAFRev2'):
         first_col = 0
         label_list_col = ['', 'A10', '', 'TITLE_A10_EN', 'TITLE_A10_FR']
         col_merged = ['A10', 'TITLE_A10_EN']
-
+    
+    if level == 'A17':
+        ifile = 3
+        
     label = pd.read_csv(list_expected_files[ifile], sep=";",
-                        # encoding='latin1',
                         encoding="ISO-8859-1",
                         dtype=str)
-    label = label.iloc[:, first_col:ncol]
-    label.columns = label_list_col
-    label = label.dropna(how='all')
 
-    label[level] = label[level].apply(drop_space)
+    if level != "A17":
+        label = label.iloc[:, first_col:ncol]
+        label.columns = label_list_col
+        label = label.dropna(how='all')
 
-    df = df.merge(label[col_merged], on=level, how='left')
+        label[level] = label[level].apply(drop_space)
+        df = df.merge(label[col_merged], on=level, how='left')
+    else:
+        label = label.iloc[:,[0,5,6]]
+        label.columns = ["A17", "TITLE_A17_EN", "TITLE_A17_FR"]
+        df = df[["A10", "A17"]].reset_index(drop=True).drop_duplicates()
+        df = df.merge(label, on = "A17", how="left")    
+
+    # add A5 activity
+    if 'A10' in df.columns:
+        df = _add_A5_activity(df)
 
     return(df)

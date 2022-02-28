@@ -6,7 +6,7 @@ from functools import lru_cache
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.sirene._make_dataframe_from_dict import _make_dataframe_from_dict
-
+from pynsee.sirene.SireneDataframe import SireneDataframe
 
 @lru_cache(maxsize=None)
 def _warning_get_data():
@@ -64,4 +64,6 @@ def get_data(*codes, kind='siren'):
 
     _warning_get_data()
 
-    return(data_final)
+    SireneDF = SireneDataframe(data_final)
+
+    return(SireneDF)

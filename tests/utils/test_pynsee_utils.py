@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import unittest
 from unittest import TestCase
 
 import os
@@ -11,6 +12,8 @@ from pynsee.utils._get_envir_token import _get_envir_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.clear_all_cache import clear_all_cache
+from pynsee.utils.init_conn import init_conn
+from pynsee.utils._get_credentials import _get_credentials
 
 test_SDMX = True
 
@@ -23,10 +26,15 @@ class TestFunction(TestCase):
 
     if not version_3_7:
 
-        def test_get_token(self):
+        StartKeys = _get_credentials()
+
+        def test_get_token(self, StartKeys=StartKeys):
+
+            insee_key = StartKeys['insee_key']
+            insee_secret = StartKeys['insee_secret']
+
+            init_conn(insee_key=insee_key, insee_secret=insee_secret)
             keys = _get_credentials()
-            insee_key = keys['insee_key']
-            insee_secret = keys['insee_secret']
 
             token = _get_token(insee_key, insee_secret)
             self.assertTrue((token is not None))
@@ -58,6 +66,9 @@ class TestFunction(TestCase):
 
         def test_request_insee_3(self):
             # token is none and sdmx query fails
+            
+            init_conn(insee_key = "test", insee_secret="test")
+
             _get_token.cache_clear()
             _get_envir_token.cache_clear()
 
@@ -112,3 +123,7 @@ class TestFunction(TestCase):
             except BaseException:
                 test = False
             self.assertTrue(test)
+
+
+if __name__ == '__main__':
+    unittest.main()

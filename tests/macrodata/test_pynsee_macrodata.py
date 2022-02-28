@@ -16,7 +16,7 @@ from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
-# from pynsee.macrodata._build_series_list import _build_series_list
+from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files
 
 from pynsee.macrodata.get_series_list import get_series_list
 from pynsee.macrodata.get_dataset_list import get_dataset_list
@@ -26,7 +26,6 @@ from pynsee.macrodata.get_series import get_series
 from pynsee.macrodata.get_dataset import get_dataset
 
 from pynsee.macrodata.get_column_title import get_column_title
-from pynsee.macrodata.split_title import split_title
 from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
 
@@ -37,14 +36,12 @@ test_SDMX = True
 
 class TestFunction(TestCase):
 
-    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
+    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)      
 
-    if not version_3_7:
+    if (not version_3_7):
 
         def test_download_series_list(self):
             # _clean_insee_folder()
-            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/2868055/2021_correspondance_idbank_dimension.zip"
-            os.environ['insee_idbank_file_csv'] = "2021_correspondance_idbank_dimension.csv"
             df = _download_idbank_list()
             self.assertTrue(isinstance(df, pd.DataFrame))
 
@@ -108,9 +105,6 @@ class TestFunction(TestCase):
 
         def test_get_dataset_metadata_1(self):
 
-            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/2868055/2020_correspondance_idbank_dimension.zip"
-            os.environ['insee_idbank_file_csv'] = "2020_correspondances_idbank_dimension.csv"
-
             # test automatic update of metadata, when older than 3 months
             df = _get_dataset_metadata('CLIMAT-AFFAIRES')
             os.environ['insee_date_test'] = str(
@@ -125,14 +119,19 @@ class TestFunction(TestCase):
             # test date provided manually error and switch to today
             os.environ['insee_date_test'] = "a"
             df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-            test3 = isinstance(df, pd.DataFrame)
+            test3 = isinstance(df, pd.DataFrame)      
 
+            # test idbank file download crash and backup internal data
+            os.environ['pynsee_idbank_file'] = "test"
+            os.environ['pynsee_idbank_loop_url'] = "False"
+            df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
+            test3 = test3 & isinstance(df, pd.DataFrame)
+            os.environ['pynsee_idbank_loop_url'] = "True"     
+            
             self.assertTrue(test1 & test2 & test3)
 
         def test_get_dataset_metadata_2(self):
             # crash download_idbank_list and test the result on get_dataset_metadata
-            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/test"
-            os.environ['insee_idbank_file_csv'] = "test"
             _clean_insee_folder()
             df = _get_dataset_metadata('CLIMAT-AFFAIRES')
             test1 = isinstance(df, pd.DataFrame)
@@ -171,23 +170,6 @@ class TestFunction(TestCase):
 
         def test_get_dataset_4(self):
             self.assertRaises(ValueError, get_dataset, 'a')
-
-        def test_split_title(self):
-            data = get_series("001769682", "001769683")
-            df1 = split_title(data)
-            # main test
-            test1 = isinstance(df1, pd.DataFrame)
-            # test is object is dataframe
-            test2 = (split_title(1) == 1)
-            # test if title column exists
-            df3 = split_title(data, title_col_name=['ABC'])
-            test3 = (len(df3.columns) < len(df1.columns))
-            # test if n_split is not doable
-            df4 = split_title(data, n_split=100)
-            test4 = isinstance(df4, pd.DataFrame)
-            df5 = split_title(data, n_split=-10)
-            test5 = isinstance(df5, pd.DataFrame)
-            self.assertTrue(test1 & test2 & test3 & test4 & test5)
 
         def test_search_macrodata(self):
             search_all = search_macrodata()
@@ -245,16 +227,6 @@ class TestFunction(TestCase):
 
             test1 = isinstance(df, pd.DataFrame)
             self.assertTrue(test1)
-
-        def test_download_idbank_list_2(self):
-            _clean_insee_folder()
-            os.environ['insee_idbank_file_csv'] = "test_file"
-            self.assertRaises(ValueError, _download_idbank_list)
-
-        def test_download_idbank_list_3(self):
-            _clean_insee_folder()
-            os.environ['insee_idbank_file_to_dwn'] = "https://www.insee.fr/en/statistiques/fichier/test"
-            self.assertRaises(ValueError, _download_idbank_list)
 
         if test_SDMX:
 
