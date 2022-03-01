@@ -17,9 +17,9 @@ from pynsee.utils._hash import _hash
 
 def translate_overseas(self, 
                         overseas = ['971', '972', '973', '974', '976'], 
-                        factors = [None, None, None, 0.35, None],
+                        factors = [None, None, 0.35, None, None],
                         center = (-133583.39, 5971815.98),
-                        length = 6,
+                        length = 600000,
                         pishare = 1/10,
                         update=False):
     
@@ -31,6 +31,8 @@ def translate_overseas(self,
         print('!!! Translation better performs if the crs is EPSG:3857 !!!')
         if center == (-133583.39, 5971815.98):
             center = (-1.2, 47.181903)
+        if length == 500000:
+            length = 6
     
     if 'insee_dep' in df.columns:
         
@@ -89,7 +91,7 @@ def translate_overseas(self,
             #     else:
             #         print(f'Locally saved data has been used\nSet update=True to trigger an update')
             
-            finalDF = pd.concat([ovdepGeo, mainGeo])
+            finalDF = pd.concat([ovdepGeo, mainGeo]).reset_index(drop=True)
             # finalDF["crs"] = 'EPSG:3857'
             
             self = finalDF

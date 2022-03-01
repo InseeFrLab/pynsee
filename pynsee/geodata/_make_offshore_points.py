@@ -2,7 +2,7 @@ import math
 from shapely.affinity import rotate
 from shapely.geometry import Point, LineString
 
-from pynsee.geodata._convert_polygon import _convert_polygon
+#from pynsee.geodata._convert_polygon import _convert_polygon
 
 def _make_offshore_points(center=Point(-1, 47.181903), length=8, pishare=1/17, list_ovdep=['974', '971', '972', '973', '976']):
     
@@ -19,6 +19,7 @@ def _make_offshore_points(center=Point(-1, 47.181903), length=8, pishare=1/17, l
         line = rotate(line, angle_rotated, origin=start, use_radians=True)
        
         list_lines += [line]
-        list_points += [_convert_polygon(Point(line.coords[1]))]
+        #list_points += [_convert_polygon(Point(line.coords[1]))]
+        list_points += [Point(line.coords[1])]
 
     return list_points
