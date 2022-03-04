@@ -133,8 +133,13 @@ def unzip_pb(fzip, dest, desc="Extracting"):
             if not getattr(i, "file_size", 0):  # directory
                 zipf.extract(i, os.fspath(dest))
             else:
-                with zipf.open(i) as fi, open(os.fspath(dest / i.filename), "wb") as fo:
-                    copyfileobj(CallbackIOWrapper(pbar.update, fi), fo)
+                with zipf.open(i) as fi, open(
+                    os.fspath(dest / i.filename),
+                    "wb") as fo:
+                    copyfileobj(
+                        CallbackIOWrapper(pbar.update, fi),
+                        fo
+                        )
 
 
 def initialize_temp_directory():
@@ -403,7 +408,6 @@ def check_year_available(data):
     return liste_possible
 
 
-
 # deprecated names ----------------
 
 def telechargerFichier(data, date=None, teldir=None):
@@ -421,6 +425,7 @@ def chargerDonnees(telechargementFichier: dict, vars=None):
         Please use the new function name 'load_data_from_schema' instead
     """, DeprecationWarning)
     return load_data_from_schema(telechargementFichier = telechargementFichier, vars=vars)
+
 
 def telechargerDonnees(data, date, teldir=None,
                        variables_names=None
