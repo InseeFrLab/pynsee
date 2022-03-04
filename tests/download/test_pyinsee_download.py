@@ -20,21 +20,21 @@ class MyTests(unittest.TestCase):
 
     def test_info_no_date(self):
         with self.assertRaises(ValueError):
-            info_data("RP_LOGEMENT")
+            info_data("FILOSOFI_REG")
 
 
 
     def test_date_info_data_dernier(self):
-        self.assertIsInstance(info_data("RP_LOGEMENT", date = "dernier"), dict)
+        self.assertIsInstance(info_data("FILOSOFI_REG", date = "dernier"), dict)
 
     def test_date_info_data_latest(self):
-        self.assertIsInstance(info_data("RP_LOGEMENT", date = "latest"), dict)
+        self.assertIsInstance(info_data("FILOSOFI_REG", date = "latest"), dict)
 
     def test_date_info_data_str(self):
-        self.assertIsInstance(info_data("RP_LOGEMENT", date = "2012"), dict)
+        self.assertIsInstance(info_data("FILOSOFI_REG", date = "2016"), dict)
 
     def test_date_info_data_int(self):
-        self.assertIsInstance(info_data("RP_LOGEMENT", date = 2012), dict)
+        self.assertIsInstance(info_data("FILOSOFI_REG", date = 2016), dict)
 
     # def test_nodate(self):
     #   self.assertIsInstance(info_data("SIRENE_SIRET_NONDIFF"), dict)
@@ -63,12 +63,12 @@ class MyTests(unittest.TestCase):
 
     def test_error_multiple_data_no_year(self):
         with self.assertRaises(ValueError):
-            download_store_file("FILOSOFI_COM")        
+            download_store_file("FILOSOFI_REG")        
 
     def test_year_string(self):
-        filosofi_data = download_store_file("FILOSOFI_COM", date = "2016")
+        filosofi_data = download_store_file("FILOSOFI_REG", date = "2016")
         self.assertIsInstance(filosofi_data, dict)
-        self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_COM_2016"])
+        self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_REG_2016"])
         path_unzipped = filosofi_data["fichierAImporter"]
         path_zipped = filosofi_data["fileArchive"]
         self.assertTrue(os.path.isfile(path_zipped))
@@ -78,9 +78,9 @@ class MyTests(unittest.TestCase):
 
 
     def test_year_int(self):
-        filosofi_data = download_store_file("FILOSOFI_COM", date = 2016)
+        filosofi_data = download_store_file("FILOSOFI_REG", date = 2016)
         self.assertIsInstance(filosofi_data, dict)
-        self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_COM_2016"])
+        self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_REG_2016"])
         path_unzipped = filosofi_data["fichierAImporter"]
         path_zipped = filosofi_data["fileArchive"]
         self.assertTrue(os.path.isfile(path_zipped))
@@ -89,8 +89,8 @@ class MyTests(unittest.TestCase):
         self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
     def test_year_dernier(self):
-        filosofi_data = download_store_file("FILOSOFI_COM", date = "dernier")
-        latest = list(check_year_available("FILOSOFI_COM").keys())[-1]
+        filosofi_data = download_store_file("FILOSOFI_REG", date = "dernier")
+        latest = list(check_year_available("FILOSOFI_REG").keys())[-1]
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source[latest])
         path_unzipped = filosofi_data["fichierAImporter"]
@@ -101,8 +101,8 @@ class MyTests(unittest.TestCase):
         self.assertEqual(hashlib.md5(open(path_zipped, 'rb').read()).hexdigest(), filosofi_data['result']['md5'])
 
     def test_year_latest(self):
-        filosofi_data = download_store_file("FILOSOFI_COM", date = "latest")
-        latest = list(check_year_available("FILOSOFI_COM").keys())[-1]
+        filosofi_data = download_store_file("FILOSOFI_REG", date = "latest")
+        latest = list(check_year_available("FILOSOFI_REG").keys())[-1]
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source[latest])
         path_unzipped = filosofi_data["fichierAImporter"]
@@ -116,7 +116,7 @@ class MyTests(unittest.TestCase):
     def test_deprecation_telechargerFichier(self):
         with warnings.catch_warnings(record=True) as ws:
             warnings.simplefilter("always", DeprecationWarning)
-            telechargerFichier("FILOSOFI_COM", date = "latest")
+            telechargerFichier("FILOSOFI_REG", date = "latest")
         self.assertEqual(len(ws), 1)
 
 
