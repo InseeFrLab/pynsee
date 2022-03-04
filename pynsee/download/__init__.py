@@ -133,9 +133,7 @@ def unzip_pb(fzip, dest, desc="Extracting"):
             if not getattr(i, "file_size", 0):  # directory
                 zipf.extract(i, os.fspath(dest))
             else:
-                with zipf.open(i) as fi, open(
-                    os.fspath(dest / i.filename),
-                    "wb") as fo:
+                with zipf.open(i) as fi, open(os.fspath(dest / i.filename), "wb") as fo:
                     copyfileobj(
                         CallbackIOWrapper(pbar.update, fi),
                         fo
@@ -257,13 +255,16 @@ def import_options(caract: dict, filename: str):
         if 'encoding' in list(caract.keys()):
             argsImport.update({"locale": caract["encoding"]})
     elif caract['type'] in ["xls", "xlsx"]:
-        argsImport.update({'path': fichierAImporter, "skip": caract['premiere_ligne'] - 1})
+        argsImport.update({
+            'path': fichierAImporter,
+            "skip": caract['premiere_ligne'] - 1})
         if 'onglet' in list(caract.keys()):
             argsImport.update({"sheet": caract["onglet"]})
         else:
             argsImport.update({"sheet": 0})
         if 'derniere_ligne' in list(caract.keys()):
-            argsImport.update({"n_max": caract["derniere_ligne"] - caract["premiere_ligne"]})
+            nmax_rows = caract["derniere_ligne"] - caract["premiere_ligne"]
+            argsImport.update({"n_max": nmax_rows})
         else:
             argsImport.update({"n_max": None})
 
@@ -290,7 +291,7 @@ def import_options(caract: dict, filename: str):
             'argsImport': argsImport}
 
 
-def load_data_from_schema(telechargementFichier: dict, vars=None):
+def load_data_from_schema(telechargementFichier: dict, vars=None, limit_chunk_size=1000000000):
     """Using options derived from `download_store_file`, import dataset in python
 
     Arguments:
@@ -317,8 +318,8 @@ def load_data_from_schema(telechargementFichier: dict, vars=None):
         raise ValueError("File cannot be found")
 
     if telechargementFichier["result"]["type"] == "csv":
-        if os.path.getsize(telechargementFichier["fichierAImporter"]) >= 1000000000:
-            chunk = pd.read_csv(telechargementFichier["fichierAImporter"], chunksize = 1000000)
+        if os.path.getsize(telechargementFichier["fichierAImporter"]) >= limit_chunk_size:
+            chunk = pd.read_csv(telechargementFichier["fichierAImporter"], chunksize=1000000)
             df = pd.concat(chunk)
         else:
             df = pd.read_csv(
@@ -412,36 +413,45 @@ def check_year_available(data):
 
 def telechargerFichier(data, date=None, teldir=None):
     warnings.warn("""
-        /!\/!\/!\ \n
+        WARNING: \n
         telechargerFichier was an experimental name and might be deprecated in the future\n
         Please use the new function name 'download_store_file' instead
     """, DeprecationWarning)
-    return download_store_file(data = data, date = date, teldir = None)
+    return download_store_file(data=data, date=date, teldir=None)
+
 
 def chargerDonnees(telechargementFichier: dict, vars=None):
     warnings.warn("""
-        /!\/!\/!\ \n
+        WARNING: \n
         chargerDonnees was an experimental name and might be deprecated in the future\n
         Please use the new function name 'load_data_from_schema' instead
     """, DeprecationWarning)
-    return load_data_from_schema(telechargementFichier = telechargementFichier, vars=vars)
+    dt = load_data_from_schema(
+        telechargementFichier=telechargementFichier,
+        vars=vars)
+    return dt
 
 
 def telechargerDonnees(data, date, teldir=None,
                        variables_names=None
                        ):
     warnings.warn("""
-        /!\/!\/!\ \n
+        WARNING: \n
         telechargerDonnees was an experimental name and might be deprecated in the future\n
         Please use the new function name 'load_data' instead
     """, DeprecationWarning)
-    return load_data(data = data, date = date, teldir=teldir, variables_names=variables_names)
+    dt = load_data(
+        data=data,
+        date=date,
+        teldir=teldir,
+        variables_names=variables_names)
+    return dt
+
 
 def millesimesDisponibles(data):
     warnings.warn("""
-        /!\/!\/!\ \n
+        WARNING: \n
         millesimesDisponibles was an experimental name and might be deprecated in the future\n
         Please use the new function name 'check_year_available' instead
     """, DeprecationWarning)
-    return check_year_available(data = data)
-
+    return check_year_available(data=data)
