@@ -122,33 +122,33 @@ class MyTests(unittest.TestCase):
 
     # telechargerDonnees ----------------------------
 
-    def test_load_data(self):
-        df = load_data("FILOSOFI_COM", date = "2015")
-        self.assertIsInstance(df, pd.DataFrame)
+    # def test_load_data(self):
+    #     df = load_data("FILOSOFI_COM", date = "2015")
+    #     self.assertIsInstance(df, pd.DataFrame)
 
-    def test_load_data_no_onglet(self):
-        df = load_data("FILOSOFI_DISP_COM", date = "dernier")
-        self.assertIsInstance(df, pd.DataFrame)
+    # def test_load_data_no_onglet(self):
+    #     df = load_data("FILOSOFI_DISP_COM", date = "dernier")
+    #     self.assertIsInstance(df, pd.DataFrame)
 
-    def test_load_data_FILOSOFI_AU2010(self):
-        df = load_data("FILOSOFI_AU2010", date = "dernier")
-        self.assertIsInstance(df, pd.DataFrame)
+    # def test_load_data_FILOSOFI_AU2010(self):
+    #     df = load_data("FILOSOFI_AU2010", date = "dernier")
+    #     self.assertIsInstance(df, pd.DataFrame)
 
     #def test_load_data_RPLOGEMENT2016(self):
     #    df = load_data("RP_LOGEMENT", date = "2016")
     #    self.assertIsInstance(df, pd.DataFrame)
 
-    def test_load_data_estel_2016(self):
-        df = load_data("ESTEL_T202", date = "2016")
-        self.assertIsInstance(df, pd.DataFrame)
+    # def test_load_data_estel_2016(self):
+    #     df = load_data("AIRE_URBAINE", date = "latest")
+    #     self.assertIsInstance(df, pd.DataFrame)
     
     def test_deprecation_notice_telechargerDonnees(self):
         with self.assertWarns(Warning):
-            telechargerDonnees("ESTEL_T202", date = "2016")      
+            telechargerDonnees("AIRE_URBAINE", date = "latest")      
 
     def test_equivalence_loaddata_telechargerDonnees(self):
-        df1 = telechargerDonnees("ESTEL_T202", date = "2016")  
-        df2 = load_data("ESTEL_T202", date = "2016")
+        df1 = telechargerDonnees("AIRE_URBAINE", date = "latest")  
+        df2 = load_data("AIRE_URBAINE", date = "latest")
         pd.testing.assert_frame_equal(df1,df2)
 
         
