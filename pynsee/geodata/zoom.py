@@ -33,6 +33,6 @@ def zoom(self,
         
         zoomDep['geometry'] = zoomDep['geometry'].apply(lambda x: trs(x, xoff=xoff, yoff=yoff))
 
-        df = pd.concat([self, zoomDep])          
+        df = pd.concat([self, zoomDep]).reset_index(drop=True)          
 
     return df
