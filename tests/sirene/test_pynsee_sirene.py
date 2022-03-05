@@ -32,6 +32,7 @@ class TestFunction(TestCase):
 
             self.assertTrue(test)
         
+
         def test_error_get_dimension_list(self):
             with self.assertRaises(ValueError):
                 get_dimension_list('sirène')

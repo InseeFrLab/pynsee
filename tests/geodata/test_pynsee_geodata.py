@@ -54,6 +54,11 @@ class TestFunction(TestCase):
 
             bbox = _get_bbox_list(polygon=geo29, update=True)
             self.assertTrue(isinstance(bbox, list))
+            bbox = _get_bbox_list(polygon=geo29)
+            self.assertTrue(isinstance(bbox, list))
+
+            bbox = _get_bbox_list(polygon=geo29)
+            self.assertTrue(isinstance(bbox, list))
 
             bbox = _get_bbox_list(polygon=geo29)
             self.assertTrue(isinstance(bbox, list))
