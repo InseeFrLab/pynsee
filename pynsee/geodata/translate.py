@@ -45,20 +45,17 @@ def translate(self,
             if len(ovdep.index) > 0:
     
                 ovdep = ovdep.reset_index(drop=True)
-                ovdep_geo = ovdep.get_geom()
         
                 if factors[d] is not None:
-                    ovdep_geo = _rescale_geom(ovdep_geo, factor=factors[d])
-                    #fct = 1-math.sqrt(factors[d])
-    
-                center_x, center_y = _get_center(ovdep_geo)
+                    ovdep = _rescale_geom(ovdep, factor=factors[d])
+                        
+                center_x, center_y = _get_center(ovdep)
     
                 xoff = offshore_points[d].coords.xy[0][0] - center_x 
-                yoff = offshore_points[d].coords.xy[1][0] - center_y         
-    
-                newgeo = trs(ovdep_geo, xoff=xoff, yoff=yoff)   
-                ovdep["geometry"] = [newgeo] * len(ovdep.index)
-    
+                yoff = offshore_points[d].coords.xy[1][0] - center_y   
+
+                ovdep['geometry'] = ovdep['geometry'].apply(lambda x: trs(x, xoff=xoff, yoff=yoff))      
+        
                 list_new_dep += [ovdep]
             
             else:
