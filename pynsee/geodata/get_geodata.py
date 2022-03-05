@@ -40,6 +40,10 @@ def get_geodata(id,
     list_crs = ['EPSG:3857', 'EPSG:4326']
     if crs not in list_crs:
         raise ValueError(f'crs must be in {list_crs}')
+    
+    if polygon is not None:
+        if crs != "EPSG:3857":
+            raise ValueError("!!! if polygon is used crs should be EPSG:4326 !!!")
 
     topic = "administratif"
     service = 'WFS'
@@ -60,7 +64,7 @@ def get_geodata(id,
     if polygon is not None:
         bounds = polygon.bounds
         bounds = [str(b) for b in bounds]
-        bounds = [bounds[1], bounds[0], bounds[3], bounds[2]]
+        bounds = [bounds[1], bounds[0], bounds[3], bounds[2], crs]
         BBOX= '&BBOX={}'.format(','.join(bounds)) 
         link = link0 + BBOX
     else:
