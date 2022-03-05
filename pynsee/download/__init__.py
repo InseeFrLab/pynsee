@@ -133,11 +133,12 @@ def unzip_pb(fzip, dest, desc="Extracting"):
 
 
 def initialize_temp_directory():
-        """A wrapper to initialize temporary directories
+    """A wrapper to initialize temporary directories
 
-        Returns:
-            Nothing, just creates the temporay directories
-        """
+    Returns:
+        Nothing, just creates the temporay directories
+    """
+    
     tf = tempfile.NamedTemporaryFile(delete=False)
     teldir = tempfile.TemporaryDirectory()
     Path(teldir.name).mkdir(parents=True, exist_ok=True)
