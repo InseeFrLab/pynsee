@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import sys
 import time
 import pandas as pd
 import requests
 import os
 import multiprocessing
 import tqdm 
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+from pathlib2 import Path
 
 from pynsee.geodata.GeoDataframe import GeoDataframe
     
@@ -14,6 +18,7 @@ from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
+from pynsee.geodata.get_geodata_list import get_geodata_list
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
@@ -58,21 +63,35 @@ def get_geodata(id,
         link = link0
             
     insee_folder = _create_insee_folder()
-    file_name = insee_folder + '/' +  _hash(link) + ".csv"    
+    file_name = insee_folder + '/' +  _hash(link) 
+
+    session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=1)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+
+    try:
+        home = str(Path.home())
+        user_agent = os.path.basename(home)
+    except:
+        user_agent = ""
+
+    headers = {'User-Agent': 'python_package_pynsee_' + user_agent.replace("/", "")}
 
     try:
         proxies = {'http': os.environ['http_proxy'],
                    'https': os.environ['http_proxy']}
     except:
-        proxies = {'http': '', 'https': ''}   
+        proxies = {'http': '', 'https': ''}
     
     if (not os.path.exists(file_name)) | (update is True):
 
-        data = requests.get(link, proxies=proxies)
+        data = session.get(link, proxies=proxies, headers=headers)
 
         if data.status_code == 502:
             time.sleep(1) 
-            data = requests.get(link, proxies=proxies)
+            data = session.get(link, proxies=proxies, headers=headers)
         
         if data.status_code != 200:
             print('Query:\n%s' % link)
@@ -161,7 +180,17 @@ def get_geodata(id,
         else:
             _warning_cached_data(file_name)
     
-    data_all_clean = GeoDataframe(data_all_clean)
+    # get crs for id
+    # disable/enable print vefore/after get_geodata_list use
+    sys.stdout = open(os.devnull, 'w')
+    geodata_list = get_geodata_list()
+    sys.stdout = sys.__stdout__
+
+    crs = geodata_list.loc[geodata_list["Identifier"]== id, "DefaultCRS"].iloc[0]
+    crs = crs.replace("urn:ogc:def:crs:", "").replace("::", ":")
+    data_all_clean["crs"] = crs
     
+    data_all_clean = GeoDataframe(data_all_clean)
+        
     return data_all_clean
 

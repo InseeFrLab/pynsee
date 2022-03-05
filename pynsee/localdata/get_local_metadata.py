@@ -209,8 +209,8 @@ def get_local_metadata():
     variables = variables.merge(datasets, on='dataset', how='left')
 
     variables.columns = ['VARIABLES', 'UNIT', 'DATASET_VERSION', 'DATASET',
-                         'VARIABLES_label', 'UNIT_label', 'GEO_DATE',
-                         'DATA_DATE', 'DATASET_label']
+                         'VARIABLES_label_fr', 'UNIT_label_fr', 'GEO_DATE',
+                         'DATA_DATE', 'DATASET_label_fr']
 
     # variables = variables.dropna(subset=['GEO_DATE'])
     variables = variables[~variables.DATASET_VERSION.str.contains('filtre_geo ')]

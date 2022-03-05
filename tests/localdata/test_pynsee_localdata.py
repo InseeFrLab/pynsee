@@ -63,8 +63,10 @@ class TestFunction(TestCase):
             for geo in list_available_geo:
                 list_geo_data.append(get_geo_list(geo))
             df = pd.concat(list_geo_data)
-
             self.assertTrue(isinstance(df, pd.DataFrame))
+            
+            # repeat test to check locally saved data use
+            self.assertTrue(isinstance(get_geo_list("regions"), pd.DataFrame))
 
         def test_get_geo_list_2(self):
             self.assertRaises(ValueError, get_geo_list, 'a')
@@ -126,6 +128,13 @@ class TestFunction(TestCase):
                                   geocodes=['11'])
             test = test & isinstance(data, pd.DataFrame)
 
+            data = get_local_data(dataset_version='TOUR2019',
+                                  variables='ETOILE',
+                                  nivgeo='REG',
+                                  geocodes=['11'])
+            test = test & isinstance(data, pd.DataFrame)
+
+            # repeat same query to test locally saved data use
             data = get_local_data(dataset_version='TOUR2019',
                                   variables='ETOILE',
                                   nivgeo='REG',
