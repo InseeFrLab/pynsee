@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import sys
 import time
 import pandas as pd
 import requests
@@ -26,8 +25,14 @@ def get_geodata(id,
             polygon=None,
             update=False,
             crs='EPSG:3857'):
-    """Get geographical data from an identifier and IGN API
+    """Get geographical data with identifier and from IGN API
 
+    Args:
+        id (str): _description_
+        polygon (Polygon, optional): Polygon used to constraint interested area, its crs must be EPSG:4326. Defaults to None.
+        update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
+        crs (str, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
+    
     Examples:
         >>> from pynsee.geodata import get_geodata_list, get_geodata
         >>> #
@@ -36,15 +41,11 @@ def get_geodata(id,
         >>> #
         >>> # Get geographical limits of departments
         >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
-    """            
-    list_crs = ['EPSG:3857', 'EPSG:4326']
-    if crs not in list_crs:
-        raise ValueError(f'crs must be in {list_crs}')
-    
-    if polygon is not None:
-        if crs != "EPSG:3857":
-            raise ValueError("!!! if polygon is used crs should be EPSG:4326 !!!")
 
+    Returns:
+        _type_: _description_
+    """            
+        
     topic = "administratif"
     service = 'WFS'
     Version = "2.0.0"
@@ -64,7 +65,7 @@ def get_geodata(id,
     if polygon is not None:
         bounds = polygon.bounds
         bounds = [str(b) for b in bounds]
-        bounds = [bounds[1], bounds[0], bounds[3], bounds[2], crs]
+        bounds = [bounds[1], bounds[0], bounds[3], bounds[2], 'urn:ogc:def:crs:EPSG:4326']
         BBOX= '&BBOX={}'.format(','.join(bounds)) 
         link = link0 + BBOX
     else:
@@ -140,6 +141,9 @@ def get_geodata(id,
         else:
             msg = '!!! Query is correct but no data found !!!'
             print(msg)
+            if polygon is not None:
+                print("!!! Regardless of crs function argument, check that provided polygon's crs is EPSG:4326 !!!")
+                
             return pd.DataFrame({'status': 200, 'comment': msg}, index=[0])
         
         # drop duplicates
