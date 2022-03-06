@@ -14,7 +14,7 @@ def _rescale_geom(df, factor):
             yfact = factor,
             zfact = 1.0,
             origin = center)]
-    
+        
     df['geometry'] = list_geoms
 
     return(df) 
