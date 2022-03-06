@@ -10,4 +10,3 @@ pyyaml>=5.4.1
 openpyxl
 xlrd>= 1.0.0
 shapely<2.0
-pyproj

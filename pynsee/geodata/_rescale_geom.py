@@ -1,18 +1,20 @@
 
 from shapely.affinity import scale
-from shapely.geometry import MultiPolygon
+from pynsee.geodata._get_center import _get_center
 
-def _rescale_geom(geo, factor=1):
+def _rescale_geom(df, factor):
+    
+    center = _get_center(df)
     
     list_geoms = []
-
-    for i in range(len(geo.geoms)):
-
+    for i in range(len(df['geometry'])):
         list_geoms +=  [scale(
-            geom =  geo.geoms[i],
-            xfact= factor,
-            yfact= factor,
-            zfact=1.0,
-            origin="center")]
+            geom = df.loc[i, 'geometry'],
+            xfact = factor,
+            yfact = factor,
+            zfact = 1.0,
+            origin = center)]
+        
+    df['geometry'] = list_geoms
 
-    return MultiPolygon(list_geoms) 
+    return(df) 

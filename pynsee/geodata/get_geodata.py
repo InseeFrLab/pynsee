@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import sys
 import time
 import pandas as pd
 import requests
@@ -18,16 +17,22 @@ from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
-from pynsee.geodata.get_geodata_list import get_geodata_list
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
 def get_geodata(id,
             polygon=None,
-            update=False):
-    """Get geographical data from an identifier and IGN API
+            update=False,
+            crs='EPSG:3857'):
+    """Get geographical data with identifier and from IGN API
 
+    Args:
+        id (str): _description_
+        polygon (Polygon, optional): Polygon used to constraint interested area, its crs must be EPSG:4326. Defaults to None.
+        update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
+        crs (str, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
+    
     Examples:
         >>> from pynsee.geodata import get_geodata_list, get_geodata
         >>> #
@@ -36,8 +41,11 @@ def get_geodata(id,
         >>> #
         >>> # Get geographical limits of departments
         >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
+
+    Returns:
+        _type_: _description_
     """            
-          
+        
     topic = "administratif"
     service = 'WFS'
     Version = "2.0.0"
@@ -48,15 +56,16 @@ def get_geodata(id,
     version = 'VERSION=' + Version + '&'
     request = 'REQUEST=GetFeature&'
     typename = 'TYPENAME=' + id + '&'
+    Crs = 'srsName=' + crs + '&'
         
-    link0 = geoportail + '/wfs?' + Service + version + request + typename \
+    link0 = geoportail + '/wfs?' + Service + version + request + typename + Crs \
                + 'OUTPUTFORMAT=application/json&COUNT=1000' 
     
     # add bounding box to link if polygon provided
     if polygon is not None:
         bounds = polygon.bounds
         bounds = [str(b) for b in bounds]
-        bounds = [bounds[1], bounds[0], bounds[3], bounds[2]]
+        bounds = [bounds[1], bounds[0], bounds[3], bounds[2], 'urn:ogc:def:crs:EPSG:4326']
         BBOX= '&BBOX={}'.format(','.join(bounds)) 
         link = link0 + BBOX
     else:
@@ -132,6 +141,9 @@ def get_geodata(id,
         else:
             msg = '!!! Query is correct but no data found !!!'
             print(msg)
+            if polygon is not None:
+                print("!!! Regardless of crs function argument, check that provided polygon's crs is EPSG:4326 !!!")
+                
             return pd.DataFrame({'status': 200, 'comment': msg}, index=[0])
         
         # drop duplicates
@@ -180,14 +192,6 @@ def get_geodata(id,
         else:
             _warning_cached_data(file_name)
     
-    # get crs for id
-    # disable/enable print vefore/after get_geodata_list use
-    sys.stdout = open(os.devnull, 'w')
-    geodata_list = get_geodata_list()
-    sys.stdout = sys.__stdout__
-
-    crs = geodata_list.loc[geodata_list["Identifier"]== id, "DefaultCRS"].iloc[0]
-    crs = crs.replace("urn:ogc:def:crs:", "").replace("::", ":")
     data_all_clean["crs"] = crs
     
     data_all_clean = GeoDataframe(data_all_clean)

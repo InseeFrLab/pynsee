@@ -1,5 +1,5 @@
 
-def _extract_bounds(polygon, var):
+def _extract_bounds(geom, var):
     if var == 'minx':
         i = 0
     elif var == 'miny':
@@ -9,7 +9,7 @@ def _extract_bounds(polygon, var):
     elif var == 'maxy':
         i = 3
     
-    polygon_bounds = [polygon.geoms[j].bounds for j in range(len(polygon.geoms))]
-    val = [polygon_bounds[j][i] for j in range(len(polygon.geoms))]
+    geom_bounds = [geom.geoms[j].bounds for j in range(len(geom.geoms))]
+    val = [geom_bounds[j][i] for j in range(len(geom.geoms))]
     
     return(val)

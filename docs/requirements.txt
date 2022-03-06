@@ -20,5 +20,4 @@ pyyaml>=5.4.1
 openpyxl
 shapely<2.0
 seaborn
-pyproj
 markupsafe==2.0.1
