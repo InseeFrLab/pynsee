@@ -32,7 +32,7 @@ class TestFunction(TestCase):
             geo = com.get_geom()
             self.assertTrue(isinstance(geo, MultiPolygon))
 
-            dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True, crs='EPSG:4326')
+            dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True, crs="EPSG:4326")
             dep29 = dep29[dep29["insee_dep"] == "29"]
             self.assertTrue(isinstance(dep29, GeoDataframe))
             geo29 = dep29.get_geom()
@@ -48,9 +48,8 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(ovdep, GeoDataframe))
             geo_ovdep = ovdep.get_geom()
             self.assertTrue(isinstance(geo_ovdep, MultiPolygon))
-            
-            chflieu_ovdep = chflieu.translate().zoom()
-            self.assertTrue(isinstance(chflieu_ovdep, GeoDataframe))    
+               
+            self.assertRaises(ValueError, chflieu.translate())
 
             bbox = _get_bbox_list(polygon=geo29, update=True)
             self.assertTrue(isinstance(bbox, list))
