@@ -49,8 +49,6 @@ class TestFunction(TestCase):
             geo_ovdep = ovdep.get_geom()
             self.assertTrue(isinstance(geo_ovdep, MultiPolygon))
                
-            self.assertRaises(ValueError, chflieu.translate())
-
             bbox = _get_bbox_list(polygon=geo29, update=True)
             self.assertTrue(isinstance(bbox, list))
             bbox = _get_bbox_list(polygon=geo29)
