@@ -28,7 +28,7 @@ def get_geodata_list(update=False):
     version = "2.0.0"
         
     pynsee_folder = _create_insee_folder()
-    file_name = pynsee_folder + '/' +  _hash("".join(topic + format)) + ".csv"  
+    file_name = pynsee_folder + '/' +  _hash("".join(topic + format)) 
     
     if (not os.path.exists(file_name)) | (update is True):
                 
