@@ -1,6 +1,5 @@
 
 import os
-import tqdm
 import math
 from shapely.affinity import translate as trs
 from shapely.geometry import Point
@@ -10,6 +9,7 @@ import warnings
 from pynsee.geodata._make_offshore_points import _make_offshore_points
 from pynsee.geodata._rescale_geom import _rescale_geom
 from pynsee.geodata._get_center import _get_center
+from pynsee.geodata._add_insee_dep import _add_insee_dep
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
@@ -31,7 +31,10 @@ def translate(self,
 
         if crs != 'EPSG:3857':
             raise ValueError('!!! Translation is performed only if the crs is EPSG:3857 !!!')
-
+            
+        if 'insee_dep' not in df.columns:            
+            df = _add_insee_dep(df.copy())           
+            
         if 'insee_dep' in df.columns:
 
             offshore_points = _make_offshore_points(center = Point(center),
@@ -52,8 +55,11 @@ def translate(self,
 
                     if factors[d] is not None:
                         ovdep = _rescale_geom(ovdep, factor=factors[d])
-
-                    center_x, center_y = _get_center(ovdep)
+                    
+                    if 'insee_dep_center' in df.columns:
+                        center_x, center_y = ovdep['insee_dep_center'].unique()[0]                 
+                    else:
+                        center_x, center_y = _get_center(ovdep)                    
 
                     xoff = offshore_points[d].coords.xy[0][0] - center_x 
                     yoff = offshore_points[d].coords.xy[1][0] - center_y   
