@@ -35,7 +35,7 @@ def translate(self,
         if 'insee_dep' not in df.columns:            
             df = _add_insee_dep(df.copy())           
             
-        if 'insee_dep' in df.columns:
+        if ('insee_dep' in df.columns) or ('insee_dep_geometry' in df.columns):
 
             offshore_points = _make_offshore_points(center = Point(center),
                                 list_ovdep=departement,
@@ -82,5 +82,10 @@ def translate(self,
                 self = finalDF
         else:
             raise ValueError('insee_dep is missing in columns')
+            
+    if "insee_dep_geometry" in self.columns:
+        df = df.drop(columns='insee_dep_geometry')
+        if "insee_dep" in self.columns:
+            df = df.drop(columns='insee_dep')
     
     return self

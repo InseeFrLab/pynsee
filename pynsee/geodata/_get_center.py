@@ -1,15 +1,16 @@
 
 from pynsee.geodata._extract_bounds import _extract_bounds
+from pynsee.geodata._get_geom import _get_geom
 
 def _get_center(df):
     
-    geo = df.get_geom()
+    geo = _get_geom(df)
     
     center = _extract_center(geo)
 
     return center
 
-def _extract_center(geo)
+def _extract_center(geo):
     
     maxxdf = max(_extract_bounds(geom=geo, var='maxx'))
     minxdf = min(_extract_bounds(geom=geo, var='minx'))
