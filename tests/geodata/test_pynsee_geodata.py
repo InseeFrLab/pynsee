@@ -60,7 +60,7 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(geo_epcit, MultiPolygon))
             
             # test _add_insee_dep_region
-            reg = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:epci', update=True) 
+            reg = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:region', update=True) 
             self.assertTrue(isinstance(reg, GeoDataframe))            
             regt = reg.translate().zoom()
             self.assertTrue(isinstance(regt, GeoDataframe))
