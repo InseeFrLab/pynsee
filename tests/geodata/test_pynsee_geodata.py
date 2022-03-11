@@ -22,7 +22,7 @@ class TestFunction(TestCase):
             df = get_geodata_list(update=True)
             self.assertTrue(isinstance(df, pd.DataFrame))
             
-            chflieu = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:chflieu', update=True) 
+            chflieu = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune', update=True) 
             self.assertTrue(isinstance(chflieu, GeoDataframe))
             geo = chflieu.get_geom()
             self.assertTrue(isinstance(geo, MultiPoint))
