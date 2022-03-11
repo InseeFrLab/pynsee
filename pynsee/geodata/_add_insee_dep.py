@@ -45,7 +45,7 @@ def _add_insee_dep_from_id_com(df):
         if ("id_com" in df.columns) and ("insee_dep_geometry" not in df.columns):
             com = _get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:commune')
             com = com[["id", "insee_dep"]]
-            dep = dep.rename(columns = {"id", "id_com"})
+            dep = dep.rename(columns = {"id": "id_com"})
             df = df.merge(com, by = "id_com")    
     
             dep = _get_geodata('ADMINEXPRESS-COG.LATEST:departement')
