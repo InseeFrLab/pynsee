@@ -22,10 +22,12 @@ class TestFunction(TestCase):
             df = get_geodata_list(update=True)
             self.assertTrue(isinstance(df, pd.DataFrame))
             
-            chflieu = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune_associee_ou_deleguee', update=True) 
+            chflieu = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:chflieu', update=True) 
             self.assertTrue(isinstance(chflieu, GeoDataframe))
             geo = chflieu.get_geom()
             self.assertTrue(isinstance(geo, MultiPoint))
+            geo_chflieut = chflieu.translate().zoom().get_geom()
+            self.assertTrue(isinstance(geo_chflieut, MultiPoint))            
 
             com = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
             self.assertTrue(isinstance(com, GeoDataframe))
@@ -48,6 +50,22 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(ovdep, GeoDataframe))
             geo_ovdep = ovdep.get_geom()
             self.assertTrue(isinstance(geo_ovdep, MultiPolygon))
+                    
+            #test _add_insee_dep_from_geodata
+            epci = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:epci', update=True) 
+            self.assertTrue(isinstance(epci, GeoDataframe))            
+            epcit = epci.translate().zoom()
+            self.assertTrue(isinstance(epcit, GeoDataframe))
+            geo_epcit = epcit.get_geom()
+            self.assertTrue(isinstance(geo_epcit, MultiPolygon))
+            
+            # test _add_insee_dep_region
+            reg = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:epci', update=True) 
+            self.assertTrue(isinstance(reg, GeoDataframe))            
+            regt = reg.translate().zoom()
+            self.assertTrue(isinstance(regt, GeoDataframe))
+            geo_regt = regt.get_geom()
+            self.assertTrue(isinstance(geo_regt, MultiPolygon))            
                
             bbox = _get_bbox_list(polygon=geo29, update=True)
             self.assertTrue(isinstance(bbox, list))
