@@ -184,7 +184,7 @@ def _get_geodata(id,
             data_all_clean = pd.read_pickle(file_name)
         except:
             os.remove(file_name)
-            data_all_clean = get_geodata(id=id,
+            data_all_clean = _get_geodata(id=id,
                                       polygon=polygon,
                                       update=True)
         else:
