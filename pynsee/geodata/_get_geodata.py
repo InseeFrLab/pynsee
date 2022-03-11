@@ -22,7 +22,8 @@ from pynsee.utils._hash import _hash
 def _get_geodata(id,
             polygon=None,
             update=False,
-            crs='EPSG:3857'):
+            crs='EPSG:3857',
+            crsPolygon='EPSG:3857'):
     """Get geographical data with identifier and from IGN API
 
     Args:
@@ -63,7 +64,7 @@ def _get_geodata(id,
     if polygon is not None:
         bounds = polygon.bounds
         bounds = [str(b) for b in bounds]
-        bounds = [bounds[1], bounds[0], bounds[3], bounds[2], 'urn:ogc:def:crs:EPSG:4326']
+        bounds = [bounds[0], bounds[1], bounds[2], bounds[3], 'urn:ogc:def:crs:' + crsPolygon]
         BBOX= '&BBOX={}'.format(','.join(bounds)) 
         link = link0 + BBOX
     else:
