@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import warnings
 from pynsee.geodata.GeoDataframe import GeoDataframe
 from pynsee.geodata._get_geodata import _get_geodata
@@ -24,8 +25,6 @@ def get_geodata(id,
         >>> # Get geographical limits of departments
         >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
 
-    Returns:
-        _type_: _description_
     """          
     
     with warnings.catch_warnings():
@@ -33,6 +32,6 @@ def get_geodata(id,
         df = _get_geodata(id=id, polygon=polygon, update=update, crs=crs)
 
         df = GeoDataframe(df)
-        
+
     return df
 
