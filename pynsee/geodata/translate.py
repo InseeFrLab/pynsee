@@ -16,10 +16,10 @@ from pynsee.utils._hash import _hash
 
 def translate(self, 
             departement = ['971', '972', '974', '973', '976'], 
-            factors = [None, None, None, 0.35, None],
+            factor = [None, None, None, 0.35, None],
             center = (-133583.39, 5971815.98),
             radius = 650000,
-            angle = 1/9*math.pi,
+            angle = 1/9 * math.pi,
             startAngle = math.pi * (1 - 1.5 * 1/9)):
     
     with warnings.catch_warnings():
@@ -53,11 +53,11 @@ def translate(self,
 
                     ovdep = ovdep.reset_index(drop=True)
 
-                    if factors[d] is not None:
-                        ovdep = _rescale_geom(ovdep, factor=factors[d])
+                    if factor[d] is not None:
+                        ovdep = _rescale_geom(ovdep, factor=factor[d])
                     
-                    if 'insee_dep_center' in df.columns:
-                        center_x, center_y = ovdep['insee_dep_center'].unique()[0]                 
+                    if 'insee_dep_geometry' in df.columns:
+                        center_x, center_y = _get_center(ovdep, col = "insee_dep_geometry")                
                     else:
                         center_x, center_y = _get_center(ovdep)                    
 
@@ -83,9 +83,9 @@ def translate(self,
         else:
             raise ValueError('insee_dep is missing in columns')
             
-    if "insee_dep_geometry" in self.columns:
-        df = df.drop(columns='insee_dep_geometry')
-        if "insee_dep" in self.columns:
-            df = df.drop(columns='insee_dep')
+        if "insee_dep_geometry" in self.columns:
+            self = self.drop(columns='insee_dep_geometry')
+            if "insee_dep" in self.columns:
+                self = self.drop(columns='insee_dep')
     
     return self
