@@ -18,7 +18,6 @@ from pynsee.utils._hash import _hash
 
 def translate(self, 
             departement = ['971', '972', '974', '973', '976'], 
-
             factor = [None, None, None, 0.35, None],
             center = (-133583.39, 5971815.98),
             radius = 650000,

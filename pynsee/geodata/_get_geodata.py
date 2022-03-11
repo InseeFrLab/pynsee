@@ -141,7 +141,7 @@ def _get_geodata(id,
             msg = '!!! Query is correct but no data found !!!'
             print(msg)
             if polygon is not None:
-                print("!!! Regardless of crs function argument, check that provided polygon's crs is EPSG:4326 !!!")
+                print("!!! Check that crsPolygon argument corresponds to polygon data  !!!")
                 
             return pd.DataFrame({'status': 200, 'comment': msg}, index=[0])
         
