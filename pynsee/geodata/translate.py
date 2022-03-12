@@ -54,14 +54,16 @@ def translate(self,
                 if len(ovdep.index) > 0:
 
                     ovdep = ovdep.reset_index(drop=True)
-
-                    if factor[d] is not None:
-                        ovdep = _rescale_geom(ovdep, factor=factor[d])
                     
                     if 'insee_dep_geometry' in df.columns:
-                        center_x, center_y = _get_center(ovdep, col = "insee_dep_geometry")                
+                        geocol = 'insee_dep_geometry'                                        
                     else:
-                        center_x, center_y = _get_center(ovdep)                    
+                        geocol = "geometry"
+                        
+                    if factor[d] is not None:
+                        ovdep = _rescale_geom(ovdep, factor = factor[d], col = geocol)
+                        
+                    center_x, center_y = _get_center(ovdep, col = geocol)                 
 
                     xoff = offshore_points[d].coords.xy[0][0] - center_x 
                     yoff = offshore_points[d].coords.xy[1][0] - center_y   
