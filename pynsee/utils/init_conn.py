@@ -10,7 +10,6 @@ import requests
 from pynsee.utils._get_token_from_insee import _get_token_from_insee
 from pynsee.utils.clear_all_cache import clear_all_cache
 from pynsee.utils._get_credentials import _get_credentials
-from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 def init_conn(insee_key, insee_secret, proxy_server=""):
