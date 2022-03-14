@@ -88,8 +88,8 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                     print("{}".format(msg1))
                     print("Query : {}".format(api_url))
                     print(results.text)
-                    print('\n!!!Make sure you have subscribed to all APIs !!!')
-                    print("Click on all APIs' icons one by one, select your application, and click on Subscribe")
+                    print('\n!!! Make sure you have subscribed to all APIs !!!')
+                    print("Click on all APIs' icons one by one, select your application, and click on Subscribe\n")
 
                 if sdmx_url is not None:
 
