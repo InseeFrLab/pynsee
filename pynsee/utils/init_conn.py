@@ -51,10 +51,14 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
     insee_key = keys['insee_key']
     insee_secret = keys['insee_secret']
 
-    token = _get_token_from_insee(insee_key, insee_secret)
+    token_error=False
+    try:
+        token = _get_token_from_insee(insee_key, insee_secret)
+    except:
+        token_error=True   
 
-    if token is None:
-        print('!!! Token is missing, please check insee_key and insee_secret are correct !!!')
+    if (token is None) or (token_error):
+        raise ValueError('!!! Token is missing, please check insee_key and insee_secret are correct !!!')
     else:
         print(f'Token has been created')
         
