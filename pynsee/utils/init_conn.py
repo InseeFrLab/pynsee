@@ -56,7 +56,7 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
     if token is None:
         print('!!! Token is missing, please check insee_key and insee_secret are correct !!!')
     else:
-        print(f'Token has been created : {token}')
+        print(f'Token has been created')
         
     try:
         proxies = {'http': os.environ['http_proxy'],
