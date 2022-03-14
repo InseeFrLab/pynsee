@@ -20,16 +20,22 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
         insee_secret (str): user's secret
         proxy_server (str, optional): Proxy server address, e.g. 'http://my_proxy_server:port'. Defaults to "".
 
+    Notes: 
+        Environment variables can be used instead of init_conn function
+
     Examples:
         >>> from pynsee.utils.init_conn import init_conn
         >>> init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+        >>> # 
+        >>> # Available option not advised: using key and secret in environment variables
+        >>> import os
+        >>> os.environ['insee_key'] = 'my_insee_key'
+        >>> os.environ['insee_secret'] = 'my_insee_secret'
     """    
     d = {'credentials':{'insee_key': insee_key,
                   'insee_secret': insee_secret,
                   'proxy_server': proxy_server}}
 
-    #os.environ['pynsee_query_print'] = 'True'
-    
     home = str(Path.home())
     
     pynsee_credentials_file = home + '/' + 'pynsee_credentials.yml'
@@ -82,5 +88,8 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
         list_requests_status += [results.status_code]
 
     if all([sts == 200 for sts in list_requests_status]):
-        print("Subscription to all INSEE's APIs has been successfull")
+        print("Subscription to all INSEE's APIs has been successfull")        
+        print("Unless the user wants to change key or secret,")
+        print("using this function is no longer needed as the token has been saved locally here:")
+        print(pynsee_credentials_file)
             
