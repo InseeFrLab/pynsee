@@ -4,7 +4,7 @@
 import requests
 import re
 import base64
-
+import os
 
 from functools import lru_cache
 
@@ -23,9 +23,17 @@ def _get_token_from_insee(insee_key, insee_secret):
     data = {
         'grant_type': 'client_credentials'
     }
+
+    try:
+        proxies = {'http': os.environ['http_proxy'],
+                   'https': os.environ['http_proxy']}
+    except:
+        proxies = {'http': '', 'https': ''}
+
     try:
         response = requests.post('https://api.insee.fr/token', headers=headers,
-                                 data=data, verify=True)
+                                proxies=proxies,
+                                data=data, verify=True)
     except ConnectionError:
         print('\n!!! Connection to insee.fr failed !!!\n')
 
