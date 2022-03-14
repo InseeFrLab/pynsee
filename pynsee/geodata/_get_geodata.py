@@ -187,6 +187,8 @@ def _get_geodata(id,
             os.remove(file_name)
             data_all_clean = _get_geodata(id=id,
                                       polygon=polygon,
+                                      crsPolygon=crsPolygon,
+                                      crs=crs,
                                       update=True)
         else:
             _warning_cached_data(file_name)
