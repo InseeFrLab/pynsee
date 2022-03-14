@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import os
 import yaml
 from pathlib2 import Path
+import pandas as pd
+import requests
+
+from pynsee.utils._get_token_from_insee import _get_token_from_insee
+from pynsee.utils.clear_all_cache import clear_all_cache
+from pynsee.utils._get_credentials import _get_credentials
+from pynsee.utils._request_insee import _request_insee
+from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 def init_conn(insee_key, insee_secret, proxy_server=""):
     """Save your credentials to connect to INSEE APIs, subscribe to api.insee.fr
@@ -27,4 +36,43 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
     with open(pynsee_credentials_file, 'w') as yaml_file:
         yaml.dump(d, yaml_file, default_flow_style=False)
         yaml_file.close()
-        
+
+    clear_all_cache()
+
+    keys = _get_credentials()
+
+    insee_key = keys['insee_key']
+    insee_secret = keys['insee_secret']
+
+    token = _get_token_from_insee(insee_key, insee_secret)
+
+    if token is None:
+        print('!!! Token is missing, please check insee_key and insee_secret are correct !!!')
+    else:
+        print(f'Your token has been created : {token}')
+    
+    file_format='application/xml'
+
+    headers = {'Accept': file_format,
+                'Authorization': 'Bearer ' + token}
+    
+    try:
+        proxies = {'http': os.environ['http_proxy'],
+                   'https': os.environ['http_proxy']}
+    except:
+        proxies = {'http': '', 'https': ''}
+
+    queries = ['https://api.insee.fr/series/BDM/V1/dataflow/FR1/all',
+                'https://api.insee.fr/metadonnees/V1/codes/cj/n3/5599',
+                'https://api.insee.fr/entreprises/sirene/V3/siren/552081317', 
+                'https://api.insee.fr/donnees-locales/V0.1/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all']
+    apis = ['BDM', 'Metadata', 'Sirene', 'Local Data']
+
+    for q in range(len(queries)):
+    
+        api_url = queries[q]
+        _wait_api_query_limit(api_url)
+        results = requests.get(api_url, proxies=proxies, headers=headers)
+        if results.status_code != 200:
+            print('!!! Please subscribe to {} API on api.insee.fr !!!'.format(apis[q]))
+            
