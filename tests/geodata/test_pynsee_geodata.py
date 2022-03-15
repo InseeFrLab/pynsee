@@ -34,15 +34,25 @@ class TestFunction(TestCase):
             geo = com.get_geom()
             self.assertTrue(isinstance(geo, MultiPolygon))
 
+            # query with polygon and crs 4326
             dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True, crs="EPSG:4326")
             dep29 = dep29[dep29["insee_dep"] == "29"]
             self.assertTrue(isinstance(dep29, GeoDataframe))
             geo29 = dep29.get_geom()
             self.assertTrue(isinstance(geo29, MultiPolygon))
-
-            com29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29) 
+            com29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29, crsPolygon="EPSG:4326") 
             self.assertTrue(isinstance(com29, GeoDataframe))
-            
+            geocom29 = com29.get_geom()
+            self.assertTrue(isinstance(geocom29, MultiPolygon))
+
+            # query with polygon and crs 3857
+            dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True, crs="EPSG:3857")
+            dep29 = dep29[dep29["insee_dep"] == "29"]
+            self.assertTrue(isinstance(dep29, GeoDataframe))
+            geo29 = dep29.get_geom()
+            self.assertTrue(isinstance(geo29, MultiPolygon))
+            com29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29, crsPolygon="EPSG:3857") 
+            self.assertTrue(isinstance(com29, GeoDataframe))
             geocom29 = com29.get_geom()
             self.assertTrue(isinstance(geocom29, MultiPolygon))
 

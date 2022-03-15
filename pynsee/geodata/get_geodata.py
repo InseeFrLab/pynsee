@@ -7,7 +7,8 @@ from pynsee.geodata._get_geodata import _get_geodata
 def get_geodata(id,
             polygon=None,
             update=False,
-            crs='EPSG:3857'):
+            crs='EPSG:3857',
+            crsPolygon='EPSG:3857'):
     """Get geographical data with identifier and from IGN API
 
     Args:
@@ -29,7 +30,7 @@ def get_geodata(id,
     
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        df = _get_geodata(id=id, polygon=polygon, update=update, crs=crs)
+        df = _get_geodata(id=id, polygon=polygon, update=update, crs=crs, crsPolygon=crsPolygon)
 
         df = GeoDataframe(df)
 
