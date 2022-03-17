@@ -51,7 +51,7 @@ jobs:
         # for f in *.py; do python "$f"; done
         # cd ../..
     - name: Test with pytest windows
-      if: ${{ matrix.platform }} == windows-latest
+      if: ${{ matrix.platform }} == 'windows-latest'
       env:      
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
@@ -59,7 +59,7 @@ jobs:
         pip install pytest platform      
         python pytest -v --cov
     - name: Test with pytest other platform
-      if: ${{ matrix.platform }} != windows-latest
+      if: ${{ matrix.platform }} != 'windows-latest'
       env:      
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
