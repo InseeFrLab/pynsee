@@ -56,7 +56,7 @@ jobs:
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |     
         pip install pytest
-        python -m pytest -v --cov
+        python pytest -v --cov
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
       if: github.ref == 'refs/heads/master'
