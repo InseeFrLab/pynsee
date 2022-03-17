@@ -25,7 +25,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-cov geopandas geopy nbconvert matplotlib descartes geopy
+        pip install flake8 pytest pytest-cov geopandas geopy nbconvert matplotlib descartes geopy GEOS
         pip install -r requirements.txt 
         # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
