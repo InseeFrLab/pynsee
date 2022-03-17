@@ -50,13 +50,22 @@ jobs:
         # run all py files
         # for f in *.py; do python "$f"; done
         # cd ../..
-    - name: Test with pytest
+    - name: Test with pytest windows
+      if: ${{ matrix.platform }} == windows-latest
       env:      
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |     
-        pip install pytest
+        pip install pytest platform      
         python pytest -v --cov
+    - name: Test with pytest other platform
+      if: ${{ matrix.platform }} != windows-latest
+      env:      
+        insee_key: ${{ secrets.INSEE_KEY }}
+        insee_secret: ${{ secrets.INSEE_SECRET }}
+      run: |     
+        pip install pytest platform      
+        python -m pytest -v --cov
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
       if: github.ref == 'refs/heads/master'
