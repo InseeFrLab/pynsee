@@ -115,7 +115,7 @@ class SireneDataframe(pd.DataFrame):
                     if var != "":
                         list_var_backup += [re.sub(' ', '+', var)]
                 
-                query_backup = "+".join(list_var)
+                query_backup = "+".join(list_var_backup)
                 if query_backup != "":
                     query_backup += '+FRANCE'
                             
