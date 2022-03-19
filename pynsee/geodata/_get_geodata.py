@@ -64,7 +64,12 @@ def _get_geodata(id,
     if polygon is not None:
         bounds = polygon.bounds
         bounds = [str(b) for b in bounds]
-        bounds = [bounds[0], bounds[1], bounds[2], bounds[3], 'urn:ogc:def:crs:' + crsPolygon]
+
+        if crsPolygon == 'EPSG:3857':
+            bounds = [bounds[0], bounds[1], bounds[2], bounds[3], 'urn:ogc:def:crs:' + crsPolygon]
+        else:
+            bounds = [bounds[1], bounds[0], bounds[3], bounds[2], 'urn:ogc:def:crs:' + crsPolygon]
+            
         BBOX= '&BBOX={}'.format(','.join(bounds)) 
         link = link0 + BBOX
     else:
@@ -140,6 +145,7 @@ def _get_geodata(id,
         else:
             msg = '!!! Query is correct but no data found !!!'
             print(msg)
+            print('Query:\n%s' % link)
             if polygon is not None:
                 print("!!! Check that crsPolygon argument corresponds to polygon data  !!!")
                 
@@ -187,6 +193,8 @@ def _get_geodata(id,
             os.remove(file_name)
             data_all_clean = _get_geodata(id=id,
                                       polygon=polygon,
+                                      crsPolygon=crsPolygon,
+                                      crs=crs,
                                       update=True)
         else:
             _warning_cached_data(file_name)

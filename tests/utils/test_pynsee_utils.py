@@ -66,8 +66,9 @@ class TestFunction(TestCase):
 
         def test_request_insee_3(self):
             # token is none and sdmx query fails
-            
-            init_conn(insee_key = "test", insee_secret="test")
+            def init_conn_foo():
+                init_conn(insee_key = "test", insee_secret="test")
+            self.assertRaises(ValueError, init_conn_foo)
 
             _get_token.cache_clear()
             _get_envir_token.cache_clear()
