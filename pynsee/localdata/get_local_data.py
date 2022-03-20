@@ -9,8 +9,6 @@ import numpy as np
 
 from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
 from pynsee.localdata.get_geo_list import get_geo_list
-from pynsee.localdata._warning_local_data import _warning_local_data
-
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
@@ -57,10 +55,13 @@ def get_local_data(variables, dataset_version, nivgeo='FE', geocodes=['1'], upda
         >>>                        nivgeo = 'DEP',
         >>>                        geocodes = ['91','92'])
     """
+    
+    if isinstance(geocodes, pd.core.series.Series):
+        geocodes = geocodes.to_list()
 
     if type(geocodes) != list:
         raise ValueError("!!! geocodes must be a list !!!")
-    
+        
     if (geocodes == ["1"]) or (geocodes == ["all"]) or (geocodes == "all"):
         if nivgeo == "DEP":            
             departement = get_geo_list('departements')
@@ -108,7 +109,5 @@ def get_local_data(variables, dataset_version, nivgeo='FE', geocodes=['1'], upda
                                     geocodes=geocodes, update=True)
         else:
             print(f'Locally saved data has been used\nSet update=True to trigger an update')
-
-    _warning_local_data()
 
     return(data_final)
