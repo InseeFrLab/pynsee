@@ -36,7 +36,7 @@ setuptools.setup(
             "appdirs>=1.4.4",
             "unidecode>=1.2.0",
             'python-Levenshtein',
-            "shapely<2.0",
+            "shapely<1.8",
             "pyproj",
             "datetime>=3.5.9",
             "pathlib2>=2.3.5",
