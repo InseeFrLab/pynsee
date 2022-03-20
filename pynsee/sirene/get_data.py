@@ -14,7 +14,7 @@ def _warning_get_data():
 
 
 @lru_cache(maxsize=None)
-def get_data(*codes, kind='siren'):
+def get_data(*codes, kind='siret'):
     """Get data about one or several companies from siren or siret codes
 
     Notes:
