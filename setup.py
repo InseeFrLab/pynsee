@@ -21,10 +21,10 @@ setuptools.setup(
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "License :: OSI Approved",
         "Operating System :: OS Independent",
     ],
@@ -37,13 +37,12 @@ setuptools.setup(
             "unidecode>=1.2.0",
             'python-Levenshtein',
             "shapely<1.8",
-            "pyproj",
             "datetime>=3.5.9",
             "pathlib2>=2.3.5",
             "pyyaml>=5.4.1"],
     package_data={
         "": ["*.zip"]},
-    python_requires='>=3.6',
+    python_requires='>=3.7',
     test_suite='nose.collector',
     tests_require=['nose']
 )
