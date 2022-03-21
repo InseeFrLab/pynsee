@@ -92,4 +92,4 @@ def translate(self,
             if "insee_dep" in self.columns:
                 self = self.drop(columns='insee_dep')
     
-    return self
+        return self
