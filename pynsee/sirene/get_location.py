@@ -1,5 +1,4 @@
 
-import warnings
 import time
 import re
 import pandas as pd
@@ -131,19 +130,16 @@ def get_location(self):
             sirene_df['latitude'] = pd.to_numeric(sirene_df['latitude'])
             sirene_df['longitude'] = pd.to_numeric(sirene_df['longitude'])
             list_points = []
-            
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
 
-                for i in range(len(sirene_df.index)):
+            for i in range(len(sirene_df.index)):
 
-                    if (sirene_df.loc[i,'latitude'] is None) or np.isnan(sirene_df.loc[i,'latitude']):                
-                        list_points += [None]
-                    else:
-                        list_points += [Point(sirene_df.loc[i,'longitude'], sirene_df.loc[i,'latitude'])]
+                if (sirene_df.loc[i,'latitude'] is None) or np.isnan(sirene_df.loc[i,'latitude']):                
+                    list_points += [None]
+                else:
+                    list_points += [Point(sirene_df.loc[i,'longitude'], sirene_df.loc[i,'latitude'])]
+           
+            sirene_df['geometry'] = list_points
 
-                sirene_df['geometry'] = list_points
-
-                GeoDF = GeoDataframe(sirene_df)
+            GeoDF = GeoDataframe(sirene_df)
 
             return(GeoDF)
