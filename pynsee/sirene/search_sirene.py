@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import os
 from functools import lru_cache
 
-from pynsee.utils._paste import _paste
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
 from pynsee.sirene.SireneDataframe import SireneDataframe
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._hash import _hash
+from pynsee.utils._paste import _paste
 
 @lru_cache(maxsize=None)
 def _warning_search_sirene():
@@ -22,7 +25,8 @@ def search_sirene(variable,
                   activity=True,
                   legal=True,
                   only_alive=True,
-                  query_limit=20):
+                  query_limit=20,
+                  update=False):
     """Get data about companies from criteria on variables
 
     Args:
@@ -155,14 +159,42 @@ def search_sirene(variable,
         list_var_pattern.append(_paste(list_var_patt, collapse=" OR "))
 
     query = "?q=" + _paste(list_var_pattern, collapse=" AND ")
+    
+    filename = _hash(query)
+    insee_folder = _create_insee_folder()
+    file_sirene = insee_folder + "/" + filename
 
-    data_final = _request_sirene(query=query, kind=kind,
-                                 number=number, query_limit=query_limit)
+    if (not os.path.exists(file_sirene)) or update:
+        
+        data_final = _request_sirene(query=query, kind=kind,
+                                     number=number, query_limit=query_limit)
 
-    df = _clean_data(data_final, kind=kind,
-                     clean=clean, activity=activity,
-                     legal=legal, only_alive=only_alive)
-
+        df = _clean_data(data_final, kind=kind,
+                         clean=clean, activity=activity,
+                         legal=legal, only_alive=only_alive)
+        
+        df.to_pickle(file_sirene)
+        
+    else:
+        try:
+            df = pd.read_pickle(file_sirene)
+        except:
+            os.remove(file_sirene)
+            df = search_sirene(
+                  variable=variable,
+                  pattern=pattern,
+                  kind=kind,
+                  phonetic_firstvar=phonetic_firstvar,
+                  number=number,
+                  clean=clean,
+                  activity=activity,
+                  legal=legal,
+                  only_alive=only_alive,
+                  query_limit=query_limit,
+                  update=True)
+        else:
+            print(f'Locally saved data has been used\nSet update=True to trigger an update')
+            
     if df is not None:
         df = df.reset_index(drop=True)
 
