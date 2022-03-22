@@ -35,7 +35,6 @@ setuptools.setup(
             "requests>=2.25.1",
             "appdirs>=1.4.4",
             "unidecode>=1.2.0",
-            'python-Levenshtein',
             "shapely<1.8",
             "datetime>=3.5.9",
             "pathlib2>=2.3.5",
