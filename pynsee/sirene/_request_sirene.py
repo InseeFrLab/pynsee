@@ -13,6 +13,7 @@ def _request_sirene(query, kind, number=1001, query_limit=20):
 
     # query = '?q=denominationUniteLegale:pizza'
     # query = '?q=periode(activitePrincipaleEtablissement:56.30Z) AND codePostalEtablissement:83*'
+    # query = '?q=(periode(activitePrincipaleEtablissement:56.30Z) AND codePostalEtablissement:83*) OR (periode(activitePrincipaleEtablissement:56.30Z) AND codePostalEtablissement:82*))'
     # kind = 'siret'
     # number = 4500
 
