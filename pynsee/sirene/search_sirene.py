@@ -3,6 +3,7 @@
 
 import os
 from functools import lru_cache
+import intertools
 
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
@@ -15,6 +16,9 @@ from pynsee.utils._paste import _paste
 def _warning_search_sirene():
     print("\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!")
 
+@lru_cache(maxsize=None)
+def _warning_data_save():
+    print(f'Locally saved data has been used\nSet update=True to trigger an update')
 
 def search_sirene(variable,
                   pattern,
@@ -146,7 +150,7 @@ def search_sirene(variable,
                 phntc = ".phonetisation"
 
         # if pattern has several words, split and put mutiple conditions with OR
-        list_patt = patt.split(' ')
+        list_patt = patt.split('|')
 
         list_var_patt = []
         for ptt in list_patt:
@@ -156,31 +160,35 @@ def search_sirene(variable,
             else:
                 list_var_patt.append("{}{}:{}".format(var, phntc, ptt))
 
-        list_var_pattern.append(_paste(list_var_patt, collapse=" OR "))
+        list_var_pattern.append(list_var_patt)
 
-    query = "?q=" + _paste(list_var_pattern, collapse=" AND ")
+    permutation = list(itertools.product(*list_var_pattern))
+    permutation_and = [" AND ".join(list(x)) for x in permutation]
+    permutation_and_parenth = ['(' + x + ')' for x in permutation_and]
+    string_query = " OR ".join(permutation_and_parenth)
+
+    query = "?q=" + string_query
+    list_var_string = [str(b) for b in [kind, number, query_limit]] 
+    string = "".join(list_var_string)
     
-    filename = _hash(query)
+    filename = _hash(query + string)
     insee_folder = _create_insee_folder()
     file_sirene = insee_folder + "/" + filename
 
     if (not os.path.exists(file_sirene)) or update:
         
         data_final = _request_sirene(query=query, kind=kind,
-                                     number=number, query_limit=query_limit)
-
-        df = _clean_data(data_final, kind=kind,
-                         clean=clean, activity=activity,
-                         legal=legal, only_alive=only_alive)
+                                     number=number, query_limit=query_limit)        
         
-        df.to_pickle(file_sirene)
+        data_final.to_pickle(file_sirene)
         
     else:
         try:
-            df = pd.read_pickle(file_sirene)
+            data_final = pd.read_pickle(file_sirene)
         except:
             os.remove(file_sirene)
-            df = search_sirene(
+            
+            data_final = search_sirene(
                   variable=variable,
                   pattern=pattern,
                   kind=kind,
@@ -192,9 +200,14 @@ def search_sirene(variable,
                   only_alive=only_alive,
                   query_limit=query_limit,
                   update=True)
-        else:
-            print(f'Locally saved data has been used\nSet update=True to trigger an update')
             
+        else:
+            _warning_data_save()
+    
+    df = _clean_data(data_final, kind=kind,
+                     clean=clean, activity=activity,
+                     legal=legal, only_alive=only_alive)
+
     if df is not None:
         df = df.reset_index(drop=True)
 
