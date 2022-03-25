@@ -3,7 +3,7 @@
 
 import os
 from functools import lru_cache
-import intertools
+import itertools
 
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
@@ -16,7 +16,7 @@ from pynsee.utils._paste import _paste
 def _warning_search_sirene():
     print("\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!")
 
-    @lru_cache(maxsize=None)
+@lru_cache(maxsize=None)
 def _warning_data_save():
     print(f'Locally saved data has been used\nSet update=True to trigger an update')
 
