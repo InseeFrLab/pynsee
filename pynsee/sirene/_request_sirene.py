@@ -118,7 +118,20 @@ def _request_sirene(query, kind, number=1001, query_limit=20):
                         print('!!! maximum reached, increase value of query_limit argument !!!')
 
         data_final = pd.concat(list_dataframe)
-
+        
+        
+        if "siret" in data_final.columns:
+            sirenCol = "siret"
+        elif "siren" in data_final.columns:
+            sirenCol = "siren"
+        else:
+            sirenCol = None
+        
+        if sirenCol is not None:
+            if len(data_final[sirenCol].unique()) == number_query_limit:
+                print("The query reached maximum item limit,")
+                print(f"Please change argument number to get more than {number_query_limit} different {sirenCol}")
+            
         return(data_final)
     else:
         print(request.text)
