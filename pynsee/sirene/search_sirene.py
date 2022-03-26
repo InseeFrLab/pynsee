@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import pandas as pd
 import os
 from functools import lru_cache
 import itertools
