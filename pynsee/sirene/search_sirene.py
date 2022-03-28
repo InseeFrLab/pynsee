@@ -154,7 +154,7 @@ def search_sirene(variable,
     string_query = " OR ".join(permutation_and_parenth)
 
     query = "?q=" + string_query
-    list_var_string = [str(b) for b in [kind, number, query_limit]] 
+    list_var_string = [str(b) for b in [kind, number]] 
     string = "".join(list_var_string)
     
     filename = _hash(query + string)
@@ -164,7 +164,7 @@ def search_sirene(variable,
     if (not os.path.exists(file_sirene)) or update:
         
         data_final = _request_sirene(query=query, kind=kind,
-                                     number=number, query_limit=query_limit)        
+                                     number=number)      
         
         data_final.to_pickle(file_sirene)
         
