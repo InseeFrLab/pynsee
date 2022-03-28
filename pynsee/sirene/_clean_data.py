@@ -30,11 +30,11 @@ def _clean_data(data_final, kind='siren', clean=True,
                     naf5_merge, on="activitePrincipaleUniteLegale", how="left")
 
             if "activitePrincipaleEtablissement" in data_final.columns:
-
-                naf5_merge = naf5.rename(columns={"NAF5": "activitePrincipaleEtablissement",
-                                                  "TITLE_NAF5_FR": "activitePrincipaleEtablissementLibelle"})
-                data_final = data_final.merge(
-                    naf5_merge, on="activitePrincipaleEtablissement", how="left")
+                if 'activitePrincipaleEtablissementLibelle' not in data_final.columns:
+                    naf5_merge = naf5.rename(columns={"NAF5": "activitePrincipaleEtablissement",
+                                                      "TITLE_NAF5_FR": "activitePrincipaleEtablissementLibelle"})
+                    data_final = data_final.merge(
+                        naf5_merge, on="activitePrincipaleEtablissement", how="left")
 
         # remove companies which no longer exist
         if only_alive:
@@ -48,17 +48,18 @@ def _clean_data(data_final, kind='siren', clean=True,
         # add legal entities title
         if legal:
             if 'categorieJuridiqueUniteLegale' in data_final.columns:
-                try:
-                    list_legal_code = data_final.categorieJuridiqueUniteLegale.unique()
-                    data_legal = get_legal_entity(
-                        list_legal_code, print_err_msg=False)
-                    data_legal = data_legal[['code', 'title']]
-                    data_legal = data_legal.rename(columns={'code': 'categorieJuridiqueUniteLegale',
-                                                            'title': 'categorieJuridiqueUniteLegaleLibelle'})
-                    data_final = data_final.merge(
-                        data_legal, on='categorieJuridiqueUniteLegale', how='left')
-                except:
-                    pass
+                if 'categorieJuridiqueUniteLegaleLibelle' not in data_final.columns:
+                    try:
+                        list_legal_code = data_final.categorieJuridiqueUniteLegale.unique()
+                        data_legal = get_legal_entity(
+                            list_legal_code, print_err_msg=False)
+                        data_legal = data_legal[['code', 'title']]
+                        data_legal = data_legal.rename(columns={'code': 'categorieJuridiqueUniteLegale',
+                                                                'title': 'categorieJuridiqueUniteLegaleLibelle'})
+                        data_final = data_final.merge(
+                            data_legal, on='categorieJuridiqueUniteLegale', how='left')
+                    except:
+                        pass
         # empty columns at the end
         list_all_na_col = [col for col in data_final.columns if all(
             pd.isna(data_final[col]))]
@@ -95,18 +96,21 @@ def _clean_data(data_final, kind='siren', clean=True,
         df_empl_siret = _employee_metadata(kind='siret')
 
         if 'trancheEffectifsUniteLegale' in data_final.columns:
-            data_final = data_final.merge(
-                df_empl_siren, on='trancheEffectifsUniteLegale', how='left')
+            if 'effectifsMinUniteLegale' not in data_final.columns:
+                data_final = data_final.merge(
+                    df_empl_siren, on='trancheEffectifsUniteLegale', how='left')
 
         if 'trancheEffectifsEtablissement' in data_final.columns:
-            data_final = data_final.merge(
-                df_empl_siret, on='trancheEffectifsEtablissement', how='left')
+            if 'effectifsMinEtablissement' not in data_final.columns:
+                data_final = data_final.merge(
+                    df_empl_siret, on='trancheEffectifsEtablissement', how='left')
 
         # add street metadata
         df_street = _street_metadata()
         if 'typeVoieEtablissement' in data_final.columns:
-            data_final = data_final.merge(
-                df_street, on='typeVoieEtablissement', how='left')
+            if 'typeVoieEtablissementLibelle' not in data_final.columns:
+                data_final = data_final.merge(
+                    df_street, on='typeVoieEtablissement', how='left')
 
         # move columns title after columns containing values
         for var in ['categorieJuridiqueUniteLegale',
