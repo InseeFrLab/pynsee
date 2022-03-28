@@ -5,6 +5,7 @@ import os
 from functools import lru_cache
 import itertools
 import pandas as pd
+import re
 
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
@@ -137,6 +138,7 @@ def search_sirene(variable,
                 phntc = ".phonetisation"
 
         # if pattern has several words, split and put mutiple conditions with OR
+        patt = re.sub('\s+', '|', patt)
         list_patt = patt.split('|')
 
         list_var_patt = []
