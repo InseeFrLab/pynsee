@@ -6,7 +6,6 @@ import pandas as pd
 import os
 from functools import lru_cache
 import itertools
-import pandas as pd
 
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
