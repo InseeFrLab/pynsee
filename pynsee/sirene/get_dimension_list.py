@@ -21,14 +21,14 @@ def get_dimension_list(kind='siret'):
     if kind == 'siret':
         df = search_sirene(variable=['sigleUniteLegale'],
                            pattern=['INSEE'],
-                           only_alive=False,
+                           alive=False,
                            kind='siret',
                            number=1)
         col_to_keep = 0
     else:
         df = search_sirene(variable=['sigleUniteLegale'],
                            pattern=['INSEE'], kind='siren',
-                           only_alive=False,
+                           alive=False,
                            number=1)
         col_to_keep = 1
 
