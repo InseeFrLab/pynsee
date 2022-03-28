@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import re
-import pandas as pd
 import os
 from functools import lru_cache
 import itertools
+import pandas as pd
+import re
 
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
@@ -29,8 +29,7 @@ def search_sirene(variable,
                   number=1000,
                   activity=True,
                   legal=True,
-                  only_alive=True,
-                  query_limit=20,
+                  alive=True,
                   update=False):
     """Get data about companies from criteria on variables
     Args:
@@ -43,10 +42,8 @@ def search_sirene(variable,
         If it is above 1000, multiple queries are triggered.
         activity (bool, optional): If True, activty title is added based on NAF/NACE. Defaults to True.
         legal (bool, optional): If True, legal entities title are added
-        only_alive (bool, optional): If True, closed entities are removed from the data and
+        alive (bool, optional): If True, closed entities are removed from the data and
         for each legal entity only the last period for which the data is stable is displayed
-        query_limit(numeric, optional): maximun number of queries made
-         by the function in a row, by default it is 20
     Notes:
         This function may return personal data, please check and
         comply with the legal framework relating to personal data protection
@@ -185,8 +182,7 @@ def search_sirene(variable,
                   number=number,
                   activity=activity,
                   legal=legal,
-                  only_alive=only_alive,
-                  query_limit=query_limit,
+                  alive=alive,
                   update=True)
             
         else:
@@ -194,7 +190,7 @@ def search_sirene(variable,
     
     df = _clean_data(data_final.copy(), kind=kind,
                     clean=False, activity=activity,
-                    legal=legal, only_alive=only_alive)
+                    legal=legal, only_alive=alive)
     
     if df is not None:
         df = df.reset_index(drop=True)

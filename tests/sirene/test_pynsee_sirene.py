@@ -83,7 +83,7 @@ class TestFunction(TestCase):
 
             df = search_sirene(variable=["activitePrincipaleUniteLegale",
                                          "codePostalEtablissement"],
-                               pattern=["86.10Z", "75*"], kind="siret")
+                               pattern=["86.10Z", "75*|91*"], kind="siret")
             test = test & isinstance(df, pd.DataFrame)
 
             # Test only alive businesses are provided
@@ -102,7 +102,7 @@ class TestFunction(TestCase):
             df = search_sirene(variable=["denominationUniteLegale",
                                          'categorieJuridiqueUniteLegale',
                                          'categorieEntreprise'],
-                                only_alive=False,
+                                alive=False,
                                 pattern=["sncf", '9220', 'PME'], kind="siren")
             test = test & isinstance(df, pd.DataFrame)
 
