@@ -4,6 +4,7 @@
 import os
 from functools import lru_cache
 import itertools
+import pandas as pd
 
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
@@ -25,7 +26,6 @@ def search_sirene(variable,
                   kind="siret",
                   phonetic_firstvar=False,
                   number=1000,
-                  clean=True,
                   activity=True,
                   legal=True,
                   only_alive=True,
@@ -40,7 +40,6 @@ def search_sirene(variable,
         first variable of the list, if False the exact string is searched. Defaults to True.
         number (int, optional): Number of companies searched. Defaults to 1000.
         If it is above 1000, multiple queries are triggered.
-        clean (bool, optional): If True, empty columns are deleted. Defaults to True.
         activity (bool, optional): If True, activty title is added based on NAF/NACE. Defaults to True.
         legal (bool, optional): If True, legal entities title are added
         only_alive (bool, optional): If True, closed entities are removed from the data and
@@ -182,7 +181,6 @@ def search_sirene(variable,
                   kind=kind,
                   phonetic_firstvar=phonetic_firstvar,
                   number=number,
-                  clean=clean,
                   activity=activity,
                   legal=legal,
                   only_alive=only_alive,
@@ -192,8 +190,8 @@ def search_sirene(variable,
         else:
             _warning_data_save()
     
-    df = _clean_data(data_final, kind=kind,
-                    clean=clean, activity=activity,
+    df = _clean_data(data_final.copy(), kind=kind,
+                    clean=False, activity=activity,
                     legal=legal, only_alive=only_alive)
     
     if df is not None:
