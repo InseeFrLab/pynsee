@@ -23,7 +23,7 @@ def get_dimension_list(kind='siret'):
                            pattern=['INSEE'],
                            only_alive=False,
                            kind='siret',
-                           number=1, clean=False)
+                           number=1)
         col_to_keep = 0
     else:
         df = search_sirene(variable=['sigleUniteLegale'],
