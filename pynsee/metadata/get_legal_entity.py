@@ -5,7 +5,7 @@ import pandas as pd
 from functools import lru_cache
 from tqdm import trange
 from pynsee.utils._hash import _hash
-from pynsee.utils._paste import _paste
+from pynsee.utils._create_insee_folder import _create_insee_folder
 import os
 
 from pynsee.utils._request_insee import _request_insee
