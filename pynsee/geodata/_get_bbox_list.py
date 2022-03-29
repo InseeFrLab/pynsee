@@ -42,8 +42,11 @@ def _get_bbox_list(polygon=None, update=False):
                     try:
                         intersection = polygon.intersection(poly_bbox) 
                     except:
-                        polygon = polygon.buffer(0)
-                        intersection = polygon.intersection(poly_bbox) 
+                        try:
+                            polygon = polygon.buffer(0)
+                            intersection = polygon.intersection(poly_bbox) 
+                        except:
+                            pass
 
                     if hasattr(intersection, 'geoms'):
 

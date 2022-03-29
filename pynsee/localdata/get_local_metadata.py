@@ -13,7 +13,7 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 
 @lru_cache(maxsize=None)
 def _warning_data():
-    print("!!! This function renders only package's internal data, it might not be the most up-to-date\nHave a look at api.insee.fr !!!")
+    print("!!! This function renders only package's internal data,\nit might not be the most up-to-date\nHave a look at api.insee.fr !!!")
 
 
 @lru_cache(maxsize=None)
@@ -42,10 +42,10 @@ def get_local_metadata():
                      "Fichier localisé des rémunérations et de l'emploi salarié",
                      "Tourisme (offre d'hébergement)"
                      ]
-
     all_files = []
     name_dataset = ['RP', 'BDCOM', 'Popleg', 'RFD',
                     'REE', 'FILOSOFI', 'Flores', 'TOUR']
+                    
     var_name = ['var_modalite', 'mesure_croisement', 'lib_mesure', 'millesime']
     for var in var_name:
         for dt in name_dataset:
@@ -55,8 +55,8 @@ def get_local_metadata():
     list_files = [f for f in list_files if re.search('^doc_.*csv$', f)]
 
     test_file_available = [f not in list_files for f in all_files]
-
-    if any(test_file_available):
+    #any(test_file_available)
+    if True:
         zip_file = pkg_resources.resource_stream(
             __name__, 'data/local_metadata.zip')
 
@@ -79,7 +79,7 @@ def get_local_metadata():
         for f in range(len(list_files)):
             try:
                 file2load = folder + '/' + list_files[f]
-                df = pd.read_csv(file2load)
+                df = pd.read_csv(file2load, sep =",", encoding="UTF-8")
 
                 if reshape is True:
                     df.columns = ['var' if x
@@ -190,15 +190,6 @@ def get_local_metadata():
     lib_mesure = lib_mesure.drop_duplicates()
     variables = variables.merge(lib_mesure, on='mesure', how='left')
 
-    # lib_tableau = extract_data_from_excel_sheet(var='lib_tableau',
-    #                                           list_col=['nom_tab','lib_tab'])
-    #
-    # lib_filtre_stat = extract_data_from_excel_sheet(var='lib_filtre_stat',
-    #                                           list_col=['filtre_stat','lib_filtre_stat'])
-    #
-    # lib_filtre_geo = extract_data_from_excel_sheet(var='lib_filtre_geo',
-    #                                           list_col=['filtre_geo','lib_filtre_geo'])
-
     #
     # add metadata on millesime to variables list: geo data date and data date
     #
@@ -217,14 +208,12 @@ def get_local_metadata():
     datasets = pd.DataFrame(dataset_dict)
     variables = variables.merge(datasets, on='dataset', how='left')
 
-
-#    variables.columns = ['variables', 'unit', 'dataset_version', 'dataset',
-#                         'variables_label', 'unit_label', 'geo_date', 'data_date', 'dataset_label']
-
     variables.columns = ['VARIABLES', 'UNIT', 'DATASET_VERSION', 'DATASET',
-                         'VARIABLES_label', 'UNIT_label', 'GEO_DATE',
-                         'DATA_DATE', 'DATASET_label']
+                         'VARIABLES_label_fr', 'UNIT_label_fr', 'GEO_DATE',
+                         'DATA_DATE', 'DATASET_label_fr']
 
-    variables = variables.dropna(subset=['GEO_DATE'])
-
+    # variables = variables.dropna(subset=['GEO_DATE'])
+    variables = variables[~variables.DATASET_VERSION.str.contains('filtre_geo ')]
+    variables = variables.reset_index(drop=True)
+    
     return(variables)

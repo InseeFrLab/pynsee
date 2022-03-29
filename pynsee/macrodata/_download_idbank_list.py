@@ -17,7 +17,7 @@ from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils._get_credentials import _get_credentials
 
 
-def _download_idbank_list():
+def _download_idbank_list(update=False):
 
     todays_date = date.today()
     file_to_dwn_default = 'idbank_' + str(todays_date.year) + str(todays_date.month)
@@ -47,6 +47,9 @@ def _download_idbank_list():
 
         if day_lapse > 90:
             trigger_update = True
+
+    if update:
+        trigger_update = True
 
     if trigger_update:
         

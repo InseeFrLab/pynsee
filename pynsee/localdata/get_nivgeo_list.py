@@ -4,11 +4,7 @@
 from functools import lru_cache
 import pandas as pd
 
-
-@lru_cache(maxsize=None)
-def _warning_nivgeo():
-    print("!!! This function renders only package's internal data,\nit might not be the most up-to-date\nHave a look at api.insee.fr !!!")
-
+from pynsee.localdata._warning_local_data import _warning_local_data
 
 def get_nivgeo_list():
     """Get a list of geographic levels
@@ -17,7 +13,7 @@ def get_nivgeo_list():
         >>> from pynsee.localdata import get_nivgeo_list
         >>> nivgeo_list = get_nivgeo_list()
     """
-    _warning_nivgeo()
+    _warning_local_data()
 
     dict_ng = {
         'NIVGEO': ['COM',

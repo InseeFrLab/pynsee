@@ -12,13 +12,23 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
 def get_geodata_list(update=False):
+    """Get a list of geographical limits of French administrative areas from IGN API
+
+    Args:
+        update (bool, optional): Trigger an update, otherwise locally saved data is used. Defaults to False.
+    
+    Examples:
+        >>> from pynsee.geodata import get_geodata_list
+        >>> # Get a list of geographical limits of French administrative areas from IGN API
+        >>> geodata_list = get_geodata_list()
+    """    
     
     format = "WFS"
     topic = "administratif"
     version = "2.0.0"
         
     pynsee_folder = _create_insee_folder()
-    file_name = pynsee_folder + '/' +  _hash("".join(topic + format)) + ".csv"  
+    file_name = pynsee_folder + '/' +  _hash("".join(topic + format)) 
     
     if (not os.path.exists(file_name)) | (update is True):
                 

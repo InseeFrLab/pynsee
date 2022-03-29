@@ -28,6 +28,7 @@ def _get_data_with_bbox2(i):
 
 def _get_data_with_bbox(link, list_bbox):
         
+    # list_bbox = (5.0, 43.0, 6.0, 44.5)
     bounds = [str(b) for b in list_bbox]
     bounds = [bounds[1], bounds[0], bounds[3], bounds[2]]
     BBOX= '&BBOX={}'.format(','.join(bounds)) 

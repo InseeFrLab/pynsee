@@ -24,7 +24,7 @@ class TestFunction(TestCase):
         def test_get_activity_list(self):
             test = True
             level_available = ['A10', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
-                            'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5']
+                            'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5', "A5", "A17"]
             for nomencl in level_available:
                 data = get_activity_list(nomencl)
                 test = test & isinstance(data, pd.DataFrame)
