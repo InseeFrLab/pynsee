@@ -8,6 +8,7 @@ import sys
 from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint
 
 from pynsee.sirene.get_data import get_data
+from pynsee.sirene.get_relatives import get_relatives
 from pynsee.sirene.search_sirene import search_sirene
 from pynsee.sirene._request_sirene import _request_sirene
 from pynsee.sirene.get_dimension_list import get_dimension_list
@@ -20,6 +21,23 @@ class TestFunction(TestCase):
     version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
 
     if version_3_7:
+        
+        def test_get_relatives(self):
+            test = True
+            df = get_relatives('00555008200027')
+            test = test & isinstance(df, SireneDataframe)
+            
+            df = get_relatives(['39860733300059', '00555008200027'])
+            test = test & isinstance(df, SireneDataframe)
+            
+            df = get_relatives(['39860733300059', '1'])
+            test = test & isinstance(df, SireneDataframe)
+            
+            self.assertTrue(test)
+            
+        def test_error_get_relatives(self):
+            with self.assertRaises(ValueError):
+                get_relatives('0')
 
         def test_get_dimension_list(self):
             test = True
