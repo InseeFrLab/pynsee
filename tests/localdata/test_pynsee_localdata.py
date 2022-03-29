@@ -192,7 +192,6 @@ class TestFunction(TestCase):
                 data = get_included_area(area_type=a, codeareas=code)
                 list_data.append(data)
 
-            list_data += get_included_area(area_type=a, codeareas=code[0])
             data_final = pd.concat(list_data)
 
             self.assertTrue(isinstance(data_final, pd.DataFrame))
