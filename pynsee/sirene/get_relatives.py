@@ -6,6 +6,22 @@ from pynsee.utils._request_insee import _request_insee
 from pynsee.sirene._make_dataframe_from_dict import _make_dataframe_from_dict
 
 def get_relatives(siret):
+    """Find parent or child entities for one siret entity (etablissement)
+
+    Args:
+        siret (str or list): siret or list of siret codes
+
+    Raises:
+        ValueError: siret should be str or list
+
+    Returns:
+        pandas.DataFrame: dataframe containing the query content
+    
+    Examples:
+        >>> # find parent or child entities for one siret entity (etablissement)
+        >>> data = get_relatives('00555008200027')
+        >>> data = get_relatives(['39860733300059', '00555008200027'])
+    """    
     
     if type(siret) == str:
         siret = [siret]
