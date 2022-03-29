@@ -14,8 +14,8 @@ def _warning_get_data():
 
 
 @lru_cache(maxsize=None)
-def get_data(*codes, kind='siret'):
-    """Get data about one or several companies from siren or siret codes
+def get_data(id, kind='siret'):
+    """Get data about one or several companies from siren or siret identifiers
 
     Notes:
         This function may return personal data, please check and comply with the legal framework relating to personal data protection
@@ -23,11 +23,15 @@ def get_data(*codes, kind='siret'):
     Examples:
         >>> from pynsee.sirene import get_data
         >>> df = get_data("552081317", kind = 'siren')
-        >>> df = get_data('32227167700021', '26930124800077', kind='siret')
+        >>> df = get_data(['32227167700021', '26930124800077'], kind='siret')
     """
 
-    # codes = ['32227167700021', '26930124800077']
-
+    if type(id) == str:
+        id = [id]
+        
+    if type(id) != list:
+        raise ValueError('!!! id should be a list or a str !!!')
+        
     if kind == 'siren':
         main_key = 'uniteLegale'
     elif kind == 'siret':
@@ -39,8 +43,8 @@ def get_data(*codes, kind='siret'):
 
     list_data = []
 
-    for code in range(len(codes)):
-        link = INSEE_api_sirene + '/' + str(codes[code])
+    for i in range(len(id)):
+        link = INSEE_api_sirene + '/' + str(id[i])
         request = _request_insee(
             api_url=link, file_format='application/json;charset=utf-8')
         try:
