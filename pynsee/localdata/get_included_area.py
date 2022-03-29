@@ -21,11 +21,14 @@ def get_included_area(area_type, codeareas):
     Examples:
         >>> from pynsee.localdata import get_area_list, get_included_area
         >>> area_list = get_area_list()
-        >>> paris_empl_area = get_included_area(area_type = 'zonesDEmploi2020', codeareas = ['1109'])
+        >>> paris_empl_area = get_included_area(area_type = 'zonesDEmploi2020', codeareas = '1109')
     """
 
+    if type(codeareas) == str:
+        codeareas = [codeareas]
+
     if type(codeareas) != list:
-        raise ValueError("!!! codeareas must be a list !!!")
+        raise ValueError("!!! codeareas must be a list or a str!!!")
 
     list_data = []
 
