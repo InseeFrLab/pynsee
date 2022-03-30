@@ -167,6 +167,7 @@ def search_sirene(variable,
                                      number=number)      
         
         data_final.to_pickle(file_sirene)
+        print(f'Data saved: {file_sirene}')
         
     else:
         try:

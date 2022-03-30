@@ -46,6 +46,7 @@ def get_legal_entity(codes, print_err_msg=True, update=False):
 
         data_final = data_final.rename(columns={'intitule': 'title'})
         data_final.to_pickle(file_legal_entity)
+        print(f'Data saved: {file_legal_entity}')
         
     else:
         try:
