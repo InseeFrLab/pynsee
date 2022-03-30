@@ -13,7 +13,6 @@ def _warning_get_data():
     print("\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!")
 
 
-@lru_cache(maxsize=None)
 def get_data(id, kind='siret'):
     """Get data about one or several companies from siren or siret identifiers
 
