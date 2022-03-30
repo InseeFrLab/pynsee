@@ -57,14 +57,19 @@ class TestFunction(TestCase):
 
         def test_get_location(self):
             df = search_sirene(variable=["activitePrincipaleEtablissement"],
-                               pattern=['29.10Z'], kind='siret')
+                               pattern=['29.10Z'], kind='siret')            
+
+            test = True
+            test = test & isinstance(df, SireneDataframe)
+            
+            df = search_sirene(variable="activitePrincipaleEtablissement",
+                               pattern='29.10Z', kind='siret')
             df = df.loc[df['effectifsMinEtablissement'] > 100]
             df = df.reset_index(drop=True)
 
-            test = True
-            sirf = test & isinstance(df, SireneDataframe)
             sirdf = df.get_location()
-            sirf = test & isinstance(sirdf, GeoDataframe)
+            test = test & isinstance(sirdf, GeoDataframe)
+
             geo = sirdf.get_geom()            
             test = test & (type(geo) in [Point, Polygon, MultiPolygon, 
                                 LineString, MultiLineString, MultiPoint])
@@ -72,7 +77,7 @@ class TestFunction(TestCase):
             self.assertTrue(test)
 
         def test_get_data(self):
-            df1 = get_data('32227167700021', '26930124800077', kind='siret')
+            df1 = get_data(['32227167700021', '26930124800077'], kind='siret')
             df2 = get_data("552081317", kind='siren')
             test = isinstance(df1, pd.DataFrame) & isinstance(
                 df2, pd.DataFrame)

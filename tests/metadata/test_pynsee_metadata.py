@@ -20,6 +20,8 @@ class TestFunction(TestCase):
         def test_get_definition(self):
             data = get_definition(ids=['c1020', 'c1601'])
             self.assertTrue(isinstance(data, pd.DataFrame))
+            data = get_definition(ids='c1020')
+            self.assertTrue(isinstance(data, pd.DataFrame))
 
         def test_get_activity_list(self):
             test = True
