@@ -2,7 +2,7 @@
 # Copyright : INSEE, 2021
 
 import os
-import yaml
+#import yaml
 from pathlib2 import Path
 import pandas as pd
 import requests
@@ -31,22 +31,31 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
         >>> import os
         >>> os.environ['insee_key'] = 'my_insee_key'
         >>> os.environ['insee_secret'] = 'my_insee_secret'
-    """    
-    d = {'credentials':{'insee_key': insee_key,
-                  'insee_secret': insee_secret,
-                  'proxy_server': proxy_server}}
-
-    home = str(Path.home())
+    """ 
     
-    pynsee_credentials_file = home + '/' + 'pynsee_credentials.yml'
+    # d ={'credentials':{'insee_key': insee_key,
+    #               'insee_secret': insee_secret,
+    #               'proxy_server': proxy_server}}
+
+    # home = str(Path.home())
     
-    with open(pynsee_credentials_file, 'w') as yaml_file:
-        yaml.dump(d, yaml_file, default_flow_style=False)
-        yaml_file.close()
+    # pynsee_credentials_file = home + '/' + 'pynsee_credentials.yml'
+    
+    # with open(pynsee_credentials_file, 'w') as yaml_file:
+    #     yaml.dump(d, yaml_file, default_flow_style=False)
+    #     yaml_file.close()
 
-    clear_all_cache()
+    # clear_all_cache()
+    
+    home = str(Path.home())    
+    pynsee_credentials_file = home + '/' + 'pynsee_credentials.csv'
 
-    keys = _get_credentials()
+    d = pd.DataFrame({'insee_key': insee_key,
+                   'insee_secret': insee_secret,
+                   'proxy_server': proxy_server},index=[0])
+    d.to_csv(pynsee_credentials_file)
+
+    keys = _get_credentials()        
 
     insee_key = keys['insee_key']
     insee_secret = keys['insee_secret']
@@ -94,6 +103,6 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
     if all([sts == 200 for sts in list_requests_status]):
         print("Subscription to all INSEE's APIs has been successfull")        
         print("Unless the user wants to change key or secret,")
-        print("using this function is no longer needed as the token has been saved locally here:")
+        print("using this function is no longer needed as the credentials to get the token have been saved locally here:")
         print(pynsee_credentials_file)
             
