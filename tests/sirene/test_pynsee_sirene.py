@@ -21,6 +21,23 @@ class TestFunction(TestCase):
     version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
 
     if version_3_7:
+        
+        def test_get_relatives(self):
+            test = True
+            df = get_relatives('00555008200027')
+            test = test & isinstance(df, SireneDataframe)
+            
+            df = get_relatives(['39860733300059', '00555008200027'])
+            test = test & isinstance(df, SireneDataframe)
+            
+            df = get_relatives(['39860733300059', '1'])
+            test = test & isinstance(df, SireneDataframe)
+            
+            self.assertTrue(test)
+            
+        def test_error_get_relatives(self):
+            with self.assertRaises(ValueError):
+                get_relatives('0')
 
         def test_get_dimension_list(self):
             test = True
