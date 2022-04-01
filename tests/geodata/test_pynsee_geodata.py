@@ -75,17 +75,21 @@ class TestFunction(TestCase):
             regt = reg.translate().zoom()
             self.assertTrue(isinstance(regt, GeoDataframe))
             geo_regt = regt.get_geom()
-            self.assertTrue(isinstance(geo_regt, MultiPolygon))            
+            self.assertTrue(isinstance(geo_regt, MultiPolygon))  
+
+            dep = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', crs="EPSG:3857")
+            dep13 = dep[dep["insee_dep"] == "13"]
+            geo13 = dep13.get_geom()          
                
-            bbox = _get_bbox_list(polygon=geo29, update=True)
+            bbox = _get_bbox_list(polygon=geo13, update=True)
             self.assertTrue(isinstance(bbox, list))
-            bbox = _get_bbox_list(polygon=geo29)
-            self.assertTrue(isinstance(bbox, list))
-
-            bbox = _get_bbox_list(polygon=geo29)
+            bbox = _get_bbox_list(polygon=geo13)
             self.assertTrue(isinstance(bbox, list))
 
-            bbox = _get_bbox_list(polygon=geo29)
+            bbox = _get_bbox_list(polygon=geo13)
+            self.assertTrue(isinstance(bbox, list))
+
+            bbox = _get_bbox_list(polygon=geo13)
             self.assertTrue(isinstance(bbox, list))
 
             data = get_geodata(id='test', update=True) 
