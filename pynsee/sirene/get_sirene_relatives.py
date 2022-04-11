@@ -5,7 +5,7 @@ import pandas as pd
 from pynsee.utils._request_insee import _request_insee
 from pynsee.sirene._make_dataframe_from_dict import _make_dataframe_from_dict
 
-def get_relatives(siret):
+def get_sirene_relatives(siret):
     """Find parent or child entities for one siret entity (etablissement)
 
     Args:
@@ -19,8 +19,8 @@ def get_relatives(siret):
     
     Examples:
         >>> # find parent or child entities for one siret entity (etablissement)
-        >>> data = get_relatives('00555008200027')
-        >>> data = get_relatives(['39860733300059', '00555008200027'])
+        >>> data = get_sirene_relatives('00555008200027')
+        >>> data = get_sirene_relatives(['39860733300059', '00555008200027'])
     """    
     
     if type(siret) == str:
