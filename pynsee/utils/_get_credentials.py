@@ -5,34 +5,22 @@ from pathlib2 import Path
 import os
 import pandas as pd
 from functools import lru_cache
-# import yaml
+import numpy as np
 
 def _get_credentials():
-
-    # try:
-    #     home = str(Path.home())
-    
-    #     pynsee_credentials_file = home + '/' + 'pynsee_credentials.yml'
-
-    #     with open(pynsee_credentials_file, "r") as creds:
-    #         secrets = yaml.safe_load(creds)
-        
-    #    os.environ['insee_key'] = secrets["credentials"]["insee_key"]
-    #     os.environ['insee_secret'] = secrets["credentials"]["insee_secret"]
-    #     os.environ['http_proxy'] = secrets["credentials"]["proxy_server"]
-    #     os.environ['https_proxy'] = secrets["credentials"]["proxy_server"]
-    # except:
-    #     pass
     
     envir_var_used = False
     try:
         home = str(Path.home())    
         pynsee_credentials_file = home + '/' + 'pynsee_credentials.csv'
         cred = pd.read_csv(pynsee_credentials_file)
-        os.environ['insee_key'] = cred.loc[0,"insee_key"]
-        os.environ['insee_secret'] = cred.loc[0,"insee_secret"]
-        os.environ['http_proxy'] = cred.loc[0,"proxy_server"]
-        os.environ['https_proxy'] = cred.loc[0,"proxy_server"]
+        os.environ['insee_key'] = str(cred.loc[0,"insee_key"])
+        os.environ['insee_secret'] = str(cred.loc[0,"insee_secret"])
+        proxy_server = cred.loc[0,"proxy_server"]
+        if (proxy_server is None) or (np.isnan(proxy_server)):
+            proxy_server = ''
+        os.environ['http_proxy'] = str(proxy_server)
+        os.environ['https_proxy'] = str(proxy_server)
     except:
         envir_var_used = True            
 
