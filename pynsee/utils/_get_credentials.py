@@ -3,24 +3,38 @@
 
 from pathlib2 import Path
 import os
-import yaml
+import pandas as pd
+from functools import lru_cache
+# import yaml
 
 def _get_credentials():
 
-    try:
-        home = str(Path.home())
+    # try:
+    #     home = str(Path.home())
     
-        pynsee_credentials_file = home + '/' + 'pynsee_credentials.yml'
+    #     pynsee_credentials_file = home + '/' + 'pynsee_credentials.yml'
 
-        with open(pynsee_credentials_file, "r") as creds:
-            secrets = yaml.safe_load(creds)
+    #     with open(pynsee_credentials_file, "r") as creds:
+    #         secrets = yaml.safe_load(creds)
         
-        os.environ['insee_key'] = secrets["credentials"]["insee_key"]
-        os.environ['insee_secret'] = secrets["credentials"]["insee_secret"]
-        os.environ['http_proxy'] = secrets["credentials"]["proxy_server"]
-        os.environ['https_proxy'] = secrets["credentials"]["proxy_server"]
+    #    os.environ['insee_key'] = secrets["credentials"]["insee_key"]
+    #     os.environ['insee_secret'] = secrets["credentials"]["insee_secret"]
+    #     os.environ['http_proxy'] = secrets["credentials"]["proxy_server"]
+    #     os.environ['https_proxy'] = secrets["credentials"]["proxy_server"]
+    # except:
+    #     pass
+    
+    envir_var_used = False
+    try:
+        home = str(Path.home())    
+        pynsee_credentials_file = home + '/' + 'pynsee_credentials.csv'
+        cred = pd.read_csv(pynsee_credentials_file)
+        os.environ['insee_key'] = cred.loc[0,"insee_key"]
+        os.environ['insee_secret'] = cred.loc[0,"insee_secret"]
+        os.environ['http_proxy'] = cred.loc[0,"proxy_server"]
+        os.environ['https_proxy'] = cred.loc[0,"proxy_server"]
     except:
-        pass
+        envir_var_used = True            
 
     try:
         key_dict = {'insee_key': os.environ['insee_key'],
@@ -31,5 +45,23 @@ def _get_credentials():
                         'insee_secret': os.environ['INSEE_SECRET']}
         except:
             key_dict = None
-
+            
+    if (envir_var_used is True) & (key_dict is not None):
+        _warning_credentials("envir_var_used")    
+    elif key_dict is None:
+        _warning_credentials("key_dict_none")
+        
     return(key_dict)
+
+@lru_cache(maxsize=None)
+def _warning_credentials(string):
+    if string == "envir_var_used":
+        print("!!! Existing environment variables used, instead of locally saved credentials !!!")
+    if string == "key_dict_none":
+        print("INSEE API credentials have not been found")
+        print("Please try to reuse pynsee.utils.init_conn to save them locally")
+        print("Otherwise, you can still use environment variables as follow:")
+        print("import os")
+        print("os.environ['insee_key'] = 'my_insee_key'")
+        print("os.environ['insee_secret'] = 'my_insee_secret'")
+        
