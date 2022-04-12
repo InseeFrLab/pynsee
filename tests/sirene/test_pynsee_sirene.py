@@ -13,6 +13,7 @@ from pynsee.sirene._request_sirene import _request_sirene
 from pynsee.sirene.get_dimension_list import get_dimension_list
 from pynsee.sirene.SireneDataframe import SireneDataframe
 from pynsee.geodata.GeoDataframe import GeoDataframe
+from pynsee.sirene.get_sirene_relatives import get_sirene_relatives
 
 
 class TestFunction(TestCase):
