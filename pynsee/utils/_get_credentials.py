@@ -6,7 +6,6 @@ import os
 import pandas as pd
 from functools import lru_cache
 import numpy as np
-# import yaml
 
 def _get_credentials():
     

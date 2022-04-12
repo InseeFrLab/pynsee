@@ -7,8 +7,7 @@ import sys
 
 from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint
 
-from pynsee.sirene.get_data import get_data
-from pynsee.sirene.get_relatives import get_relatives
+from pynsee.sirene.get_sirene_data import get_sirene_data
 from pynsee.sirene.search_sirene import search_sirene
 from pynsee.sirene._request_sirene import _request_sirene
 from pynsee.sirene.get_dimension_list import get_dimension_list
@@ -22,22 +21,35 @@ class TestFunction(TestCase):
 
     if version_3_7:
         
-        def test_get_relatives(self):
+        def test_get_sirene_relatives(self):
             test = True
-            df = get_relatives('00555008200027')
+            df = get_sirene_relatives('00555008200027')
             test = test & isinstance(df, SireneDataframe)
             
-            df = get_relatives(['39860733300059', '00555008200027'])
+            df = get_sirene_relatives(['39860733300059', '00555008200027'])
             test = test & isinstance(df, SireneDataframe)
             
-            df = get_relatives(['39860733300059', '1'])
+            df = get_sirene_relatives(['39860733300059', '1'])
             test = test & isinstance(df, SireneDataframe)
             
             self.assertTrue(test)
+        
+        def test_error_get_relatives1(self):
+            with self.assertRaises(ValueError):
+                get_sirene_relatives(1)
+        
+        def test_error_get_relatives2(self):
+            with self.assertRaises(ValueError):
+                get_sirene_relatives('0')   
             
         def test_error_get_relatives(self):
             with self.assertRaises(ValueError):
-                get_relatives('0')
+                get_sirene_relatives('0')
+
+        def test_get_sirene_relatives(self):
+            df = get_sirene_relatives(['39860733300059', '00555008200027'])
+            test = isinstance(df, pd.DataFrame)
+            self.assertTrue(test)
 
         def test_get_dimension_list(self):
             test = True
@@ -49,22 +61,8 @@ class TestFunction(TestCase):
             test = test & isinstance(df, pd.DataFrame)
 
             self.assertTrue(test)
-        
-        def test_get_relatives(self):
-            test = True
-            df = get_relatives(['39860733300059', '00555008200027'])
-            test = test & isinstance(df, pd.DataFrame)
-            df = get_relatives('00555008200027')
-            test = test & isinstance(df, pd.DataFrame)
-            self.assertTrue(test)
-        
-        def test_error_get_relatives1(self):
-            with self.assertRaises(ValueError):
-                get_relatives(1)
-        
-        def test_error_get_relatives2(self):
-            with self.assertRaises(ValueError):
-                get_relatives('0')        
+                
+     
 
         def test_error_get_dimension_list(self):
             with self.assertRaises(ValueError):
@@ -91,19 +89,12 @@ class TestFunction(TestCase):
             
             self.assertTrue(test)
 
-        def test_get_data(self):
-            df1 = get_data(['32227167700021', '26930124800077'], kind='siret')
-            df2 = get_data("552081317", kind='siren')
+        def test_get_sirene_data(self):
+            df1 = get_sirene_data(['32227167700021', '26930124800077'], kind='siret')
+            df2 = get_sirene_data("552081317", kind='siren')
             test = isinstance(df1, pd.DataFrame) & isinstance(
                 df2, pd.DataFrame)
             self.assertTrue(test)
-
-        def test_get_data_error(self):
-
-            def get_data_error():
-                df = get_data('32227167700021', kind='test')
-                return(df)
-            self.assertRaises(ValueError, get_data_error)
 
         def test_search_sirene_error(self):
 
