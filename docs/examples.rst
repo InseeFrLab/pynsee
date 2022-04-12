@@ -13,6 +13,7 @@ Examples
    examples/example_deaths_births.ipynb
    examples/example_inflation_yoy.ipynb
    examples/example_population_map_com.ipynb
+   examples/example_presidential_election2022.ipynb
    examples/example_poverty_paris_urban_area.ipynb
    examples/example_empl_sector_dep.ipynb
    examples/example_population_pyramid.ipynb
