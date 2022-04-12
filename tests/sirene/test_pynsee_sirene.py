@@ -91,8 +91,8 @@ class TestFunction(TestCase):
             self.assertTrue(test)
 
         def test_get_sirene_data(self):
-            df1 = get_sirene_data(['32227167700021', '26930124800077'], kind='siret')
-            df2 = get_sirene_data("552081317", kind='siren')
+            df1 = get_sirene_data(['32227167700021', '26930124800077'])
+            df2 = get_sirene_data("552081317")
             test = isinstance(df1, pd.DataFrame) & isinstance(
                 df2, pd.DataFrame)
             self.assertTrue(test)
