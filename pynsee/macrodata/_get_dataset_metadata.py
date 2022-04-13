@@ -3,8 +3,6 @@
 
 import pandas as pd
 import os
-import warnings
-
 from datetime import datetime
 
 from pynsee.macrodata._get_dataset_metadata_core import _get_dataset_metadata_core
@@ -76,7 +74,7 @@ def _get_dataset_metadata(dataset, update=False):
     except:
         # if the download of the idbank file and the build of the metadata fail
         # package's internal data is provided to the user, should be exceptional, used as a backup
-        warnings.warn("\n!!! Warning: Package's internal data has been used !!!\n")
+        print("\n!!! Package's internal data has been used !!!\n")
         print("!!! Idbank file download failed, have a look at the following page and find the new link !!!")
         print("https://www.insee.fr/en/information/2868055")
         print("!!! You may change the downloaded file changing the following environment variable !!!")
