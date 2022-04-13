@@ -1,11 +1,11 @@
 import os
 import sys
-import pandas as pd
+import pandas
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.sirene._make_dataframe_from_dict import _make_dataframe_from_dict
 
-def get_sirene_relatives(siret):
+def get_sirene_relatives(*siret):
     """Find parent or child entities for one siret entity (etablissement)
 
     Args:
@@ -23,16 +23,22 @@ def get_sirene_relatives(siret):
         >>> data = get_sirene_relatives(['39860733300059', '00555008200027'])
     """    
     
-    if type(siret) == str:
-        siret = [siret]
-    
-    if type(siret) != list:
-        raise ValueError('!!! siret should be a list or a str !!!')
-        
+    list_siret = []
+
+    for id in range(len(siret)):
+        if isinstance(siret[id], list):
+            list_siret += siret[id]
+        elif isinstance(siret[id], pandas.core.series.Series):
+            list_siret += siret[id].to_list()
+        elif isinstance(siret[id], str):
+            list_siret += [siret[id]]
+        else:
+            list_siret += [siret[id]]
+            
     types = ['siretEtablissementPredecesseur', 'siretEtablissementSuccesseur']
     list_df = []
     
-    for s in range(len(siret)):
+    for s in range(len(list_siret)):
         for i in range(len(types)):
             
             criteria = types[i] + ':' + siret[s]
@@ -49,7 +55,7 @@ def get_sirene_relatives(siret):
                 list_df += [_make_dataframe_from_dict(json)]    
     
     if len(list_df) > 0:
-        df = pd.concat(list_df).reset_index(drop=True)
+        df = pandas.concat(list_df).reset_index(drop=True)
         return df
     else:
         raise ValueError('Neither parent nor child entities were found for any entity')
