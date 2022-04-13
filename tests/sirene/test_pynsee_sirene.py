@@ -96,6 +96,10 @@ class TestFunction(TestCase):
             test = isinstance(df1, pd.DataFrame) & isinstance(
                 df2, pd.DataFrame)
             self.assertTrue(test)
+            
+        def test_error_get_sirene_data(self):
+            with self.assertRaises(ValueError):
+                get_sirene_data('1')
 
         def test_search_sirene_error(self):
 
