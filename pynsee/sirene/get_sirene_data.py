@@ -3,6 +3,8 @@
 
 import pandas as pd
 from functools import lru_cache
+import sys
+import os
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.sirene._make_dataframe_from_dict import _make_dataframe_from_dict
@@ -46,10 +48,12 @@ def get_sirene_data(id):
             link = INSEE_api_sirene + '/' + str(id[i])
             
             try:
+                sys.stdout = open(os.devnull, 'w')
                 request = _request_insee(
                     api_url=link, file_format='application/json;charset=utf-8')
 
                 data_request = request.json()
+                sys.stdout = sys.__stdout__
 
                 try:
                     data = data_request[main_key]
