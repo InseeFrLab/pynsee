@@ -178,6 +178,9 @@ def _get_geodata(id,
 
         # drop data outside polygon
         if polygon is not None:
+            
+            print('Further checks from the user are needed as results from polygon argument can be imprecise')
+
             row_selected = []
             for i in range(len(data_all_clean)):
                 geom = data_all_clean.loc[i,'geometry']
