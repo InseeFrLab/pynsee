@@ -45,8 +45,8 @@ def _get_geodata(id,
         _type_: _description_
     """            
     
-    if crsPolygon not in ['EPSG:3857', 'EPSG:4327']:
-        raise ValueError("crsPolygon must be either 'EPSG:3857' or 'EPSG:4327'")
+    if crsPolygon not in ['EPSG:3857', 'EPSG:4326']:
+        raise ValueError("crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'")
 
     topic = "administratif"
     service = 'WFS'
