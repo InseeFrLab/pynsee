@@ -6,9 +6,7 @@
 Examples
 ========
 
-.. toctree::
-   :maxdepth: 2
-        
+.. nbgallery::        
    examples/example_gdp_growth_rate_yoy.ipynb
    examples/example_deaths_births.ipynb
    examples/example_inflation_yoy.ipynb

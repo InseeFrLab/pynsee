@@ -51,6 +51,7 @@ extensions = [
      "sphinxcontrib.rsvgconverter",
      #'sphinx.ext.imgconverter',   
      'IPython.sphinxext.ipython_console_highlighting',
+     "sphinx_gallery.load_style"
      # 'sphinx_gallery.gen_gallery'
 ]
 
@@ -60,6 +61,18 @@ extensions = [
 #      'gallery_dirs': 'auto_examples',  # path to where to save gallery generated output
 # }
 
+nbsphinx_thumbnails = {
+    'examples/example_gdp_growth_rate_yoy': '_static/gdp_growth_rate_yoy.png',
+    'examples/example_poverty_paris_urban_area': '_static/poverty_paris_urban_area.png',
+    'examples/example_insee_premises_sirene': '_static/insee_premises.png',
+    'examples/example_presidential_election2022': '_static/presidential_election2022.png',
+    'examples/example_empl_sector_dep': '_static/empl_sector_dep.png',
+    'examples/example_automotive_industry_sirene': '_static/automotive_industry_sirene.png',
+    'examples/example_population_map_com': '_static/population_map_com.png',
+    'examples/example_population_pyramid': '_static/population_pyramid.png',
+    'examples/example_deaths_births': '_static/deaths_births.png',
+    'examples/example_inflation_yoy': '_static/inflation_yoy.png',
+}
 
 # 'm2r2',
 # "rinoh.frontend.sphinx"
