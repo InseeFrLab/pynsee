@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import time
 from unittest import TestCase
 import pandas as pd
 import sys
@@ -53,15 +54,17 @@ class TestFunction(TestCase):
             df = get_old_city(code='24259')
             test = test & isinstance(df, pd.DataFrame)
             self.assertTrue(isinstance(df, pd.DataFrame))
-
+        
         def test_get_geo_list_1(self):
             list_available_geo = ['communes', 'regions', 'departements',
                                   'communesDeleguees', 'communesAssociees',
                                   'arrondissements', 'arrondissementsMunicipaux']
 
             list_geo_data = []
-            for geo in list_available_geo:
+            for geo in list_available_geo:                
+                time.sleep(10)
                 list_geo_data.append(get_geo_list(geo))
+                
             df = pd.concat(list_geo_data)
             self.assertTrue(isinstance(df, pd.DataFrame))
             
@@ -73,6 +76,7 @@ class TestFunction(TestCase):
 
         def test_get_geo_relation_1(self):
             df1 = _get_geo_relation('region', "11", 'descendants')
+            time.sleep(10)
             df2 = _get_geo_relation('departement', "91", 'ascendants')
             test = isinstance(df1, pd.DataFrame) & isinstance(
                 df2, pd.DataFrame)
@@ -182,6 +186,7 @@ class TestFunction(TestCase):
             list_data = []
 
             for a in list_available_area:
+                time.sleep(10)
                 df_list = get_area_list(a)
                 code = df_list.CODE[:3].to_list()
                 data = get_included_area(area_type=a, codeareas=code)

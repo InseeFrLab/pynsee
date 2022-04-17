@@ -26,9 +26,11 @@ def get_definition(ids):
         >>>                       'c1361', 'c2173', 'c2070'])
 
     """
+    if type(ids) == str:
+        ids = [ids]
 
     if type(ids) != list:
-        raise ValueError("!!! ids must be a list !!!")
+        raise ValueError("!!! ids must be a list or a str!!!")
 
     # ids = ['c1020', 'c1601']
 

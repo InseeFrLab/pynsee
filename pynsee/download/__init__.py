@@ -7,7 +7,8 @@ import json
 import re
 import zipfile
 from pathlib import Path
-from Levenshtein import distance as lev
+# from Levenshtein import distance as lev
+import difflib
 import pandas as pd
 from shutil import copyfile, copyfileobj
 
@@ -343,14 +344,23 @@ def info_donnees(data : str, date=None):
 
     if not len(res):
         # looking for close match (Levenshtein distance)
-        dist = dict(zip(liste_nom_no_suffix, [lev(donnees, l) for l in liste_nom_no_suffix]))
-        suggestions = []
-        for key, value in dist.items():
-            if value < 6: suggestions += ['\"{}\"'.format(key)]
-        if suggestions:
-            error_message = "Data name is mispelled, potential values are: {}".format(", ".join(suggestions))
+        # dist = dict(zip(liste_nom_no_suffix, [lev(donnees, l) for l in liste_nom_no_suffix]))
+        # suggestions = []
+        # for key, value in dist.items():
+        #     if value < 6: suggestions += ['\"{}\"'.format(key)]
+        # if suggestions:
+        #     error_message = "Data name is mispelled, potential values are: {}".format(", ".join(suggestions))
+        # else:
+        #     error_message = "No data found. Did you mispelled ?"
+        # raise ValueError(error_message)
+        
+        liste_nom_no_suffix_cleaned = list(set(liste_nom_no_suffix))
+        suggestions = difflib.get_close_matches(donnees, liste_nom_no_suffix_cleaned)
+
+        if len(suggestions) == 0:
+            error_message = "No data found. Did you mispell ?"
         else:
-            error_message = "No data found. Did you mispelled ?"
+            error_message = "Data name is mispelled, potential values are: {}".format(", ".join(suggestions))
         raise ValueError(error_message)
 
     # 2 - gestion millésimes
