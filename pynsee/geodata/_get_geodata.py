@@ -44,7 +44,10 @@ def _get_geodata(id,
     Returns:
         _type_: _description_
     """            
-        
+    
+    if crsPolygon not in ['EPSG:3857', 'EPSG:4326']:
+        raise ValueError("crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'")
+
     topic = "administratif"
     service = 'WFS'
     Version = "2.0.0"
@@ -122,7 +125,8 @@ def _get_geodata(id,
         if len(json) == 1000:
             
             list_bbox = _get_bbox_list(polygon=polygon,
-                                       update=update)
+                                       update=update,
+                                       crsPolygon=crsPolygon)
 
             Nprocesses = min(6, multiprocessing.cpu_count())
             
@@ -174,6 +178,9 @@ def _get_geodata(id,
 
         # drop data outside polygon
         if polygon is not None:
+            
+            print('Further checks from the user are needed as results obtained using polygon argument can be imprecise')
+
             row_selected = []
             for i in range(len(data_all_clean)):
                 geom = data_all_clean.loc[i,'geometry']

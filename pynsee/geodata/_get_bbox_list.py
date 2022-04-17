@@ -8,7 +8,7 @@ from pynsee.geodata._get_bbox_list_full import _get_bbox_list_full
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
-def _get_bbox_list(polygon=None, update=False):
+def _get_bbox_list(polygon=None, update=False, crsPolygon='EPSG:3857'):
 
     name = '_get_bbox_list'
         
@@ -18,7 +18,7 @@ def _get_bbox_list(polygon=None, update=False):
     insee_folder = _create_insee_folder()
     file_name = insee_folder + '/' +  _hash(name)
     
-    bbox = _get_bbox_list_full()
+    bbox = _get_bbox_list_full(crs=crsPolygon)
 
     if (not os.path.exists(file_name)) | (update is True):
 
