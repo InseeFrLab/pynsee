@@ -199,11 +199,11 @@ def search_sirene(variable,
                   variable=variable,
                   pattern=pattern,
                   kind=kind,
-                  phonetic_firstvar=phonetic_firstvar,
+                  phonetic_search=phonetic_search,
                   number=number,
                   activity=activity,
                   legal=legal,
-                  alive=alive,
+                  closed=closed,
                   update=True)
             
         else:
