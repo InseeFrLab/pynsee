@@ -28,7 +28,7 @@ def get_sirene_relatives(*siret):
     for id in range(len(siret)):
         if isinstance(siret[id], list):
             list_siret += siret[id]
-        elif isinstance(siret[id], pandas.core.series.Series):
+        elif isinstance(siret[id], pd.core.series.Series):
             list_siret += siret[id].to_list()
         elif isinstance(siret[id], str):
             list_siret += [siret[id]]
