@@ -136,7 +136,7 @@ class TestFunction(TestCase):
             df = search_sirene(variable=["denominationUniteLegale",
                                          'categorieJuridiqueUniteLegale',
                                          'categorieEntreprise'],
-                                alive=False,
+                                closed=True,
                                 pattern=["sncf", '9220', 'PME'], kind="siren")
             test = test & isinstance(df, pd.DataFrame)
 
