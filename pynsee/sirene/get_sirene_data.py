@@ -32,7 +32,7 @@ def get_sirene_data(*id):
     for i in range(len(id)):
         if isinstance(id[i], list):
             list_ids += id[i]
-        elif isinstance(id[i], pandas.core.series.Series):
+        elif isinstance(id[i], pd.core.series.Series):
             list_ids += id[i].to_list()
         elif isinstance(id[i], str):
             list_ids += [id[i]]
