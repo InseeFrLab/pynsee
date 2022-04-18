@@ -1,6 +1,6 @@
 import os
 import sys
-import pandas
+import pandas as pd
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.sirene._make_dataframe_from_dict import _make_dataframe_from_dict
@@ -55,7 +55,7 @@ def get_sirene_relatives(*siret):
                 list_df += [_make_dataframe_from_dict(json)]    
     
     if len(list_df) > 0:
-        df = pandas.concat(list_df).reset_index(drop=True)
+        df = pd.concat(list_df).reset_index(drop=True)
         return df
     else:
         raise ValueError('Neither parent nor child entities were found for any entity')
