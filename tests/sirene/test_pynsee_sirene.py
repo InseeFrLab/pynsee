@@ -128,7 +128,7 @@ class TestFunction(TestCase):
             df = search_sirene(variable=["libelleCommuneEtablissement",
                                          'denominationUniteLegale'],
                                pattern=["igny", 'pizza'],
-                               phonetic_firstvar=True,
+                               phonetic_search=True,
                                kind="siret")
             test = test & isinstance(df, pd.DataFrame)
 
@@ -150,7 +150,7 @@ class TestFunction(TestCase):
             
             df = search_sirene(variable=["denominationUniteLegale", 'categorieEntreprise'],
                                pattern=["Pernod Ricard", 'GE'],
-                               phonetic_firstvar=True,
+                               phonetic_search=[True, False],
                                kind="siren")
             test = test & isinstance(df, pd.DataFrame)
 
