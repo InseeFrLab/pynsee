@@ -11,7 +11,7 @@ Introduction to pynsee package
    :alt: Build Status
 
 .. image:: https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK
-   :target: https://codecov.io/gh/InseeFrLab/Py-Insee-Data?branch=master
+   :target: https://codecov.io/gh/InseeFrLab/pynsee?branch=master
    :alt: Codecov test coverage
 
 .. image:: https://readthedocs.org/projects/pynsee/badge/?version=latest
