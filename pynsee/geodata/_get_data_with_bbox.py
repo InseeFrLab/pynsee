@@ -10,10 +10,10 @@ from pynsee.geodata._distance import _distance
 
 def _set_global_var(args):
 
-    global link0, list_bbox_full, session, crsPolygon
+    global link0, list_bbox_full, session, crsPolygon0
     link0 = args[0]
     list_bbox_full = args[1]
-    crsPolygon = args[2]
+    crsPolygon0 = args[2]
 
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=1)
@@ -25,7 +25,7 @@ def _set_global_var(args):
 def _get_data_with_bbox2(i):
     link = link0
     list_bbox = list_bbox_full[i]
-    return _get_data_with_bbox(link, list_bbox, crsPolygon)
+    return _get_data_with_bbox(link, list_bbox, crsPolygon0)
 
 def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
         
