@@ -96,6 +96,10 @@ class TestFunction(TestCase):
             test = isinstance(df1, pd.DataFrame) & isinstance(
                 df2, pd.DataFrame)
             self.assertTrue(test)
+            
+        def test_error_get_sirene_data(self):
+            with self.assertRaises(ValueError):
+                get_sirene_data('1')
 
         def test_search_sirene_error(self):
 
@@ -124,7 +128,7 @@ class TestFunction(TestCase):
             df = search_sirene(variable=["libelleCommuneEtablissement",
                                          'denominationUniteLegale'],
                                pattern=["igny", 'pizza'],
-                               phonetic_firstvar=True,
+                               phonetic_search=True,
                                kind="siret")
             test = test & isinstance(df, pd.DataFrame)
 
@@ -132,7 +136,7 @@ class TestFunction(TestCase):
             df = search_sirene(variable=["denominationUniteLegale",
                                          'categorieJuridiqueUniteLegale',
                                          'categorieEntreprise'],
-                                alive=False,
+                                closed=True,
                                 pattern=["sncf", '9220', 'PME'], kind="siren")
             test = test & isinstance(df, pd.DataFrame)
 
@@ -146,7 +150,7 @@ class TestFunction(TestCase):
             
             df = search_sirene(variable=["denominationUniteLegale", 'categorieEntreprise'],
                                pattern=["Pernod Ricard", 'GE'],
-                               phonetic_firstvar=True,
+                               phonetic_search=[True, False],
                                kind="siren")
             test = test & isinstance(df, pd.DataFrame)
 

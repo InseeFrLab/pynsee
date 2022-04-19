@@ -15,26 +15,26 @@ def get_dimension_list(kind='siret'):
         >>> sirene_dimension = get_dimension_list()
     """
 
-    if kind not in ['siret','siren']:
+    if kind not in ['siret', 'siren']:
         raise ValueError("kind must be siret (default) or siren")
 
     if kind == 'siret':
         df = search_sirene(variable=['sigleUniteLegale'],
                            pattern=['INSEE'],
-                           alive=False,
+                           closed=True,
                            kind='siret',
                            number=1)
         col_to_keep = 0
     else:
         df = search_sirene(variable=['sigleUniteLegale'],
                            pattern=['INSEE'], kind='siren',
-                           alive=False,
+                           closed=True,
                            number=1)
         col_to_keep = 1
 
     df = df.T
     df = df.reset_index(drop=False)
-    df = df.loc[:,["index",col_to_keep]]
+    df = df.loc[:, ["index", col_to_keep]]
     df.columns = ['siret_columns', 'example']
     name_first_col = df.columns[0]
 

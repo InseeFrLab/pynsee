@@ -10,9 +10,10 @@ from pynsee.geodata._distance import _distance
 
 def _set_global_var(args):
 
-    global link0, list_bbox_full, session
+    global link0, list_bbox_full, session, crsPolygon0
     link0 = args[0]
     list_bbox_full = args[1]
+    crsPolygon0 = args[2]
 
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=1)
@@ -24,13 +25,22 @@ def _set_global_var(args):
 def _get_data_with_bbox2(i):
     link = link0
     list_bbox = list_bbox_full[i]
-    return _get_data_with_bbox(link, list_bbox)
+    return _get_data_with_bbox(link, list_bbox, crsPolygon0)
 
-def _get_data_with_bbox(link, list_bbox):
+def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
         
     # list_bbox = (5.0, 43.0, 6.0, 44.5)
+    # bounds = [str(b) for b in list_bbox]
+    # bounds = [bounds[1], bounds[0], bounds[3], bounds[2]]
+    # BBOX= '&BBOX={}'.format(','.join(bounds))
+    
     bounds = [str(b) for b in list_bbox]
-    bounds = [bounds[1], bounds[0], bounds[3], bounds[2]]
+    
+    if crsPolygon == 'EPSG:3857':
+        bounds = [bounds[0], bounds[1], bounds[2], bounds[3], 'urn:ogc:def:crs:' + crsPolygon]
+    else:
+        bounds = [bounds[1], bounds[0], bounds[3], bounds[2], 'urn:ogc:def:crs:' + crsPolygon]
+
     BBOX= '&BBOX={}'.format(','.join(bounds)) 
     
     link_query = link + BBOX

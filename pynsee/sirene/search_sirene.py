@@ -25,28 +25,30 @@ def _warning_data_save():
 def search_sirene(variable,
                   pattern,
                   kind="siret",
-                  phonetic_firstvar=False,
+                  phonetic_search=False,
                   number=1000,
                   activity=True,
                   legal=True,
-                  alive=True,
+                  closed=False,
                   update=False):
     """Get data about companies from criteria on variables
+
     Args:
         variable (str or list): name of the variable on which the search is applied.
         pattern (str or list): the pattern or criterium searched
-        kind (str, optional): kind of companies : siren or siret. Defaults to "siren".
-        phonetic_firstvar (bool, optional): If True phonetic search is triggered on the
-        first variable of the list, if False the exact string is searched. Defaults to True.
+        kind (str, optional): kind of companies : siren or siret. Defaults to "siren"
+        phonetic_search (bool, or list of bool, optional): If True phonetic search is triggered on the
+            all variables of the list, if it is a list of True/False, phonetic search is used accordingly on the list of variables
         number (int, optional): Number of companies searched. Defaults to 1000.
-        If it is above 1000, multiple queries are triggered.
+            If it is above 1000, multiple queries are triggered.
         activity (bool, optional): If True, activty title is added based on NAF/NACE. Defaults to True.
         legal (bool, optional): If True, legal entities title are added
-        alive (bool, optional): If True, closed entities are removed from the data and
-        for each legal entity only the last period for which the data is stable is displayed
+        closed (bool, optional): If False, closed entities are removed from the data and
+            for each legal entity only the last period for which the data is stable is displayed.
     Notes:
         This function may return personal data, please check and
         comply with the legal framework relating to personal data protection
+
     Examples:
         >>> from pynsee.metadata import get_activity_list
         >>> from pynsee.sirene import search_sirene
@@ -67,7 +69,7 @@ def search_sirene(variable,
         >>> df = search_sirene(variable = ["libelleCommuneEtablissement",
         >>>                            'denominationUniteLegale'],
         >>>                    pattern = ["igny", 'pizza'],
-        >>>                    phonetic_firstvar=True, kind = "siret")
+        >>>                    phonetic_search=True, kind = "siret")
         >>> #
         >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company)
         >>> # and whose legal status is SAS (societe par actions simplifiee)
@@ -78,7 +80,8 @@ def search_sirene(variable,
         >>> # Get data on Hadrien Leclerc
         >>> df = search_sirene(variable = ['prenom1UniteLegale', 'nomUniteLegale'],
         >>>                           pattern = ['hadrien', 'leclerc'],
-        >>>                           kind = 'siret', only_alive = False)
+        >>>                           phonetic_search = [True, False],
+        >>>                           closed=True)
         >>> #
         >>> # Find 2500 tobacco shops
         >>> df = search_sirene(variable = ['denominationUniteLegale'],
@@ -88,6 +91,23 @@ def search_sirene(variable,
     """
     if (not kind == 'siret') & (not kind == 'siren'):
         raise ValueError('!!! kind should be among : siren, siret !!!')
+
+    if type(phonetic_search) is not list:
+        if phonetic_search is True:
+            phntc_list = [True] * len(variable)
+        else:
+            phntc_list = [False] * len(variable)
+    else:
+        check_phonetic_search = all([(x in [True, False]) for x in phonetic_search])
+        if check_phonetic_search is False:
+            raise ValueError("!!! phonetic_search must be True, False or a list of True and False !!!")
+        else:
+            phntc_list = phonetic_search
+
+    if closed is False:
+        alive = True
+    else:
+        alive = False
 
     if type(variable) == str:
         variable = [variable]
@@ -127,24 +147,24 @@ def search_sirene(variable,
 
     list_var_pattern = []
 
-    for var, patt in zip(variable, pattern):
+    for var, patt, phntc in zip(variable, pattern, phntc_list):
 
-        phntc = ""
-        if var == variable[0]:
-            if phonetic_firstvar:
-                phntc = ".phonetisation"
+        if phntc is False:
+            phntc_string = ""
+        else:
+            phntc_string = ".phonetisation"
 
         # if pattern has several words, split and put mutiple conditions with OR
-        patt = re.sub('\s+', '|', patt)
+        patt = re.sub(r'\s+', '|', patt)
         list_patt = patt.split('|')
 
         list_var_patt = []
         for ptt in list_patt:
             if var in list_hist_variable:
                 list_var_patt.append(
-                    "periode({}{}:{})".format(var, phntc, ptt))
+                    "periode({}{}:{})".format(var, phntc_string, ptt))
             else:
-                list_var_patt.append("{}{}:{}".format(var, phntc, ptt))
+                list_var_patt.append("{}{}:{}".format(var, phntc_string, ptt))
 
         list_var_pattern.append(list_var_patt)
 
@@ -179,19 +199,19 @@ def search_sirene(variable,
                   variable=variable,
                   pattern=pattern,
                   kind=kind,
-                  phonetic_firstvar=phonetic_firstvar,
+                  phonetic_search=phonetic_search,
                   number=number,
                   activity=activity,
                   legal=legal,
-                  alive=alive,
+                  closed=closed,
                   update=True)
             
         else:
             _warning_data_save()
     
-    df = _clean_data(data_final.copy(), kind=kind,
-                    clean=False, activity=activity,
-                    legal=legal, only_alive=alive)
+    df = _clean_data(data_final.copy(), kind = kind,
+                    clean = False, activity = activity,
+                    legal = legal, only_alive = alive)
     
     if df is not None:
         df = df.reset_index(drop=True)

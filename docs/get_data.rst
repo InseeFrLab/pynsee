@@ -42,7 +42,9 @@ Get metadata
 Get sirene
 ----------
 
-.. autofunction:: pynsee.sirene.get_data
+.. autofunction:: pynsee.sirene.get_sirene_data
+
+.. autofunction:: pynsee.sirene.get_sirene_relatives
 
 .. autoclass:: pynsee.sirene.SireneDataframe.SireneDataframe
 
