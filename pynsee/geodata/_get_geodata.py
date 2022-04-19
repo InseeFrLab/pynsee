@@ -23,7 +23,7 @@ def _get_geodata(id,
             polygon=None,
             update=False,
             crs='EPSG:3857',
-            crsPolygon='EPSG:3857'):
+            crsPolygon='EPSG:4326'):
     """Get geographical data with identifier and from IGN API
 
     Args:
