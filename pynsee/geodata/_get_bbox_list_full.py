@@ -1,5 +1,5 @@
 
-def _get_bbox_list_full(crs='EPSG:3857'):
+def _get_bbox_list_full(crs='EPSG:4326'):
 
     if crs == 'EPSG:4326':
         bbox_list = [(-62.0, 13.0, -61.0, 14.5),

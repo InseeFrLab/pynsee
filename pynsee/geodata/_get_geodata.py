@@ -130,7 +130,7 @@ def _get_geodata(id,
 
             Nprocesses = min(6, multiprocessing.cpu_count())
             
-            args = [link0, list_bbox]
+            args = [link0, list_bbox, crsPolygon]
             irange = range(len(list_bbox))
 
             with multiprocessing.Pool(initializer= _set_global_var,
