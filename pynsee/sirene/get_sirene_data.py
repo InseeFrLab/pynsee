@@ -51,7 +51,7 @@ def get_sirene_data(*id):
                 main_key = 'etablissement'
 
             INSEE_api_sirene = "https://api.insee.fr/entreprises/sirene/V3/" + kind
-            link = INSEE_api_sirene + '/' + str(id[i])
+            link = INSEE_api_sirene + '/' + str(list_ids[i])
             
             try:
                 sys.stdout = open(os.devnull, 'w')

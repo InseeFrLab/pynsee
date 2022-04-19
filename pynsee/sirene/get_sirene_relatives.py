@@ -41,7 +41,7 @@ def get_sirene_relatives(*siret):
     for s in range(len(list_siret)):
         for i in range(len(types)):
             
-            criteria = types[i] + ':' + siret[s]
+            criteria = types[i] + ':' + list_siret[s]
             query = f'https://api.insee.fr/entreprises/sirene/V3/siret/liensSuccession?q={criteria}'
             try:
                 sys.stdout = open(os.devnull, 'w')
@@ -56,6 +56,11 @@ def get_sirene_relatives(*siret):
     
     if len(list_df) > 0:
         df = pd.concat(list_df).reset_index(drop=True)
+        
+        for c in ["statut", "message", "nombre", "total", "debut"]:
+            if c in df.columns:
+                del df[c]
+
         return df
     else:
         raise ValueError('Neither parent nor child entities were found for any entity')
