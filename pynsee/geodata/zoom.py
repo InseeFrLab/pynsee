@@ -25,17 +25,20 @@ def zoom(self,
 
             zoomDep = df[df['insee_dep'].isin(departement)].reset_index(drop=True)
 
-            zoomDep = _rescale_geom(df = zoomDep, factor = factor)
-            end = Point(center[0] + radius, center[1])
-            line = LineString([center, end])
+            if len(zoomDep.index) > 0:
 
-            line = rotate(line, angle, origin=center, use_radians=True)
-            endPoint = Point(line.coords[1])
-            center = _get_center(zoomDep)
+                zoomDep = _rescale_geom(df = zoomDep, factor = factor)
+                end = Point(center[0] + radius, center[1])
+                line = LineString([center, end])
 
-            xoff = endPoint.coords.xy[0][0] - center[0] 
-            yoff = endPoint.coords.xy[1][0] - center[1] 
+                line = rotate(line, angle, origin=center, use_radians=True)
+                endPoint = Point(line.coords[1])
+                center = _get_center(zoomDep)
 
-            zoomDep['geometry'] = zoomDep['geometry'].apply(lambda x: trs(x, xoff=xoff, yoff=yoff))
-            df = pd.concat([self, zoomDep]).reset_index(drop=True)         
+                xoff = endPoint.coords.xy[0][0] - center[0] 
+                yoff = endPoint.coords.xy[1][0] - center[1] 
+
+                zoomDep['geometry'] = zoomDep['geometry'].apply(lambda x: trs(x, xoff=xoff, yoff=yoff))
+                df = pd.concat([self, zoomDep]).reset_index(drop=True)        
+                 
         return df
