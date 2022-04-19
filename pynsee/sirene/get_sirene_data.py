@@ -5,6 +5,7 @@ import pandas as pd
 from functools import lru_cache
 import sys
 import os
+import re
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.sirene._make_dataframe_from_dict import _make_dataframe_from_dict
@@ -51,7 +52,7 @@ def get_sirene_data(*id):
                 main_key = 'etablissement'
 
             INSEE_api_sirene = "https://api.insee.fr/entreprises/sirene/V3/" + kind
-            link = INSEE_api_sirene + '/' + str(list_ids[i])
+            link = INSEE_api_sirene + '/' + re.sub(r'\s+', '', str(list_ids[i])) 
             
             try:
                 sys.stdout = open(os.devnull, 'w')
