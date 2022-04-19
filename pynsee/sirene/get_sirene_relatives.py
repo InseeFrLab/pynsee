@@ -33,7 +33,7 @@ def get_sirene_relatives(*siret):
         elif isinstance(siret[id], str):
             list_siret += [siret[id]]
         else:
-            list_siret += [siret[id]]
+            list_siret += [str(siret[id])]
             
     types = ['siretEtablissementPredecesseur', 'siretEtablissementSuccesseur']
     list_df = []

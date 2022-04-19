@@ -37,7 +37,7 @@ def get_sirene_data(*id):
         elif isinstance(id[i], str):
             list_ids += [id[i]]
         else:
-            list_ids += [id[i]]
+            list_ids += [str(id[i])]
         
     list_data = []
 

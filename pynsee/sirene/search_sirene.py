@@ -105,9 +105,9 @@ def search_sirene(variable,
             phntc_list = phonetic_search
 
     if closed is False:
-        alive=True
+        alive = True
     else:
-        alive=False
+        alive = False
 
     if type(variable) == str:
         variable = [variable]
@@ -147,7 +147,7 @@ def search_sirene(variable,
 
     list_var_pattern = []
 
-    for var, patt, phntc  in zip(variable, pattern, phntc_list):
+    for var, patt, phntc in zip(variable, pattern, phntc_list):
 
         if phntc is False:
             phntc_string = ""
@@ -155,7 +155,7 @@ def search_sirene(variable,
             phntc_string = ".phonetisation"
 
         # if pattern has several words, split and put mutiple conditions with OR
-        patt = re.sub('\s+', '|', patt)
+        patt = re.sub(r'\s+', '|', patt)
         list_patt = patt.split('|')
 
         list_var_patt = []
@@ -209,9 +209,9 @@ def search_sirene(variable,
         else:
             _warning_data_save()
     
-    df = _clean_data(data_final.copy(), kind=kind,
-                    clean=False, activity=activity,
-                    legal=legal, only_alive=alive)
+    df = _clean_data(data_final.copy(), kind = kind,
+                    clean = False, activity = activity,
+                    legal = legal, only_alive = alive)
     
     if df is not None:
         df = df.reset_index(drop=True)
