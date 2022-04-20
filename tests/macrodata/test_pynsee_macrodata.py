@@ -17,6 +17,7 @@ from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
 from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files
+from pynsee.macrodata._get_dataset_list_internal import _get_dataset_list_internal
 
 from pynsee.macrodata.get_series_list import get_series_list
 from pynsee.macrodata.get_dataset_list import get_dataset_list
@@ -39,6 +40,10 @@ class TestFunction(TestCase):
     version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)      
 
     if (not version_3_7):
+
+        def test_get_dataset_list_internal(self):
+            df = _get_dataset_list_internal()
+            self.assertTrue(isinstance(df, pd.DataFrame))
 
         def test_download_series_list(self):
             # _clean_insee_folder()

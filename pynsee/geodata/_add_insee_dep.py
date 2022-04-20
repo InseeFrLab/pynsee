@@ -3,7 +3,6 @@ from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLine
 from pandas.api.types import CategoricalDtype
 
 from pynsee.geodata._get_geodata import _get_geodata
-from pynsee.geodata._get_overseas_bbox_list import _get_overseas_bbox_list
 
 def _add_insee_dep(df):    
     
