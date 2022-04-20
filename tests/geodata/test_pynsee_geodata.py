@@ -43,7 +43,7 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(geo29, MultiPolygon))
 
             com29 = _get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29, crsPolygon="EPSG:4326") 
-            self.assertTrue(isinstance(com29, GeoDataframe))
+            self.assertTrue(isinstance(com29, pd.DataFrame))
            
             # query with polygon and crs 3857
             dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True, crs="EPSG:3857")
@@ -52,7 +52,7 @@ class TestFunction(TestCase):
             geo29 = dep29.get_geom()
             self.assertTrue(isinstance(geo29, MultiPolygon))
             com29 = _get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29, crsPolygon="EPSG:3857") 
-            self.assertTrue(isinstance(com29, GeoDataframe))            
+            self.assertTrue(isinstance(com29, pd.DataFrame))            
 
             ovdep = com.translate().zoom()
             self.assertTrue(isinstance(ovdep, GeoDataframe))
