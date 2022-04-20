@@ -5,6 +5,11 @@
 
 .. include:: readme.rst
 
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+
+   api_subscription
 
 .. toctree::
    :maxdepth: 2
@@ -14,7 +19,6 @@
    utils
    search_data
    get_data    
-
 
 .. toctree::
    :maxdepth: 2
