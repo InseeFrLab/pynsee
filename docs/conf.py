@@ -72,6 +72,7 @@ nbsphinx_thumbnails = {
     'examples/example_population_pyramid': '_static/population_pyramid.png',
     'examples/example_deaths_births': '_static/deaths_births.png',
     'examples/example_inflation_yoy': '_static/inflation_yoy.png',
+    'examples/example_poverty_marseille': '_static/poverty_marseille.png',
 }
 
 # 'm2r2',
