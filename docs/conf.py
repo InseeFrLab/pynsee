@@ -64,6 +64,8 @@ extensions = [
 nbsphinx_thumbnails = {
     'examples/example_gdp_growth_rate_yoy': '_static/gdp_growth_rate_yoy.png',
     'examples/example_poverty_paris_urban_area': '_static/poverty_paris_urban_area.png',
+    'examples/example_poverty_marseille': '_static/poverty_marseille.png',
+    'examples/example_doctors_idf': '_static/doctors_idf.png',
     'examples/example_insee_premises_sirene': '_static/insee_premises.png',
     'examples/example_presidential_election2022': '_static/presidential_election2022.png',
     'examples/example_empl_sector_dep': '_static/empl_sector_dep.png',
@@ -72,7 +74,6 @@ nbsphinx_thumbnails = {
     'examples/example_population_pyramid': '_static/population_pyramid.png',
     'examples/example_deaths_births': '_static/deaths_births.png',
     'examples/example_inflation_yoy': '_static/inflation_yoy.png',
-    'examples/example_poverty_marseille': '_static/poverty_marseille.png',
 }
 
 # 'm2r2',
