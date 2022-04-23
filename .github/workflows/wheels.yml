@@ -26,8 +26,9 @@ jobs:
           python -m pip install wheel
           pwd
           ls
-          pip wheel -e pynsee
-        # python -m setup.py bdist_wheel
+          #pip wheel -e pynsee
+          cd ..
+          python -m setup.py bdist_wheel
         #  python -m pip wheel -w "wheelhouse" .
         # to supply options, put them in 'env', like:
         # env:
