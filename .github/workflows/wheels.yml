@@ -23,12 +23,8 @@ jobs:
         # run: python -m cibuildwheel --output-dir wheelhouse
         run: |
           mkdir -p wheelhouse
-          python -m pip install wheel
-          pwd
-          ls
-          #pip wheel -e pynsee
-          cd ..
-          python -m setup.py bdist_wheel
+          python -m pip install wheel          
+          python setup.py bdist_wheel
         #  python -m pip wheel -w "wheelhouse" .
         # to supply options, put them in 'env', like:
         # env:
