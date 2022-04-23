@@ -24,6 +24,8 @@ jobs:
         run: |
           mkdir -p wheelhouse
           python -m pip install wheel
+          pwd
+          ls
           pip wheel -e pynsee
         # python -m setup.py bdist_wheel
         #  python -m pip wheel -w "wheelhouse" .
