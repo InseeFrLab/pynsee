@@ -4,11 +4,9 @@ on:
   push:
       branches:
         - 'master'
-        - '!doc'
-        - '!publish'
-  pull_request:
-    branches:
-      - master
+  #pull_request:
+  #  branches:
+  #    - master
 
 jobs:
   build:
