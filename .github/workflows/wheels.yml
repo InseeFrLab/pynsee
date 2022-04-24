@@ -8,8 +8,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-2019, macOS-10.15]
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        os: [ubuntu-20.04]
+        #[ubuntu-20.04, windows-2019, macOS-10.15]
+        python-version: ["3.8"]
+        #["3.7", "3.8", "3.9", "3.10"]
 
     steps:
       - uses: actions/checkout@v2
@@ -30,7 +32,7 @@ jobs:
           python -c 'import platform;print(platform.platform())'  
           python -c "import sys;print(sys.version)"   
           python setup.py bdist_wheel
-          ls wheelhouse
+          python setup.py sdist
         #  python -m pip wheel -w "wheelhouse" .
         # to supply options, put them in 'env', like:
         # env:
@@ -38,6 +40,6 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          path: ./dist/*.whl
+          path: ./dist/*
            #./wheelhouse/*.whl
           retention-days: 5
