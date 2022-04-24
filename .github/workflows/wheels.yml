@@ -30,6 +30,7 @@ jobs:
           python -c 'import platform;print(platform.platform())'  
           python -c "import sys;print(sys.version)"   
           python setup.py bdist_wheel
+          ls wheelhouse
         #  python -m pip wheel -w "wheelhouse" .
         # to supply options, put them in 'env', like:
         # env:
@@ -37,5 +38,5 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          path: wheelhouse
+          path: ./wheelhouse/*.whl
           retention-days: 5
