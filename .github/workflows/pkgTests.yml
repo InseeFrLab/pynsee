@@ -1,4 +1,4 @@
-name: pynsee package
+name: pynsee package tests
 
 on:
   push:
