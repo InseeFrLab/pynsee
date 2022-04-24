@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master  # just build the sdist & wheel, skip release
+      - publish
     tags:
       - "*"
   pull_request:  # also build on PRs touching this file
