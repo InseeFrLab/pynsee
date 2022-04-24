@@ -1,6 +1,9 @@
-name: Build
+name: Build tar and wheel
 
-on: [push, pull_request]
+on:
+  push:
+      branches:
+        - 'master'
 
 jobs:
   build_wheels:
