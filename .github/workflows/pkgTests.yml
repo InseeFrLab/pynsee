@@ -5,6 +5,7 @@ on:
       branches:
         - 'master'
         - '!doc'
+        - '!publish'
   pull_request:
     branches:
       - master
