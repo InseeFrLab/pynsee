@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build_wheels:
-    name: Build wheels on ${{ matrix.os }}
+    name: Build wheels on ${{ matrix.os }} with python ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -26,7 +26,9 @@ jobs:
         # run: python -m cibuildwheel --output-dir wheelhouse
         run: |
           mkdir -p wheelhouse
-          python -m pip install wheel          
+          python -m pip install wheel     
+          python -c 'import platform;print(platform.platform())'  
+          python -c "import sys;print(sys.version)"   
           python setup.py bdist_wheel
         #  python -m pip wheel -w "wheelhouse" .
         # to supply options, put them in 'env', like:
