@@ -183,9 +183,6 @@ def download_store_file(data: str, date=None, teldir=None):
     else:
         Path(teldir).mkdir(parents=True, exist_ok=True)
 
-    # IF DOES NOT USE API REST ------
-
-    # filename = "{}/{}".format(teldir.name, os.path.basename(caract['lien']))
     filename = temporary_file.name
 
     # DOWNLOAD FILE ------------------------------------------
