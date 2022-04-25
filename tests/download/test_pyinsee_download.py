@@ -69,8 +69,8 @@ class MyTests(unittest.TestCase):
         filosofi_data = download_store_file("FILOSOFI_REG", date = "2016")
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_REG_2016"])
-        path_unzipped = filosofi_data["fichierAImporter"]
-        path_zipped = filosofi_data["fileArchive"]
+        path_unzipped = filosofi_data["file_to_import"]
+        path_zipped = filosofi_data["file_archive"]
         self.assertTrue(os.path.isfile(path_zipped))
         self.assertTrue(os.path.isfile(path_unzipped))
         self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
@@ -81,8 +81,8 @@ class MyTests(unittest.TestCase):
         filosofi_data = download_store_file("FILOSOFI_REG", date = 2016)
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source["FILOSOFI_REG_2016"])
-        path_unzipped = filosofi_data["fichierAImporter"]
-        path_zipped = filosofi_data["fileArchive"]
+        path_unzipped = filosofi_data["file_to_import"]
+        path_zipped = filosofi_data["file_archive"]
         self.assertTrue(os.path.isfile(path_zipped))
         self.assertTrue(os.path.isfile(path_unzipped))
         self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
@@ -93,8 +93,8 @@ class MyTests(unittest.TestCase):
         latest = list(check_year_available("FILOSOFI_REG").keys())[-1]
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source[latest])
-        path_unzipped = filosofi_data["fichierAImporter"]
-        path_zipped = filosofi_data["fileArchive"]
+        path_unzipped = filosofi_data["file_to_import"]
+        path_zipped = filosofi_data["file_archive"]
         self.assertTrue(os.path.isfile(path_zipped))
         self.assertTrue(os.path.isfile(path_unzipped))
         self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])
@@ -105,8 +105,8 @@ class MyTests(unittest.TestCase):
         latest = list(check_year_available("FILOSOFI_REG").keys())[-1]
         self.assertIsInstance(filosofi_data, dict)
         self.assertEqual(filosofi_data['result'], dict_data_source[latest])
-        path_unzipped = filosofi_data["fichierAImporter"]
-        path_zipped = filosofi_data["fileArchive"]
+        path_unzipped = filosofi_data["file_to_import"]
+        path_zipped = filosofi_data["file_archive"]
         self.assertTrue(os.path.isfile(path_zipped))
         self.assertTrue(os.path.isfile(path_unzipped))
         self.assertEqual(filosofi_data["result"]['fichier_donnees'], path_unzipped.split("/")[-1])

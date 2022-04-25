@@ -1,26 +1,24 @@
-import warnings
+import difflib
 import hashlib
-import tempfile
 import os
-import requests
-# import json
 import re
+import tempfile
+import warnings
 import zipfile
 from pathlib import Path
-# from Levenshtein import distance as lev
-import difflib
-import pandas as pd
-from shutil import move, copyfileobj
+from shutil import copyfileobj, move
 
+import pandas as pd
+import requests
 # import tqdm.auto as tqdma
 from tqdm import tqdm
 from tqdm.utils import CallbackIOWrapper
 
 # READ ALL DATA SOURCES AVAILABLE USING JSON ONLINE FILE ----------------
 
-url_data_list = "https://raw.githubusercontent.com/" + \
+URL_DATA_LIST = "https://raw.githubusercontent.com/" + \
     "InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"
-jsonfile = requests.get(url_data_list).json()
+jsonfile = requests.get(URL_DATA_LIST).json()
 
 # HACK BECAUSE OF DUPLICATED ENTRIES -------------------------------
 
@@ -45,7 +43,7 @@ def create_key(item, duplicate_sources):
         return item['nom']
     dateref = item["date_ref"]
     year = re.search(r'\d{4}', dateref).group(0)
-    return '{}_{}'.format(item['nom'], year)
+    return f"{item['nom']}_{year}"
 
 
 dict_data_source = {
@@ -105,10 +103,10 @@ def download_pb(url: str, fname: str, total: int = None):
             unit='iB',
             unit_scale=True,
             unit_divisor=1024,
-    ) as bar:
+    ) as obj:
         for data in resp.iter_content(chunk_size=1024):
             size = file.write(data)
-            bar.update(size)
+            obj.update(size)
 
 
 def unzip_pb(fzip, dest, desc="Extracting"):
@@ -134,10 +132,10 @@ def unzip_pb(fzip, dest, desc="Extracting"):
             if not getattr(i, "file_size", 0):  # directory
                 zipf.extract(i, os.fspath(dest))
             else:
-                with zipf.open(i) as fi, open(os.fspath(dest / i.filename), "wb") as fo:
+                with zipf.open(i) as tempfi, open(os.fspath(dest / i.filename), "wb") as fileobj:
                     copyfileobj(
-                        CallbackIOWrapper(pbar.update, fi),
-                        fo
+                        CallbackIOWrapper(pbar.update, tempfi),
+                        fileobj
                         )
 
 
@@ -146,13 +144,13 @@ def initialize_temp_directory():
     Returns:
         Nothing, just creates the temporay directories
     """
-    
-    tf = tempfile.NamedTemporaryFile(delete=False)
+
+    temporary_file = tempfile.NamedTemporaryFile(delete=False)
     teldir = tempfile.TemporaryDirectory()
     Path(teldir.name).mkdir(parents=True, exist_ok=True)
-    print("Data will be stored in the following location: {}".format(
-        teldir.name))
-    return tf, teldir
+    print(f"Data will be stored in the \
+        following location: {teldir.name}")
+    return temporary_file, teldir
 
 
 def download_store_file(data: str, date=None, teldir=None):
@@ -181,19 +179,19 @@ def download_store_file(data: str, date=None, teldir=None):
 
     if teldir is None:
         cache = True
-        tf, teldir = initialize_temp_directory()
+        temporary_file, teldir = initialize_temp_directory()
     else:
         Path(teldir).mkdir(parents=True, exist_ok=True)
 
     # IF DOES NOT USE API REST ------
 
     # filename = "{}/{}".format(teldir.name, os.path.basename(caract['lien']))
-    filename = tf.name
+    filename = temporary_file.name
 
     # DOWNLOAD FILE ------------------------------------------
 
-    r = requests.get(caract['lien'], stream=True)
-    if r.status_code == 200:
+    out_request = requests.get(caract['lien'], stream=True)
+    if out_request.status_code == 200:
         download_pb(url=caract['lien'], fname=filename, total=caract['size'])
     else:
         raise ValueError(
@@ -205,14 +203,14 @@ def download_store_file(data: str, date=None, teldir=None):
             """)
 
     if cache:
-        print("""No destination directory defined.
-            "Data have been written there: {}""".format(
-            filename
-        ))
+        print(f"\
+            No destination directory defined.\n  \
+            Data have been written there: {filename}"
+            )
     else:
-        print("File has been written there : {}".format(
-            filename
-        ))
+        print(
+            f"File has been written there : {filename}"
+            )
 
     # CHECKSUM MD5 ------------------------------------------
 
@@ -240,39 +238,36 @@ def import_options(caract: dict, filename: str):
     """
 
     if caract["zip"] is True:
-        fileArchive = filename
-        fichierAImporter = "{}/{}".format(
-            tempfile.gettempdir(),
-            caract['fichier_donnees']
-            )
+        file_archive = filename
+        file_to_import = f"{tempfile.gettempdir()}/{caract['fichier_donnees']}"
     else:
-        fileArchive = None
-        fichierAImporter = filename
+        file_archive = None
+        file_to_import = filename
 
-    argsImport = {"file": fichierAImporter}
+    import_args = {"file": file_to_import}
 
     if caract['type'] == "csv":
-        argsImport.update({"delim": caract['separateur'], "col_names": True})
+        import_args.update({"delim": caract['separateur'], "col_names": True})
         if 'encoding' in list(caract.keys()):
-            argsImport.update({"locale": caract["encoding"]})
+            import_args.update({"locale": caract["encoding"]})
     elif caract['type'] in ["xls", "xlsx"]:
-        argsImport.update({
-            'path': fichierAImporter,
+        import_args.update({
+            'path': file_to_import,
             "skip": caract['premiere_ligne'] - 1})
         if 'onglet' in list(caract.keys()):
-            argsImport.update({"sheet": caract["onglet"]})
+            import_args.update({"sheet": caract["onglet"]})
         else:
-            argsImport.update({"sheet": 0})
+            import_args.update({"sheet": 0})
         if 'derniere_ligne' in list(caract.keys()):
             nmax_rows = caract["derniere_ligne"] - caract["premiere_ligne"]
-            argsImport.update({"n_max": nmax_rows})
+            import_args.update({"n_max": nmax_rows})
         else:
-            argsImport.update({"n_max": None})
+            import_args.update({"n_max": None})
 
         if 'valeurs_manquantes' in list(caract.keys()):
-            argsImport.update({"na": caract["valeurs_manquantes"]})
+            import_args.update({"na": caract["valeurs_manquantes"]})
         else:
-            argsImport.update({"na": None})
+            import_args.update({"na": None})
 
     if 'type_col' in list(caract.keys()):
         list_cols = caract["type_col"]
@@ -286,20 +281,28 @@ def import_options(caract: dict, filename: str):
     else:
         list_cols = None
 
-    argsImport.update({"dtype": list_cols})
+    import_args.update({"dtype": list_cols})
 
-    return {'fileArchive': fileArchive, 'fichierAImporter': fichierAImporter,
-            'argsImport': argsImport}
+    out_dict = {
+        'file_archive': file_archive,
+        'file_to_import': file_to_import,
+        'import_args': import_args
+        }
+
+    return out_dict
 
 
-def load_data_from_schema(telechargementFichier: dict, vars=None, limit_chunk_size=1000000000):
+def load_data_from_schema(
+    telechargementFichier: dict,
+    variables=None,
+    limit_chunk_size=1000000000):
     """Using options derived from `download_store_file`, import dataset in python
 
     Arguments:
         telechargementFichier {dict} -- Options needed for import
 
     Keyword Arguments:
-        vars {list} -- A subset of variables that should be used (default: {None})
+        variables {list} -- A subset of variables that should be used (default: {None})
 
     Raises:
         ValueError: If the file is not found, an error is raised
@@ -308,40 +311,43 @@ def load_data_from_schema(telechargementFichier: dict, vars=None, limit_chunk_si
         pd.DataFrame -- The required dataset is returned as pd.DataFrame object
     """
     if telechargementFichier["result"]["zip"] is True:
-        unzip_pb(telechargementFichier['fileArchive'], "{}_temp".format(telechargementFichier["argsImport"]['file']))
-        move("{}_temp/{}".format(
-            telechargementFichier["argsImport"]['file'],
-            telechargementFichier["result"]['fichier_donnees']),
-            telechargementFichier["argsImport"]['file']
+        unzip_pb(
+            telechargementFichier['file_archive'],
+            f"{telechargementFichier['import_args']['file']}_temp"
+            )
+        move(
+            f"{telechargementFichier['import_args']['file']}_temp/{telechargementFichier['result']['fichier_donnees']}",
+            telechargementFichier["import_args"]['file']
             )
 
-    if os.path.isfile(telechargementFichier["fichierAImporter"]) is False:
+    if os.path.isfile(telechargementFichier["file_to_import"]) is False:
         raise ValueError("File cannot be found")
 
     if telechargementFichier["result"]["type"] == "csv":
-        if os.path.getsize(telechargementFichier["fichierAImporter"]) >= limit_chunk_size:
-            chunk = pd.read_csv(telechargementFichier["fichierAImporter"], chunksize=1000000)
-            df = pd.concat(chunk)
+        if os.path.getsize(telechargementFichier["file_to_import"]) >= limit_chunk_size:
+            chunk = pd.read_csv(telechargementFichier["file_to_import"], chunksize=1000000)
+            df_insee = pd.concat(chunk)
         else:
-            df = pd.read_csv(
-                telechargementFichier["fichierAImporter"],
-                delimiter=telechargementFichier["argsImport"]["delim"],
-                dtype=telechargementFichier["argsImport"]["dtype"],
-                usecols=vars
+            df_insee = pd.read_csv(
+                telechargementFichier["file_to_import"],
+                delimiter=telechargementFichier["import_args"]["delim"],
+                dtype=telechargementFichier["import_args"]["dtype"],
+                usecols=variables
                 )
     elif telechargementFichier["result"]["type"] in ["xls", "xlsx"]:
-        df = pd.read_excel(telechargementFichier["fichierAImporter"],
-                           sheet_name=telechargementFichier["argsImport"]["sheet"],
-                           skiprows=telechargementFichier["argsImport"]["skip"],
-                           nrows=telechargementFichier["argsImport"]["n_max"],
-                           na_values=telechargementFichier["argsImport"]["na"],
-                           dtype=telechargementFichier["argsImport"]["dtype"],
-                           usecols=vars
-                           )
+        df_insee = pd.read_excel(
+            telechargementFichier["file_to_import"],
+            sheet_name=telechargementFichier["import_args"]["sheet"],
+            skiprows=telechargementFichier["import_args"]["skip"],
+            nrows=telechargementFichier["import_args"]["n_max"],
+            na_values=telechargementFichier["import_args"]["na"],
+            dtype=telechargementFichier["import_args"]["dtype"],
+            usecols=variables
+            )
     elif telechargementFichier["result"]["type"] == "JSON":
         raise ValueError("Not yet implemented")
 
-    return df
+    return df_insee
 
 
 def info_data(data: str, date=None):
@@ -368,24 +374,18 @@ def info_data(data: str, date=None):
     res = [i for i, x in enumerate(liste_nom_no_suffix) if x == donnees]
 
     if not len(res):
-        # looking for close match (Levenshtein distance)
-        # dist = dict(zip(liste_nom_no_suffix, [lev(donnees, l) for l in liste_nom_no_suffix]))
-        # suggestions = []
-        # for key, value in dist.items():
-        #     if value < 6: suggestions += ['\"{}\"'.format(key)]
-        # if suggestions:
-        #     error_message = "Data name is mispelled, potential values are: {}".format(", ".join(suggestions))
-        # else:
-        #     error_message = "No data found. Did you mispelled ?"
-        # raise ValueError(error_message)
-        
         liste_nom_no_suffix_cleaned = list(set(liste_nom_no_suffix))
-        suggestions = difflib.get_close_matches(donnees, liste_nom_no_suffix_cleaned)
+        suggestions = difflib.get_close_matches(
+            donnees,
+            liste_nom_no_suffix_cleaned
+            )
 
         if len(suggestions) == 0:
             error_message = "No data found. Did you mispell ?"
         else:
-            error_message = "Data name is mispelled, potential values are: {}".format(", ".join(suggestions))
+            error_message = f"Data name is mispelled, \
+                potential values are: {suggestions}"
+
         raise ValueError(error_message)
 
     # 2 - gestion millésimes
@@ -399,7 +399,7 @@ def info_data(data: str, date=None):
         latest = sorted(possible.keys(), key=lambda x: x.lower(), reverse=True)[0]
         possible = possible[latest]
     elif date is not None:
-        possible = possible["{}_{}".format(donnees, str(date))]
+        possible = possible[f"{donnees}_{str(date)}"]
 
     return possible
 
@@ -429,7 +429,7 @@ def telechargerFichier(data, date=None, teldir=None):
     return download_store_file(data=data, date=date, teldir=None)
 
 
-def chargerDonnees(telechargementFichier: dict, vars=None):
+def chargerDonnees(telechargementFichier: dict, variables=None):
     warnings.warn("""
         WARNING: \n
         chargerDonnees was an experimental name and might be deprecated in the future\n
@@ -437,7 +437,7 @@ def chargerDonnees(telechargementFichier: dict, vars=None):
     """, DeprecationWarning)
     dt = load_data_from_schema(
         telechargementFichier=telechargementFichier,
-        vars=vars)
+        variables=variables)
     return dt
 
 
