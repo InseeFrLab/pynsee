@@ -3,28 +3,31 @@ import hashlib
 import tempfile
 import os
 import requests
-import json
+# import json
 import re
 import zipfile
 from pathlib import Path
 # from Levenshtein import distance as lev
 import difflib
 import pandas as pd
-from shutil import copyfile, copyfileobj
+from shutil import move, copyfileobj
 
 # import tqdm.auto as tqdma
 from tqdm import tqdm
 from tqdm.utils import CallbackIOWrapper
 
-# READ ALL DATA SOURCES AVAILABLE USING JSON ONLINE FILE -------------------------------
+# READ ALL DATA SOURCES AVAILABLE USING JSON ONLINE FILE ----------------
 
-url_data_list = "https://raw.githubusercontent.com/InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"
+url_data_list = "https://raw.githubusercontent.com/" + \
+    "InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"
 jsonfile = requests.get(url_data_list).json()
 
 # HACK BECAUSE OF DUPLICATED ENTRIES -------------------------------
 
 potential_keys = [items['nom'] for items in jsonfile]
-list_duplicated_sources = list(set([x for x in potential_keys if potential_keys.count(x) > 1]))
+list_duplicated_sources = list(
+    set([x for x in potential_keys if potential_keys.count(x) > 1])
+    )
 
 
 def create_key(item, duplicate_sources):
@@ -45,7 +48,9 @@ def create_key(item, duplicate_sources):
     return '{}_{}'.format(item['nom'], year)
 
 
-dict_data_source = {create_key(item, list_duplicated_sources): item for item in jsonfile}
+dict_data_source = {
+    create_key(item, list_duplicated_sources): item for item in jsonfile
+    }
 
 
 # data = "FILOSOFI_AU2010"
@@ -54,17 +59,17 @@ dict_data_source = {create_key(item, list_duplicated_sources): item for item in 
 # load_data("RP_LOGEMENT", date = "2016")
 # load_data("FILOSOFI_AU2010", "dernier")
 
-def load_data(data, date, teldir=None, #argsApi=None,
-                       variables_names=None #,force=False
-                       ):
+def load_data(data, date, teldir=None, variables_names=None):
     """
     User level function to download datasets from insee.fr
 
     Args:
         data: Dataset name
-        date: Year. Can be an integer. Can also be 'recent' or 'latest' to get latest dataset
+        date: Year. Can be an integer. Can also be 'recent' or 'latest'
+                 to get latest dataset
         teldir: Where output should be written
-        variables_names: Subset of variable names to use. If None (default), ignored
+        variables_names: Subset of variable names to use.
+                 If None (default), ignored
 
     Returns:
         Returns the request dataframe as a pandas object
@@ -82,7 +87,8 @@ def load_data(data, date, teldir=None, #argsApi=None,
 def download_pb(url: str, fname: str, total: int = None):
     """Useful function to get request with a progress bar
 
-    Borrowed from https://gist.github.com/yanqd0/c13ed29e29432e3cf3e7c38467f42f51
+    Borrowed from
+    https://gist.github.com/yanqd0/c13ed29e29432e3cf3e7c38467f42f51
 
     Arguments:
         url {str} -- URL for the source file
@@ -129,13 +135,14 @@ def unzip_pb(fzip, dest, desc="Extracting"):
                 zipf.extract(i, os.fspath(dest))
             else:
                 with zipf.open(i) as fi, open(os.fspath(dest / i.filename), "wb") as fo:
-                    copyfileobj(CallbackIOWrapper(pbar.update, fi), fo)
-
+                    copyfileobj(
+                        CallbackIOWrapper(pbar.update, fi),
+                        fo
+                        )
 
 
 def initialize_temp_directory():
     """A wrapper to initialize temporary directories
-
     Returns:
         Nothing, just creates the temporay directories
     """
@@ -143,7 +150,8 @@ def initialize_temp_directory():
     tf = tempfile.NamedTemporaryFile(delete=False)
     teldir = tempfile.TemporaryDirectory()
     Path(teldir.name).mkdir(parents=True, exist_ok=True)
-    print("Data will be stored in the following location: {}".format(teldir.name))
+    print("Data will be stored in the following location: {}".format(
+        teldir.name))
     return tf, teldir
 
 
@@ -156,7 +164,8 @@ def download_store_file(data: str, date=None, teldir=None):
 
     Keyword Arguments:
         date -- Optional argument to specify desired year (default: {None})
-        teldir -- Desired location where data should be stored (default: {None})
+        teldir -- Desired location where data
+            should be stored (default: {None})
 
     Raises:
         ValueError: When the desired dataset
@@ -167,7 +176,7 @@ def download_store_file(data: str, date=None, teldir=None):
         dict -- If everything works well, returns a dictionary
     """
 
-    caract = info_donnees(data, date)
+    caract = info_data(data, date)
     cache = False
 
     if teldir is None:
@@ -181,7 +190,6 @@ def download_store_file(data: str, date=None, teldir=None):
     # filename = "{}/{}".format(teldir.name, os.path.basename(caract['lien']))
     filename = tf.name
 
-
     # DOWNLOAD FILE ------------------------------------------
 
     r = requests.get(caract['lien'], stream=True)
@@ -189,10 +197,16 @@ def download_store_file(data: str, date=None, teldir=None):
         download_pb(url=caract['lien'], fname=filename, total=caract['size'])
     else:
         raise ValueError(
-            "File not found on insee.fr. Please open an issue on https://github.com/InseeFrLab/Py-Insee-Data to help improving the package")
+            """
+            File not found on insee.fr.
+            Please open an issue on
+            https://github.com/InseeFrLab/Py-Insee-Data to help
+            improving the package
+            """)
 
     if cache:
-        print("No destination directory defined. Data have been written there: {}".format(
+        print("""No destination directory defined.
+            "Data have been written there: {}""".format(
             filename
         ))
     else:
@@ -205,13 +219,11 @@ def download_store_file(data: str, date=None, teldir=None):
     if hashlib.md5(open(filename, 'rb').read()).hexdigest() != caract['md5']:
         warnings.warn("File in insee.fr modified or corrupted during download")
 
-
     # PREPARE PANDAS IMPORT ARGUMENTS -----------------------
 
     pandas_read_options = import_options(caract, filename)
 
     return {"result": caract, **pandas_read_options}
-
 
 
 def import_options(caract: dict, filename: str):
@@ -229,7 +241,10 @@ def import_options(caract: dict, filename: str):
 
     if caract["zip"] is True:
         fileArchive = filename
-        fichierAImporter = "{}/{}".format(tempfile.gettempdir(), caract['fichier_donnees'])
+        fichierAImporter = "{}/{}".format(
+            tempfile.gettempdir(),
+            caract['fichier_donnees']
+            )
     else:
         fileArchive = None
         fichierAImporter = filename
@@ -241,13 +256,16 @@ def import_options(caract: dict, filename: str):
         if 'encoding' in list(caract.keys()):
             argsImport.update({"locale": caract["encoding"]})
     elif caract['type'] in ["xls", "xlsx"]:
-        argsImport.update({'path': fichierAImporter, "skip": caract['premiere_ligne'] - 1})
+        argsImport.update({
+            'path': fichierAImporter,
+            "skip": caract['premiere_ligne'] - 1})
         if 'onglet' in list(caract.keys()):
             argsImport.update({"sheet": caract["onglet"]})
         else:
             argsImport.update({"sheet": 0})
         if 'derniere_ligne' in list(caract.keys()):
-            argsImport.update({"n_max": caract["derniere_ligne"] - caract["premiere_ligne"]})
+            nmax_rows = caract["derniere_ligne"] - caract["premiere_ligne"]
+            argsImport.update({"n_max": nmax_rows})
         else:
             argsImport.update({"n_max": None})
 
@@ -274,7 +292,7 @@ def import_options(caract: dict, filename: str):
             'argsImport': argsImport}
 
 
-def load_data_from_schema(telechargementFichier: dict, vars=None):
+def load_data_from_schema(telechargementFichier: dict, vars=None, limit_chunk_size=1000000000):
     """Using options derived from `download_store_file`, import dataset in python
 
     Arguments:
@@ -291,19 +309,26 @@ def load_data_from_schema(telechargementFichier: dict, vars=None):
     """
     if telechargementFichier["result"]["zip"] is True:
         unzip_pb(telechargementFichier['fileArchive'], "{}_temp".format(telechargementFichier["argsImport"]['file']))
-        copyfile("{}_temp/{}".format(telechargementFichier["argsImport"]['file'],
-                                     telechargementFichier["result"]['fichier_donnees']),
-                 telechargementFichier["argsImport"]['file'])
+        move("{}_temp/{}".format(
+            telechargementFichier["argsImport"]['file'],
+            telechargementFichier["result"]['fichier_donnees']),
+            telechargementFichier["argsImport"]['file']
+            )
 
     if os.path.isfile(telechargementFichier["fichierAImporter"]) is False:
         raise ValueError("File cannot be found")
 
     if telechargementFichier["result"]["type"] == "csv":
-        df = pd.read_csv(telechargementFichier["fichierAImporter"],
-                         delimiter=telechargementFichier["argsImport"]["delim"],
-                         dtype=telechargementFichier["argsImport"]["dtype"],
-                         usecols=vars
-                         )
+        if os.path.getsize(telechargementFichier["fichierAImporter"]) >= limit_chunk_size:
+            chunk = pd.read_csv(telechargementFichier["fichierAImporter"], chunksize=1000000)
+            df = pd.concat(chunk)
+        else:
+            df = pd.read_csv(
+                telechargementFichier["fichierAImporter"],
+                delimiter=telechargementFichier["argsImport"]["delim"],
+                dtype=telechargementFichier["argsImport"]["dtype"],
+                usecols=vars
+                )
     elif telechargementFichier["result"]["type"] in ["xls", "xlsx"]:
         df = pd.read_excel(telechargementFichier["fichierAImporter"],
                            sheet_name=telechargementFichier["argsImport"]["sheet"],
@@ -319,7 +344,7 @@ def load_data_from_schema(telechargementFichier: dict, vars=None):
     return df
 
 
-def info_donnees(data : str, date=None):
+def info_data(data: str, date=None):
     """Get some info regarding datasets available
 
     Arguments:
@@ -389,44 +414,53 @@ def check_year_available(data):
         raise ValueError("Data name is mispelled or does not exist")
 
     liste_possible = [list(dict_data_source.keys())[i] for i in res]
-    liste_possible = {l: dict_data_source[l] for l in liste_possible}
+    liste_possible = {lname: dict_data_source[lname] for lname in liste_possible}
     return liste_possible
-
 
 
 # deprecated names ----------------
 
 def telechargerFichier(data, date=None, teldir=None):
     warnings.warn("""
-        /!\/!\/!\ \n
+        WARNING: \n
         telechargerFichier was an experimental name and might be deprecated in the future\n
         Please use the new function name 'download_store_file' instead
-    """)
-    return download_store_file(data = data, date = date, teldir = None)
+    """, DeprecationWarning)
+    return download_store_file(data=data, date=date, teldir=None)
+
 
 def chargerDonnees(telechargementFichier: dict, vars=None):
     warnings.warn("""
-        /!\/!\/!\ \n
+        WARNING: \n
         chargerDonnees was an experimental name and might be deprecated in the future\n
         Please use the new function name 'load_data_from_schema' instead
-    """)
-    return load_data_from_schema(telechargementFichier = telechargementFichier, vars=vars)
+    """, DeprecationWarning)
+    dt = load_data_from_schema(
+        telechargementFichier=telechargementFichier,
+        vars=vars)
+    return dt
+
 
 def telechargerDonnees(data, date, teldir=None,
                        variables_names=None
                        ):
     warnings.warn("""
-        /!\/!\/!\ \n
+        WARNING: \n
         telechargerDonnees was an experimental name and might be deprecated in the future\n
         Please use the new function name 'load_data' instead
-    """)
-    return load_data(data = data, date = date, teldir=teldir, variables_names=variables_names)
+    """, DeprecationWarning)
+    dt = load_data(
+        data=data,
+        date=date,
+        teldir=teldir,
+        variables_names=variables_names)
+    return dt
+
 
 def millesimesDisponibles(data):
     warnings.warn("""
-        /!\/!\/!\ \n
+        WARNING: \n
         millesimesDisponibles was an experimental name and might be deprecated in the future\n
         Please use the new function name 'check_year_available' instead
-    """)
-    return check_year_available(data = data)
-
+    """, DeprecationWarning)
+    return check_year_available(data=data)
