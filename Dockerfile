@@ -23,6 +23,10 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 RUN pip install pylint
 
+# Handling jupyter kernel
+RUN pip install --upgrade pip ipython ipykernel
+RUN ipython kernel install --name "python3" --user
+
 # Copy project files on the Docker image
 COPY ./pynsee /pynsee
 
