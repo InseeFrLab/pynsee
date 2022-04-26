@@ -1,0 +1,25 @@
+name: Deploy as website
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - usequarto
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: inseefrlab/pynsee:latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Render site
+        run: |
+          cd docs/examples/
+          quarto render example_download.qmd
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Report
+          path: |
+            example_download.ipynb
+            example_download.html
