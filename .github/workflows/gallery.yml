@@ -20,6 +20,7 @@ jobs:
         run: |
           conda activate testenv
           quarto render example_download.qmd
+        shell: bash
       - uses: actions/upload-artifact@v1
         with:
           name: Report
