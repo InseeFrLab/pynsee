@@ -4,12 +4,12 @@ RUN apt-get -y update && \
     apt-get -y install wget
 
 # Install Miniconda
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda && \
-    rm -f Miniconda3-latest-Linux-x86_64.sh
+#RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+#    bash Miniconda3-latest-Linux-x86_64.sh -b -p /miniconda && \
+#    rm -f Miniconda3-latest-Linux-x86_64.sh
 
 # Make conda command available
-ENV PATH="/miniconda/bin:${PATH}"
+#ENV PATH="/miniconda/bin:${PATH}"
 
 # Installation quarto
 ENV QUARTO_VERSION="0.9.287"
@@ -42,7 +42,7 @@ ENV VIRTUAL_ENV testenv
 EXPOSE 5000
 
 # Make Python interpreter from "base" available
-ENV PATH="/miniconda/envs/testenv/bin:${PATH}"
+#ENV PATH="/miniconda/envs/testenv/bin:${PATH}"
 
 ADD pynsee pynsee/
 
