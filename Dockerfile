@@ -19,14 +19,21 @@ RUN apt install "./quarto-${QUARTO_VERSION}-linux-amd64.deb"
 
 RUN conda create --name testenv python=3.10
 
-COPY . .
+COPY requirements.txt .
+COPY docs/requirements.txt /docs/requirements.txt 
 
 RUN pip install -r requirements.txt
 RUN pip install -r docs/requirements.txt 
 RUN pip install pylint
 
-RUN pip install .
+# Copy project files on the Docker image
+COPY ./pynsee /pynsee-package/pynsee
+COPY setup.py /pynsee-package/setup.py
+COPY pyproject.toml /pynsee-package/pyproject.toml
 
+WORKDIR /pynsee-package
+pip install .
+WORKDIR /
 
 # Make container listen on port 5000
 EXPOSE 5000
