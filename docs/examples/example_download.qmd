@@ -14,25 +14,46 @@ automatique des données de revenu
 localisées `Filosofi` disponibles sur le site de l'Insee
 et faire une petite carte pour les illustrer
 
+## Récupération des données
+
+Nous allons récupérer deux sources de données:
+
+1. La récupération et le chargement 
+des données présentes sur le site
+de l'Insee se fait avec le module `pynsee.download`
+et sa fonction `load_data`. En l'occurrence, nous
+utilisons le millésime 2015 de Filosofi
+2. La récupération du fond de carte de l'IGN se fait 
+au travers du module `pynsee.geodata` et de
+sa fonction `get_geodata`
+
 ```{python}
+#| output : false
+
 from pynsee.download import load_data
 from pynsee.geodata import get_geodata
 import geopandas as gpd
-```
 
-```{python}
 df = load_data("FILOSOFI_COM", date = "2015")
-```
-
-```{python}
 com = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:commune')
 ```
 
-```{python}
-mapcom = gpd.GeoDataFrame(com).set_crs("EPSG:3857")
-```
+## Sélection du périmètre géographique
+
+Nous allons nous restreindre aux communes de l'Ile de France
+
 
 ```{python}
-mapcom.loc[mapcom['insee_reg'] == "11"].merge(df, left_on = "insee_com", right_on = "CODGEO").plot(column = "MED15")
+mapcom = gpd.GeoDataFrame(com).set_crs("EPSG:3857")
+mapcom = mapcom.loc[mapcom['insee_reg'] == "11"]
+```
+
+## Production de la carte
+
+```{python}
+mapcom.merge(
+    df,
+    left_on = "insee_com",
+    right_on = "CODGEO").plot(column = "MED15")
 ```
 
