@@ -30,6 +30,7 @@ sa fonction `get_geodata`
 ```{python}
 #| output : false
 
+import pynsee
 from pynsee.download import load_data
 from pynsee.geodata import get_geodata
 import geopandas as gpd
