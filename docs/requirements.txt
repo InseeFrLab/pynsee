@@ -11,7 +11,7 @@ sphinx-gallery==0.10.0
 nbsphinx==0.8.7
 m2r2==0.2.7
 ipython>=7.16.1
-Jinja2==2.11
+Jinja2>=3.0
 sphinxcontrib-svg2pdfconverter
 pandas>=0.24.2
 tqdm>=4.56.0
