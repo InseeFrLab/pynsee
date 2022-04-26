@@ -32,7 +32,7 @@ COPY setup.py /pynsee-package/setup.py
 COPY pyproject.toml /pynsee-package/pyproject.toml
 
 WORKDIR /pynsee-package
-pip install .
+RUN pip install .
 WORKDIR /
 
 # Make container listen on port 5000
