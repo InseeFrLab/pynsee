@@ -7,8 +7,12 @@ format:
     self-contained: true
   ipynb: default
 jupyter: python3
-
 ---
+
+Dans ce tutoriel, nous allons illustrer la récupération
+automatique des données de revenu
+localisées `Filosofi` disponibles sur le site de l'Insee
+et faire une petite carte pour les illustrer
 
 ```{python}
 from pynsee.download import load_data

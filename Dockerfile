@@ -30,6 +30,7 @@ RUN pip install pylint
 COPY ./pynsee /pynsee-package/pynsee
 COPY setup.py /pynsee-package/setup.py
 COPY pyproject.toml /pynsee-package/pyproject.toml
+COPY README.rst /pynsee-package/README.rst
 
 WORKDIR /pynsee-package
 RUN pip install .
