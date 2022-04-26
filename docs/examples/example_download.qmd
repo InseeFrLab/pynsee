@@ -1,0 +1,34 @@
+---
+title: "Un exemple d'utilisation du module download"
+author: "Lino Galiana"
+format:
+  html:
+    code-fold: true
+    self-contained: true
+  ipynb: default
+jupyter: python3
+
+---
+
+```{python}
+from pynsee.download import load_data
+from pynsee.geodata import get_geodata
+import geopandas as gpd
+```
+
+```{python}
+df = load_data("FILOSOFI_COM", date = "2015")
+```
+
+```{python}
+com = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:commune')
+```
+
+```{python}
+mapcom = gpd.GeoDataFrame(com).set_crs("EPSG:3857")
+```
+
+```{python}
+mapcom.loc[mapcom['insee_reg'] == "11"].merge(df, left_on = "insee_com", right_on = "CODGEO").plot(column = "MED15")
+```
+
