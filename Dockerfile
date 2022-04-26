@@ -34,6 +34,8 @@ COPY README.rst .
 
 RUN pip install . --use-feature=in-tree-build
 
+ENV CONDA_DEFAULT_ENV testenv
+
 # Make container listen on port 5000
 EXPOSE 5000
 
