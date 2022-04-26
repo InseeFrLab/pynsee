@@ -32,7 +32,7 @@ COPY setup.py .
 COPY pyproject.toml .
 COPY README.rst .
 
-RUN pip install .
+RUN pip install . --use-feature=in-tree-build
 
 # Make container listen on port 5000
 EXPOSE 5000
