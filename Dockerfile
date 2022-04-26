@@ -25,8 +25,8 @@ RUN pip install -r requirements.txt
 RUN pip install -r docs/requirements.txt 
 RUN pip install pylint
 
-# Copy project files on the Docker image
-COPY ./pynsee /pynsee
+RUN pip install .
+
 
 # Make container listen on port 5000
 EXPOSE 5000
