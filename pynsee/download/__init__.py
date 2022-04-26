@@ -423,7 +423,7 @@ def telechargerFichier(data, date=None, teldir=None):
         telechargerFichier was an experimental name and might be deprecated in the future\n
         Please use the new function name 'download_store_file' instead
     """, DeprecationWarning)
-    return download_store_file(data=data, date=date, teldir=None)
+    return download_store_file(data=data, date=date, teldir=teldir)
 
 
 def chargerDonnees(telechargementFichier: dict, variables=None):
@@ -432,10 +432,10 @@ def chargerDonnees(telechargementFichier: dict, variables=None):
         chargerDonnees was an experimental name and might be deprecated in the future\n
         Please use the new function name 'load_data_from_schema' instead
     """, DeprecationWarning)
-    dt = load_data_from_schema(
+    insee_data = load_data_from_schema(
         telechargementFichier=telechargementFichier,
         variables=variables)
-    return dt
+    return insee_data
 
 
 def telechargerDonnees(data, date, teldir=None,
@@ -446,12 +446,12 @@ def telechargerDonnees(data, date, teldir=None,
         telechargerDonnees was an experimental name and might be deprecated in the future\n
         Please use the new function name 'load_data' instead
     """, DeprecationWarning)
-    dt = load_data(
+    insee_data = load_data(
         data=data,
         date=date,
         teldir=teldir,
         variables_names=variables_names)
-    return dt
+    return insee_data
 
 
 def millesimesDisponibles(data):
