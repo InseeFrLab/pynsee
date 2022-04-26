@@ -16,7 +16,7 @@ ENV QUARTO_VERSION="0.9.287"
 RUN wget "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb"
 RUN apt install "./quarto-${QUARTO_VERSION}-linux-amd64.deb"
 
-RUN python -m venv testenv --python=python3.10
+RUN python3 -m venv testenv --python=python3.10
 RUN source env/bin/activate
 ENV VIRTUAL_ENV /env
 ENV PATH /env/bin:$PATH
