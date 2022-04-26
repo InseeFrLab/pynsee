@@ -18,7 +18,6 @@ jobs:
           insee_key: ${{ secrets.INSEE_KEY }}
           insee_secret: ${{ secrets.INSEE_SECRET }}
         run: |
-          conda activate testenv
           quarto render example_download.qmd
         shell: bash
       - uses: actions/upload-artifact@v1
