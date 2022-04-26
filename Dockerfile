@@ -19,8 +19,7 @@ RUN apt install "./quarto-${QUARTO_VERSION}-linux-amd64.deb"
 
 RUN conda create --name testenv python=3.10
 
-COPY requirements.txt .
-COPY docs/requirements.txt /docs/requirements.txt 
+COPY . .
 
 RUN pip install -r requirements.txt
 RUN pip install -r docs/requirements.txt 
