@@ -14,7 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Render site
+        env:
+          insee_key: ${{ secrets.INSEE_KEY }}
+          insee_secret: ${{ secrets.INSEE_SECRET }}
         run: |
+          pip install -r docs/requirements.txt
           cd docs/examples/
           quarto render example_download.qmd
       - uses: actions/upload-artifact@v1
