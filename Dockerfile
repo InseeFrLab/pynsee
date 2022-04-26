@@ -20,12 +20,11 @@ RUN apt install "./quarto-${QUARTO_VERSION}-linux-amd64.deb"
 RUN conda create --name testenv python=3.10
 
 COPY requirements.txt .
-RUN pip install -r requirements.txt
-RUN pip install pylint
+COPY docs/requirements.txt docs/requirements.txt 
 
-# Handling jupyter kernel
-RUN pip install --upgrade pip ipython ipykernel
-RUN ipython kernel install --name "python3" --user
+RUN pip install -r requirements.txt
+RUN pip install -r docs/requirements.txt 
+RUN pip install pylint
 
 # Copy project files on the Docker image
 COPY ./pynsee /pynsee

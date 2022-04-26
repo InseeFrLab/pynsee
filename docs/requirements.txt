@@ -1,3 +1,8 @@
+ipykernel==6.13.0
+jupyter==1.0.0
+nbconvert==6.5.0
+nbclient==0.6.0
+nbformat==5.3.0
 sphinx==4.4.0
 sphinx_rtd_theme==0.5.1
 readthedocs-sphinx-search==0.1.0rc3
@@ -22,5 +27,3 @@ seaborn
 markupsafe==2.0.1
 geopandas
 descartes
-nbclient==0.6.0
-nbformat==5.3.0
