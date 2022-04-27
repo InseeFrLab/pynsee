@@ -19,7 +19,7 @@ jobs:
           insee_secret: ${{ secrets.INSEE_SECRET }}
         run: |
           cd docs/examples/
-          for i in *.ipynb ; do quarto render $i ; done
+          for i in *.qmd ; do quarto render $i ; done
           pwd
           ls
         shell: bash
