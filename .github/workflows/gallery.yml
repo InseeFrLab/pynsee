@@ -23,6 +23,11 @@ jobs:
           pwd
           ls
         shell: bash
+      - name: Push to S3 storage
+        env:
+          MC_HOST_s3: ${{ secrets.MC_HOST_s3 }}
+        run: |
+          mc cp --recursive docs/examples/ s3/projet-pynsee/examples/notebooks/
       - uses: actions/upload-artifact@v1
         with:
           name: Report
