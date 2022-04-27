@@ -22,7 +22,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from pynsee.macrodata import get_dataset_list, get_series_list
+from pynsee.macrodata import get_dataset_list, get_series_list, get_series
 ```
 
 ## Feature engineering
