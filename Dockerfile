@@ -11,6 +11,10 @@ RUN apt-get -y update && \
 # Make conda command available
 #ENV PATH="/miniconda/bin:${PATH}"
 
+# Install mc
+RUN sudo wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc && \
+    sudo chmod +x /usr/local/bin/mc
+
 # Installation quarto
 ENV QUARTO_VERSION="0.9.287"
 RUN wget "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb"
