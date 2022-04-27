@@ -1,4 +1,10 @@
 ---
+title: "Car industry example"
+format:
+  html:
+    code-fold: true
+    self-contained: true
+  ipynb: default
 jupyter: python3
 ---
 

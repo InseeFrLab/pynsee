@@ -1,4 +1,10 @@
 ---
+title: "Practicians in Paris area"
+format:
+  html:
+    code-fold: true
+    self-contained: true
+  ipynb: default
 jupyter: python3
 ---
 

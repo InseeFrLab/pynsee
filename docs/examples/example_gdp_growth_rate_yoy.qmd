@@ -1,4 +1,10 @@
 ---
+title: "GDP Growth rate"
+format:
+  html:
+    code-fold: true
+    self-contained: true
+  ipynb: default
 jupyter: python3
 ---
 

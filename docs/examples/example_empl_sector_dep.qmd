@@ -1,4 +1,10 @@
 ---
+title: "Employment by sector and departement"
+format:
+  html:
+    code-fold: true
+    self-contained: true
+  ipynb: default
 jupyter: python3
 ---
 
