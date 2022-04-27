@@ -27,3 +27,4 @@ seaborn
 markupsafe==2.0.1
 geopandas
 descartes
+py7zr
