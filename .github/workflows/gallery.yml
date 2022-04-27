@@ -26,6 +26,4 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: Report
-          path: |
-            example_download.ipynb
-            example_download.html
+          path: docs/examples/example_download.*
