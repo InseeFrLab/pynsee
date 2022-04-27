@@ -1,4 +1,10 @@
 ---
+title: "Poverty in Marseille"
+format:
+  html:
+    code-fold: true
+    self-contained: true
+  ipynb: default
 jupyter: python3
 eval: false
 ---
