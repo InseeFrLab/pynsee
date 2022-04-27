@@ -1,0 +1,129 @@
+---
+jupyter: python3
+---
+
+# Employment by sector and departement
+
+```{python}
+from pynsee.localdata import *
+from pynsee.geodata import *
+from pynsee.metadata import *
+from shapely import wkt
+
+import pandas as pd
+from pandas.api.types import CategoricalDtype
+import geopandas as gpd
+import seaborn as sns
+import math
+
+from matplotlib.pyplot import pie
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
+
+# get a list all data available : datasets and variables
+metadata = get_local_metadata()
+
+# geographic metadata
+nivgeo = get_nivgeo_list()
+```
+
+```{python}
+# get departement map
+dep = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
+
+dep = dep.translate(departement=['971', '972', '974', '973', '976'],
+                   factor=[1.5, 1.5, 1.5, 0.3, 1.5])
+
+dep = dep.zoom(factor = 3.5 , angle = math.pi * (1 - 3 * 1/9))
+
+dep = dep[["insee_dep", "geometry"]]
+dep = dep.rename(columns={'insee_dep': 'CODEGEO'})
+```
+
+```{python}
+# get local data from INSEE API
+data = get_local_data(dataset_version = 'GEO2020FLORES2017',
+                     variables =  'NA17',
+                     nivgeo = 'DEP')
+data = data.rename(columns={'NA17': 'A17'})
+```
+
+```{python}
+# keep only headcounts and remove the total from the data
+df = data[data["UNIT"] == "NBSALET"].reset_index(drop=True)
+df = df[~df["A17"].isin(["ENS"])].reset_index(drop=True)
+```
+
+```{python}
+# compute share of activity in total employment by department
+df['employment_share'] = 100 * df["OBS_VALUE"] / df['OBS_VALUE'].groupby(df['CODEGEO']).transform('sum')
+```
+
+```{python}
+# merge values and geographic limits
+datamap = df.merge(dep, how = 'left', on = 'CODEGEO')
+datamap = gpd.GeoDataFrame(datamap)
+```
+
+```{python}
+# add english activity labels at A17 level
+activity = get_activity_list("A17")
+activity["TITLE_A17_EN"] = activity["A17"] + " - " + activity["TITLE_A17_EN"]
+datamap = datamap.merge(activity, how='left', on='A17')
+```
+
+```{python}
+# compute center location for each departement
+def get_center(x):
+    return x.centroid.wkt
+
+datamap["center"] = datamap['geometry'].apply(lambda x: get_center(x))
+
+# list of departements
+list_dep = datamap["CODEGEO"].unique() 
+```
+
+```{python}
+# make color palette
+colors = sns.color_palette("Set1") + sns.color_palette("Set2")
+
+# order activity sectors according to average share
+emplTot = datamap[["employment_share", "TITLE_A17_EN"]].groupby(datamap['TITLE_A17_EN']).mean()
+emplTot = emplTot.sort_values(by=["employment_share"],  ascending=False)
+
+datamap["TITLE_A17_EN"] = datamap["TITLE_A17_EN"].astype(CategoricalDtype(categories=emplTot.index, ordered=True))
+datamap = datamap.sort_values(["TITLE_A17_EN"]).reset_index(drop=True)
+datamap
+```
+
+```{python}
+# draw plot
+
+def extract_lon(x):    
+    return wkt.loads(x).xy[0][0]
+def extract_lat(x):    
+    return wkt.loads(x).xy[1][0]
+
+ax = datamap.plot(color='white', edgecolor='black', figsize = (15,15))
+
+for idep in list_dep:
+    df = datamap[datamap["CODEGEO"] == idep].reset_index(drop=True)   
+    df["lon"] = df["center"].apply(lambda x: extract_lon(x))
+    df["lat"] = df["center"].apply(lambda x: extract_lat(x))
+    
+    df = df[df["lon"] == min(df["lon"])].reset_index(drop=True)
+    center = df.loc[0,"lon"], df.loc[0,"lat"]
+    
+    ratios = df["employment_share"]
+    
+    ax_sub = inset_axes(ax, width=0.4, height=0.4, loc=10, bbox_to_anchor=center, bbox_transform=ax.transData)
+    ax_sub.pie(ratios, wedgeprops={'edgecolor': 'gray','linewidth': 0.25}, colors = colors)
+    
+plt.suptitle('Employment by sector and departement', x = 0.4, y = 0.85,
+            horizontalalignment= 'left',
+            fontsize = 12, fontweight='bold')
+plt.legend(emplTot.index, loc="lower left", bbox_to_anchor=(-27, -9), ncol=2)
+
+plt.show()
+```
+

@@ -1,0 +1,306 @@
+---
+jupyter: python3
+---
+
+```{python}
+from pynsee import *
+
+import difflib
+import geopandas as gpd
+import numpy
+import pandas as pd
+from pandas.api.types import CategoricalDtype
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
+import descartes
+import re
+from shapely.geometry import Polygon, MultiPolygon
+```
+
+```{python}
+import warnings
+from shapely.errors import ShapelyDeprecationWarning
+warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
+```
+
+```{python}
+get_dimension_list().to_csv("sirene_dimensions.csv")
+```
+
+```{python}
+# get activity list
+naf5 = get_activity_list('NAF5')
+naf5.to_csv("naf.csv")
+naf5[naf5["NAF5"].str.contains("^86.2")]
+```
+
+```{python}
+list_dep = ["91", "92", "93", "75", "77", "78", "95"]
+
+# bretagne
+list_dep = ["29", "22", "56", "35"]
+
+# PACA
+list_dep = ["05", "06", "04", "83", "84", "13"]
+list_dep = ["92", "93", "75", "94"]
+list_dep = ["91", "92", "93", "75", "77", "78", "95", "94"]
+
+string_dep = "|".join([dep + "*" for dep in list_dep])
+string_dep
+```
+
+```{python}
+# search data on doctors
+
+doctors = search_sirene(variable = ["activitePrincipaleEtablissement", "codePostalEtablissement"],
+                        pattern = ['86.21Z*', string_dep],
+                        number = 100000)
+ # '86.21Z' médecin généraliste
+
+doctors = doctors[doctors["activitePrincipaleEtablissement"].str.contains("^86.21Z")].reset_index(drop=True)
+```
+
+```{python}
+doctors.to_csv('doc.csv')
+```
+
+```{python}
+# doctors[["categorieJuridiqueUniteLegale", "categorieJuridiqueUniteLegaleLibelle"]].drop_duplicates()
+```
+
+```{python}
+# filter
+list_pattern = ["RADIOLOGIE", "IMAGERIE", "GYNECO", "DENTAIRE", "ANESTHES", 'P.M.I', 'INFANTILE', 'CARDIOLOG',
+                "MAXILLO", "HOSPITALIER", "OPHTALMO", "DERMATOLOG", 'PLANIFICATION', 'MAIRIE', 'THORACIQUE',
+                "TOMODENSITOM", "URGENCE", "NEPHROLOG", "PRAXEA", 'VACCINATION', 'SCOLAIRE', 'CANCER', 'STOMATOLO',
+                "URODYNAMIQ", "CARDIORIS", "CHIRPLASTIQUE", "NINAMAX", "CICOF", 'MATERNELLE', 'DIALYSE',
+                'RADIOTHERAPIE', 'RHUMATOLOG', 'DENTISTE', 'ECHOGRAPH', 'PATHOLOG', 'CHIRURGIE', 'ESTHETIQ',
+                'CYTOLOG', 'ORTHOPED']
+
+pattern = r"|".join(list_pattern)
+```
+
+```{python}
+doctors = doctors[~doctors["denominationUniteLegale"].str.contains(pattern, regex=True, na=False)].reset_index(drop=True)
+doctors = doctors[~doctors["enseigne1Etablissement"].str.contains(pattern, regex=True, na=False)].reset_index(drop=True)
+
+# exclude association and administration
+doctors = doctors[~doctors["categorieJuridiqueUniteLegale"].isin(["9220", "7220"])].reset_index(drop=True)
+doctors = doctors.sort_values(["categorieJuridiqueUniteLegale"])
+
+doctors.to_csv("doctors.csv")
+list_denomination_uniteLegale = doctors.denominationUniteLegale.unique()
+# list_denomination_uniteLegale                 
+```
+
+```{python}
+# get geographical data list
+geodata_list = get_geodata_list()
+
+# get communes geographical limits
+com = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:commune')
+
+# get arrondissement (subdivision of departement) geographical limits
+arr = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:arrondissement')
+```
+
+```{python}
+# get arrondissement municipal geographical limits
+arrmun = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:arrondissement_municipal')
+arrmun = arrmun[arrmun.insee_com.str.contains('^75')].reset_index(drop=True)
+arrmun["nom_m"] = arrmun["nom_m"].apply(lambda x: re.sub(r"ER|E", "", re.sub(" ARRONDISSEMENT", "", x)))
+arrmun = arrmun.rename(columns={"geometry" : "geometry2",
+                                "population" : "population2",
+                               "nom_m" : "nom_m2"})
+arrmun = arrmun[["nom_m2", "geometry2", "population2"]]
+```
+
+```{python}
+def _replace_nan(x, y):
+    if (x is None) or (numpy.isnan(x)):
+        return y
+    else:
+        return x
+```
+
+```{python}
+doctors
+```
+
+```{python}
+# count general practioners by commun
+hdLegalStatus = doctors.groupby(['categorieJuridiqueUniteLegale'], dropna=True)['effectifsMinEtablissement'].agg(['mean', "count"])
+   
+hdLegalStatus["meanHeadcountLegalStatus"] = hdLegalStatus["mean"].apply(lambda x: _replace_nan(x, 1))
+
+hdLegalStatus["categorieJuridiqueUniteLegale"] = hdLegalStatus.index
+hdLegalStatus.loc[hdLegalStatus["categorieJuridiqueUniteLegale"] == "1000", "meanHeadcountLegalStatus"] = 1
+hdLegalStatus = hdLegalStatus.reset_index(drop=True)
+
+doctors = doctors.merge(hdLegalStatus, how = "left", on = "categorieJuridiqueUniteLegale").reset_index(drop=True)
+
+for r in doctors.index:
+    hdMin = doctors.loc[r, "effectifsMinEtablissement"]
+    if (hdMin is None) or (numpy.isnan(hdMin)):
+        doctors.loc[r, "headcount"] = doctors.loc[r, "meanHeadcountLegalStatus"]
+    else:
+        doctors.loc[r, "headcount"] = hdMin
+```
+
+```{python}
+# duplicates cleaning
+# normalization to avoid double counting
+doctors["headcountFinal"] = doctors["headcount"] / doctors.groupby("siren", dropna=True)["headcount"].transform("sum")
+
+#visual check duplicates
+dupDoctors = doctors[doctors["siren"].duplicated(keep=False)].reset_index(drop=True)
+dupDoctors.to_csv("dupDoctors.csv")
+
+list_adress_var = ["numeroVoieEtablissement", "typeVoieEtablissementLibelle", 
+                   "libelleVoieEtablissement", "codePostalEtablissement", "libelleCommuneEtablissement"]
+
+addressDupDoctors = doctors[doctors[list_adress_var].duplicated(keep=False)].reset_index(drop=True)
+addressDupDoctors = addressDupDoctors.sort_values(list_adress_var)
+addressDupDoctors.to_csv("addressDupDoctors.csv")
+```
+
+```{python}
+doctors.sort_values(["libelleCommuneEtablissement"]).to_csv("doctorSortedCom.csv")
+```
+
+```{python}
+# count general practioners by commun
+
+doctorsCom = doctors.groupby(['libelleCommuneEtablissement', 'codePostalEtablissement'])['headcountFinal'].agg(['sum'])
+doctorsCom = doctorsCom.rename(columns = {"sum" : "headcount"})
+doctorsCom
+```
+
+```{python}
+doctorsCom["libelleCommuneEtablissement"] = doctorsCom.index.get_level_values("libelleCommuneEtablissement")
+doctorsCom["codePostalEtablissement"] = doctorsCom.index.get_level_values("codePostalEtablissement")
+doctorsCom = doctorsCom.reset_index(drop=True)
+```
+
+```{python}
+import os, sys 
+
+communes = get_geo_list("communes")
+
+def _find_commune_identifier(com, dep, communes=communes):
+    
+    try:
+        list_com = [c.upper() for c in communes.TITLE.to_list()]    
+        communes["TITLE"] = list_com    
+        communes = communes[communes["CODE_DEP"] == dep].reset_index(drop=True)
+
+        match = difflib.get_close_matches(com.upper(), list_com)[0]
+
+        cog = communes[communes["TITLE"] == match].reset_index(drop=True)
+        cog = cog.loc[0, "CODE"]
+    except:
+        cog = None
+    
+    return cog      
+  
+for r in doctorsCom.index:
+    dep = doctorsCom.loc[r, "codePostalEtablissement"][:2]
+    comName = doctorsCom.loc[r, "libelleCommuneEtablissement"]
+    doctorsCom.loc[r, "insee_com"] = _find_commune_identifier(comName, dep)
+```
+
+```{python}
+comDep = com[com["insee_dep" ].isin(list_dep)].reset_index(drop=True)
+doctorsCom2 = comDep.merge(doctorsCom, how = "left", on = "insee_com")
+doctorsCom2.to_csv("doctorsDep.csv")
+```
+
+```{python}
+doctorsCom2["headcount"] = doctorsCom2["headcount"].apply(lambda x: _replace_nan(x, 0))
+
+doctorsCom3 = doctorsCom2.copy().groupby(["insee_arr"])[["population", "headcount"]].agg(["sum"])
+doctorsCom3["ratio"] = 1000 * doctorsCom3["headcount"] / doctorsCom3["population"]
+doctorsCom3["insee_arr"] = doctorsCom3.index
+doctorsCom3 = doctorsCom3.reset_index(drop=True)
+
+arrDep = arr[arr["insee_dep"].isin(list_dep)].reset_index(drop=True)
+doctorsCom3 = doctorsCom3.merge(arrDep[["insee_arr", "geometry"]], how= "left", on = "insee_arr")
+doctorsCom3 = doctorsCom3.rename(columns = {"('ratio','')" : "ratio"})
+doctorsCom3.columns = ["insee_arr", "population", "headcount", "ratio", "insee_arr2", "geometry"]
+doctorsCom3
+```
+
+```{python}
+doctorsCom2["headcount"] = doctorsCom2["headcount"].apply(lambda x: _replace_nan(x, 0))
+doctorsCom2["ratio"] = 1000 * doctorsCom2["headcount"] / doctorsCom2["population"]
+doctorsCom2.loc[doctorsCom2["nom_m"] == "CHEVANNES", "ratio"] = 2
+doctorsCom2.sort_values(["ratio"], ascending=False)
+```
+
+```{python}
+doctorsCom2 = doctorsCom2.reset_index(drop=True)
+
+doctorsCom4 = doctorsCom2[doctorsCom2.columns].merge(arrmun, left_on ="libelleCommuneEtablissement", right_on="nom_m2", how="left")
+for i in doctorsCom4.index:
+    if type(doctorsCom4.loc[i, 'geometry2']) in [MultiPolygon, Polygon]:
+        doctorsCom4.loc[i, 'geometry'] = doctorsCom4.loc[i, 'geometry2']
+        doctorsCom4.loc[i, "ratio"] = 1000 * doctorsCom4.loc[i,"headcount"] / doctorsCom4.loc[i,"population2"]
+#octorsCom4[doctorsCom4.nom.str.contains("Paris")]
+del doctorsCom4["geometry2"]
+doctorsCom2Map = gpd.GeoDataFrame(doctorsCom4)
+```
+
+```{python}
+#| tags: []
+doctorsCom2Map = gpd.GeoDataFrame(doctorsCom4)
+
+#fig, ax = plt.subplots(1,1,figsize=[10,10])
+#doctorsCom2Map.plot(column='ratio', cmap=cm.viridis,
+#    legend=True, ax=ax)
+#ax.set_axis_off()
+#ax.set(title='Distribution of general practioners (medecins generalistes) in France')
+#plt.show()
+```
+
+```{python}
+#doctorsCom3Map = gpd.GeoDataFrame(doctorsCom3)
+
+#fig, ax = plt.subplots(1,1,figsize=[10,10])
+#doctorsCom3Map.plot(column='ratio', cmap=cm.viridis,
+#    legend=True, ax=ax)
+#ax.set_axis_off()
+#ax.set(title='Distribution of general practioners (medecins generalistes) in France')
+#plt.show()
+```
+
+```{python}
+
+doctorsCom2Map.loc[doctorsCom2Map.ratio < 1, 'range'] = "< 0.2"
+doctorsCom2Map.loc[doctorsCom2Map.ratio >= 5, 'range'] = "> 5"
+
+density_ranges = [0.2, 0.6, 1, 1.5, 2, 2.5, 3, 3.5, 5]
+list_ranges = []
+list_ranges.append( "< 0.2")
+
+for i in range(len(density_ranges)-1):
+    min_range = density_ranges[i]
+    max_range = density_ranges[i+1]
+    range_string = "[{}, {}[".format(min_range, max_range)
+    rows = (doctorsCom2Map.ratio >= min_range) & (doctorsCom2Map.ratio < max_range)
+    doctorsCom2Map.loc[rows, 'range'] = range_string
+    list_ranges.append(range_string)
+
+list_ranges.append("> 5")
+
+doctorsCom2Map['range2'] = doctorsCom2Map['range'].astype(CategoricalDtype(categories=list_ranges, ordered=True))
+```
+
+```{python}
+fig, ax = plt.subplots(1,1,figsize=[10,10])
+doctorsCom2Map.plot(column='range2', cmap=cm.viridis,
+    legend=True, ax=ax)
+ax.set_axis_off()
+ax.set(title='Distribution of doctors in Ile-de-France\nunit: 1 doctor/ 1000 inhabitants')
+plt.show()
+```
+

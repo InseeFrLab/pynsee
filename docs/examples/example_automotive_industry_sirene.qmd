@@ -1,0 +1,122 @@
+---
+jupyter: python3
+---
+
+# Automotive industry sites
+
+```{python}
+# Subscribe to api.insee.fr and get your credentials!
+# Save your credentials with init_conn function :
+# from pynsee.utils.init_conn import init_conn
+# init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+
+# Beware : any change to the keys should be tested after having cleared the cache
+# Please do : from pynsee.utils import clear_all_cache; clear_all_cache()"
+```
+
+```{python}
+import geopandas
+import pandas as pd
+import numpy as np
+import pyproj
+from shapely.ops import transform
+
+#%matplotlib inline
+import matplotlib.pyplot as plt
+import matplotlib, descartes
+import matplotlib.cm as cm
+from matplotlib.offsetbox import AnchoredText
+
+from pynsee import *
+```
+
+```{python}
+# get activity list
+naf5 = get_activity_list('NAF5')
+
+# search data in SIRENE database
+data = search_sirene(variable = "activitePrincipaleEtablissement",
+                   pattern = '29.10Z', kind = 'siret')
+```
+
+```{python}
+# keep only businesses with more then 100 employees
+df = data.loc[data['effectifsMinEtablissement'] > 100]
+df = df.reset_index(drop=True)
+# find latitude and longitude of all businesses
+df = df.get_location()
+```
+
+```{python}
+# make geodataframe
+gdf = geopandas.GeoDataFrame(df)
+gdf = gdf.reset_index(drop=True)
+gdf = gdf.sort_values(by=['effectifsMinEtablissement'], ascending=False)
+```
+
+```{python}
+# get map - departement limits
+geodataList =  get_geodata_list()
+mapdep = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
+mapdep = mapdep.translate()
+
+# conversion to geopandas df
+mapdepgeo = geopandas.GeoDataFrame(mapdep)
+mapdepgeo.head()
+```
+
+```{python}
+# make cleaned labels
+match_list = ['RENAULT SAS', 'ALPINE', 'BATILLY', 'MAUBEUGE CONSTRUCTION',
+              'TOYOTA', 'PSA AUTOMOBILES', 'VEHICULES LEGERS DU NORD', 'RENAULT TRUCKS']
+other_string_list = '|'.join(['[^' + x + ']' for x in match_list])
+
+conditions = [gdf['denominationUniteLegale'].str.contains(x) for x in match_list]
+conditions += [gdf['denominationUniteLegale'].str.contains(other_string_list)]
+
+values = ['RENAULT SAS', 'RENAULT SAS', 'RENAULT SAS', 'RENAULT SAS',
+          'TOYOTA', 'PSA AUTOMOBILES','PSA AUTOMOBILES', 'RENAULT TRUCKS', 'OTHER']
+
+gdf['label'] = np.select(conditions, values)
+```
+
+```{python}
+def _convert_polygon(geo, crs_in='EPSG:4326', crs_out='EPSG:3857'):
+
+    if geo is not None:
+        crsIn = pyproj.CRS(crs_in)
+        crsOut = pyproj.CRS(crs_out)
+
+        project = pyproj.Transformer.from_crs(crsIn, crsOut, always_xy=True).transform
+        geo_converted = transform(project, geo)
+
+        return geo_converted
+
+# convert openstreetmap data from crs 4326 to crs 3857
+gdf['geometry'] = gdf['geometry'].apply(lambda x: _convert_polygon(x))
+
+gdf["crs"] = 'EPSG:3857'
+```
+
+```{python}
+# annotation
+txt = 'Circles are proportionate to the minimum of the employee number range'
+txt += '\nIf headcount is missing in SIRENE database, some factories may not be displayed'
+
+#plot
+ax = mapdepgeo.plot(color='white', edgecolor='black', figsize = (15,7))
+plt.title('Automotive industry sites in France')
+gdf.plot(ax=ax,
+         column = 'label',
+         edgecolor='white',
+         markersize=gdf.effectifsMinEtablissement/5,
+         legend=True,
+         legend_kwds={'bbox_to_anchor': (1,1),
+                       'loc':1, 'borderaxespad': 0})
+
+at = AnchoredText(txt, prop=dict(size=9), frameon=True, loc='lower left')
+ax.add_artist(at)
+
+plt.show()
+```
+
