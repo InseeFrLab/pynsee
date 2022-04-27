@@ -17,3 +17,5 @@ docs/_build/html/
 docs/auto_examples/
 .idea/
 .ipynb_checkpoints/
+docs/examples/*.html
+docs/examples/*.ipynb
