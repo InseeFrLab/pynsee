@@ -12,8 +12,8 @@ RUN apt-get -y update && \
 #ENV PATH="/miniconda/bin:${PATH}"
 
 # Install mc
-RUN sudo wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc && \
-    sudo chmod +x /usr/local/bin/mc
+RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc -O /usr/local/bin/mc && \
+    chmod +x /usr/local/bin/mc
 
 # Installation quarto
 ENV QUARTO_VERSION="0.9.287"
