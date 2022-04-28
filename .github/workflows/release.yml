@@ -3,7 +3,6 @@ name: Build tar and wheel
 on:
   push:
     branches:
-      - master  # just build the sdist & wheel, skip release
       - publish
     tags:
       - "*"
