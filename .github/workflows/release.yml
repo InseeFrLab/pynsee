@@ -3,6 +3,7 @@ name: Build tar and wheel
 on:
   push:
     branches:
+      - master
       - publish
     tags:
       - "*"
