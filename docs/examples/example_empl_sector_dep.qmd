@@ -116,16 +116,16 @@ datamap = datamap.merge(activity, how='left', on='A17')
 ```
 
 ```{python}
-# compute center location for each departement
-def get_center(x):
-    return x.centroid.wkt
-
-datamap["center"] = datamap['geometry'].apply(lambda x: get_center(x))
-#datamap["center"] = datamap['geometry'].centroid
+datamap["center"] = datamap['geometry'].centroid
+datamap["lon"] = datamap["center"].x
+datamap["lat"] = datamap["center"].y
 
 # list of departements
 list_dep = datamap["CODEGEO"].unique() 
 ```
+
+## Preparing our map
+
 
 ```{python}
 # make color palette
@@ -141,7 +141,31 @@ datamap
 ```
 
 ```{python}
-# draw plot
+list_sectors = list(datamap['A17'].unique())
+ax = datamap.plot(zorder=1, color='white', edgecolor='black')
+```
+
+## Map
+
+```{python}
+import numpy as np
+datamap_points = datamap.copy()
+datamap_points['geometry'] = datamap["center"]
+
+#fig, ax = plt.subplots(figsize=(16,16))
+#datamap.plot(ax=ax, color="lightgray", edgecolor="grey")
+datamap_points['ms'] = np.sqrt(datamap_points['OBS_VALUE'])/5
+
+ax = datamap.plot(zorder=1, color='white', edgecolor='black')
+datamap_points.loc[
+  datamap_points['A17'] == "OZ"
+  ].plot(
+    markersize='ms', column = 'OBS_VALUE', cmap = "magma", zorder = 2, ax = ax)
+```
+
+```{python}
+#| eval : false
+#| echo: false
 
 def extract_lon(x):    
     return wkt.loads(x).xy[0][0]
