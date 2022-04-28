@@ -61,6 +61,8 @@ jobs:
     # release on every tag
     if: github.event_name == 'push' 
     #&& startsWith(github.event.ref, 'refs/tags/')
+    # git ls-remote --tags origin
+    # git push --delete origin refs/tags/refs/heads/publish
     steps:
       - uses: actions/download-artifact@v2
         with:
