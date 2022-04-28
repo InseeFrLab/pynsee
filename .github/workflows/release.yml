@@ -58,8 +58,8 @@ jobs:
     needs: [build_wheels]
     runs-on: ubuntu-latest
     # release on every tag
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'v')
-    # git ls-remote --tags origin
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+    # git ls-remote --tags origin 
     # git push --delete origin refs/tags/refs/heads/publish
     # git push origin v0.0.1
     steps:
