@@ -27,7 +27,7 @@ jobs:
         env:
           MC_HOST_s3: ${{ secrets.MC_HOST_s3 }}
         run: |
-          find docs/examples/ -iname \*.ipynb -exec mc cp {} s3/projet-pynsee/examples/notebooks/
+          find docs/examples/ -name \*.ipynb -exec mc cp {} s3/projet-pynsee/diffusion/examples/notebooks/ \;
       - uses: actions/upload-artifact@v1
         with:
           name: Report
