@@ -62,7 +62,7 @@ jobs:
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
     # git ls-remote --tags origin 
     # git push --delete origin refs/tags/refs/heads/publish
-    # git push origin v0.0.1
+    # git push origin v0.0.1 
     steps:
       - uses: actions/download-artifact@v2
         with:
