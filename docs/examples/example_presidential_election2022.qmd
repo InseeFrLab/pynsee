@@ -1,5 +1,12 @@
 ---
+format:
+  html:
+    code-fold: true
+    self-contained: true
+  ipynb: default
 jupyter: python3
+execute:
+  eval: false
 ---
 
 # Presidential Election 2022

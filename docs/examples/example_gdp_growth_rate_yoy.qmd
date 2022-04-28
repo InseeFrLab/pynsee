@@ -6,7 +6,8 @@ format:
     self-contained: true
   ipynb: default
 jupyter: python3
-eval: false
+execute:
+  eval: false
 ---
 
 
