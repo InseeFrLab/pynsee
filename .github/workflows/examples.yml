@@ -24,6 +24,7 @@ jobs:
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |     
         pip install . 
+        pip install pytest 
         pytest ./tests/macrodata/test_pynsee_macrodata.py::TestFunction::test_download_series_list
     
     - name: Install dependencies
