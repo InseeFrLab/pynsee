@@ -11,7 +11,7 @@ from pynsee.geodata.get_geodata_list import get_geodata_list
 from pynsee.geodata.get_geodata import get_geodata
 from pynsee.geodata._get_geodata import _get_geodata
 from pynsee.geodata._get_bbox_list import _get_bbox_list
-from pynsee.geodata.GeoDataframe import GeoDataframe
+from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
 
 class TestFunction(TestCase):
 
@@ -24,21 +24,21 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(df, pd.DataFrame))
             
             chflieu = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune', update=True) 
-            self.assertTrue(isinstance(chflieu, GeoDataframe))
+            self.assertTrue(isinstance(chflieu, GeoFrDataFrame))
             geo = chflieu.get_geom()
             self.assertTrue(isinstance(geo, MultiPoint))
             geo_chflieut = chflieu.translate().zoom().get_geom()
             self.assertTrue(isinstance(geo_chflieut, MultiPoint))            
 
             com = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True) 
-            self.assertTrue(isinstance(com, GeoDataframe))
+            self.assertTrue(isinstance(com, GeoFrDataFrame))
             geo = com.get_geom()
             self.assertTrue(isinstance(geo, MultiPolygon))
 
             # query with polygon and crs 4326
             dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True, crs="EPSG:4326")
             dep29 = dep29[dep29["insee_dep"] == "29"]
-            self.assertTrue(isinstance(dep29, GeoDataframe))
+            self.assertTrue(isinstance(dep29, GeoFrDataFrame))
             geo29 = dep29.get_geom()
             self.assertTrue(isinstance(geo29, MultiPolygon))
 
@@ -48,30 +48,30 @@ class TestFunction(TestCase):
             # query with polygon and crs 3857
             dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True, crs="EPSG:3857")
             dep29 = dep29[dep29["insee_dep"] == "29"]
-            self.assertTrue(isinstance(dep29, GeoDataframe))
+            self.assertTrue(isinstance(dep29, GeoFrDataFrame))
             geo29 = dep29.get_geom()
             self.assertTrue(isinstance(geo29, MultiPolygon))
             com29 = _get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29, crsPolygon="EPSG:3857") 
             self.assertTrue(isinstance(com29, pd.DataFrame))            
 
             ovdep = com.translate().zoom()
-            self.assertTrue(isinstance(ovdep, GeoDataframe))
+            self.assertTrue(isinstance(ovdep, GeoFrDataFrame))
             geo_ovdep = ovdep.get_geom()
             self.assertTrue(isinstance(geo_ovdep, MultiPolygon))
                     
             #test _add_insee_dep_from_geodata
             epci = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:epci', update=True) 
-            self.assertTrue(isinstance(epci, GeoDataframe))            
+            self.assertTrue(isinstance(epci, GeoFrDataFrame))            
             epcit = epci.translate().zoom()
-            self.assertTrue(isinstance(epcit, GeoDataframe))
+            self.assertTrue(isinstance(epcit, GeoFrDataFrame))
             geo_epcit = epcit.get_geom()
             self.assertTrue(isinstance(geo_epcit, MultiPolygon))
             
             # test _add_insee_dep_region
             reg = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:region', update=True) 
-            self.assertTrue(isinstance(reg, GeoDataframe))            
+            self.assertTrue(isinstance(reg, GeoFrDataFrame))            
             regt = reg.translate().zoom()
-            self.assertTrue(isinstance(regt, GeoDataframe))
+            self.assertTrue(isinstance(regt, GeoFrDataFrame))
             geo_regt = regt.get_geom()
             self.assertTrue(isinstance(geo_regt, MultiPolygon))  
 
@@ -118,7 +118,7 @@ class TestFunction(TestCase):
 
                 data = get_geodata(id=ident, update=True, polygon=geodep29)
 
-                if type(data) == GeoDataframe:    
+                if type(data) == GeoFrDataFrame:    
                     geom = data.get_geom()
                     list_geom_type += [type(geom)]
 
