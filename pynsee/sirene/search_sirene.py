@@ -9,7 +9,7 @@ import re
 
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
-from pynsee.sirene.GeoFrDataFrame import GeoFrDataFrame
+from pynsee.sirene.SireneDataFrame import SireneDataFrame
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 from pynsee.utils._paste import _paste
@@ -218,6 +218,6 @@ def search_sirene(variable,
 
     _warning_search_sirene()
 
-    SireneDF = GeoFrDataFrame(df)
+    SireneDF = SireneDataFrame(df)
 
     return(SireneDF)
