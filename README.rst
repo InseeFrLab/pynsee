@@ -6,8 +6,8 @@ Introduction to pynsee package
 
 **Work in progress**
 
-.. image:: https://github.com/InseeFrLab/Py-Insee-Data/actions/workflows/master.yml/badge.svg
-   :target: https://github.com/InseeFrLab/Py-Insee-Data/actions
+.. image:: https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg
+   :target: https://github.com/InseeFrLab/pynsee/actions
    :alt: Build Status
 
 .. image:: https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK

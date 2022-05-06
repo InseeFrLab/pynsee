@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import warnings
-from pynsee.geodata.GeoDataframe import GeoDataframe
+from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
 from pynsee.geodata._get_geodata import _get_geodata
 
 def get_geodata(id,
@@ -29,7 +29,7 @@ def get_geodata(id,
         warnings.simplefilter("ignore")
         df = _get_geodata(id=id, update=update, crs=crs)
 
-        df = GeoDataframe(df)
+        df = GeoFrDataFrame(df)
 
     return df
 
