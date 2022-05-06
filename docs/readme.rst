@@ -7,6 +7,7 @@ Introduction to pynsee package
 
 **Work in progress**
 
+
 .. image:: https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg
    :target: https://github.com/InseeFrLab/pynsee/actions
    :alt: Build Status

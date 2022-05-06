@@ -1,7 +1,7 @@
 
 import pandas as pd
 
-class SireneDataframe(pd.DataFrame):
+class SireneDataFrame(pd.DataFrame):
     """Class for handling dataframes built from INSEE SIRENE API's data
 
     """  
@@ -11,6 +11,6 @@ class SireneDataframe(pd.DataFrame):
 
     @property
     def _constructor(self):
-        return SireneDataframe
+        return SireneDataFrame
     
     from pynsee.sirene.get_location import get_location

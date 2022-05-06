@@ -14,7 +14,7 @@ from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLine
 import warnings
 from shapely.errors import ShapelyDeprecationWarning
     
-from pynsee.geodata.GeoDataframe import GeoDataframe
+from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
 from pynsee.sirene._get_location_openstreetmap import _get_location_openstreetmap
 
 @lru_cache(maxsize=None)
@@ -22,7 +22,7 @@ def _warning_get_location():
     print("For at least one point, exact location has not been found, city location has been given instead")
 
 def get_location(self):
-        """Get latitude and longitude from OpenStreetMap, add geometry column and turn SireneDataframe into GeoDataframe
+        """Get latitude and longitude from OpenStreetMap, add geometry column and turn SireneDataframe into GeoFrDataFrame
 
         Notes:
             If it fails to find the exact location, by default it returns the location of the city.
@@ -144,7 +144,7 @@ def get_location(self):
 
                 sirene_df['geometry'] = list_points
 
-                GeoDF = GeoDataframe(sirene_df)
+                GeoDF = GeoFrDataFrame(sirene_df)
 
                 return(GeoDF)
             else:
