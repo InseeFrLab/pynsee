@@ -1,13 +1,12 @@
-name: pynsee package
+name: pynsee package tests
 
 on:
   push:
       branches:
         - 'master'
-        - '!doc'
-  pull_request:
-    branches:
-      - master
+  #pull_request:
+  #  branches:
+  #    - master
 
 jobs:
   build:
@@ -52,7 +51,7 @@ jobs:
       env:      
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
-      run: |     
+      run: |
         pytest -v --cov
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
