@@ -9,7 +9,7 @@ import re
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.sirene._make_dataframe_from_dict import _make_dataframe_from_dict
-from pynsee.sirene.SireneDataframe import SireneDataframe
+from pynsee.sirene.SireneDataFrame import SireneDataFrame
 
 @lru_cache(maxsize=None)
 def _warning_get_data():
@@ -84,6 +84,6 @@ def get_sirene_data(*id):
         
     _warning_get_data()
 
-    SireneDF = SireneDataframe(data_final)
+    SireneDF = SireneDataFrame(data_final)
 
     return(SireneDF)
