@@ -2,7 +2,7 @@
 from pynsee.geodata._get_geom import _get_geom
 
 def get_geom(self):
-    """Extract a shape (Polygon, Point ...) from a GeoDataframe
+    """Extract a shape (Polygon, Point ...) from a GeoFrDataFrame
 
     Examples:
         >>> from pynsee.geodata import get_geodata_list, get_geodata
