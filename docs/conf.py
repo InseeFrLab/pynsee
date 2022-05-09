@@ -15,7 +15,7 @@ import sys
 import sphinx_copybutton
 import sphinx_rtd_theme
 import m2r2
-import sphinxcontrib
+#import sphinxcontrib
 
 # import rinoh
 os.chdir('../')
@@ -48,7 +48,7 @@ extensions = [
      'nbsphinx', 
      "m2r2",
      'sphinx.ext.mathjax',  
-     "sphinxcontrib.rsvgconverter",
+     #"sphinxcontrib.rsvgconverter",
      #'sphinx.ext.imgconverter',   
      'IPython.sphinxext.ipython_console_highlighting',
      "sphinx_gallery.load_style"
@@ -74,6 +74,7 @@ nbsphinx_thumbnails = {
     'examples/example_population_pyramid': '_static/population_pyramid.png',
     'examples/example_deaths_births': '_static/deaths_births.png',
     'examples/example_inflation_yoy': '_static/inflation_yoy.png',
+    'examples/example_inflation_contribution': '_static/inflation_contribution.png',
 }
 
 # 'm2r2',

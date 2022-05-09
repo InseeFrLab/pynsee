@@ -10,6 +10,7 @@ Examples
    examples/example_gdp_growth_rate_yoy.ipynb
    examples/example_deaths_births.ipynb
    examples/example_inflation_yoy.ipynb
+   examples/example_inflation_contribution.ipynb
    examples/example_population_map_com.ipynb
    examples/example_presidential_election2022.ipynb
    examples/example_poverty_paris_urban_area.ipynb

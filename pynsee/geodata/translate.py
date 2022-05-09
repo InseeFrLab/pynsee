@@ -23,6 +23,40 @@ def translate(self,
             radius = 650000,
             angle = 1/9 * math.pi,
             startAngle = math.pi * (1 - 1.5 * 1/9)):
+    """Move overseas departements closer to metropolitan France
+    
+    Args:
+        departement (list, optional): list of departements to be moved, overseas departement list is used by default
+        
+        factor (list, optional): make departements bigger or smaller, it should correspond to the departement list.        
+        This parameter is used by shapely.affinity.scale function, please refer to its documentation to choose the value.
+        By default, only Guyane's size is reduced. If the value is None, no rescaling is performed. 
+        
+        center (tuple, optional): center point from which offshore points are computed to move overseas departement
+        It should be defined as a (longitude, latitude) point in crs EPSG:3857
+        
+        radius (float, optional): radius used with center point to make offshore points, distance in meter
+        
+        angle (float, optional): angle used between offshore points, by default it is pi/9
+        
+        startAngle (float, optional): start angle defining offshore points, by default it is pi * (1 - 1.5 * 1/9))
+    
+    Notes: 
+        by default translate method focuses on overseas departement, but it can be used to move
+        any departement any where on the map
+
+    Examples:
+        >>> from pynsee.geodata import get_geodata_list, get_geodata
+        >>> #
+        >>> # Get a list of geographical limits of French administrative areas from IGN API
+        >>> geodata_list = get_geodata_list()
+        >>> #
+        >>> # Get geographical limits of departments
+        >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
+        >>> # 
+        >>> # Move overseas departements closer to metropolitan France
+        >>> dfTranslate = df.translate()
+    """  
     
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
