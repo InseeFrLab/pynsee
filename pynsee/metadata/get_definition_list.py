@@ -4,6 +4,7 @@
 from functools import lru_cache
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 
 import zipfile
 import os
@@ -58,11 +59,12 @@ def get_definition_list():
     list_data = []
 
     for i in range(len(data_request)):
-        df = pd.DataFrame(data_request[i], index=[0])
-        df = df[['id', 'uri', 'intitule']]
+        df = _make_dataframe_from_dict(data_request[i])
+        # df = df[['id', 'uri', 'intitule']].reset_index(drop=True)
+        df = df.iloc[:,0:3].reset_index(drop=True).drop_duplicates()
         list_data.append(df)
 
-    data = pd.concat(list_data)
+    data = pd.concat(list_data, axis=0)
     data = data.reset_index(drop=True)
     data.columns = ['ID', 'URI', 'TITLE_FR']
 

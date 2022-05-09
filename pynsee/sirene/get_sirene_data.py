@@ -8,7 +8,7 @@ import os
 import re
 
 from pynsee.utils._request_insee import _request_insee
-from pynsee.sirene._make_dataframe_from_dict import _make_dataframe_from_dict
+from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.sirene.SireneDataFrame import SireneDataFrame
 
 @lru_cache(maxsize=None)
