@@ -1,13 +1,5 @@
 ---
 title: "Death and births"
-format:
-  html:
-    code-fold: true
-    self-contained: true
-  ipynb: default
-jupyter: python3
-execute:
-  eval: false
 ---
 
 

@@ -1,12 +1,5 @@
 ---
-format:
-  html:
-    code-fold: true
-    self-contained: true
-  ipynb: default
-jupyter: python3
-execute:
-  eval: false
+title: "Presidential Election 2022"
 ---
 
 # Presidential Election 2022

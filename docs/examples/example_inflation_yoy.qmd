@@ -1,13 +1,5 @@
 ---
 title: "Inflation"
-format:
-  html:
-    code-fold: true
-    self-contained: true
-  ipynb: default
-jupyter: python3
-execute:
-  eval: false
 ---
 
 # Inflation annual growth rate
