@@ -28,15 +28,16 @@ def translate(self,
     Args:
         departement (list, optional): list of departements to be moved, overseas departement list is used by default
         factor (list, optional): make departements bigger or smaller, it should correspond to the departement list.
-                                This parameter is used by shapely.affinity.scale function, please refer to its documentation to choose the value.
-                                By default, only Guyane's size is reduced. If the value is None, no rescaling is performed. 
+        This parameter is used by shapely.affinity.scale function, please refer to its documentation to choose the value.
+        By default, only Guyane's size is reduced. If the value is None, no rescaling is performed. 
         center (tuple, optional): center point from which offshore points are computed to move overseas departement
                                     It should be defined as a (longitude, latitude) point in crs EPSG:3857
         radius (float, optional): radius used with center point to make offshore points, distance in meter
         angle (float, optional): angle used between offshore points, by default it is pi/9
         startAngle (float, optional): start angle defining offshore points, by default it is pi * (1 - 1.5 * 1/9))
     
-    Notes: by default translate focuses on overseas departement, but the function can be used to move
+    Notes: 
+        by default translate focuses on overseas departement, but the function can be used to move
         any departement any where on the map
 
     Examples:

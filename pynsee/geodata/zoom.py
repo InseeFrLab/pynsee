@@ -26,7 +26,8 @@ def zoom(self,
         radius (float, optional): radius used with center point to make offshore point, distance in meter
         startAngle (float, optional): start angle defining offshore point, by default it is pi * (1 - 2.5 * 1/9))
     
-    Notes: by default zoom focuses on parisian departement, but the function can be used to make a zoom on 
+    Notes: 
+        by default zoom focuses on parisian departement, but the function can be used to make a zoom on 
         any departement any where on the map
 
     Examples:
