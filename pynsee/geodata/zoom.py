@@ -17,17 +17,20 @@ def zoom(self,
         radius = 650000,
         startAngle = math.pi * (1 - 2.5 * 1/9),
         factor = 2):   
-    """Zoom on parisian departements and paste them offshore
+    """Zoom on parisian departements
     
     Args:
-        departement (list, optional): list of departements to be moved, departements closest to Paris are selected by default        
-        center (tuple, optional): center point from which offshore points are computed to move overseas departement
-                                    It should be defined as a (longitude, latitude) point in crs EPSG:3857
+        departement (list, optional): list of departements to be moved, departements closest to Paris are selected by default    
+        
+        center (tuple, optional): center point from which offshore points are computed to move overseas departement        
+        It should be defined as a (longitude, latitude) point in crs EPSG:3857
+        
         radius (float, optional): radius used with center point to make offshore point, distance in meter
+        
         startAngle (float, optional): start angle defining offshore point, by default it is pi * (1 - 2.5 * 1/9))
     
     Notes: 
-        by default zoom focuses on parisian departement, but the function can be used to make a zoom on 
+        by default zoom method focuses on the closest departements to Paris, but the function can be used to make a zoom on 
         any departement any where on the map
 
     Examples:
