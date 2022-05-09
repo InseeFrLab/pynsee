@@ -14,9 +14,13 @@ Get geographical data
 
 .. autofunction:: pynsee.geodata.get_geodata
 
-.. autoclass:: pynsee.geodata.GeoDataframe.GeoDataframe
+.. autoclass:: pynsee.geodata.GeoFrDataFrame.GeoFrDataFrame
 
     .. automethod:: get_geom
+
+    .. automethod:: translate
+    
+    .. automethod:: zoom
 
 
 Get local data
@@ -46,6 +50,6 @@ Get sirene
 
 .. autofunction:: pynsee.sirene.get_sirene_relatives
 
-.. autoclass:: pynsee.sirene.SireneDataframe.SireneDataframe
+.. autoclass:: pynsee.sirene.SireneDataFrame.SireneDataFrame
 
     .. automethod:: get_location
