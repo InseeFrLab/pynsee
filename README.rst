@@ -74,7 +74,7 @@ Regarding data that can be downloaded directly from the website, the main entry 
 For further advice, have a look at the documentation and the examples
 
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/example_gdp_picture.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
+.. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/example_gdp_picture.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
 
 GDP growth rate
 ---------------
