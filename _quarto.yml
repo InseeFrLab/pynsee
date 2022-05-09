@@ -1,0 +1,15 @@
+project:
+  title: "pynsee"
+  render:
+    - docs/examples/*.qmd
+
+format:
+  html:
+    code-fold: true
+    self-contained: true
+  ipynb: default
+
+execute:
+  eval: false
+
+jupyter: python3
