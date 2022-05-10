@@ -3,7 +3,7 @@
 
 import pandas as pd
 from tqdm import trange
-from pynsee.sirene._make_dataframe_from_dict import _make_dataframe_from_dict
+from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 
 
 def _make_dataframe(data_request, main_key, query_number):

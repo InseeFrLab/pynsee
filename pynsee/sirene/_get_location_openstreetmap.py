@@ -8,7 +8,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import pandas as pd
 
-from pynsee.sirene._make_dataframe_from_dict import _make_dataframe_from_dict
+from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 
 def _get_location_openstreetmap(query, session=None):
 
