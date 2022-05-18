@@ -1,3 +1,8 @@
+ipykernel==6.13.0
+jupyter==1.0.0
+nbconvert==6.5.0
+nbclient==0.5.13
+nbformat==5.3.0
 sphinx==4.4.0
 sphinx_rtd_theme==0.5.1
 readthedocs-sphinx-search==0.1.0rc3
@@ -6,7 +11,7 @@ sphinx-gallery==0.10.0
 nbsphinx==0.8.7
 m2r2==0.2.7
 ipython>=7.16.1
-Jinja2==2.11
+Jinja2>=3.0
 sphinxcontrib-svg2pdfconverter
 pandas>=0.24.2
 tqdm>=4.56.0
@@ -23,3 +28,4 @@ markupsafe==2.0.1
 geopandas
 descartes
 py7zr
+jupyter-cache==0.5.0
