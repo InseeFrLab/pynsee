@@ -11,8 +11,8 @@ from pynsee.sirene.get_sirene_data import get_sirene_data
 from pynsee.sirene.search_sirene import search_sirene
 from pynsee.sirene._request_sirene import _request_sirene
 from pynsee.sirene.get_dimension_list import get_dimension_list
-from pynsee.sirene.SireneDataframe import SireneDataframe
-from pynsee.geodata.GeoDataframe import GeoDataframe
+from pynsee.sirene.SireneDataFrame import SireneDataFrame
+from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
 from pynsee.sirene.get_sirene_relatives import get_sirene_relatives
 
 
@@ -25,13 +25,13 @@ class TestFunction(TestCase):
         def test_get_sirene_relatives(self):
             test = True
             df = get_sirene_relatives('00555008200027')
-            test = test & isinstance(df, SireneDataframe)
+            test = test & isinstance(df, SireneDataFrame)
             
             df = get_sirene_relatives(['39860733300059', '00555008200027'])
-            test = test & isinstance(df, SireneDataframe)
+            test = test & isinstance(df, SireneDataFrame)
             
             df = get_sirene_relatives(['39860733300059', '1'])
-            test = test & isinstance(df, SireneDataframe)
+            test = test & isinstance(df, SireneDataFrame)
             
             self.assertTrue(test)
         
@@ -74,7 +74,7 @@ class TestFunction(TestCase):
                                pattern=['29.10Z'], kind='siret')            
 
             test = True
-            test = test & isinstance(df, SireneDataframe)
+            test = test & isinstance(df, SireneDataFrame)
             
             df = search_sirene(variable="activitePrincipaleEtablissement",
                                pattern='29.10Z', kind='siret')
@@ -82,7 +82,7 @@ class TestFunction(TestCase):
             df = df.reset_index(drop=True)
 
             sirdf = df.get_location()
-            test = test & isinstance(sirdf, GeoDataframe)
+            test = test & isinstance(sirdf, GeoFrDataFrame)
 
             geo = sirdf.get_geom()            
             test = test & (type(geo) in [Point, Polygon, MultiPolygon, 

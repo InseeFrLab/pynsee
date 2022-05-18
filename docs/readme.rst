@@ -7,7 +7,8 @@ Introduction to pynsee package
 
 **Work in progress**
 
-.. image:: https://github.com/InseeFrLab/pynsee/actions/workflows/master.yml/badge.svg
+
+.. image:: https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg
    :target: https://github.com/InseeFrLab/pynsee/actions
    :alt: Build Status
 
@@ -59,8 +60,8 @@ Data Search and Collection Advice
 For further advice, have a look at the documentation and the examples
   
 
-.. image:: examples/pictures/example_gdp_picture.png
-   :target: examples/pictures/example_gdp_picture.png
+.. image:: _static/example_gdp_picture.png
+   :target: _static/example_gdp_picture.png
    :alt: 
 
 .. code-block:: python
@@ -110,8 +111,8 @@ For further advice, have a look at the documentation and the examples
    ax.xaxis.label.set_visible(False)
    plt.show()
 
-.. image:: examples/pictures/poverty_paris_urban_area.png
-   :target: examples/pictures/poverty_paris_urban_area.png
+.. image:: _static/poverty_paris_urban_area.png
+   :target: _static/poverty_paris_urban_area.png
    :alt: 
 
 .. code-block:: python

@@ -1,7 +1,7 @@
 
 import pandas as pd
 
-class GeoDataframe(pd.DataFrame):
+class GeoFrDataFrame(pd.DataFrame):
     """Class for handling dataframes built from IGN's geographical data
 
     """    
@@ -11,7 +11,7 @@ class GeoDataframe(pd.DataFrame):
 
     @property
     def _constructor(self):
-        return GeoDataframe
+        return GeoFrDataFrame
 
     from pynsee.geodata.get_geom import get_geom
     from pynsee.geodata.translate import translate

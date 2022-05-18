@@ -3,6 +3,9 @@ name: Examples test
 on:
   schedule:
     - cron: '0 3 * * *'
+  #pull_request:
+  #  branches:
+  #    - master
 
 jobs:
   build:
@@ -17,22 +20,14 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-
-    - name: Test idbank list download
-      env:      
-        insee_key: ${{ secrets.INSEE_KEY }}
-        insee_secret: ${{ secrets.INSEE_SECRET }}
-      run: |     
-        pip install . 
-        pytest ./tests/macrodata/test_pynsee_macrodata.py::TestFunction::test_download_series_list
-    
+        
     - name: Install dependencies
       run: |
         #sudo apt-get install libgeos-dev
         python -m pip install --upgrade pip
         pip install flake8 pytest pytest-cov geopandas nbconvert matplotlib descartes  
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
+      
     - name: Test all examples
       env:
         insee_key: ${{ secrets.INSEE_KEY }}
@@ -47,4 +42,12 @@ jobs:
         # run all py files
         for f in *.py; do python "$f"; done
         cd ../..
-    
+        
+    - name: Test idbank list download
+      env:      
+        insee_key: ${{ secrets.INSEE_KEY }}
+        insee_secret: ${{ secrets.INSEE_SECRET }}
+      run: |     
+        pip install . 
+        python -c "from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files;_dwn_idbank_files()"
+

@@ -2,17 +2,17 @@
 API Subscription Tutorial
 =========================
 
-Create an account on api.insee.fr
+#. Create an account on api.insee.fr
 
-Create an application
+#. Create an application
 
-Create credentials
+#. Create credentials
 
-Subscribe to all APIs
+#. Subscribe to all APIs
 
-Show you credentials
+#. Show you credentials
 
-Save your credentials with init_conn function
+#. Save your credentials with init_conn function
 
 .. image:: _static/myaccount.png
    :target: _static/myaccount.png

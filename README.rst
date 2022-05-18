@@ -6,8 +6,8 @@ Introduction to pynsee package
 
 **Work in progress**
 
-.. image:: https://github.com/InseeFrLab/Py-Insee-Data/actions/workflows/master.yml/badge.svg
-   :target: https://github.com/InseeFrLab/Py-Insee-Data/actions
+.. image:: https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg
+   :target: https://github.com/InseeFrLab/pynsee/actions
    :alt: Build Status
 
 .. image:: https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK
@@ -74,7 +74,7 @@ Regarding data that can be downloaded directly from the website, the main entry 
 For further advice, have a look at the documentation and the examples
 
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/example_gdp_picture.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
+.. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/gdp_growth_rate_yoy.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
 
 GDP growth rate
 ---------------
@@ -127,7 +127,7 @@ GDP growth rate
 
 
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/poverty_paris_urban_area.png?token=AP32AXNFHNAH2NEK2LKWENTAZO7YY
+.. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/poverty_paris_urban_area.png?token=AP32AXNFHNAH2NEK2LKWENTAZO7YY
 
 Poverty in Paris urban area
 ---------------------------

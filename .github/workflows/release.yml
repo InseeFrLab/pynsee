@@ -1,0 +1,105 @@
+name: Build tar and wheel
+
+on:
+  push:
+    branches:
+      - master
+      - publish
+    tags:
+      - "*"
+  pull_request:  # also build on PRs touching this file
+    paths:
+      - "./.github/workflows/release.yml"
+      - "setup.py"
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }} with python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+        #[ubuntu-20.04, windows-2019, macOS-10.15]
+        python-version: ["3.8"]
+        #["3.7", "3.8", "3.9", "3.10"]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      # Used to host cibuildwheel
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install cibuildwheel
+        run: python -m pip install cibuildwheel==2.0.0a4
+
+      - name: Build wheels
+        # run: python -m cibuildwheel --output-dir wheelhouse
+        run: |
+          mkdir -p wheelhouse
+          python -m pip install wheel     
+          python -c 'import platform;print(platform.platform())'  
+          python -c "import sys;print(sys.version)"   
+          python setup.py bdist_wheel
+          python setup.py sdist
+        #  python -m pip wheel -w "wheelhouse" .
+        # to supply options, put them in 'env', like:
+        # env:
+        #   CIBW_SOME_OPTION: value
+
+      - uses: actions/upload-artifact@v2
+        with:
+          path: ./dist/*
+           #./wheelhouse/*.whl
+          retention-days: 5
+  
+  publish:
+    name: Publish on GitHub and PyPI
+    needs: [build_wheels]
+    runs-on: ubuntu-latest
+    # release on every tag
+    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
+    # git ls-remote --tags origin 
+    # git push --delete origin refs/tags/refs/heads/publish
+    # git push origin v0.0.1  
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: artifact
+          path: dist
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Get Asset name
+        run: |
+          export PKG=$(ls dist/ | grep tar)
+          set -- $PKG
+          echo "name=$1" >> $GITHUB_ENV
+      - name: Upload Release Asset (sdist) to GitHub
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/${{ env.name }}
+          asset_name: ${{ env.name }}
+          asset_content_type: application/zip      
+
+      - name: Upload Release Assets to TestPyPI
+        uses: pypa/gh-action-pypi-publish@v1.4.2
+        with:
+          user: __token__
+          password: ${{ secrets.testpypi_password }}
+          repository_url: https://test.pypi.org/legacy/
