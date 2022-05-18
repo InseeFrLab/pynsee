@@ -10,6 +10,7 @@ format:
   ipynb: default
 
 execute:
-  eval: false
+  eval: true
+  cache: true
 
 jupyter: python3

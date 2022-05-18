@@ -44,7 +44,7 @@ dep = pg.get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
 dep = dep.translate(departement=['971', '972', '974', '973', '976'],
                    factor=[1.5, 1.5, 1.5, 0.3, 1.5])
 
-dep = dep.zoom(factor = 3.5 , angle = math.pi * (1 - 3 * 1/9))
+dep = dep.zoom(factor = 3.5 , startAngle = math.pi * (1 - 3 * 1/9))
 
 dep = dep.loc[:, ["insee_dep", "geometry"]]
 dep = dep.rename(columns={'insee_dep': 'CODEGEO'})

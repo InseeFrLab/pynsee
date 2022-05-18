@@ -41,14 +41,14 @@ mapcom['density'] = mapcom['population'] / mapcom['area']
 ```
 
 ```{python}
-mapcom = GeoDataframe(mapcom)
+mapcom = GeoFrDataFrame(mapcom)
 mapcom = mapcom.translate(departement = ['971', '972', '974', '973', '976'], 
                           factor = [1.5, 1.5, 1.5, 0.35, 1.5])
 ```
 
 ```{python}
 mapcom = mapcom.zoom(departement = ["75","92", "93", "91", "77", "78", "95", "94"],
-                     factor=1.5, angle = math.pi * (1 - 3 * 1/9))
+                     factor=1.5, startAngle = math.pi * (1 - 3 * 1/9))
 mapcom
 ```
 

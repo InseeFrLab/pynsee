@@ -19,3 +19,4 @@ docs/auto_examples/
 .ipynb_checkpoints/
 docs/examples/*.html
 docs/examples/*.ipynb
+/.quarto/

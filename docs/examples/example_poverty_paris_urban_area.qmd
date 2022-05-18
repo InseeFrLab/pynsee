@@ -69,8 +69,8 @@ mapparis = mapidf.merge(data_plot, how = 'right', on = 'CODEGEO')
 mapparis = gpd.GeoDataFrame(mapparis).set_crs("EPSG:4326")
 
 #plot
-fig, ax = plt.subplots(1,1,figsize=[15,15])
-mapparis.plot(column='OBS_VALUE', cmap=cm.viridis, 
+fig, ax = plt.subplots(1,1,figsize=(15,15))
+mapparis.plot(column='OBS_VALUE', cmap=cm.viridis,  aspect=1,
     legend=True, ax=ax, legend_kwds={'shrink': 0.3})
 ax.set_axis_off()
 ax.set(title='Poverty rate in Paris urban area in 2017')
