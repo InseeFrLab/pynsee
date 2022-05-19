@@ -14,6 +14,8 @@ import requests
 from tqdm import tqdm
 from tqdm.utils import CallbackIOWrapper
 
+__all__ = ["check_year_available", "load_data", "download_store_file"]
+
 # READ ALL DATA SOURCES AVAILABLE USING JSON ONLINE FILE ----------------
 
 URL_DATA_LIST = "https://raw.githubusercontent.com/" + \

@@ -1,10 +1,18 @@
 import unittest
-
+import warnings
 import os.path
 import hashlib
 import pandas as pd
 
 from pynsee.download import *
+from pynsee.download import info_data
+from pynsee.download import telechargerDonnees
+from pynsee.download import load_data
+from pynsee.download import check_year_available
+from pynsee.download import dict_data_source
+from pynsee.download import millesimesDisponibles
+from pynsee.download import telechargerFichier
+
 
 class MyTests(unittest.TestCase):
 
