@@ -19,4 +19,12 @@ def get_file_list():
            'type_col', 'long_col', 'val_col', 'encoding', 'last_row',
            'missing_value']
     
+    warning_metadata_download()
+    
     return df
+
+@lru_cache(maxsize=None)
+def warning_metadata_download():
+    
+    print("pynsee.download metadata rely on volunteering contributors and their manual updates")
+    print("get_file_list does not provide data from official insee's metadata api\nConsequently, please report any error")
