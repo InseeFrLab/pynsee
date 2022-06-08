@@ -16,8 +16,9 @@
 
 from pynsee.download.load_data import load_data
 from pynsee.download.get_file_list import get_file_list
+from pynsee.download.download_file import download_file
 
-__all__ = ["load_data", "get_file_list"]
+__all__ = ["load_data", "get_file_list", "download_file"]
 
 # READ ALL DATA SOURCES AVAILABLE USING JSON ONLINE FILE ----------------
 

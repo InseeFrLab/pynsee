@@ -1,7 +1,10 @@
 import pandas as pd
+from functools import lru_cache
+
 from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.utils._move_col_after import _move_col_before
 
+@lru_cache(maxsize=None)
 def get_file_list():
     
     df = pd.DataFrame(_get_dict_data_source()).T    
