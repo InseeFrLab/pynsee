@@ -4,12 +4,12 @@ import warnings
 from pathlib import Path
 from tqdm import tqdm
 
-from pynsee.download.info_data import info_data
+from pynsee.download._info_data import _info_data
 from pynsee.download._download_pb import _download_pb
 from pynsee.download._import_options import _import_options
 from pynsee.download._initialize_temp_directory import _initialize_temp_directory
 
-def download_store_file(data: str, date=None, teldir=None):
+def _download_store_file(data: str, date=None, teldir=None):
     """Download requested file and return some metadata that will
     be used
 
@@ -30,7 +30,7 @@ def download_store_file(data: str, date=None, teldir=None):
         dict -- If everything works well, returns a dictionary
     """
 
-    caract = info_data(data, date)
+    caract = _info_data(data, date)
     cache = False
 
     if teldir is None:

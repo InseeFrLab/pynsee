@@ -2,7 +2,7 @@ import re
 
 from pynsee.download._get_dict_data_source import _get_dict_data_source
 
-def check_year_available(data):
+def _check_year_available(data):
     donnees = data.upper()
     dict_data_source = _get_dict_data_source()
     liste_nom = dict_data_source.keys()

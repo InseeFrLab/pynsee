@@ -1,4 +1,4 @@
-from pynsee.download.download_store_file import download_store_file
+from pynsee.download._download_store_file import _download_store_file
 from pynsee.download._load_data_from_schema import _load_data_from_schema
 
 def load_data(data, date, teldir=None, variables_names=None):
@@ -19,7 +19,7 @@ def load_data(data, date, teldir=None, variables_names=None):
     """
     try:
         return _load_data_from_schema(
-            download_store_file(data=data, date=date, teldir=teldir),
+            _download_store_file(data=data, date=date, teldir=teldir),
             variables_names
         )
     except:

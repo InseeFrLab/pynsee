@@ -1,10 +1,10 @@
 import re
 import difflib
 
-from pynsee.download.check_year_available import check_year_available
+from pynsee.download._check_year_available import _check_year_available
 from pynsee.download._get_dict_data_source import _get_dict_data_source
 
-def info_data(data: str, date=None):
+def _info_data(data: str, date=None):
     """Get some info regarding datasets available
 
     Arguments:
@@ -44,7 +44,7 @@ def info_data(data: str, date=None):
 
     # 2 - gestion millésimes
 
-    possible = check_year_available(donnees)
+    possible = _check_year_available(donnees)
 
     if (len(possible) > 1) & (date is None):
         raise ValueError("Several versions of this dataset exist, please specify a year")
