@@ -10,7 +10,7 @@ setuptools.setup(
     version="0.0.7",
     author="Hadrien Leclerc, Lino Galiana",
     author_email="leclerc.hadrien@gmail.com",
-    description="Tools to Easily Download Data and Metadata from INSEE APIs",
+    description="Tools to Easily Search and Download Data From INSEE and IGN",
     long_description=long_description,
     url="https://pynsee.readthedocs.io/en/latest/",
     project_urls={
