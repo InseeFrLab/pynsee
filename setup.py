@@ -8,7 +8,7 @@ with open("README.rst", "r", encoding="utf-8") as fh:
 setuptools.setup(
     name="pynsee",
     version="0.0.7",
-    author="Hadrien Leclerc",
+    author="Hadrien Leclerc, Lino Galiana",
     author_email="leclerc.hadrien@gmail.com",
     description="Tools to Easily Download Data and Metadata from INSEE APIs",
     long_description=long_description,
