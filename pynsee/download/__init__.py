@@ -324,7 +324,10 @@ def load_data_from_schema(
 
     if telechargementFichier["result"]["type"] == "csv":
         if os.path.getsize(telechargementFichier["file_to_import"]) >= limit_chunk_size:
-            chunk = pd.read_csv(telechargementFichier["file_to_import"], chunksize=1000000)
+            chunk = pd.read_csv(telechargementFichier["file_to_import"], 
+                                chunksize=1000000, 
+                                dtype="str",
+                                delimiter = telechargementFichier["import_args"]["delim"])
             df_insee = pd.concat(chunk)
         else:
             df_insee = pd.read_csv(
