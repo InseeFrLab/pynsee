@@ -19,6 +19,8 @@ def get_file_list():
            'type_col', 'long_col', 'val_col', 'encoding', 'last_row',
            'missing_value']
     
+    df = df[~df.link.str.contains("https://api.insee.fr")]
+    
     warning_metadata_download()
     
     return df
