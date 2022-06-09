@@ -23,6 +23,7 @@ def _load_data_from_schema(
         pd.DataFrame -- The required dataset is returned as pd.DataFrame object
     """
     if telechargementFichier["result"]["zip"] is True:
+        print(telechargementFichier['file_archive'])
         _unzip_pb(
             telechargementFichier['file_archive'],
             f"{telechargementFichier['import_args']['file']}_temp"
@@ -43,12 +44,41 @@ def _load_data_from_schema(
                                 delimiter = telechargementFichier["import_args"]["delim"])
             df_insee = pd.concat(chunk)
         else:
-            df_insee = pd.read_csv(
-                telechargementFichier["file_to_import"],
-                delimiter=telechargementFichier["import_args"]["delim"],
-                dtype=telechargementFichier["import_args"]["dtype"],
-                usecols=variables
-                )
+            try:
+                df_insee = pd.read_csv(
+                    telechargementFichier["file_to_import"],
+                    delimiter=telechargementFichier["import_args"]["delim"],
+                    dtype="str",
+                    usecols=variables
+                    )
+            except:
+                encoding = telechargementFichier["import_args"]["encoding"]
+                useEncoding = True
+                if isinstance(encoding, str):
+                    if encoding == "Nan":
+                        useEncoding = False
+                else:
+                    useEncoding = False
+                    
+                if not useEncoding:
+                    df_insee = pd.read_csv(
+                        telechargementFichier["file_to_import"],
+                        delimiter=telechargementFichier["import_args"]["delim"],
+                        dtype="str",
+                        usecols=variables,
+                        engine="python"
+                        )
+                else:
+                    
+                    df_insee = pd.read_csv(
+                        telechargementFichier["file_to_import"],
+                        delimiter=telechargementFichier["import_args"]["delim"],
+                        dtype="str",
+                        usecols=variables,
+                        engine="python",
+                        encoding=encoding
+                        )
+                    
     elif telechargementFichier["result"]["type"] in ["xls", "xlsx"]:
         df_insee = pd.read_excel(
             telechargementFichier["file_to_import"],
@@ -56,7 +86,7 @@ def _load_data_from_schema(
             skiprows=telechargementFichier["import_args"]["skip"],
             nrows=telechargementFichier["import_args"]["n_max"],
             na_values=telechargementFichier["import_args"]["na"],
-            dtype=telechargementFichier["import_args"]["dtype"],
+            dtype="str",
             usecols=variables
             )
     elif telechargementFichier["result"]["type"] == "JSON":

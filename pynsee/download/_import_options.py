@@ -58,6 +58,11 @@ def _import_options(caract: dict, filename: str):
         list_cols = None
 
     import_args.update({"dtype": list_cols})
+    try:
+        encoding = caract['encoding']
+    except:
+        encoding = "Nan"
+    import_args.update({"encoding": encoding})
 
     out_dict = {
         'file_archive': file_archive,
