@@ -38,6 +38,9 @@ setuptools.setup(
             "shapely==1.8.0",
             "datetime>=3.5.9",
             "pathlib2>=2.3.5"],
+    extras_require = {
+        'full': ['openpyxl', "xlrd>=2.0.1"]
+    },
     package_data={
         "": ["*.zip"]},
     python_requires='>=3.7',
