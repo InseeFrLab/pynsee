@@ -21,7 +21,7 @@ class MyTests(unittest.TestCase):
         for i, f in enumerate(list_file_check):
             print(f"{i} : {f}")
             df = download_file(f, metadata=True)
-            label = get_column_label(id)
+            label = get_column_label(id=f)
             
             self.assertTrue(isinstance(label, pd.DataFrame) or isinstance(label, None))
             self.assertTrue(isinstance(df, pd.DataFrame))
