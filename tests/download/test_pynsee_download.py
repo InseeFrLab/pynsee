@@ -15,7 +15,8 @@ class MyTests(unittest.TestCase):
         meta = get_file_list()
         self.assertTrue(isinstance(meta, pd.DataFrame))
         
-        meta = meta[meta.size < 300000000].reset_index(drop=True)        
+        meta['size'] = pd.to_numeric(meta['size'])
+        meta = meta[meta['size'] < 300000000].reset_index(drop=True)        
         
         list_file = list(meta.id)        
         list_file_check = list_file[:20] + list_file[-20:]
