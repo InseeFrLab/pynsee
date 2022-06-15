@@ -23,7 +23,14 @@ class MyTests(unittest.TestCase):
             df = download_file(f, metadata=True)
             label = get_column_label(id=f)
             
-            self.assertTrue(isinstance(label, pd.DataFrame) or isinstance(label, None))
+            if label is None:
+                checkLabel = True
+            elif isinstance(label, pd.DataFrame):
+                checkLabel = True
+            else: 
+                checkLabel = False
+                
+            self.assertTrue(checkLabel)
             self.assertTrue(isinstance(df, pd.DataFrame))
             self.assertTrue((len(df.columns) > 2))
             
