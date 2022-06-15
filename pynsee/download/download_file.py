@@ -1,6 +1,6 @@
 import os
 
-from pynsee.download._download_store_file2 import _download_store_file2
+from pynsee.download._download_store_file import _download_store_file
 from pynsee.download._load_data_from_schema import _load_data_from_schema
 
 def download_file(id):
@@ -18,7 +18,7 @@ def download_file(id):
     
     try:
         df = _load_data_from_schema(
-                _download_store_file2(id)
+                _download_store_file(id)
             )
         
         return df
