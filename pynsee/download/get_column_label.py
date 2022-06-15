@@ -4,7 +4,7 @@ import pandas as pd
 from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.utils._move_col_after import _move_col_before
 
-def get_colum_label(id):
+def get_column_label(id):
     """
         Examples:
         >>> labels = get_colum_label("RP_INDREG_2016")
