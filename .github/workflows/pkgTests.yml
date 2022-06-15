@@ -40,7 +40,7 @@ jobs:
       run: |
         pip install jupytext
         pip install -r requirements.txt
-        pip install .     
+        pip install .[full]     
         # test all notebooks        
         cd docs/examples 
         jupytext --to py *.md

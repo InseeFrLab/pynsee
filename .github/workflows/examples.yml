@@ -34,7 +34,7 @@ jobs:
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |
         pip install jupytext
-        pip install . 
+        pip install .[full] 
         pip install -r docs/requirements.txt            
         # test all notebooks        
         cd docs/examples 
