@@ -1,9 +1,11 @@
 import os
+from functools import lru_cache
 
 from pynsee.download._download_store_file import _download_store_file
 from pynsee.download._load_data_from_schema import _load_data_from_schema
+from pynsee.download._add_metadata import _add_metadata
 
-def download_file(id):
+def download_file(id, metadata=False):
     """
     User level function to download files from insee.fr
 
@@ -21,8 +23,17 @@ def download_file(id):
                 _download_store_file(id)
             )
         
+        if metadata is True:
+            df = _add_metadata(df)
+        else:
+            warning_metadata()
+            
         return df
     except:
         raise ValueError("Download failed")
         
-   
+
+@lru_cache(maxsize=None)
+def warning_metadata():
+    
+    print("Set metadata=True, to add column-specific metadata to the result")

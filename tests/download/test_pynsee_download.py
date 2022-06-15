@@ -19,7 +19,8 @@ class MyTests(unittest.TestCase):
         list_file = list(meta.id)        
         list_file_check = list_file[:100] + list_file[-100:]
         
-        for f in list_file_check:
+        for i, f in enumerate(list_file_check):
+            print(f"{i} : {f}")
             df = download_file(f)
         
             self.assertTrue(isinstance(df, pd.DataFrame))
