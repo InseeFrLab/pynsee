@@ -24,7 +24,10 @@ def download_file(id, metadata=False):
             )
         
         if metadata is True:
-            df = _add_metadata(df)
+            #try:
+                df = _add_metadata(id, df)
+            #except:
+            #    pass
         else:
             warning_metadata()
             
@@ -36,4 +39,4 @@ def download_file(id, metadata=False):
 @lru_cache(maxsize=None)
 def warning_metadata():
     
-    print("Set metadata=True, to add column-specific metadata to the result")
+    print("Set metadata=True, to add column-specific metadata to the output")
