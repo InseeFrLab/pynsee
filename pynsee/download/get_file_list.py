@@ -28,5 +28,5 @@ def get_file_list():
 @lru_cache(maxsize=None)
 def warning_metadata_download():
     
-    print("pynsee.download metadata rely on volunteering contributors and their manual updates")
-    print("get_file_list does not provide data from official insee's metadata api\nConsequently, please report any error")
+    print("pynsee.download's metadata rely on volunteering contributors and their manual updates")
+    print("get_file_list does not provide data from official Insee's metadata API\nConsequently, please report any issue")
