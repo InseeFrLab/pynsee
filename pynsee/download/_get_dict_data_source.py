@@ -1,6 +1,8 @@
 import requests
 import re
+from functools import lru_cache
 
+@lru_cache(maxsize=None)
 def _get_dict_data_source():
     
     URL_DATA_LIST = "https://raw.githubusercontent.com/" + \
