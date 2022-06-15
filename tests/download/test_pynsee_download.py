@@ -7,22 +7,23 @@ import pandas as pd
 from pynsee.download import *
 from pynsee.download import download_file
 from pynsee.download import get_file_list
+from pynsee.download import get_column_label
 
 class MyTests(unittest.TestCase):
-    
-    def test_get_file_list(self):
-        df = get_file_list()
-        self.assertTrue(isinstance(df, pd.DataFrame))
-    
-    def test_download_file(self):
+        
+    def test_download_file_all(self):
         meta = get_file_list()
+        self.assertTrue(isinstance(meta, pd.DataFrame))
+        
         list_file = list(meta.id)        
         list_file_check = list_file[:100] + list_file[-100:]
         
         for i, f in enumerate(list_file_check):
             print(f"{i} : {f}")
-            df = download_file(f)
-        
+            df = download_file(f, metadata=True)
+            label = get_column_label(id)
+            
+            self.assertTrue(isinstance(label, pd.DataFrame) or isinstance(label, None))
             self.assertTrue(isinstance(df, pd.DataFrame))
             self.assertTrue((len(df.columns) > 2))
             
