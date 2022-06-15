@@ -1,8 +1,20 @@
 import os
-from shutil import copyfileobj, move
+from shutil import copyfileobj
 import pandas as pd
+from functools import lru_cache
+import difflib
 
 from pynsee.download._unzip_pb import _unzip_pb
+
+@lru_cache(maxsize=None)
+def warning_file(missingFile, foundFile):
+    
+    print(f"Data file missing in the zip file:\n{missingFile}")
+    if not foundFile == "":
+        print(f"Following file has been used instead:\n{foundFile}")
+    else:
+        print("No replacement file has been found")
+    print("Please report this issue")
 
 def _load_data_from_schema(
     telechargementFichier: dict,
@@ -22,23 +34,44 @@ def _load_data_from_schema(
     Returns:
         pd.DataFrame -- The required dataset is returned as pd.DataFrame object
     """
+    file_to_import = telechargementFichier["file_to_import"]
+    
     if telechargementFichier["result"]["zip"] is True:
-        print(telechargementFichier['file_archive'])
+        
+        zipDirectory = f"{telechargementFichier['import_args']['file']}_temp"
+        
         _unzip_pb(
             telechargementFichier['file_archive'],
-            f"{telechargementFichier['import_args']['file']}_temp"
-            )
-        move(
-            f"{telechargementFichier['import_args']['file']}_temp/{telechargementFichier['result']['fichier_donnees']}",
-            telechargementFichier["import_args"]['file']
-            )
-
-    if os.path.isfile(telechargementFichier["file_to_import"]) is False:
+            f"{zipDirectory}"
+            )        
+        
+        dataFile = telechargementFichier['result']['fichier_donnees']
+        dataPathFile = f"{zipDirectory}/{dataFile}"
+        
+        if  (not os.path.exists(dataPathFile)):
+            
+            list_file_dir = os.listdir(zipDirectory)
+            
+            suggestions = difflib.get_close_matches(
+                                dataFile,
+                                list_file_dir, n=1)
+            
+            if not len(suggestions) == 0:
+                foundFile = suggestions[0]
+                file_to_import = f"{zipDirectory}/{foundFile}"
+            else:
+                foundFile = ""
+            
+            warning_file(missingFile=dataFile, foundFile=foundFile)           
+        else:
+            file_to_import = dataPathFile    
+    
+    if os.path.isfile(file_to_import) is False:
         raise ValueError("File cannot be found")
 
     if telechargementFichier["result"]["type"] == "csv":
-        if os.path.getsize(telechargementFichier["file_to_import"]) >= limit_chunk_size:
-            chunk = pd.read_csv(telechargementFichier["file_to_import"], 
+        if os.path.getsize(file_to_import) >= limit_chunk_size:
+            chunk = pd.read_csv(file_to_import, 
                                 chunksize=1000000, 
                                 dtype="str",
                                 delimiter = telechargementFichier["import_args"]["delim"])
@@ -46,7 +79,7 @@ def _load_data_from_schema(
         else:
             try:
                 df_insee = pd.read_csv(
-                    telechargementFichier["file_to_import"],
+                    file_to_import,
                     delimiter=telechargementFichier["import_args"]["delim"],
                     dtype="str",
                     usecols=variables
@@ -62,7 +95,7 @@ def _load_data_from_schema(
                     
                 if not useEncoding:
                     df_insee = pd.read_csv(
-                        telechargementFichier["file_to_import"],
+                        file_to_import,
                         delimiter=telechargementFichier["import_args"]["delim"],
                         dtype="str",
                         usecols=variables,
@@ -71,7 +104,7 @@ def _load_data_from_schema(
                 else:
                     
                     df_insee = pd.read_csv(
-                        telechargementFichier["file_to_import"],
+                        file_to_import,
                         delimiter=telechargementFichier["import_args"]["delim"],
                         dtype="str",
                         usecols=variables,
@@ -81,7 +114,7 @@ def _load_data_from_schema(
                     
     elif telechargementFichier["result"]["type"] in ["xls", "xlsx"]:
         df_insee = pd.read_excel(
-            telechargementFichier["file_to_import"],
+            file_to_import,
             sheet_name=telechargementFichier["import_args"]["sheet"],
             skiprows=telechargementFichier["import_args"]["skip"],
             nrows=telechargementFichier["import_args"]["n_max"],
