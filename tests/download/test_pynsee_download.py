@@ -16,7 +16,7 @@ class MyTests(unittest.TestCase):
         self.assertTrue(isinstance(meta, pd.DataFrame))
         
         list_file = list(meta.id)        
-        list_file_check = list_file[:100] + list_file[-100:]
+        list_file_check = list_file[:50] + list_file[-50:]
         
         for i, f in enumerate(list_file_check):
             print(f"{i} : {f}")
