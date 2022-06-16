@@ -6,18 +6,17 @@ from pynsee.download import *
 from pynsee.download import download_file
 from pynsee.download import get_file_list
 from pynsee.download import get_column_label
-from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.utils.clear_all_cache import clear_all_cache
 
 class MyTests(unittest.TestCase):
     
-    def test_get_dict_data_source(self):
+    def test_get_file_list_error(self):
         
         os.environ["pynsee_file_list"] = "https://raw.githubusercontent.com/" + \
             "InseeFrLab/DoReMIFaSol/master/data-raw/test.json"
         
         clear_all_cache()        
-        df = _get_dict_data_source()        
+        df = get_file_list()        
         clear_all_cache()
         
         self.assertTrue(isinstance(df, pd.DataFrame))
