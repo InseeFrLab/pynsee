@@ -71,11 +71,21 @@ def _load_data_from_schema(
 
     if telechargementFichier["result"]["type"] == "csv":
         if os.path.getsize(file_to_import) >= limit_chunk_size:
-            chunk = pd.read_csv(file_to_import, 
+            list_chunk = []
+            chunksize = 10 ** 6
+            with pd.read_csv(file_to_import,
+                             chunksize=chunksize,
+                             dtype="str",
+                             delimiter = telechargementFichier["import_args"]["delim"]) as reader:
+                for chunk in reader:
+                    list_chunk += [chunk]
+            
+            """chunk = pd.read_csv(file_to_import, 
                                 chunksize=1000000, 
                                 dtype="str",
                                 delimiter = telechargementFichier["import_args"]["delim"])
-            df_insee = pd.concat(chunk)
+            """
+            df_insee = pd.concat(list_chunk)
         else:
             try:
                 df_insee = pd.read_csv(
