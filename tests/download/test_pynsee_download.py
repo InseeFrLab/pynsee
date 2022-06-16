@@ -17,7 +17,7 @@ class MyTests(unittest.TestCase):
             "InseeFrLab/DoReMIFaSol/master/data-raw/test.json"
         
         clear_all_cache()        
-        df = _get_data_source()        
+        df = _get_dict_data_source()        
         clear_all_cache()
         
         self.assertTrue(isinstance(df, pd.DataFrame))
