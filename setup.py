@@ -8,9 +8,9 @@ with open("README.rst", "r", encoding="utf-8") as fh:
 setuptools.setup(
     name="pynsee",
     version="0.0.7",
-    author="Hadrien Leclerc",
+    author="Hadrien Leclerc, Lino Galiana",
     author_email="leclerc.hadrien@gmail.com",
-    description="Tools to Easily Download Data and Metadata from INSEE APIs",
+    description="Tools to Easily Search and Download Data From INSEE and IGN",
     long_description=long_description,
     url="https://pynsee.readthedocs.io/en/latest/",
     project_urls={
@@ -38,6 +38,9 @@ setuptools.setup(
             "shapely==1.8.0",
             "datetime>=3.5.9",
             "pathlib2>=2.3.5"],
+    extras_require = {
+        'full': ['openpyxl', "xlrd>=2.0.1"]
+    },
     package_data={
         "": ["*.zip"]},
     python_requires='>=3.7',
