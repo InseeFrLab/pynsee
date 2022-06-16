@@ -1,15 +1,27 @@
 import unittest
-import warnings
-import os.path
-import hashlib
+import os
 import pandas as pd
 
 from pynsee.download import *
 from pynsee.download import download_file
 from pynsee.download import get_file_list
 from pynsee.download import get_column_label
+from pynsee.download._get_dict_data_source import _get_dict_data_source
+from pynsee.utils.clear_all_cache import clear_all_cache
 
 class MyTests(unittest.TestCase):
+    
+    def test_get_dict_data_source(self):
+        
+        os.environ["pynsee_file_list"] = "https://raw.githubusercontent.com/" + \
+            "InseeFrLab/DoReMIFaSol/master/data-raw/test.json"
+        
+        clear_all_cache()        
+        df = _get_data_source()        
+        clear_all_cache()
+        
+        self.assertTrue(isinstance(df, pd.DataFrame))
+        
         
     def test_download_file_all(self):
         meta = get_file_list()
@@ -39,6 +51,10 @@ class MyTests(unittest.TestCase):
             self.assertTrue(checkLabel)
             self.assertTrue(isinstance(df, pd.DataFrame))
             self.assertTrue((len(df.columns) > 2))
+            
+            df = download_file(list_file_check[0], metadata=True)
+            self.assertTrue(isinstance(df, pd.DataFrame))
+            
             
             
 if __name__ == '__main__':
