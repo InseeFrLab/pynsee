@@ -44,4 +44,24 @@ class MyTests(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 
+"""
+import unittest
 
+class KnownGood(unittest.TestCase):
+    def __init__(self, input):
+        super(KnownGood, self).__init__()
+        self.input = input
+    def runTest(self):
+        self.assertEqual(type(download_file(self.input)), pd.DataFrame)
+
+def suite():
+    suite = unittest.TestSuite()
+    list_file = ["COG_COMMUNE_2018", "AIRE_URBAINE", "FILOSOFI_COM_2015", "DECES_2020",
+                   "PRENOM_NAT", "ESTEL_T201_ENS_T", "FILOSOFI_DISP_IRIS_2017",
+                   "BPE_ENS", "RP_MOBSCO_2016"]
+    suite.addTests(KnownGood(input) for input in list_file)
+    return suite
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
+"""
