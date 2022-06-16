@@ -21,8 +21,8 @@ class MyTests(unittest.TestCase):
         list_file = list(meta.id)        
         list_file_check = list_file[:20] + list_file[-20:]
         list_file_check = ["COG_COMMUNE_2018", "AIRE_URBAINE", "FILOSOFI_COM_2015", "DECES_2020",
-                           "PRENOM_NAT", "PRENOM_DEP", "ESTEL_T201_ENS_T", "ESTEL_T202_2016", "FILOSOFI_DISP_IRIS_2017",
-                           "BPE_ENS", "RP_MOBSCO_2016", "RP_MOBZELT_2016"]
+                   "PRENOM_NAT", "ESTEL_T201_ENS_T", "FILOSOFI_DISP_IRIS_2017",
+                   "BPE_ENS", "RP_MOBSCO_2016"]
         
         for i, f in enumerate(list_file_check):
             print(f"{i} : {f}")
