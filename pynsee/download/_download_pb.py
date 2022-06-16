@@ -12,7 +12,14 @@ def _download_pb(url: str, fname: str, total: int = None):
         url {str} -- URL for the source file
         fname {str} -- Destination where data will be written
     """
-    resp = requests.get(url, stream=True)
+    
+    try:
+        proxies = {'http': os.environ['http_proxy'],
+                'https': os.environ['https_proxy']}
+    except:
+        proxies = {'http': '', 'https': ''}
+    
+    resp = requests.get(url, proxies=proxies, stream=True)
 
     if total is None:
         total = int(resp.headers.get('content-length', 0))

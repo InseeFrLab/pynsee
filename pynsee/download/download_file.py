@@ -5,7 +5,7 @@ from pynsee.download._download_store_file import _download_store_file
 from pynsee.download._load_data_from_schema import _load_data_from_schema
 from pynsee.download._add_metadata import _add_metadata
 
-def download_file(id, metadata=False):
+def download_file(id, metadata=False, update=False):
     """
     User level function to download files from insee.fr
 
@@ -20,7 +20,7 @@ def download_file(id, metadata=False):
     
     try:
         df = _load_data_from_schema(
-                _download_store_file(id)
+                _download_store_file(id, update=update)
             )
         
         if metadata is True:
