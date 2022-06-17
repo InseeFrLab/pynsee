@@ -52,7 +52,7 @@ class MyTests(unittest.TestCase):
             self.assertTrue(isinstance(df, pd.DataFrame))
             self.assertTrue((len(df.columns) > 2))
             
-            df = download_file(list_file_check[0], metadata=True)
+            df = download_file(list_file_check[0])
             self.assertTrue(isinstance(df, pd.DataFrame))
             
             
