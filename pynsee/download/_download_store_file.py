@@ -6,7 +6,6 @@ from tqdm import tqdm
 import difflib
 import os
 
-from pynsee.download._info_data import _info_data
 from pynsee.download._download_pb import _download_pb
 from pynsee.download._import_options import _import_options
 from pynsee.download._get_dict_data_source import _get_dict_data_source
