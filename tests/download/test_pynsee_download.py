@@ -5,7 +5,7 @@ import pandas as pd
 from pynsee.download import *
 from pynsee.download import download_file
 from pynsee.download import get_file_list
-from pynsee.download import get_column_label
+from pynsee.download import get_column_metadata
 from pynsee.utils.clear_all_cache import clear_all_cache
 
 class MyTests(unittest.TestCase):
@@ -38,7 +38,7 @@ class MyTests(unittest.TestCase):
         for i, f in enumerate(list_file_check):
             print(f"{i} : {f}")
             df = download_file(f)
-            label = get_column_label(id=f)
+            label = get_column_metadata(id=f)
             
             if label is None:
                 checkLabel = True

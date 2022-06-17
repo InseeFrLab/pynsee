@@ -76,6 +76,7 @@ def _load_data_from_schema(
             with pd.read_csv(file_to_import,
                              chunksize=chunksize,
                              dtype="str",
+                             usecols=variables,
                              delimiter = telechargementFichier["import_args"]["delim"]) as reader:
                 for chunk in reader:
                     list_chunk += [chunk]
