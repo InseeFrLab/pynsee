@@ -37,7 +37,7 @@ class MyTests(unittest.TestCase):
         
         for i, f in enumerate(list_file_check):
             print(f"{i} : {f}")
-            df = download_file(f, metadata=True)
+            df = download_file(f)
             label = get_column_label(id=f)
             
             if label is None:
