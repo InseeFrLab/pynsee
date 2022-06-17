@@ -81,11 +81,6 @@ def _load_data_from_schema(
                 for chunk in reader:
                     list_chunk += [chunk]
             
-            """chunk = pd.read_csv(file_to_import, 
-                                chunksize=1000000, 
-                                dtype="str",
-                                delimiter = telechargementFichier["import_args"]["delim"])
-            """
             df_insee = pd.concat(list_chunk)
         else:
             try:
@@ -133,7 +128,5 @@ def _load_data_from_schema(
             dtype="str",
             usecols=variables
             )
-    elif telechargementFichier["result"]["type"] == "JSON":
-        raise ValueError("Not yet implemented")
 
     return df_insee
