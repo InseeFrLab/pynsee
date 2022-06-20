@@ -17,8 +17,7 @@ jobs:
         env:
           insee_key: ${{ secrets.INSEE_KEY }}
           insee_secret: ${{ secrets.INSEE_SECRET }}
-        run: |
-          pip install .[full]
+        run: |          
           cd docs/examples/
           for i in *.qmd ; do quarto render $i ; done
           pwd
