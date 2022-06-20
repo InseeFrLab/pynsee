@@ -9,6 +9,7 @@ import os
 from pynsee.download._download_pb import _download_pb
 from pynsee.download._import_options import _import_options
 from pynsee.download._get_dict_data_source import _get_dict_data_source
+from pynsee.download._check_url import _check_url
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
@@ -58,24 +59,10 @@ def _download_store_file(id: str, update: bool):
     
     if (not os.path.exists(filename)) or update:
         
-        try:
-            proxies = {'http': os.environ['http_proxy'],
-                    'https': os.environ['https_proxy']}
-        except:
-            proxies = {'http': '', 'https': ''}
+        url_found = _check_url(caract['lien'])
         
-        out_request = requests.get(caract['lien'], proxies=proxies, stream=True)
+        _download_pb(url=url_found, fname=filename, total=caract['size'])
         
-        if out_request.status_code == 200:
-            _download_pb(url=caract['lien'], fname=filename, total=caract['size'])
-        else:
-            raise ValueError(
-                """
-                File not found on insee.fr.
-                Please open an issue on
-                https://github.com/InseeFrLab/Py-Insee-Data to help
-                improving the package
-                """)
     else:
         _warning_cached_data(filename)
     
