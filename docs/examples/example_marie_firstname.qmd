@@ -82,6 +82,11 @@ DF['pct'] = DF['pct'].fillna(0)
 ```
 
 ```{python}
+DF = DF.merge(dep, how = 'left', on = 'dpt')
+datamap = gpd.GeoDataFrame(DF)
+```
+
+```{python}
 # make plot
 
 fig, axes = plt.subplots(ncols=2, nrows=2, figsize=(12, 12))
