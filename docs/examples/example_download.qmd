@@ -24,11 +24,11 @@ sa fonction `get_geodata`
 #| output : false
 
 import pynsee
-from pynsee.download import load_data
+from pynsee.download import download_file
 from pynsee.geodata import get_geodata
 import geopandas as gpd
 
-df = load_data("FILOSOFI_COM", date = "2015")
+df = download_file("FILOSOFI_COM_2015")
 com = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:commune')
 ```
 
