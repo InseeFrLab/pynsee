@@ -48,5 +48,5 @@ Search sirene data
 Search files on insee.fr
 ------------------------
 
-.. autofunction:: pynsee.sirene.get_file_list
+.. autofunction:: pynsee.download.get_file_list
 
