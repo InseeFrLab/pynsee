@@ -34,7 +34,7 @@ jobs:
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |
         pip install jupytext
-        pip install . 
+        pip install .[full] 
         pip install -r docs/requirements.txt            
         # test all notebooks        
         cd docs/examples 
@@ -49,5 +49,5 @@ jobs:
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |     
         pip install . 
-        pytest ./tests/macrodata/test_pynsee_macrodata.py::TestFunction::test_download_series_list
+        python -c "from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files;_dwn_idbank_files()"
 

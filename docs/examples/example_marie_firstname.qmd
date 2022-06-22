@@ -1,0 +1,116 @@
+---
+title: "Marie as a firstname over time and departements"
+---
+
+
+```{python}
+
+import pandas as pd
+import numpy as np
+import geopandas as gpd
+import matplotlib.cm as cm
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
+import descartes
+
+from pynsee.download import download_file, get_file_list
+from pynsee.geodata import get_geodata_list, get_geodata
+```
+
+```{python}
+import warnings
+from shapely.errors import ShapelyDeprecationWarning
+warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
+```
+
+```{python}
+meta = get_file_list()
+dfraw = download_file("PRENOM_DEP")
+```
+
+```{python}
+list_dep = list(dfraw.dpt.unique()) + ['2A', '2B']
+list_year = ["1900", "1936", "1965", "2015"]
+```
+
+```{python}
+# compute frequency of marie as a firstname given to female babies
+df = dfraw[(dfraw["sexe"] == "2") & (dfraw["annais"].isin(list_year))].reset_index(drop=True)
+df["nombre"] = pd.to_numeric(df["nombre"])
+
+df.loc[(df["dpt"] == "78"), 'dpt'] = '75'
+df = df.groupby(['dpt', 'annais', 'preusuel'], as_index=False).nombre.agg('sum')
+df["tot"] = df.groupby(['dpt', 'annais'], as_index=False).nombre.transform('sum')
+marie = df[(df["preusuel"] == "MARIE")].reset_index(drop=True)
+marie['pct'] = marie.nombre / marie.tot * 100
+```
+
+```{python}
+# get geographical limits of departements
+geodata_list = get_geodata_list()
+dep = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
+dep = dep.translate()
+dep = dep.rename(columns={'insee_dep': 'dpt'})
+```
+
+```{python}
+DF = pd.concat([pd.DataFrame({'dpt': list_dep, 'annais': y}) for y in list_year])
+DF = DF.merge(marie, how = 'left', on = ['dpt', 'annais'])
+```
+
+```{python}
+# data correction
+# due to administrative changes in Paris region
+# for all years a common value is computed for the following departement : '75', '91', '92', '93', '94', '95', '78'
+# departement in Corsica are reported together
+
+for y in list_year:
+    valParis = DF.loc[(DF['annais'] == y) & (DF['dpt'] == '75'), 'pct'].values
+    valCorse = DF.loc[(DF['annais'] == y) & (DF['dpt'] == '20'), 'pct'].values
+    
+    for d in ['91', '92', '93', '94', '95', '78']:
+        valdep = DF.loc[(DF['annais'] == y) & (DF['dpt'] == d), 'pct'].values
+        if np.isnan(valdep):
+            DF.loc[(DF['annais'] == y) & (DF['dpt'] == d), 'pct'] = valParis
+            
+    for d in ['2A', '2B']:
+        valdep = DF.loc[(DF['annais'] == y) & (DF['dpt'] == d), 'pct'].values
+        if np.isnan(valdep):
+            DF.loc[(DF['annais'] == y) & (DF['dpt'] == d), 'pct'] = valCorse
+
+DF['pct'] = DF['pct'].fillna(0)
+```
+
+```{python}
+DF = DF.merge(dep, how = 'left', on = 'dpt')
+datamap = gpd.GeoDataFrame(DF)
+```
+
+```{python}
+# make plot
+
+fig, axes = plt.subplots(ncols=2, nrows=2, figsize=(12, 12))
+axes = axes.flatten()
+
+normalize = mcolors.Normalize(vmin=datamap.pct.min(), vmax=datamap.pct.max())
+colormap = cm.jet
+
+plt.suptitle("Percentage of new female babies whose name is Marie", x = 0.3, y = 0.9,
+             horizontalalignment= 'left',
+             fontsize = 12, fontweight='bold')
+
+for a, ax in zip(np.unique(datamap.annais.values), axes):
+    
+    ax.set_axis_off()
+    dt = datamap[datamap.annais == a]
+    p = dt.plot(column='pct', ax=ax, cmap=colormap,norm=normalize)
+    ax.set_title(a)
+    
+bbox = ax.get_position() 
+cax = fig.add_axes([bbox.x1 + 0.01, bbox.y0 + 0.2, 0.01, bbox.height])
+    
+fig.colorbar(cm.ScalarMappable(norm=normalize, cmap=colormap), cax=cax)
+plt.subplots_adjust(hspace=-0.2, wspace=-0.1)
+
+plt.show()
+```

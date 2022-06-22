@@ -1,0 +1,35 @@
+name: Deploy as website
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - usequarto
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: inseefrlab/pynsee:latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Render site
+        env:
+          insee_key: ${{ secrets.INSEE_KEY }}
+          insee_secret: ${{ secrets.INSEE_SECRET }}
+        run: |          
+          pip install .[full]
+          cd docs/examples/
+          for i in *.qmd ; do quarto render $i ; done
+          pwd
+          ls
+        shell: bash
+      - name: Push to S3 storage
+        env:
+          MC_HOST_s3: ${{ secrets.MC_HOST_s3 }}
+        run: |
+          find docs/examples/ -name \*.ipynb -exec mc cp {} s3/projet-pynsee/diffusion/examples/notebooks/ \;
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Report
+          path: docs/examples/
