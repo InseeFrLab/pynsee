@@ -74,7 +74,9 @@ nbsphinx_thumbnails = {
     'examples/example_population_pyramid': '_static/population_pyramid.png',
     'examples/example_deaths_births': '_static/deaths_births.png',
     'examples/example_inflation_yoy': '_static/inflation_yoy.png',
-    'examples/example_inflation_contribution': '_static/inflation_contribution.png',
+    'examples/example_cadre_iris_idf': '_static/upper_middle_class_worker_idf.png',
+    'examples/example_marie_firstname': '_static/firstname.png',
+    'examples/example_rp_logement_2017': '_static/housing.png',
 }
 
 # 'm2r2',
