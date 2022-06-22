@@ -83,7 +83,7 @@ def get_iris_data(url=ign_iris_2017, update=False):
     file_iris = dataDir + "/" + "file_" + filename_clean
         
     if (not os.path.exists(file_iris)) or (update):
-        with closing(request.urlopen(url)) as r:
+        with closing(request.urlopen(url, timeout=None)) as r:
             with open(file_iris, 'wb') as f:
                 shutil.copyfileobj(r, f)
 
