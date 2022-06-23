@@ -25,6 +25,7 @@ Introduction to pynsee package
 a dozen datasets of local data, numerous sources available on <https://www.insee.fr>
 as well as key metadata and SIRENE database containing data on all French companies.
 Have a look at the detailed API page with the following `link <https://api.insee.fr/catalogue/>`_.
+
 This package is a contribution to reproducible research and public data transparency. 
 It benefits from the developments made by teams working on APIs at INSEE and IGN.
 
@@ -40,10 +41,11 @@ API credentials can be created here : <https://api.insee.fr/catalogue/>
    # Get the development version from GitHub
    # git clone https://github.com/InseeFrLab/pynsee.git
    # cd pynsee
-   # pip install .
+   # pip install .[full]
 
    # Subscribe to api.insee.fr and get your credentials!
-   # Save once and for all your credentials with init_conn function :      
+   # Save once and for all your credentials with init_conn function.
+   # Then, functions requiring authentication will use the credentials saved locally on your machine by innit_conn
    from pynsee.utils.init_conn import init_conn
    init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 
@@ -65,11 +67,11 @@ Data Search and Collection Advice
 
 For further advice, have a look at the documentation and gallery of the `examples <https://pynsee.readthedocs.io/en/latest/examples.html>`_.
 
+Population Map
+--------------
 
 .. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/population_map_com.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
 
-Population Map
---------------
 
 .. code-block:: python
 
