@@ -3,10 +3,7 @@ name: Deploy as website
 on:
   push:
     branches:
-      - main
-      - master
       - usequarto
-      - doc
 
 jobs:
   build:
