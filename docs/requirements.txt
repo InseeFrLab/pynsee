@@ -29,4 +29,3 @@ geopandas
 descartes
 py7zr
 jupyter-cache==0.5.0
-imgconverter 
