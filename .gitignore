@@ -18,5 +18,5 @@ docs/auto_examples/
 .idea/
 .ipynb_checkpoints/
 docs/examples/*.html
-docs/examples/.jupyter_cache/*
+docs/examples/*.ipynb
 /.quarto/
