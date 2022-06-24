@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Examples
-========
+--------
 
 .. nbgallery::        
    examples/example_gdp_growth_rate_yoy.ipynb
