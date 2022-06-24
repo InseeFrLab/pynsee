@@ -8,8 +8,16 @@ from pynsee.utils._move_col_after import _move_col_before
 def get_column_metadata(id):
     """ Get metadata about an insee.fr file
     
+    Args:
+        id (str): file id, check get_file_list to have a full list of available files
+    
     Returns:
         Returns the request dataframe as a pandas object
+    
+    Notes:
+        pynsee.download's metadata rely on volunteering contributors and their manual updates.
+        get_file_list does not provide data from official Insee's metadata API.
+        Consequently, please report any issue
             
     Examples:
         >>> from pynsee.download import get_column_metadata
