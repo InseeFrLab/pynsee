@@ -38,7 +38,7 @@ def search_sirene(variable,
         
         pattern (str or list): the pattern or criterium searched
         
-        kind (str, optional): kind of companies : siren or siret. Defaults to "siren"
+        kind (str, optional): kind of companies : siren or siret. Defaults to "siret"
         
         phonetic_search (bool, or list of bool, optional): If True phonetic search is triggered on the all variables of the list, if it is a list of True/False, phonetic search is used accordingly on the list of variables
             
