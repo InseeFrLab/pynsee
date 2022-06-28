@@ -6,11 +6,16 @@ from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.utils._move_col_after import _move_col_before
 
 def get_column_metadata(id):
-    """
-        Examples:
-        >>> labels = get_colum_label("RP_INDREG_2016")
+    """ Get metadata about an insee.fr file
     
-    """
+    Returns:
+        Returns the request dataframe as a pandas object
+            
+    Examples:
+        >>> from pynsee.download import get_column_metadata
+        >>> rp_logement_metadata = get_column_metadata("RP_LOGEMENT_2016")
+        
+    """ 
     
     dict_data_source = _get_dict_data_source()  
     

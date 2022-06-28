@@ -22,7 +22,7 @@ def zoom(self,
     Args:
         departement (list, optional): list of departements to be moved, departements closest to Paris are selected by default    
         
-        center (tuple, optional): center point from which offshore points are computed to move overseas departement        
+        center (tuple, optional): center point from which an offshore point is computed to move Parisian departements        
         It should be defined as a (longitude, latitude) point in crs EPSG:3857
         
         radius (float, optional): radius used with center point to make offshore point, distance in meter
@@ -31,7 +31,7 @@ def zoom(self,
     
     Notes: 
         by default zoom method focuses on the closest departements to Paris, but the function can be used to make a zoom on 
-        any departement any where on the map
+        any departement anywhere on the map
 
     Examples:
         >>> from pynsee.geodata import get_geodata_list, get_geodata

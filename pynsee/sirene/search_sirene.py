@@ -35,16 +35,21 @@ def search_sirene(variable,
 
     Args:
         variable (str or list): name of the variable on which the search is applied.
+        
         pattern (str or list): the pattern or criterium searched
-        kind (str, optional): kind of companies : siren or siret. Defaults to "siren"
-        phonetic_search (bool, or list of bool, optional): If True phonetic search is triggered on the
-            all variables of the list, if it is a list of True/False, phonetic search is used accordingly on the list of variables
-        number (int, optional): Number of companies searched. Defaults to 1000.
-            If it is above 1000, multiple queries are triggered.
+        
+        kind (str, optional): kind of companies : siren or siret. Defaults to "siret"
+        
+        phonetic_search (bool, or list of bool, optional): If True phonetic search is triggered on the all variables of the list, if it is a list of True/False, phonetic search is used accordingly on the list of variables
+            
+        number (int, optional): Number of companies searched. Defaults to 1000. If it is above 1000, multiple queries are triggered.
+            
         activity (bool, optional): If True, activty title is added based on NAF/NACE. Defaults to True.
+        
         legal (bool, optional): If True, legal entities title are added
-        closed (bool, optional): If False, closed entities are removed from the data and
-            for each legal entity only the last period for which the data is stable is displayed.
+        
+        closed (bool, optional): If False, closed entities are removed from the data and for each legal entity only the last period for which the data is stable is displayed.
+            
     Notes:
         This function may return personal data, please check and
         comply with the legal framework relating to personal data protection

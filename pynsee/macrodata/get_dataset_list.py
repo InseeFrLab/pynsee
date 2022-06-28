@@ -14,7 +14,7 @@ from pynsee.utils._get_temp_dir import _get_temp_dir
 
 @lru_cache(maxsize=None)
 def get_dataset_list():
-    """Download a full INSEE's datasets list
+    """Download a full INSEE's datasets list from BDM macroeconomic database
 
     Returns:
         DataFrame: a dataframe containing the list of datasets available

@@ -38,9 +38,15 @@ Search metadata
 
 .. autofunction:: pynsee.metadata.get_activity_list
 
-Search sirene
--------------
+Search sirene data
+------------------
 
 .. autofunction:: pynsee.sirene.get_dimension_list
 
 .. autofunction:: pynsee.sirene.search_sirene
+
+Search files on insee.fr
+------------------------
+
+.. autofunction:: pynsee.download.get_file_list
+

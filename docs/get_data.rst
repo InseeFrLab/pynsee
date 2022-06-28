@@ -43,8 +43,8 @@ Get metadata
 
 .. autofunction:: pynsee.metadata.get_legal_entity
 
-Get sirene
-----------
+Get sirene data
+---------------
 
 .. autofunction:: pynsee.sirene.get_sirene_data
 
@@ -53,3 +53,11 @@ Get sirene
 .. autoclass:: pynsee.sirene.SireneDataFrame.SireneDataFrame
 
     .. automethod:: get_location
+    
+Get data from insee.fr files
+----------------------------
+
+.. autofunction:: pynsee.download.download_file
+
+.. autofunction:: pynsee.download.get_column_metadata
+

@@ -10,8 +10,10 @@ def get_geodata(id,
     """Get geographical data with identifier and from IGN API
 
     Args:
-        id (str): data identifier from get_geodata_list function        
+        id (str): data identifier from get_geodata_list function 
+        
         update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
+        
         crs (str, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
     
     Examples:
