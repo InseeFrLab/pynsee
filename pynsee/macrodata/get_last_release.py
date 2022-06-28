@@ -14,7 +14,7 @@ from pynsee.utils._get_temp_dir import _get_temp_dir
 
 @lru_cache(maxsize=None)
 def get_last_release():
-    """Get the datasets released in the last 30 days
+    """Get the datasets from BDM macroeconomic database released in the last 30 days 
 
     Examples
         >>> from pynsee.macrodata import get_last_release

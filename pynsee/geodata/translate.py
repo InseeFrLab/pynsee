@@ -43,7 +43,7 @@ def translate(self,
     
     Notes: 
         by default translate method focuses on overseas departement, but it can be used to move
-        any departement any where on the map
+        any departement anywhere on the map
 
     Examples:
         >>> from pynsee.geodata import get_geodata_list, get_geodata

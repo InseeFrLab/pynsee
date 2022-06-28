@@ -9,7 +9,7 @@ def get_file_list():
     """ Download a list of files available on insee.fr
     
     Returns:
-        Returns the request dataframe as a pandas object
+        Returns the requested dataframe as a pandas object
     
     Notes:
         pynsee.download's metadata rely on volunteering contributors and their manual updates.

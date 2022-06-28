@@ -15,10 +15,10 @@ from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
 from pynsee.metadata._add_A17_activity import _add_A17_activity
 from pynsee.metadata._add_A5_activity import _get_A5_activity_label, _add_A5_activity
 
-# @lru_cache(maxsize=None)
-# def _warning_activity():
-#     msg1 = "\n!!! This function uses NAF/NACE rev. 2 classification made in 2008 !!!"
-#     print(msg1)
+@lru_cache(maxsize=None)
+def _warning_activity():
+    msg1 = "This function renders package's internal data"
+    print(msg1)
 
 
 @lru_cache(maxsize=None)
@@ -26,7 +26,7 @@ def get_activity_list(level, version='NAFRev2'):
     """Get a list of economic activities from NAF/NACE rev 2 2008 classification
 
     Notes:
-        This function uses NAF/NACE rev. 2 classification made in 2008
+        This function uses NAF/NACE rev. 2 classification made in 2008. This function renders only package's internal data.
 
     Args:
         level (str): Levels available are :  A5, A10, A17, A21, A38, A64, A88, A129, A138, NAF1, NAF2, NAF3, NAF4, NAF5
@@ -53,10 +53,11 @@ def get_activity_list(level, version='NAFRev2'):
                         _paste(level_available, collapse=" "))
 
     A5_activity_list = _get_A5_activity_label()
+    
+    _warning_activity()
+    
     if level == "A5":
-        return A5_activity_list
-
-    # _warning_activity()
+        return A5_activity_list    
 
     insee_folder = _create_insee_folder()
 

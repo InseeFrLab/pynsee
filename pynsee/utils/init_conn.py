@@ -25,10 +25,18 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
         >>> from pynsee.utils.init_conn import init_conn
         >>> init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
         >>> # 
-        >>> # Available option not advised: using key and secret in environment variables
+        >>> # if the user has to use a proxy server use proxy_server argument as follows:
+        >>> from pynsee.utils.init_conn import init_conn
+        >>> init_conn(insee_key="my_insee_key",
+        >>>           insee_secret="my_insee_secret",
+        >>>           proxy_server="http://my_proxy_server:port")
+        >>> #
+        >>> # Alternativety you can use directly environment variables as follows:
+        >>> # Beware not to commit your credentials!
         >>> import os
         >>> os.environ['insee_key'] = 'my_insee_key'
         >>> os.environ['insee_secret'] = 'my_insee_secret'
+        >>> os.environ['http_proxy'] = "http://my_proxy_server:port"
     """ 
         
     home = str(Path.home())    

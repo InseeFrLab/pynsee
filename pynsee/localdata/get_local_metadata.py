@@ -19,6 +19,9 @@ def _warning_data():
 @lru_cache(maxsize=None)
 def get_local_metadata():
     """Get a list of all combinations of datasets, variables and unit measures available from INSEE Local API
+    
+    Notes:
+        >>> This function renders only package's internal data, it might not be the most up-to-date
 
     Examples:
         >>> from pynsee.localdata import get_local_metadata

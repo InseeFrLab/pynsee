@@ -9,7 +9,7 @@ from pynsee.macrodata.get_series_list import get_series_list
 
 @lru_cache(maxsize=None)
 def search_macrodata(pattern=".*", metadata=True):
-    """Search a pattern among insee series (idbanks)
+    """Search a pattern among insee series (idbanks) from BDM macroeconomic database
 
     Notes:
         This function uses package's internal data which might not be the most up-to-date.
