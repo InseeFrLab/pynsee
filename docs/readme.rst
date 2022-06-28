@@ -2,6 +2,9 @@
 .. role:: raw-html-m2r(raw)
    :format: html
 
+.. role:: raw-html(raw)
+    :format: html
+
 Introduction to pynsee package
 ==============================
 
@@ -17,14 +20,13 @@ Introduction to pynsee package
 .. image:: https://readthedocs.org/projects/pynsee/badge/?version=latest
    :target: https://pynsee.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
-
-.. role:: raw-html-m2r(raw)
-   :format: html
+   
+:raw-html:`<br />`
    
 `pynsee` package contains tools to easily search and download data from INSEE and IGN.
 
 `pynsee` gives a quick access to more than 150 000 macroeconomic series,
-a dozen datasets of local data, numerous sources available on <https://www.insee.fr>
+a dozen datasets of local data, numerous sources available on `insee.fr <https://www.insee.fr>`_
 as well as key metadata and SIRENE database containing data on all French companies.
 Have a look at the detailed API page with the following `link <https://api.insee.fr/catalogue/>`_.
 
