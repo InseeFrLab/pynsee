@@ -70,7 +70,7 @@ For further advice, have a look at the documentation and gallery of the `example
 Population Map
 --------------
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/population_map_com.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
+.. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
 
 
 .. code-block:: python
