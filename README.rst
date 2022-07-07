@@ -24,7 +24,7 @@ Introduction to pynsee package
 ``pynsee`` gives a quick access to more than 150 000 macroeconomic series,
 a dozen datasets of local data, numerous sources available on <https://www.insee.fr>
 as well as key metadata and SIRENE database containing data on all French companies.
-Have a look at the detailed API page with the following `link <https://api.insee.fr/catalogue/>`_.
+Have a look at the detailed API page `api.insee.fr <https://api.insee.fr/catalogue/>`_.
 
 This package is a contribution to reproducible research and public data transparency. 
 It benefits from the developments made by teams working on APIs at INSEE and IGN.
