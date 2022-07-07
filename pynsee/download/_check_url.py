@@ -21,10 +21,11 @@ def _check_url(url):
         list_string_split = url.split("/")
         filename = list_string_split[len(list_string_split)-1]
 
-        dates = re.findall("2\d{3}", filename)
+        dates = re.findall("2\d{3}|\d{2}", filename)
         current_year = date.today().year
+        current_year_short = int(str(current_year)[-2:])
 
-        list_close_year = list(range(current_year - 3, current_year + 3))
+        list_close_year = list(range(current_year - 3, current_year + 3)) + list(range(current_year_short - 3, current_year_short + 3))
         list_close_year = [str(y) for y in list_close_year]
 
         dates = [y for y in dates if str(y) in list_close_year]
