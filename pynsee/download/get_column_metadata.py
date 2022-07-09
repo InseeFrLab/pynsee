@@ -1,5 +1,5 @@
-
 import pandas as pd
+import difflib
 
 from pynsee.download._get_value_label import _get_value_label
 from pynsee.download._get_dict_data_source import _get_dict_data_source
@@ -16,12 +16,25 @@ def get_column_metadata(id):
         >>> rp_logement_metadata = get_column_metadata("RP_LOGEMENT_2016")
         
     """ 
+    id = id.upper()
+    dict_data_source = _get_dict_data_source() 
     
-    dict_data_source = _get_dict_data_source()  
+    list_keys_with_metadata = [d for d in dict_data_source.keys() if ('val_col' in dict_data_source[d].keys()) | ('label_col' in dict_data_source[d].keys())]
     
-    if id in dict_data_source.keys():
+    if id in dict_data_source.keys():        
+        suggestions = difflib.get_close_matches(id, list_keys_with_metadata, n=1, cutoff=0.8)
+        if len(suggestions) > 0:
+            id_used = suggestions[0]
+            if not id == id_used:
+                print(f'Metadata for {id} has not been found, metadata for {id_used} is provided instead')
+        else:
+            id_used = id
+    else:
+        id_used = id
+    
+    if id_used in dict_data_source.keys():
         
-        dict_data = dict_data_source[id] 
+        dict_data = dict_data_source[id_used] 
         
         if "label_col" in dict_data.keys():
             labels = pd.DataFrame(dict_data["label_col"], index=[0]).T
@@ -33,7 +46,7 @@ def get_column_metadata(id):
             print("Columns labels not found in metadata")
             labels = None
         
-        val_col = _get_value_label(id)
+        val_col = _get_value_label(id_used)
 
         if val_col is not None:
             
