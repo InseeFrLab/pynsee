@@ -18,18 +18,25 @@ API Subscription Tutorial
    :target: _static/myaccount.png
    :alt:
 
+:raw-html:`<br />`
+
 .. image:: _static/myapp.png
    :target: _static/myapp.png
    :alt:
 
+:raw-html:`<br />`
 
 .. image:: _static/mytoken.png
    :target: _static/mytoken.png
    :alt:
+   
+:raw-html:`<br />`
 
 .. image:: _static/mykeys.png
    :target: _static/mykeys.png
    :alt:
+
+:raw-html:`<br />`
 
 .. image:: _static/mysubscription.png
    :target: _static/mysubscription.png
