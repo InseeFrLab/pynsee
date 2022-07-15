@@ -4,14 +4,20 @@
 from unittest import TestCase
 import pandas as pd
 import sys
+import requests
 
-from shapely.geometry import Polygon, MultiPolygon, MultiLineString, MultiPoint
+from shapely.geometry import Polygon, MultiPolygon, MultiLineString, MultiPoint, Point
 
 from pynsee.geodata.get_geodata_list import get_geodata_list
 from pynsee.geodata.get_geodata import get_geodata
 from pynsee.geodata._get_geodata import _get_geodata
 from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
+from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox, _set_global_var
+
+# manual commands for testing only on geodata module
+# coverage run -m unittest tests/geodata/test_pynsee_geodata.py
+# coverage report --omit=*/utils/*,*/macrodata/*,*/localdata/*,*/download/*,*/sirene/*,*/metadata/* -m
 
 class TestFunction(TestCase):
 
@@ -19,6 +25,25 @@ class TestFunction(TestCase):
 
     if version_3_7 is False:
         def test_get_geodata_short(self):
+            
+            global session
+            session = requests.Session()
+            list_bbox = (-2, 43.0, 6.0, 44.5)
+            for crs in ["EPSG:4326"]:
+                link= f"https://wxs.ign.fr/administratif/geoportail/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAME=ADMINEXPRESS-COG-CARTO.LATEST:commune&srsName={crs}&OUTPUTFORMAT=application/json&COUNT=1000"
+                data = _get_data_with_bbox(link, list_bbox, crsPolygon=crs)
+                self.assertTrue(isinstance(data, pd.DataFrame))   
+            
+            square = [Point(0, 0),
+                      Point(0, 0),   
+                      Point(0, 0),   
+                      Point(0, 0)] 
+                
+            poly_bbox = Polygon([[p.x, p.y] for p in square])
+            df = _get_geodata(id = 'ADMINEXPRESS-COG-CARTO.LATEST:commune', polygon = poly_bbox, update=True)
+            self.assertTrue(isinstance(df, pd.DataFrame))   
+            
+            _set_global_var(args=[link, list_bbox, session, "EPSG:4326"])
             
             df = get_geodata_list(update=True)
             self.assertTrue(isinstance(df, pd.DataFrame))
@@ -76,24 +101,25 @@ class TestFunction(TestCase):
             geo_regt = regt.get_geom()
             self.assertTrue(isinstance(geo_regt, MultiPolygon))  
 
+            dep = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', crs="EPSG:4326")
+            dep13 = dep[dep["insee_dep"] == "13"]
+            geo13 = dep13.get_geom()          
+               
+            bbox = _get_bbox_list(polygon=geo13, update=True, crsPolygon="EPSG:4326")
+            self.assertTrue(isinstance(bbox, list))
+            bbox = _get_bbox_list(polygon=geo13)
+            self.assertTrue(isinstance(bbox, list))
+
             dep = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', crs="EPSG:3857")
             dep13 = dep[dep["insee_dep"] == "13"]
             geo13 = dep13.get_geom()          
                
-            bbox = _get_bbox_list(polygon=geo13, update=True)
+            bbox = _get_bbox_list(polygon=geo13, update=True, crsPolygon="EPSG:3857")
             self.assertTrue(isinstance(bbox, list))
-            bbox = _get_bbox_list(polygon=geo13)
-            self.assertTrue(isinstance(bbox, list))
-
-            bbox = _get_bbox_list(polygon=geo13)
-            self.assertTrue(isinstance(bbox, list))
-
-            bbox = _get_bbox_list(polygon=geo13)
-            self.assertTrue(isinstance(bbox, list))
-
+            
             data = get_geodata(id='test', update=True) 
             self.assertTrue(isinstance(data, pd.DataFrame))
-                
+            
     if False:
 
         def test_get_geodata_all(self):
