@@ -70,7 +70,7 @@ nbsphinx_thumbnails = {
     'examples/example_presidential_election2022': '_static/presidential_election2022.png',
     'examples/example_empl_sector_dep': '_static/empl_sector_dep.png',
     'examples/example_automotive_industry_sirene': '_static/automotive_industry_sirene.png',
-    'examples/example_population_map_com': '_static/population_map_com.png',
+    'examples/example_population_map_com': '_static/popfrance.png',
     'examples/example_population_pyramid': '_static/population_pyramid.png',
     'examples/example_deaths_births': '_static/deaths_births.png',
     'examples/example_inflation_yoy': '_static/inflation_yoy.png',

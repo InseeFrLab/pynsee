@@ -49,8 +49,11 @@ def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
         proxies = {'http': os.environ['http_proxy'],
                    'https': os.environ['http_proxy']}
     except:
-        proxies = {'http': '', 'https': ''}
-
+        proxies = {'http': '', 'https': ''}        
+    
+    if (not 'session' in globals()) or (not 'session' in locals()):
+        session = requests.Session()
+    
     with session.get(link_query, proxies=proxies) as r:                
         data_json = r.json()
     
