@@ -103,7 +103,7 @@ def translate(self,
                 else:
                     print(f"!!! {departement[d]} is missing from insee_dep column !!!")
 
-            if len(list_new_dep) > 0 :
+            if len(list_new_dep) > 0:
 
                 ovdepGeo = pd.concat(list_new_dep) 
 

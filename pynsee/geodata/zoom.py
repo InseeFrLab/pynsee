@@ -11,7 +11,7 @@ from pynsee.geodata._rescale_geom import _rescale_geom
 from pynsee.geodata._get_center import _get_center
         
 def zoom(self, 
-        departement = ['75','92', '93','94'], #'91', '78', '77', '95'
+        departement = ['75', '92', '93', '94'],
         center = (-133583.39, 5971815.98),
         radius = 650000,
         startAngle = math.pi * (1 - 2.5 * 1/9),

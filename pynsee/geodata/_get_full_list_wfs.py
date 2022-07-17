@@ -55,7 +55,7 @@ def _get_full_list_wfs(topic, version='2.0.0'):
             
         list_df.append(df2)
     
-    if len(list_df)>0:
+    if len(list_df) > 0:
         data_all = pd.concat(list_df).reset_index(drop=True).dropna(axis = 0, how = 'all')
     else:
         data_all = list_df

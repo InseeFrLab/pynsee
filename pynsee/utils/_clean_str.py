@@ -3,4 +3,4 @@
 import re
 
 def _clean_str(string):
-    return(re.sub(r'{.*}','', string))
+    return(re.sub(r'{.*}', '', string))

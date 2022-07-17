@@ -15,9 +15,7 @@ import sys
 import sphinx_copybutton
 import sphinx_rtd_theme
 import m2r2
-#import sphinxcontrib
 
-# import rinoh
 os.chdir('../')
 sys.path.insert(0, os.path.abspath('./'))
 
@@ -47,14 +45,14 @@ extensions = [
      'sphinx_copybutton',
      'nbsphinx', 
      "m2r2",
-     'sphinx.ext.mathjax',  
-     #"sphinxcontrib.rsvgconverter",
-     #'sphinx.ext.imgconverter',   
+     'sphinx.ext.mathjax',       
      'IPython.sphinxext.ipython_console_highlighting',
      "sphinx_gallery.load_style"
-     # 'sphinx_gallery.gen_gallery'
 ]
 
+# 'sphinx_gallery.gen_gallery'
+# "sphinxcontrib.rsvgconverter",
+# 'sphinx.ext.imgconverter',   
 
 # sphinx_gallery_conf = {
 #      'examples_dirs': '../examples',   # path to your example scripts
@@ -89,7 +87,7 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store','**.ipynb_checkpoints']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '**.ipynb_checkpoints']
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -113,4 +111,4 @@ def setup(app):
     app.add_css_file('my_theme.css')
 
 # include alos md doc
-source_suffix = ['.rst'] # , '.md'
+source_suffix = ['.rst']

@@ -73,13 +73,13 @@ def _get_geodata(id,
         else:
             bounds = [bounds[1], bounds[0], bounds[3], bounds[2], 'urn:ogc:def:crs:' + crsPolygon]
             
-        BBOX= '&BBOX={}'.format(','.join(bounds)) 
+        BBOX = '&BBOX={}'.format(','.join(bounds)) 
         link = link0 + BBOX
     else:
         link = link0
             
     insee_folder = _create_insee_folder()
-    file_name = insee_folder + '/' +  _hash(link) 
+    file_name = insee_folder + '/' + _hash(link) 
 
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=1)
@@ -113,8 +113,8 @@ def _get_geodata(id,
             print('Query:\n%s' % link)
             print(data)
             print(data.text)
-            return pd.DataFrame({'status':data.status_code,
-                                'comment':data.text}, index=[0])
+            return pd.DataFrame({'status': data.status_code,
+                                'comment': data.text}, index=[0])
 
         data_json = data.json()
         
@@ -183,11 +183,11 @@ def _get_geodata(id,
 
             row_selected = []
             for i in range(len(data_all_clean)):
-                geom = data_all_clean.loc[i,'geometry']
+                geom = data_all_clean.loc[i, 'geometry']
                 if geom.intersects(polygon):
                     row_selected.append(i)
             if len(row_selected) > 0:
-                data_all_clean = data_all_clean.loc[row_selected,:]
+                data_all_clean = data_all_clean.loc[row_selected, :]
             
         data_all_clean = data_all_clean.reset_index(drop=True)
         
@@ -209,4 +209,3 @@ def _get_geodata(id,
     data_all_clean["crs"] = crs
             
     return data_all_clean
-

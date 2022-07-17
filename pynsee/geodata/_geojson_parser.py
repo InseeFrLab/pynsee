@@ -13,7 +13,7 @@ def _geojson_parser(data):
             
         df = data[c]['properties']
         
-        df2 = pd.DataFrame({f : df[f] for f in df.keys()\
+        df2 = pd.DataFrame({f: df[f] for f in df.keys()\
                             if f not in (['geometry', 'bbox']) and
                             (type(df[f]) is not list)}, index=[0])
         
@@ -25,7 +25,6 @@ def _geojson_parser(data):
                 except:
                     pass        
 
-
         geom = data[c]['geometry']['coordinates']
         
         data_type = data[c]['geometry']['type']
@@ -33,13 +32,12 @@ def _geojson_parser(data):
         Shape = shape({"type": data_type, "coordinates": geom})
         # list_shapes = [Shape.geoms[x] for x in range(len(Shape.geoms))]
 
-        if data_type in ['MultiLineString','MultiPolygon', 'MultiPoint','LineString', 'Polygon', 'Point']:
+        if data_type in ['MultiLineString', 'MultiPolygon', 'MultiPoint', 'LineString', 'Polygon', 'Point']:
             list_shapes += [Shape]
             data_list.append(df2)
         else:            
             print(f"Unsupported shape {data_type} has been removed")
                     
-
     data_all = pd.concat(data_list)
     
     with warnings.catch_warnings():

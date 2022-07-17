@@ -15,7 +15,7 @@ def _make_offshore_points(center=Point(-1, 47.181903), radius=8, angle=1/17,
         for i in range(len(list_ovdep)):
 
             angle_rotated = startAngle + angle * i
-            end = Point(center.x + radius , center.y )
+            end = Point(center.x + radius, center.y)
             line = LineString([center, end])
             line = rotate(line, angle_rotated, origin=center, use_radians=True)
 

@@ -53,8 +53,7 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
         #
 
         list_obs = []
-        # trange(n_obs, desc = "2nd loop - Collecting observations")
-        # range(n_obs)
+
         for i in range(n_obs):
 
             obs = data.getElementsByTagName("Obs")[i]._attrs
@@ -117,7 +116,9 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
 
     # harmonise column names
     colnames = data_final.columns
-    def replace_hyphen(x): return str(x).replace("-", "_")
+    def replace_hyphen(x): 
+        return str(x).replace("-", "_")
+        
     newcolnames = list(map(replace_hyphen, colnames))
     data_final.columns = newcolnames
 
