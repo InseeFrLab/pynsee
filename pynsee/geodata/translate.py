@@ -1,6 +1,4 @@
 
-import os
-import tqdm
 import math
 from shapely.affinity import translate as trs
 from shapely.geometry import Point
@@ -11,10 +9,6 @@ from pynsee.geodata._make_offshore_points import _make_offshore_points
 from pynsee.geodata._rescale_geom import _rescale_geom
 from pynsee.geodata._get_center import _get_center
 from pynsee.geodata._add_insee_dep import _add_insee_dep
-
-
-from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._hash import _hash
 
 def translate(self, 
             departement = ['971', '972', '974', '973', '976'], 

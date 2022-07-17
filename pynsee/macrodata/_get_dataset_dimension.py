@@ -11,10 +11,6 @@ from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils._hash import _hash
 from pynsee.utils._request_insee import _request_insee
 
-# from functools import lru_cache
-
-# @lru_cache(maxsize=None)
-
 
 def _get_dataset_dimension(dataset, update=False):
 

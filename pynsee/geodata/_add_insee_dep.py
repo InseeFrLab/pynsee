@@ -1,5 +1,5 @@
+
 from tqdm import trange
-from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint
 from pandas.api.types import CategoricalDtype
 
 from pynsee.geodata._get_geodata import _get_geodata

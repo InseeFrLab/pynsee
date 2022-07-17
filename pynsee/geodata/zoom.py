@@ -5,7 +5,6 @@ from shapely.affinity import translate as trs
 from shapely.affinity import rotate
 from shapely.geometry import Point, LineString
 import warnings
-import sys
 from shapely.errors import ShapelyDeprecationWarning
 
 from pynsee.geodata._rescale_geom import _rescale_geom

@@ -1,5 +1,4 @@
 
-import time
 import re
 import pandas as pd
 from tqdm import trange
@@ -10,7 +9,7 @@ from functools import lru_cache
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint
+from shapely.geometry import Point
 import warnings
 from shapely.errors import ShapelyDeprecationWarning
     

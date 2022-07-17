@@ -5,7 +5,6 @@ from functools import lru_cache
 import os
 import pandas as pd
 import xml.etree.ElementTree as ET
-#    from tqdm import trange
 
 from pynsee.utils._paste import _paste
 from pynsee.utils._request_insee import _request_insee

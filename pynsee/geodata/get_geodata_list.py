@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-import re
 import pandas as pd
-from tqdm import trange
 
 from pynsee.geodata._get_full_list_wfs import _get_full_list_wfs
 

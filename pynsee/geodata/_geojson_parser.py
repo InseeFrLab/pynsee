@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-#from tqdm import trange
 import pandas as pd
 from shapely.geometry import shape
-from shapely.geometry import LineString, Point, Polygon, MultiPolygon, MultiLineString, MultiPoint
 import warnings
 
 def _geojson_parser(data):

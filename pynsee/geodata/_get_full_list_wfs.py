@@ -3,7 +3,6 @@
 from functools import lru_cache
 import pandas as pd
 import xml.etree.ElementTree as ET
-import re
 
 from pynsee.geodata._get_capabilities import _get_capabilities
 from pynsee.utils._clean_str import _clean_str
