@@ -20,7 +20,7 @@ def _dwn_idbank_files():
     last_year = curr_year - 1
     years = [str(curr_year), str(last_year)]
 
-    months = [str(x) for x in range(12, 9, -1)]  + ["0" + str(x) for x in range(9, 0, -1)] 
+    months = [str(x) for x in range(12, 9, -1)] + ["0" + str(x) for x in range(9, 0, -1)] 
 
     patt = "_correspondance_idbank_dimension"
     patterns = [y + x + patt for y in years for x in months]
@@ -55,7 +55,7 @@ def _dwn_idbank_files():
             pass
 
     if pynsee_idbank_loop_url:
-        while (idbank_file_not_found & (i<=len(files)-1)):        
+        while (idbank_file_not_found & (i <= len(files) - 1)):        
             try:
                 data = _dwn_idbank_file(file_to_dwn = files[i])
             except:

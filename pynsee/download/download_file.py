@@ -1,4 +1,3 @@
-import os
 
 from pynsee.download._download_store_file import _download_store_file
 from pynsee.download._load_data_from_schema import _load_data_from_schema

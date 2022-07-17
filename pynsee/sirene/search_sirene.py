@@ -12,7 +12,6 @@ from pynsee.sirene._request_sirene import _request_sirene
 from pynsee.sirene.SireneDataFrame import SireneDataFrame
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
-from pynsee.utils._paste import _paste
 
 @lru_cache(maxsize=None)
 def _warning_search_sirene():

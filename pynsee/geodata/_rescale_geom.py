@@ -7,7 +7,7 @@ from pynsee.geodata._get_center import _get_center
 
 def _rescale_geom(df, factor, col="geometry"):
     
-     with warnings.catch_warnings():
+    with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
     
         center = _get_center(df, col=col)

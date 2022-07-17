@@ -16,7 +16,7 @@ def _get_bbox_list(polygon=None, update=False, crsPolygon='EPSG:4326'):
         name += ''.join([str(i) for i in list(polygon.bounds)])
             
     insee_folder = _create_insee_folder()
-    file_name = insee_folder + '/' +  _hash(name)
+    file_name = insee_folder + '/' + _hash(name)
     
     bbox = _get_bbox_list_full(crs=crsPolygon)
 
@@ -27,7 +27,6 @@ def _get_bbox_list(polygon=None, update=False, crsPolygon='EPSG:4326'):
         if polygon is not None:
         
             for i in range(len(bbox)):
-                # print(i)
 
                 square = [Point(bbox[i][0], bbox[i][1]),
                                 Point(bbox[i][2], bbox[i][1]),   

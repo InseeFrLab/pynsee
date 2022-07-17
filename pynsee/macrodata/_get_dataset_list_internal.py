@@ -2,7 +2,6 @@
 import zipfile
 import pkg_resources
 import pandas as pd
-import os
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 

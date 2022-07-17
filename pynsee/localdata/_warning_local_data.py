@@ -2,7 +2,6 @@
 # Copyright : INSEE, 2021
 
 from functools import lru_cache
-import pandas as pd
 
 @lru_cache(maxsize=None)
 def _warning_local_data():

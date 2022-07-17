@@ -1,5 +1,5 @@
+
 from tqdm import trange
-from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint
 from pandas.api.types import CategoricalDtype
 
 from pynsee.geodata._get_geodata import _get_geodata
@@ -35,10 +35,8 @@ def _add_insee_dep_region(df):
     
     return df
     
-    
-
 def _add_insee_dep_from_id_com(df):
-    
+        
     try:        
         
         if ("id_com" in df.columns) and ("insee_dep_geometry" not in df.columns):

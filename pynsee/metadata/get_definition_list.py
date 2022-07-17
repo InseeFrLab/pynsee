@@ -60,8 +60,7 @@ def get_definition_list():
 
     for i in range(len(data_request)):
         df = _make_dataframe_from_dict(data_request[i])
-        # df = df[['id', 'uri', 'intitule']].reset_index(drop=True)
-        df = df.iloc[:,0:3].reset_index(drop=True).drop_duplicates()
+        df = df.iloc[:, 0:3].reset_index(drop=True).drop_duplicates()
         list_data.append(df)
 
     data = pd.concat(list_data, axis=0)

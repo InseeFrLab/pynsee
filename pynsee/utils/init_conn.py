@@ -44,7 +44,7 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
 
     d = pd.DataFrame({'insee_key': insee_key,
                    'insee_secret': insee_secret,
-                   'proxy_server': proxy_server},index=[0])
+                   'proxy_server': proxy_server}, index=[0])
     d.to_csv(pynsee_credentials_file)
 
     keys = _get_credentials()        
@@ -52,7 +52,7 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
     insee_key = keys['insee_key']
     insee_secret = keys['insee_secret']
 
-    token=None
+    token = None
     try:
         token = _get_token_from_insee(insee_key, insee_secret)
     except:
@@ -75,7 +75,7 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
                 'https://api.insee.fr/donnees-locales/V0.1/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all']
     apis = ['BDM', 'Metadata', 'Sirene', 'Local Data']
 
-    file_format=['application/xml','application/xml', 'application/json;charset=utf-8', 'application/xml']
+    file_format = ['application/xml', 'application/xml', 'application/json;charset=utf-8', 'application/xml']
 
     list_requests_status = []
 

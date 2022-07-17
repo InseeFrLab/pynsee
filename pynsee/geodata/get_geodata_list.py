@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-import re
 import pandas as pd
-from tqdm import trange
 
 from pynsee.geodata._get_full_list_wfs import _get_full_list_wfs
 
@@ -34,7 +32,7 @@ def get_geodata_list(update=False):
                 
         data_full_list = _get_full_list_wfs(topic=topic, version=version)
                     
-        if len(data_full_list)>0:
+        if len(data_full_list) > 0:
             list_var = ['Name', 'Identifier', 'Title', 'DefaultCRS', 'SupportedCRS',
                             'TileMatrixSet', 'Abstract', 'LegendURL', 'Format']
 
@@ -44,7 +42,7 @@ def get_geodata_list(update=False):
             data_list = data_list.drop_duplicates().reset_index(drop=True)
                                 
             if 'Name' in data_list.columns:
-                data_list.rename(columns={'Name':'Identifier'}, inplace=True)
+                data_list.rename(columns={'Name': 'Identifier'}, inplace=True)
                 
             data_list['DataFormat'] = format
             data_list['Topic'] = topic
