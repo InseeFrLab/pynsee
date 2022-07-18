@@ -83,7 +83,7 @@ Example - Population Map
 
 .. code-block:: python
 
-    from pynsee.geodata import *
+    from pynsee.geodata import get_geodata_list, get_geodata, GeoFrDataFrame
 
     import math
     import geopandas as gpd
