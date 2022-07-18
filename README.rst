@@ -15,6 +15,10 @@ Introduction to pynsee package
 .. image:: https://readthedocs.org/projects/pynsee/badge/?version=latest
    :target: https://pynsee.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
+   
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://pypi.org/project/black/
+   :alt: Code formatting
 
 .. role:: raw-html-m2r(raw)
    :format: html

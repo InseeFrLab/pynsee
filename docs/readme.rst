@@ -21,6 +21,10 @@ Introduction to pynsee package
    :target: https://pynsee.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
    
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://pypi.org/project/black/
+   :alt: Code formatting
+   
 :raw-html:`<br />`
    
 `pynsee` package contains tools to easily search and download data from INSEE and IGN.
