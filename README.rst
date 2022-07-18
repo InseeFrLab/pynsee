@@ -1,6 +1,9 @@
 .. role:: raw-html-m2r(raw)
    :format: html
 
+.. role:: raw-html(raw)
+    :format: html
+    
 Introduction to pynsee package
 ==============================
 
@@ -24,8 +27,8 @@ Introduction to pynsee package
    :target: https://pypi.org/project/black/
    :alt: Code formatting
 
-.. role:: raw-html-m2r(raw)
-   :format: html
+
+:raw-html:`<br />`
     
 ``pynsee`` package contains tools to easily search and download data from INSEE and IGN.
 
