@@ -7,7 +7,6 @@ import time
 import math
 import pandas as pd
 from datetime import datetime
-#    from tqdm import trange
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash

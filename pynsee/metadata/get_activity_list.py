@@ -45,7 +45,7 @@ def get_activity_list(level, version='NAFRev2'):
 
     level = level.upper()
 
-    level_available = ["A5" ,'A10', 'A17', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
+    level_available = ["A5", 'A10', 'A17', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138',
                     'NAF1', 'NAF2', 'NAF3', 'NAF4', 'NAF5']
 
     if level not in level_available:
@@ -264,7 +264,7 @@ def get_activity_list(level, version='NAFRev2'):
         label[level] = label[level].apply(drop_space)
         df = df.merge(label[col_merged], on=level, how='left')
     else:
-        label = label.iloc[:,[0,5,6]]
+        label = label.iloc[:, [0, 5, 6]]
         label.columns = ["A17", "TITLE_A17_EN", "TITLE_A17_FR"]
         df = df[["A10", "A17"]].reset_index(drop=True).drop_duplicates()
         df = df.merge(label, on = "A17", how="left")    

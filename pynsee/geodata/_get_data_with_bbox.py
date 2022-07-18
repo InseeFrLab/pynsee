@@ -41,7 +41,7 @@ def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
     else:
         bounds = [bounds[1], bounds[0], bounds[3], bounds[2], 'urn:ogc:def:crs:' + crsPolygon]
 
-    BBOX= '&BBOX={}'.format(','.join(bounds)) 
+    BBOX = '&BBOX={}'.format(','.join(bounds)) 
     
     link_query = link + BBOX
 
@@ -51,7 +51,7 @@ def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
     except:
         proxies = {'http': '', 'https': ''}        
     
-    if (not 'session' in globals()) or (not 'session' in locals()):
+    if ('session' not in globals()) or ('session' not in locals()):
         session = requests.Session()
     
     with session.get(link_query, proxies=proxies) as r:                

@@ -1,7 +1,5 @@
 
 import os
-import sys
-from datetime import datetime
 from pathlib2 import Path
 import requests
 from requests.adapters import HTTPAdapter

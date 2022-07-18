@@ -1,8 +1,6 @@
-import requests
+
 import hashlib
 import warnings
-from pathlib import Path
-from tqdm import tqdm
 import difflib
 import os
 

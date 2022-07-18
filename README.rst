@@ -67,8 +67,8 @@ Data Search and Collection Advice
 
 For further advice, have a look at the documentation and gallery of the `examples <https://pynsee.readthedocs.io/en/latest/examples.html>`_.
 
-Population Map
---------------
+Example - Population Map
+------------------------
 
 .. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
 

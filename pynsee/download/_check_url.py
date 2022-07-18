@@ -19,7 +19,7 @@ def _check_url(url):
     else:
     
         list_string_split = url.split("/")
-        filename = list_string_split[len(list_string_split)-1]
+        filename = list_string_split[len(list_string_split) - 1]
 
         dates = re.findall("2\d{3}|\d{2}", filename)
         current_year = date.today().year

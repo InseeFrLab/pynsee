@@ -1,6 +1,5 @@
-import pandas as pd
-from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint
 
+from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint
 
 def _get_geom(df, col = "geometry"):
 

@@ -34,4 +34,3 @@ def get_geodata(id,
         df = GeoFrDataFrame(df)
 
     return df
-

@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import requests
-import zipfile
 import pandas as pd
 import os
-import re
 from datetime import date
 from datetime import datetime
 
@@ -13,7 +10,6 @@ from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files
 
 from pynsee.utils._hash import _hash
 from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils._get_credentials import _get_credentials
 
 

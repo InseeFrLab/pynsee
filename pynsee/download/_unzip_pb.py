@@ -2,7 +2,7 @@ import zipfile
 from pathlib import Path
 from tqdm.utils import CallbackIOWrapper
 from tqdm import tqdm
-from shutil import copyfileobj, move
+from shutil import copyfileobj
 import os
 
 def _unzip_pb(fzip, dest, desc="Extracting"):
