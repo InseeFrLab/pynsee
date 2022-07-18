@@ -26,7 +26,7 @@ def get_column_title(dataset=None):
     """
 
     insee_dataset = get_dataset_list()
-    insee_dataset_list = insee_dataset['id'].to_list()
+    insee_dataset_list = insee_dataset["id"].to_list()
 
     if dataset is None:
         dataset_list = insee_dataset_list
@@ -41,12 +41,10 @@ def get_column_title(dataset=None):
 
     n_dataset = len(dataset_list)
 
-    for idt in trange(n_dataset,
-                      desc="1/2 - Getting columns list "):
+    for idt in trange(n_dataset, desc="1/2 - Getting columns list "):
         dt = dataset_list[idt]
         dataset_dimension = _get_dataset_dimension(dt)
-        dataset_dimension = dataset_dimension[[
-            "dimension", "local_representation"]]
+        dataset_dimension = dataset_dimension[["dimension", "local_representation"]]
         list_column.append(dataset_dimension)
 
     df_column = pd.concat(list_column)
@@ -55,11 +53,10 @@ def get_column_title(dataset=None):
     list_column = []
     n_dimensions = len(df_column.index)
 
-    for irow in trange(n_dimensions,
-                       desc="2/2 - Getting values "):
-        dim_id = df_column['dimension'].iloc[irow]
+    for irow in trange(n_dimensions, desc="2/2 - Getting values "):
+        dim_id = df_column["dimension"].iloc[irow]
         dim_id = str(dim_id).replace("-", "_")
-        dim_local_rep = df_column['local_representation'].iloc[irow]
+        dim_local_rep = df_column["local_representation"].iloc[irow]
 
         dim_values = _get_dimension_values(dim_local_rep)
 
@@ -67,10 +64,13 @@ def get_column_title(dataset=None):
         dim_values = dim_values[dim_values["id"] == dim_local_rep]
 
         # new column with the dimension id
-        dim_values = dim_values.assign(column=pd.Series(
-            dim_id * len(dim_values.index), index=dim_values.index).values)
+        dim_values = dim_values.assign(
+            column=pd.Series(
+                dim_id * len(dim_values.index), index=dim_values.index
+            ).values
+        )
         dim_values = dim_values[["column", "name_fr", "name_en"]]
         list_column.append(dim_values)
 
     df_column_final = pd.concat(list_column).reset_index(drop=True)
-    return(df_column_final)
+    return df_column_final

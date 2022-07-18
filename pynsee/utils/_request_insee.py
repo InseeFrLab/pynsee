@@ -9,7 +9,9 @@ from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 
-def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', print_msg=True):
+def _request_insee(
+    api_url=None, sdmx_url=None, file_format="application/xml", print_msg=True
+):
 
     # sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
@@ -18,26 +20,25 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
     keys = _get_credentials()
 
     try:
-        pynsee_query_print = os.environ['pynsee_query_print']
+        pynsee_query_print = os.environ["pynsee_query_print"]
     except:
         pass
     else:
-        if pynsee_query_print == 'True':
+        if pynsee_query_print == "True":
             if api_url is not None:
-                print('\n' + api_url)
+                print("\n" + api_url)
             else:
                 if sdmx_url is not None:
-                    print('\n' + sdmx_url)
+                    print("\n" + sdmx_url)
 
     try:
-        proxies = {'http': os.environ['http_proxy'],
-                   'https': os.environ['http_proxy']}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
     except:
-        proxies = {'http': '', 'https': ''}
+        proxies = {"http": "", "https": ""}
 
     # force sdmx use with a system variable
     try:
-        pynsee_use_sdmx = os.environ['pynsee_use_sdmx']
+        pynsee_use_sdmx = os.environ["pynsee_use_sdmx"]
         if pynsee_use_sdmx == "True":
             api_url = None
     except:
@@ -53,32 +54,31 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
     if api_url is not None:
 
         if keys is not None:
-            insee_key = keys['insee_key']
-            insee_secret = keys['insee_secret']
+            insee_key = keys["insee_key"]
+            insee_secret = keys["insee_secret"]
 
             token = _get_token(insee_key, insee_secret)
         else:
             token = None
 
         if token is not None:
-            headers = {'Accept': file_format,
-                       'Authorization': 'Bearer ' + token}
+            headers = {"Accept": file_format, "Authorization": "Bearer " + token}
 
             # avoid reaching the limit of 30 queries per minute from insee api
             _wait_api_query_limit(api_url)
 
             results = requests.get(api_url, proxies=proxies, headers=headers)
-            
+
             success = True
-            
-            if 'status_code' not in dir(results):
+
+            if "status_code" not in dir(results):
                 success = False
-            else:    
+            else:
                 if results.status_code != 200:
                     success = False
-            
-            if success is True:                
-                return(results)
+
+            if success is True:
+                return results
             else:
 
                 msg1 = "\n!!! An error occurred !!!"
@@ -88,8 +88,10 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                     print("{}".format(msg1))
                     print("Query : {}".format(api_url))
                     print(results.text)
-                    print('\n!!! Make sure you have subscribed to all APIs !!!')
-                    print("Click on all APIs' icons one by one, select your application, and click on Subscribe\n")
+                    print("\n!!! Make sure you have subscribed to all APIs !!!")
+                    print(
+                        "Click on all APIs' icons one by one, select your application, and click on Subscribe\n"
+                    )
 
                 if sdmx_url is not None:
 
@@ -99,24 +101,27 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                         print("\n!!! SDMX web service used instead of API !!!")
 
                     if results.status_code == 200:
-                        return(results)
+                        return results
                     else:
-                        raise ValueError(results.text + '\n' + sdmx_url)
+                        raise ValueError(results.text + "\n" + sdmx_url)
                 else:
-                    if print_msg:                        
+                    if print_msg:
                         try:
-                            print("Error %s\n" % results.status_code)                            
+                            print("Error %s\n" % results.status_code)
                         except:
                             pass
 
                     raise ValueError(results.text)
-                                          
+
         else:
             # token is None
             commands = "\n\ninit_conn(insee_key='my_insee_key', insee_secret='my_insee_secret')\n"
-            msg1 = "!!! Token missing, please check your credentials on api.insee.fr !!!\n"
+            msg1 = (
+                "!!! Token missing, please check your credentials on api.insee.fr !!!\n"
+            )
             msg2 = "!!! Please do the following to use your credentials : {}".format(
-                commands)
+                commands
+            )
             msg3 = "\n!!! If your token still does not work, please try to clear the cache :\n from pynsee.utils import clear_all_cache; clear_all_cache() !!!\n"
 
             if sdmx_url is not None:
@@ -127,9 +132,9 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
                 results = requests.get(sdmx_url, proxies=proxies)
 
                 if results.status_code == 200:
-                    return(results)
+                    return results
                 else:
-                    raise ValueError(results.text + '\n' + sdmx_url)
+                    raise ValueError(results.text + "\n" + sdmx_url)
 
             else:
                 raise ValueError("{}{}{}".format(msg1, msg2, msg3))
@@ -139,9 +144,9 @@ def _request_insee(api_url=None, sdmx_url=None, file_format='application/xml', p
             results = requests.get(sdmx_url, proxies=proxies)
 
             if results.status_code == 200:
-                return(results)
+                return results
             else:
-                raise ValueError(results.text + '\n' + sdmx_url)
+                raise ValueError(results.text + "\n" + sdmx_url)
 
         else:
             raise ValueError("!!! Error : urls are missing")

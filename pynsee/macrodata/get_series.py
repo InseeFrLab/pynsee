@@ -11,14 +11,16 @@ from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata
 from pynsee.utils._paste import _paste
 
 
-def get_series(*idbanks,
-               metadata=True,
-               startPeriod=None,
-               endPeriod=None,
-               firstNObservations=None,
-               lastNObservations=None,
-               includeHistory=None,
-               updatedAfter=None):
+def get_series(
+    *idbanks,
+    metadata=True,
+    startPeriod=None,
+    endPeriod=None,
+    firstNObservations=None,
+    lastNObservations=None,
+    includeHistory=None,
+    updatedAfter=None
+):
     """Get data from INSEE series idbank
 
     Args:
@@ -61,8 +63,13 @@ def get_series(*idbanks,
     # create the parameters to be added to the query
     #
 
-    parameters = ["startPeriod", "endPeriod",
-                  "firstNObservations", "lastNObservations", "updatedAfter"]
+    parameters = [
+        "startPeriod",
+        "endPeriod",
+        "firstNObservations",
+        "lastNObservations",
+        "updatedAfter",
+    ]
 
     list_addded_param = []
     for param in parameters:
@@ -71,7 +78,7 @@ def get_series(*idbanks,
 
     added_param_string = ""
     if len(list_addded_param) > 0:
-        added_param_string = "?" + _paste(list_addded_param, collapse='&')
+        added_param_string = "?" + _paste(list_addded_param, collapse="&")
 
     #
     # make one single list of idbanks
@@ -107,19 +114,19 @@ def get_series(*idbanks,
 
         list_idbank_q = list_idbank[min_range:max_range]
 
-        sdmx_query = INSEE_sdmx_link_idbank + \
-            _paste(list_idbank_q, collapse='+')
-        api_query = INSEE_api_link_idbank + \
-            _paste(list_idbank_q, collapse='%2B')
+        sdmx_query = INSEE_sdmx_link_idbank + _paste(list_idbank_q, collapse="+")
+        api_query = INSEE_api_link_idbank + _paste(list_idbank_q, collapse="%2B")
 
         if len(list_addded_param) > 0:
             sdmx_query = sdmx_query + added_param_string
             # api_query = api_query + "/" + added_param_string
             api_query = api_query + added_param_string
 
-        df = _get_insee(api_query=api_query,  # api_query
-                        sdmx_query=sdmx_query,
-                        step=str("{0}/{1}").format(q + 1, max_seq_idbank))
+        df = _get_insee(
+            api_query=api_query,  # api_query
+            sdmx_query=sdmx_query,
+            step=str("{0}/{1}").format(q + 1, max_seq_idbank),
+        )
 
         list_data.append(df)
 
@@ -131,25 +138,26 @@ def get_series(*idbanks,
             list_all_idbank = all_idbank.IDBANK.to_list()
 
             list_data_idbank = data.IDBANK.unique()
-            idbank_available_bool = [(idb in list_all_idbank)
-                                     for idb in list_data_idbank]
+            idbank_available_bool = [
+                (idb in list_all_idbank) for idb in list_data_idbank
+            ]
 
             if any(idbank_available_bool):
 
                 idbank_available = list_data_idbank[idbank_available_bool]
-                list_dataset = all_idbank[all_idbank.IDBANK.isin(
-                    idbank_available)]
+                list_dataset = all_idbank[all_idbank.IDBANK.isin(idbank_available)]
                 list_dataset = list(list_dataset.DATASET.unique())
 
                 idbank_list = get_series_list(list_dataset)
                 newcol = [
-                    col for col in idbank_list.columns if col not in data.columns] + ['IDBANK']
+                    col for col in idbank_list.columns if col not in data.columns
+                ] + ["IDBANK"]
                 idbank_list = idbank_list[newcol]
 
-                data = data.merge(idbank_list, on='IDBANK', how='left')
+                data = data.merge(idbank_list, on="IDBANK", how="left")
 
                 # remove all na columns
-                data = data.dropna(axis=1, how='all')
+                data = data.dropna(axis=1, how="all")
         except:
             pass
 
@@ -157,6 +165,5 @@ def get_series(*idbanks,
             data = _add_numeric_metadata(data)
         except:
             pass
-
 
     return data

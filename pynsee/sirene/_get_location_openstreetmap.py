@@ -1,4 +1,3 @@
-
 import os
 from pathlib2 import Path
 import requests
@@ -8,16 +7,19 @@ import pandas as pd
 
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 
+
 def _get_location_openstreetmap(query, session=None):
 
     if session is None:
         session = requests.Session()
         retry = Retry(connect=3, backoff_factor=1)
         adapter = HTTPAdapter(max_retries=retry)
-        session.mount('http://', adapter)
-        session.mount('https://', adapter)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
 
-    api_link = "https://nominatim.openstreetmap.org/search.php?q={}&format=jsonv2&limit=1".format(query)
+    api_link = "https://nominatim.openstreetmap.org/search.php?q={}&format=jsonv2&limit=1".format(
+        query
+    )
     # api_link = 'https://nominatim.openstreetmap.org/search?q=ZONE+INDUSTRIELLE+54980+BATILLY+FRANCE&format=json&limit=1'
 
     try:
@@ -26,13 +28,12 @@ def _get_location_openstreetmap(query, session=None):
     except:
         user_agent = ""
 
-    headers = {'User-Agent': 'python_package_pynsee_' + user_agent.replace("/", "")}
+    headers = {"User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")}
 
     try:
-        proxies = {'http': os.environ['http_proxy'],
-                   'https': os.environ['http_proxy']}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
     except:
-        proxies = {'http': '', 'https': ''}
+        proxies = {"http": "", "https": ""}
 
     results = session.get(api_link, proxies=proxies, headers=headers)
     data = results.json()
@@ -46,8 +47,12 @@ def _get_location_openstreetmap(query, session=None):
 
     data_final = pd.concat(list_dataframe).reset_index(drop=True)
 
-    lat, lon, category, typeLoc, importance = (data_final["lat"][0], data_final["lon"][0], 
-                                data_final["category"][0], data_final["type"][0],
-                                data_final["importance"][0])
+    lat, lon, category, typeLoc, importance = (
+        data_final["lat"][0],
+        data_final["lon"][0],
+        data_final["category"][0],
+        data_final["type"][0],
+        data_final["importance"][0],
+    )
 
     return lat, lon, category, typeLoc, importance

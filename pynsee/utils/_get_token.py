@@ -19,4 +19,4 @@ def _get_token(insee_key, insee_secret):
     else:
         token = token_envir
 
-    return(token)
+    return token
