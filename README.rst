@@ -16,6 +16,10 @@ Introduction to pynsee package
    :target: https://pynsee.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
    
+.. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/badgepython.svg?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
+   :target: https://www.python.org/
+   :alt: Python versions
+   
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
    :target: https://pypi.org/project/black/
    :alt: Code formatting
