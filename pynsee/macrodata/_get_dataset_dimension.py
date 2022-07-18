@@ -14,11 +14,17 @@ from pynsee.utils._request_insee import _request_insee
 
 def _get_dataset_dimension(dataset, update=False):
 
-    INSEE_sdmx_link_datastructure = "https://www.bdm.insee.fr/series/sdmx/datastructure/FR1"
-    INSEE_api_link_datastructure = "https://api.insee.fr/series/BDM/V1/datastructure/FR1"
+    INSEE_sdmx_link_datastructure = (
+        "https://www.bdm.insee.fr/series/sdmx/datastructure/FR1"
+    )
+    INSEE_api_link_datastructure = (
+        "https://api.insee.fr/series/BDM/V1/datastructure/FR1"
+    )
 
-    INSEE_sdmx_link_datastructure_dataset = INSEE_sdmx_link_datastructure + '/' + dataset
-    INSEE_api_link_datastructure_dataset = INSEE_api_link_datastructure + '/' + dataset
+    INSEE_sdmx_link_datastructure_dataset = (
+        INSEE_sdmx_link_datastructure + "/" + dataset
+    )
+    INSEE_api_link_datastructure_dataset = INSEE_api_link_datastructure + "/" + dataset
 
     insee_folder = _create_insee_folder()
     file = insee_folder + "/" + _hash(INSEE_sdmx_link_datastructure_dataset)
@@ -33,9 +39,10 @@ def _get_dataset_dimension(dataset, update=False):
     else:
         try:
             # only used for testing purposes
-            insee_date_time_now = os.environ['insee_date_test']
+            insee_date_time_now = os.environ["insee_date_test"]
             insee_date_time_now = datetime.strptime(
-                insee_date_time_now, '%Y-%m-%d %H:%M:%S.%f')
+                insee_date_time_now, "%Y-%m-%d %H:%M:%S.%f"
+            )
         except:
             insee_date_time_now = datetime.now()
 
@@ -50,14 +57,15 @@ def _get_dataset_dimension(dataset, update=False):
 
         results = _request_insee(
             sdmx_url=INSEE_sdmx_link_datastructure_dataset,
-            api_url=INSEE_api_link_datastructure_dataset)
+            api_url=INSEE_api_link_datastructure_dataset,
+        )
 
         # create temporary directory
         dirpath = _get_temp_dir()
 
-        dataset_dimension_file = dirpath + '\\dataset_dimension_file'
+        dataset_dimension_file = dirpath + "\\dataset_dimension_file"
 
-        with open(dataset_dimension_file, 'wb') as f:
+        with open(dataset_dimension_file, "wb") as f:
             f.write(results.content)
 
         root = ET.parse(dataset_dimension_file).getroot()
@@ -74,7 +82,7 @@ def _get_dataset_dimension(dataset, update=False):
             except:
                 local_rep = None
             finally:
-                return(local_rep)
+                return local_rep
 
         def extract_id(data, i):
             try:
@@ -82,7 +90,7 @@ def _get_dataset_dimension(dataset, update=False):
             except:
                 id_val = None
             finally:
-                return(id_val)
+                return id_val
 
         for i in range(0, n_dimension):
 
@@ -90,12 +98,14 @@ def _get_dataset_dimension(dataset, update=False):
             local_rep = extract_local_rep(data, i)
 
             dimension_df = {
-                'dataset': [dataset],
-                'dimension': [dimension_id],
-                'local_representation': [local_rep]}
+                "dataset": [dataset],
+                "dimension": [dimension_id],
+                "local_representation": [local_rep],
+            }
 
-            dimension_df = pd.DataFrame(dimension_df,
-                                        columns=['dataset', 'dimension', 'local_representation'])
+            dimension_df = pd.DataFrame(
+                dimension_df, columns=["dataset", "dimension", "local_representation"]
+            )
 
             list_dimension.append(dimension_df)
 

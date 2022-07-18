@@ -1,10 +1,8 @@
-
 import pandas as pd
 
-class GeoFrDataFrame(pd.DataFrame):
-    """Class for handling dataframes built from IGN's geographical data
 
-    """    
+class GeoFrDataFrame(pd.DataFrame):
+    """Class for handling dataframes built from IGN's geographical data"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

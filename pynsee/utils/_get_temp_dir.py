@@ -9,4 +9,4 @@ from functools import lru_cache
 def _get_temp_dir():
 
     dirpath = tempfile.mkdtemp()
-    return(dirpath)
+    return dirpath

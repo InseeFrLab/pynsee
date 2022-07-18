@@ -36,6 +36,6 @@ def _get_date(freq, time_period):
         dates = time_period
     else:
         # dates = [datetime.strptime(date, '%Y-%m-%d').date() for date in dates]
-        dates = pd.to_datetime(dates, format='%Y-%m-%d')
+        dates = pd.to_datetime(dates, format="%Y-%m-%d")
 
-    return(dates)
+    return dates

@@ -8,9 +8,7 @@ import pandas as pd
 @lru_cache(maxsize=None)
 def _get_nomenclature_agreg(file):
 
-    df = pd.read_csv(file, sep=";",
-                     encoding="ISO-8859-1",
-                     dtype=str)
+    df = pd.read_csv(file, sep=";", encoding="ISO-8859-1", dtype=str)
 
     for i in range(len(df.index)):
         for j in range(2, len(df.columns)):
@@ -24,11 +22,11 @@ def _get_nomenclature_agreg(file):
 
     def clean_TITLE(string):
         string_cleaned = string.replace("\x92", "'")
-        return(string_cleaned)
+        return string_cleaned
 
     df = df.iloc[:, 1:10]
-    df.columns = ['A10', 'A21', 'A38', 'A64', 'A88', 'A129', 'A138', 'TITLE']
+    df.columns = ["A10", "A21", "A38", "A64", "A88", "A129", "A138", "TITLE"]
 
     df.TITLE = df.TITLE.apply(clean_TITLE)
 
-    return(df)
+    return df

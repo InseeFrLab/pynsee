@@ -33,21 +33,21 @@ def get_new_city(code, date=None):
     """
     # api_link = 'https://api.insee.fr/metadonnees/V1/geo/commune/24431/suivants?date=2018-01-01'
 
-    INSEE_localdata_api_link = 'https://api.insee.fr/metadonnees/V1/geo/'
+    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
 
-    api_link = INSEE_localdata_api_link + 'commune/' + str(code) + '/suivants'
+    api_link = INSEE_localdata_api_link + "commune/" + str(code) + "/suivants"
 
     if date is not None:
-        api_link = api_link + '?date=' + date
+        api_link = api_link + "?date=" + date
     else:
         # print('date is None, by default it supposed to be ten years before current year')
         _warning_get_new_city()
 
         now = datetime.datetime.now()
         date = str(now.year - 10)
-        api_link = api_link + '?date=' + date + '-01-01'
+        api_link = api_link + "?date=" + date + "-01-01"
 
-    request = _request_insee(api_url=api_link, file_format='application/json')
+    request = _request_insee(api_url=api_link, file_format="application/json")
 
     try:
         data = request.json()
@@ -61,7 +61,7 @@ def get_new_city(code, date=None):
         data_final = pd.concat(list_data).reset_index(drop=True)
 
     except:
-        print('!!! No data found !!!')
+        print("!!! No data found !!!")
         data_final = None
 
-    return(data_final)
+    return data_final

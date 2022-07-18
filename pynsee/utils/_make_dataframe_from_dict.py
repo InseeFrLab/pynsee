@@ -6,12 +6,10 @@ import pandas as pd
 def _make_dataframe_from_dict(idata):
 
     key_list = [key for key in idata.keys() if type(idata[key]) is list]
-    key_not_list = [key for key in idata.keys() if type(
-        idata[key]) is not list]
+    key_not_list = [key for key in idata.keys() if type(idata[key]) is not list]
 
     key_dict = [key for key in idata.keys() if type(idata[key]) is dict]
-    key_not_list_dict = [
-        key for key in key_not_list if type(idata[key]) is not dict]
+    key_not_list_dict = [key for key in key_not_list if type(idata[key]) is not dict]
 
     data_from_list = []
     for key in key_list:
@@ -41,8 +39,7 @@ def _make_dataframe_from_dict(idata):
             for i in range(len(data_from_list.index)):
                 list_data_dict.append(data_dict0)
             data_dict = pd.concat(list_data_dict).reset_index(drop=True)
-            data_final = pd.concat(
-                [data_other, data_dict, data_from_list], axis=1)
+            data_final = pd.concat([data_other, data_dict, data_from_list], axis=1)
         else:
             data_final = pd.concat([data_other, data_from_list], axis=1)
 
@@ -53,4 +50,4 @@ def _make_dataframe_from_dict(idata):
         else:
             data_final = data_other0
 
-    return(data_final)
+    return data_final
