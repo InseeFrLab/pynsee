@@ -6,6 +6,10 @@ on:
       - 'main'
       - 'master'
       - 'usequarto'
+    paths:
+      - "./Dockerfile"
+      - "./pynsee/*"
+      - "./tests/*"
 
 jobs:
   docker:
