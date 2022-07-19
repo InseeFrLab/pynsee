@@ -3,12 +3,6 @@ name: examples tests
 on:
   schedule:
     - cron: '0 3 * * *'
-  push:
-      branches:
-        - 'master'
-      paths:
-        - "./docs/examples/*.ipynb"
-        - "./.github/workflows/examples.yml"
 
 jobs:
   build:
