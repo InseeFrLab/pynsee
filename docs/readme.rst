@@ -13,6 +13,10 @@ Introduction to pynsee package
    :target: https://github.com/InseeFrLab/pynsee/actions
    :alt: Build Status
 
+.. image:: https://github.com/InseeFrLab/pynsee/actions/workflows/examples.yml/badge.svg
+   :target: https://github.com/InseeFrLab/pynsee/actions
+   :alt: Build Status
+
 .. image:: https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK
    :target: https://codecov.io/gh/InseeFrLab/pynsee?branch=master
    :alt: Codecov test coverage
