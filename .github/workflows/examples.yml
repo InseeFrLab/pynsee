@@ -3,9 +3,12 @@ name: examples tests
 on:
   schedule:
     - cron: '0 3 * * *'
-  #pull_request:
-  #  branches:
-  #    - master
+  push:
+      branches:
+        - 'master'
+      paths:
+        - "./docs/examples/*.ipynb"
+        - "./.github/workflows/examples.yml"
 
 jobs:
   build:
