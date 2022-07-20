@@ -110,7 +110,9 @@ Example - Population Map
     com = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:commune')
     
     mapcom = gpd.GeoDataFrame(com).set_crs("EPSG:3857")
-
+    
+    # area calculations depend on crs which fits metropolitan france but not overseas departements
+    # figures should not be considered as official statistics
     mapcom = mapcom.to_crs(epsg=3035)
     mapcom["area"] = mapcom['geometry'].area / 10**6
     mapcom = mapcom.to_crs(epsg=3857)
