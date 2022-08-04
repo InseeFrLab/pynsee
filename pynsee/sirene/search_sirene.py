@@ -12,39 +12,50 @@ from pynsee.sirene._request_sirene import _request_sirene
 from pynsee.sirene.SireneDataFrame import SireneDataFrame
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
-from pynsee.utils._paste import _paste
+
 
 @lru_cache(maxsize=None)
 def _warning_search_sirene():
-    print("\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!")
+    print(
+        "\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!"
+    )
+
 
 @lru_cache(maxsize=None)
 def _warning_data_save():
-    print(f'Locally saved data has been used\nSet update=True to trigger an update')
+    print(f"Locally saved data has been used\nSet update=True to trigger an update")
 
-def search_sirene(variable,
-                  pattern,
-                  kind="siret",
-                  phonetic_search=False,
-                  number=1000,
-                  activity=True,
-                  legal=True,
-                  closed=False,
-                  update=False):
+
+def search_sirene(
+    variable,
+    pattern,
+    kind="siret",
+    phonetic_search=False,
+    number=1000,
+    activity=True,
+    legal=True,
+    closed=False,
+    update=False,
+):
     """Get data about companies from criteria on variables
 
     Args:
         variable (str or list): name of the variable on which the search is applied.
+
         pattern (str or list): the pattern or criterium searched
-        kind (str, optional): kind of companies : siren or siret. Defaults to "siren"
-        phonetic_search (bool, or list of bool, optional): If True phonetic search is triggered on the
-            all variables of the list, if it is a list of True/False, phonetic search is used accordingly on the list of variables
-        number (int, optional): Number of companies searched. Defaults to 1000.
-            If it is above 1000, multiple queries are triggered.
+
+        kind (str, optional): kind of companies : siren or siret. Defaults to "siret"
+
+        phonetic_search (bool, or list of bool, optional): If True phonetic search is triggered on the all variables of the list, if it is a list of True/False, phonetic search is used accordingly on the list of variables
+
+        number (int, optional): Number of companies searched. Defaults to 1000. If it is above 1000, multiple queries are triggered.
+
         activity (bool, optional): If True, activty title is added based on NAF/NACE. Defaults to True.
+
         legal (bool, optional): If True, legal entities title are added
-        closed (bool, optional): If False, closed entities are removed from the data and
-            for each legal entity only the last period for which the data is stable is displayed.
+
+        closed (bool, optional): If False, closed entities are removed from the data and for each legal entity only the last period for which the data is stable is displayed.
+
     Notes:
         This function may return personal data, please check and
         comply with the legal framework relating to personal data protection
@@ -89,8 +100,8 @@ def search_sirene(variable,
         >>>            number = 2500,
         >>>            kind = "siret")
     """
-    if (not kind == 'siret') & (not kind == 'siren'):
-        raise ValueError('!!! kind should be among : siren, siret !!!')
+    if (not kind == "siret") & (not kind == "siren"):
+        raise ValueError("!!! kind should be among : siren, siret !!!")
 
     if type(phonetic_search) is not list:
         if phonetic_search is True:
@@ -100,7 +111,9 @@ def search_sirene(variable,
     else:
         check_phonetic_search = all([(x in [True, False]) for x in phonetic_search])
         if check_phonetic_search is False:
-            raise ValueError("!!! phonetic_search must be True, False or a list of True and False !!!")
+            raise ValueError(
+                "!!! phonetic_search must be True, False or a list of True and False !!!"
+            )
         else:
             phntc_list = phonetic_search
 
@@ -116,31 +129,32 @@ def search_sirene(variable,
         pattern = [pattern]
 
     list_siren_hist_variable = [
-        'nomUniteLegale',
-        'nomUsageUniteLegale',
-        'denominationUniteLegale',
-        'denominationUsuelle1UniteLegale',
-        'denominationUsuelle2UniteLegale',
-        'denominationUsuelle3UniteLegale',
-        'categorieJuridiqueUniteLegale',
-        'etatAdministratifUniteLegale'
-        'nicSiegeUniteLegale',
-        'activitePrincipaleUniteLegale',
-        'caractereEmployeurUniteLegale',
-        'economieSocialeSolidaireUniteLegale',
-        'nomenclatureActivitePrincipaleUniteLegale'
+        "nomUniteLegale",
+        "nomUsageUniteLegale",
+        "denominationUniteLegale",
+        "denominationUsuelle1UniteLegale",
+        "denominationUsuelle2UniteLegale",
+        "denominationUsuelle3UniteLegale",
+        "categorieJuridiqueUniteLegale",
+        "etatAdministratifUniteLegale" "nicSiegeUniteLegale",
+        "activitePrincipaleUniteLegale",
+        "caractereEmployeurUniteLegale",
+        "economieSocialeSolidaireUniteLegale",
+        "nomenclatureActivitePrincipaleUniteLegale",
     ]
 
-    list_siret_hist_variable = ['denominationUsuelleEtablissement',
-                                'enseigne1Etablissement',
-                                'enseigne2Etablissement',
-                                'enseigne3Etablissement',
-                                'activitePrincipaleEtablissement',
-                                'etatAdministratifEtablissement',
-                                'nomenclatureActiviteEtablissement',
-                                'caractereEmployeurEtablissement']
+    list_siret_hist_variable = [
+        "denominationUsuelleEtablissement",
+        "enseigne1Etablissement",
+        "enseigne2Etablissement",
+        "enseigne3Etablissement",
+        "activitePrincipaleEtablissement",
+        "etatAdministratifEtablissement",
+        "nomenclatureActiviteEtablissement",
+        "caractereEmployeurEtablissement",
+    ]
 
-    if kind == 'siren':
+    if kind == "siren":
         list_hist_variable = list_siren_hist_variable
     else:
         list_hist_variable = list_siret_hist_variable
@@ -155,14 +169,13 @@ def search_sirene(variable,
             phntc_string = ".phonetisation"
 
         # if pattern has several words, split and put mutiple conditions with OR
-        patt = re.sub(r'\s+', '|', patt)
-        list_patt = patt.split('|')
+        patt = re.sub(r"\s+", "|", patt)
+        list_patt = patt.split("|")
 
         list_var_patt = []
         for ptt in list_patt:
             if var in list_hist_variable:
-                list_var_patt.append(
-                    "periode({}{}:{})".format(var, phntc_string, ptt))
+                list_var_patt.append("periode({}{}:{})".format(var, phntc_string, ptt))
             else:
                 list_var_patt.append("{}{}:{}".format(var, phntc_string, ptt))
 
@@ -170,49 +183,54 @@ def search_sirene(variable,
 
     permutation = list(itertools.product(*list_var_pattern))
     permutation_and = [" AND ".join(list(x)) for x in permutation]
-    permutation_and_parenth = ['(' + x + ')' for x in permutation_and]
+    permutation_and_parenth = ["(" + x + ")" for x in permutation_and]
     string_query = " OR ".join(permutation_and_parenth)
 
     query = "?q=" + string_query
-    list_var_string = [str(b) for b in [kind, number]] 
+    list_var_string = [str(b) for b in [kind, number]]
     string = "".join(list_var_string)
-    
+
     filename = _hash(query + string)
     insee_folder = _create_insee_folder()
     file_sirene = insee_folder + "/" + filename
 
     if (not os.path.exists(file_sirene)) or update:
-        
-        data_final = _request_sirene(query=query, kind=kind,
-                                     number=number)      
-        
+
+        data_final = _request_sirene(query=query, kind=kind, number=number)
+
         data_final.to_pickle(file_sirene)
-        print(f'Data saved: {file_sirene}')
-        
+        print(f"Data saved: {file_sirene}")
+
     else:
         try:
             data_final = pd.read_pickle(file_sirene)
         except:
             os.remove(file_sirene)
-            
+
             data_final = search_sirene(
-                  variable=variable,
-                  pattern=pattern,
-                  kind=kind,
-                  phonetic_search=phonetic_search,
-                  number=number,
-                  activity=activity,
-                  legal=legal,
-                  closed=closed,
-                  update=True)
-            
+                variable=variable,
+                pattern=pattern,
+                kind=kind,
+                phonetic_search=phonetic_search,
+                number=number,
+                activity=activity,
+                legal=legal,
+                closed=closed,
+                update=True,
+            )
+
         else:
             _warning_data_save()
-    
-    df = _clean_data(data_final.copy(), kind = kind,
-                    clean = False, activity = activity,
-                    legal = legal, only_alive = alive)
-    
+
+    df = _clean_data(
+        data_final.copy(),
+        kind=kind,
+        clean=False,
+        activity=activity,
+        legal=legal,
+        only_alive=alive,
+    )
+
     if df is not None:
         df = df.reset_index(drop=True)
 
@@ -220,4 +238,4 @@ def search_sirene(variable,
 
     SireneDF = SireneDataFrame(df)
 
-    return(SireneDF)
+    return SireneDF

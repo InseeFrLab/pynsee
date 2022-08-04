@@ -9,7 +9,7 @@ from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
 
 
 def get_series_list(*datasets, update=False):
-    """Download an INSEE's series key list for one or several datasets
+    """Download an INSEE's series key list for one or several datasets from BDM macroeconomic database
 
     Args:
         datasets (str) : datasets should be among the datasets list provided by get_dataset_list()
@@ -32,7 +32,7 @@ def get_series_list(*datasets, update=False):
         >>> idbank_ipc = get_series_list('IPC-2015', 'CLIMAT-AFFAIRES')
     """
     insee_dataset = get_dataset_list()
-    insee_dataset_list = insee_dataset['id'].to_list()
+    insee_dataset_list = insee_dataset["id"].to_list()
 
     if len(datasets) == 1:
         if isinstance(datasets[0], list):
@@ -41,7 +41,9 @@ def get_series_list(*datasets, update=False):
     for dt in datasets:
         if dt not in insee_dataset_list:
             raise ValueError(
-                "\n%s is not a dataset from INSEE\nGet a dataset list with get_dataset_list function" % dt)
+                "\n%s is not a dataset from INSEE\nGet a dataset list with get_dataset_list function"
+                % dt
+            )
 
     idbank_list_dataset = []
 
@@ -62,11 +64,10 @@ def get_series_list(*datasets, update=False):
 
     idbank_list = pd.DataFrame(idbank_list, columns=new_column_order)
 
-    idbank_list = idbank_list.rename(columns={'nomflow': 'DATASET',
-                                              'idbank': 'IDBANK',
-                                              'cleFlow': 'KEY'})
+    idbank_list = idbank_list.rename(
+        columns={"nomflow": "DATASET", "idbank": "IDBANK", "cleFlow": "KEY"}
+    )
 
-    idbank_list.columns = [col.replace('-', '_')
-                           for col in idbank_list.columns]
+    idbank_list.columns = [col.replace("-", "_") for col in idbank_list.columns]
 
     return idbank_list

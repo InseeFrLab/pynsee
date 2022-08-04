@@ -1,5 +1,5 @@
-
 from pynsee.geodata._get_geom import _get_geom
+
 
 def get_geom(self):
     """Extract a shape (Polygon, Point ...) from a GeoFrDataFrame
@@ -12,10 +12,10 @@ def get_geom(self):
         >>> #
         >>> # Get geographical limits of departments
         >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
-        >>> # 
+        >>> #
         >>> # Extract a polygon from the GeoDataframe
         >>> geo = df.get_geom()
-    """        
+    """
 
     geo = _get_geom(self)
 

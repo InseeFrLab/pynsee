@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import requests
-import zipfile
 import pandas as pd
 import os
-import re
 from datetime import date
 from datetime import datetime
 
@@ -13,14 +10,13 @@ from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files
 
 from pynsee.utils._hash import _hash
 from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils._get_credentials import _get_credentials
 
 
 def _download_idbank_list(update=False):
 
     todays_date = date.today()
-    file_to_dwn_default = 'idbank_' + str(todays_date.year) + str(todays_date.month)
+    file_to_dwn_default = "idbank_" + str(todays_date.year) + str(todays_date.month)
 
     insee_folder = _create_insee_folder()
     file = insee_folder + "/" + _hash(file_to_dwn_default)
@@ -35,9 +31,10 @@ def _download_idbank_list(update=False):
     else:
         try:
             # only used for testing purposes
-            insee_date_time_now = os.environ['insee_date_test']
+            insee_date_time_now = os.environ["insee_date_test"]
             insee_date_time_now = datetime.strptime(
-                insee_date_time_now, '%Y-%m-%d %H:%M:%S.%f')
+                insee_date_time_now, "%Y-%m-%d %H:%M:%S.%f"
+            )
         except:
             insee_date_time_now = datetime.now()
 
@@ -52,7 +49,7 @@ def _download_idbank_list(update=False):
         trigger_update = True
 
     if trigger_update:
-        
+
         # INSEE api credentials are not useful here, but proxy settings stored in pynsee_api_credentials are useful
         keys = _get_credentials()
 
@@ -63,7 +60,7 @@ def _download_idbank_list(update=False):
         data = data.sort_values("nomflow").reset_index(drop=True)
 
         data.to_pickle(file)
-     
+
     else:
         # pickle format depends on python version
         # then read_pickle can fail, if so

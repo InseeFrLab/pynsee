@@ -1,10 +1,8 @@
-
-
-def _convert_polygon(geo, crs_in='EPSG:4326', crs_out='EPSG:3857'):
+def _convert_polygon(geo, crs_in="EPSG:4326", crs_out="EPSG:3857"):
 
     import pyproj
     from shapely.ops import transform
-    
+
     crsIn = pyproj.CRS(crs_in)
     crsOut = pyproj.CRS(crs_out)
 

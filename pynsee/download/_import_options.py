@@ -1,7 +1,8 @@
 import tempfile
 
+
 def _import_options(caract: dict, filename: str):
-    """ Internal to generate a dictionary of options
+    """Internal to generate a dictionary of options
     required to import files
 
     Arguments:
@@ -22,30 +23,30 @@ def _import_options(caract: dict, filename: str):
 
     import_args = {"file": file_to_import}
 
-    if caract['type'] == "csv":
-        import_args.update({"delim": caract['separateur'], "col_names": True})
-        if 'encoding' in list(caract.keys()):
+    if caract["type"] == "csv":
+        import_args.update({"delim": caract["separateur"], "col_names": True})
+        if "encoding" in list(caract.keys()):
             import_args.update({"locale": caract["encoding"]})
-    elif caract['type'] in ["xls", "xlsx"]:
-        import_args.update({
-            'path': file_to_import,
-            "skip": caract['premiere_ligne'] - 1})
-        if 'onglet' in list(caract.keys()):
+    elif caract["type"] in ["xls", "xlsx"]:
+        import_args.update(
+            {"path": file_to_import, "skip": caract["premiere_ligne"] - 1}
+        )
+        if "onglet" in list(caract.keys()):
             import_args.update({"sheet": caract["onglet"]})
         else:
             import_args.update({"sheet": 0})
-        if 'derniere_ligne' in list(caract.keys()):
+        if "derniere_ligne" in list(caract.keys()):
             nmax_rows = caract["derniere_ligne"] - caract["premiere_ligne"]
             import_args.update({"n_max": nmax_rows})
         else:
             import_args.update({"n_max": None})
 
-        if 'valeurs_manquantes' in list(caract.keys()):
+        if "valeurs_manquantes" in list(caract.keys()):
             import_args.update({"na": caract["valeurs_manquantes"]})
         else:
             import_args.update({"na": None})
 
-    if 'type_col' in list(caract.keys()):
+    if "type_col" in list(caract.keys()):
         list_cols = caract["type_col"]
         for key, value in list_cols.items():
             if value == "character":
@@ -59,15 +60,15 @@ def _import_options(caract: dict, filename: str):
 
     import_args.update({"dtype": list_cols})
     try:
-        encoding = caract['encoding']
+        encoding = caract["encoding"]
     except:
         encoding = "Nan"
     import_args.update({"encoding": encoding})
 
     out_dict = {
-        'file_archive': file_archive,
-        'file_to_import': file_to_import,
-        'import_args': import_args
-        }
+        "file_archive": file_archive,
+        "file_to_import": file_to_import,
+        "import_args": import_args,
+    }
 
     return out_dict

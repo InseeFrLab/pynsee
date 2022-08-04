@@ -38,4 +38,4 @@ def get_included_area(area_type, codeareas):
     data_final = pd.concat(list_data)
     data_final = data_final.assign(area_type=area_type)
 
-    return(data_final)
+    return data_final

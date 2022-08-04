@@ -8,15 +8,17 @@ from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata
 from pynsee.macrodata.get_series_list import get_series_list
 
 
-def get_dataset(dataset,
-                metadata=True,
-                filter=None,
-                startPeriod=None,
-                endPeriod=None,
-                firstNObservations=None,
-                lastNObservations=None,
-                includeHistory=None,
-                updatedAfter=None):
+def get_dataset(
+    dataset,
+    metadata=True,
+    filter=None,
+    startPeriod=None,
+    endPeriod=None,
+    firstNObservations=None,
+    lastNObservations=None,
+    includeHistory=None,
+    updatedAfter=None,
+):
     """Get dataset's data from INSEE BDM database
 
     Args:
@@ -55,7 +57,7 @@ def get_dataset(dataset,
         >>> business_climate = get_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
     """
     insee_dataset = get_dataset_list()
-    insee_dataset_list = insee_dataset['id'].to_list()
+    insee_dataset_list = insee_dataset["id"].to_list()
 
     # check if the dataset exists in INSEE's list
     if dataset not in insee_dataset_list:
@@ -71,8 +73,13 @@ def get_dataset(dataset,
         sdmx_query = sdmx_query + "/" + str(filter)
         api_query = api_query + "/" + str(filter)
 
-    parameters = ["startPeriod", "endPeriod",
-                  "firstNObservations", "lastNObservations", "updatedAfter"]
+    parameters = [
+        "startPeriod",
+        "endPeriod",
+        "firstNObservations",
+        "lastNObservations",
+        "updatedAfter",
+    ]
 
     list_addded_param = []
     for param in parameters:
@@ -81,7 +88,7 @@ def get_dataset(dataset,
 
     added_param_string = ""
     if len(list_addded_param) > 0:
-        added_param_string = "?" + _paste(list_addded_param, collapse='&')
+        added_param_string = "?" + _paste(list_addded_param, collapse="&")
         sdmx_query = sdmx_query + added_param_string
         if filter is None:
             api_query = api_query + "/" + added_param_string
@@ -96,13 +103,14 @@ def get_dataset(dataset,
         try:
             idbank_list = get_series_list(dataset)
 
-            newcol = [
-                col for col in idbank_list.columns if col not in data.columns] + ['IDBANK']
+            newcol = [col for col in idbank_list.columns if col not in data.columns] + [
+                "IDBANK"
+            ]
             idbank_list = idbank_list[newcol]
 
-            data = data.merge(idbank_list, on='IDBANK', how='left')
+            data = data.merge(idbank_list, on="IDBANK", how="left")
             # remove all na columns
-            data = data.dropna(axis=1, how='all')
+            data = data.dropna(axis=1, how="all")
         except:
             pass
 
@@ -111,5 +119,4 @@ def get_dataset(dataset,
         except:
             pass
 
-    
     return data

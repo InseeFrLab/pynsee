@@ -21,9 +21,9 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
     # results = requests.get(query, proxies = proxies)
     results = _request_insee(api_url=api_query, sdmx_url=sdmx_query)
 
-    raw_data_file = dirpath + '\\' + "raw_data_file"
+    raw_data_file = dirpath + "\\" + "raw_data_file"
 
-    with open(raw_data_file, 'wb') as f:
+    with open(raw_data_file, "wb") as f:
         f.write(results.content)
 
     # parse the xml file
@@ -53,8 +53,7 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
         #
 
         list_obs = []
-        # trange(n_obs, desc = "2nd loop - Collecting observations")
-        # range(n_obs)
+
         for i in range(n_obs):
 
             obs = data.getElementsByTagName("Obs")[i]._attrs
@@ -102,8 +101,9 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
             # new column
             data_series = data_series.assign(DATE=dates)
             # place DATE column in the first position
-            data_series = data_series[[
-                'DATE'] + [c for c in data_series if c not in ['DATE']]]
+            data_series = data_series[
+                ["DATE"] + [c for c in data_series if c not in ["DATE"]]
+            ]
 
         # append series dataframe to final list
         list_series.append(data_series)
@@ -112,19 +112,23 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
 
     # index and sort dataframe by date
     # data_final = data_final.set_index('DATE')
-    if 'DATE' in data_final.columns:
+    if "DATE" in data_final.columns:
         data_final = data_final.sort_values(["IDBANK", "DATE"])
 
     # harmonise column names
     colnames = data_final.columns
-    def replace_hyphen(x): return str(x).replace("-", "_")
+
+    def replace_hyphen(x):
+        return str(x).replace("-", "_")
+
     newcolnames = list(map(replace_hyphen, colnames))
     data_final.columns = newcolnames
 
     if "OBS_VALUE" in data_final.columns:
         data_final["OBS_VALUE"] = data_final["OBS_VALUE"].apply(
-            pd.to_numeric, errors='coerce')
+            pd.to_numeric, errors="coerce"
+        )
 
-    print('\nData has been cached\n')
+    print("\nData has been cached\n")
 
     return data_final

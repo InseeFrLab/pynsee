@@ -29,30 +29,30 @@ def get_definition_list():
 
     insee_folder = _create_insee_folder()
 
-    insee_folder_local_def = insee_folder + '/' + 'definition'
+    insee_folder_local_def = insee_folder + "/" + "definition"
 
     if not os.path.exists(insee_folder_local_def):
         os.mkdir(insee_folder_local_def)
 
-    list_expected_files = ['all_definitions.csv']
+    list_expected_files = ["all_definitions.csv"]
 
-    list_expected_files = [insee_folder +
-                           '/definition/' + f for f in list_expected_files]
+    list_expected_files = [
+        insee_folder + "/definition/" + f for f in list_expected_files
+    ]
 
     list_available_file = [not os.path.exists(f) for f in list_expected_files]
 
     # unzipping raw files
     if any(list_available_file):
 
-        zip_file = pkg_resources.resource_stream(
-            __name__, 'data/definition.zip')
+        zip_file = pkg_resources.resource_stream(__name__, "data/definition.zip")
 
-        with zipfile.ZipFile(zip_file, 'r') as zip_ref:
+        with zipfile.ZipFile(zip_file, "r") as zip_ref:
             zip_ref.extractall(insee_folder)
 
-    link = 'https://api.insee.fr/metadonnees/V1/concepts/definitions'
+    link = "https://api.insee.fr/metadonnees/V1/concepts/definitions"
 
-    request = _request_insee(api_url=link, file_format='application/json')
+    request = _request_insee(api_url=link, file_format="application/json")
 
     data_request = request.json()
 
@@ -60,20 +60,19 @@ def get_definition_list():
 
     for i in range(len(data_request)):
         df = _make_dataframe_from_dict(data_request[i])
-        # df = df[['id', 'uri', 'intitule']].reset_index(drop=True)
-        df = df.iloc[:,0:3].reset_index(drop=True).drop_duplicates()
+        df = df.iloc[:, 0:3].reset_index(drop=True).drop_duplicates()
         list_data.append(df)
 
     data = pd.concat(list_data, axis=0)
     data = data.reset_index(drop=True)
-    data.columns = ['ID', 'URI', 'TITLE_FR']
+    data.columns = ["ID", "URI", "TITLE_FR"]
 
     if os.path.exists(list_expected_files[0]):
         all_data = pd.read_csv(list_expected_files[0])
         all_data = all_data.iloc[:, 1:10]
-        all_data = all_data.drop(columns={'URI', 'TITLE_FR'})
-        data = data.merge(all_data, on='ID', how='left')
+        all_data = all_data.drop(columns={"URI", "TITLE_FR"})
+        data = data.merge(all_data, on="ID", how="left")
 
     _warning_definition_internal_data()
 
-    return(data)
+    return data
