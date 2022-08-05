@@ -58,8 +58,8 @@ meta_achl
 ```
 
 ```{python}
-df = download_file("RP_LOGEMENT_2017")
-DF = df[["COMMUNE", "IRIS", "ACHL", "IPONDL"]].reset_index(drop=True)
+df = download_file("RP_LOGEMENT_2017", variables = ["COMMUNE", "IRIS", "ACHL", "IPONDL"])
+DF = df.reset_index(drop=True)
 DF["IPONDL"] = pd.to_numeric(DF["IPONDL"])
 DF = DF.groupby(["COMMUNE", "IRIS", "ACHL"], as_index=False).IPONDL.agg("sum")
 ```
