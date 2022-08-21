@@ -34,7 +34,8 @@ Introduction to pynsee package
 ``pynsee`` package contains tools to easily search and download data from INSEE and IGN.
 
 ``pynsee`` gives a quick access to more than 150 000 macroeconomic series,
-a dozen datasets of local data, numerous sources available on <https://www.insee.fr>
+a dozen datasets of local data, numerous sources available on `insee.fr <https://www.insee.fr>`_, 
+geographical limits of administrative areas taken from IGN
 as well as key metadata and SIRENE database containing data on all French companies.
 Have a look at the detailed API page `api.insee.fr <https://api.insee.fr/catalogue/>`_.
 
@@ -44,9 +45,9 @@ It benefits from the developments made by teams working on APIs at INSEE and IGN
 Installation & API subscription
 -------------------------------
 
-The files available on <https://www.insee.fr> and IGN data, i.e. the use of `download` and `geodata` modules, do not require authentication.
+The files available on `insee.fr <https://www.insee.fr>`_ and IGN data, i.e. the use of `download` and `geodata` modules, do not require authentication.
 Credentials are necessary to access some of the INSEE APIs available through `pynsee` by the modules `macrodata`, `localdata`, `metadata` and `sirene`. 
-API credentials can be created here : <https://api.insee.fr/catalogue/>
+API credentials can be created here : `api.insee.fr <https://api.insee.fr/catalogue/>`_
 
 .. code-block:: python
 
