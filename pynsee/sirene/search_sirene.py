@@ -33,7 +33,7 @@ def search_sirene(
     phonetic_search=False,
     number=1000,
     activity=True,
-    legal=True,
+    legal=False,
     closed=False,
     update=False,
 ):
