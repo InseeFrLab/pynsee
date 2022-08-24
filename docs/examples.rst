@@ -22,3 +22,4 @@ Examples
    examples/example_cadre_iris_idf.ipynb
    examples/example_rp_logement_2017.ipynb
    examples/example_marie_firstname.ipynb
+   examples/example_doctors_idf.ipynb
