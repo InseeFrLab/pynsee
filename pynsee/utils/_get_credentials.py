@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from pathlib2 import Path
+from pathlib import Path
 import os
 import pandas as pd
 from functools import lru_cache

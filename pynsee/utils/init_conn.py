@@ -2,7 +2,7 @@
 # Copyright : INSEE, 2021
 
 import os
-from pathlib2 import Path
+from pathlib import Path
 import pandas as pd
 import requests
 

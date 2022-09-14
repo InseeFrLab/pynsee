@@ -37,7 +37,7 @@ setuptools.setup(
             "unidecode>=1.2.0",
             "shapely==1.8.0",
             "datetime>=3.5.9",
-            "pathlib2>=2.3.5"],
+            "pathlib"],
     extras_require={
         'full': ['openpyxl', "xlrd>=2.0.1"]
     },
