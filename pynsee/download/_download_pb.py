@@ -1,7 +1,9 @@
 import requests
 import os
 from tqdm import tqdm
+import urllib3
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def _download_pb(url: str, fname: str, total: int = None):
     """Useful function to get request with a progress bar
@@ -19,7 +21,7 @@ def _download_pb(url: str, fname: str, total: int = None):
     except:
         proxies = {"http": "", "https": ""}
 
-    resp = requests.get(url, proxies=proxies, stream=True)
+    resp = requests.get(url, proxies=proxies, stream=True, verify=False)
 
     if total is None:
         total = int(resp.headers.get("content-length", 0))

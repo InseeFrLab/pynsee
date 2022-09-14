@@ -2,7 +2,9 @@ from datetime import date
 import requests
 import re
 import os
+import urllib3
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def _check_url(url):
 
@@ -11,7 +13,7 @@ def _check_url(url):
     except:
         proxies = {"http": "", "https": ""}
 
-    check = requests.get(url, proxies=proxies, stream=True)
+    check = requests.get(url, proxies=proxies, stream=True, verify=False)
 
     if check.status_code == 200:
         return url
