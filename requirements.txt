@@ -5,4 +5,5 @@ appdirs>=1.4.4
 unidecode>=1.2.0
 datetime>=3.5.9
 pathlib
+urllib3
 shapely==1.8.0
