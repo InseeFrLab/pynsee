@@ -4,9 +4,11 @@ import re
 import os
 import urllib3
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 def _check_url(url):
+    
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     try:
         proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
@@ -47,7 +49,7 @@ def _check_url(url):
                 list_string_split[: (len(list_string_split) - 1)] + [filename2]
             )
 
-            results = requests.get(url2, proxies=proxies, stream=True)
+            results = requests.get(url2, proxies=proxies, stream=True, verify=False)
             if results.status_code == 200:
                 print(f"Following file has been used instead:\n{url2}")
                 return url2

@@ -18,7 +18,6 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
     # create temporary directory
     dirpath = _get_temp_dir()
 
-    # results = requests.get(query, proxies = proxies)
     results = _request_insee(api_url=api_query, sdmx_url=sdmx_query)
 
     raw_data_file = dirpath + "\\" + "raw_data_file"

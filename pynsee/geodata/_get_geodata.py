@@ -8,7 +8,8 @@ import multiprocessing
 import tqdm
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-from pathlib2 import Path
+from pathlib import Path
+import urllib3
 
 from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
@@ -120,8 +121,9 @@ def _get_geodata(
         proxies = {"http": "", "https": ""}
 
     if (not os.path.exists(file_name)) | (update is True):
-
-        data = session.get(link, proxies=proxies, headers=headers)
+        
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        data = session.get(link, proxies=proxies, headers=headers, verify=False)
 
         if data.status_code == 502:
             time.sleep(1)

@@ -5,6 +5,7 @@ import requests
 import zipfile
 import re
 import pandas as pd
+import urllib3
 
 
 def _dwn_idbank_files():
@@ -78,7 +79,8 @@ def _dwn_idbank_file(file_to_dwn):
     except:
         proxies = {"http": "", "https": ""}
 
-    results = requests.get(file_to_dwn, proxies=proxies)
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    results = requests.get(file_to_dwn, proxies=proxies, verify=False)
 
     dirpath = tempfile.mkdtemp()
 

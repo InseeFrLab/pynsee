@@ -2,6 +2,7 @@ import requests
 import re
 import os
 from functools import lru_cache
+import urllib3
 
 from pynsee.download._get_file_list_internal import _get_file_list_internal
 
@@ -20,9 +21,11 @@ def _get_dict_data_source():
         proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
+    
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     try:
-        jsonfile = requests.get(URL_DATA_LIST, proxies=proxies).json()
+        jsonfile = requests.get(URL_DATA_LIST, proxies=proxies, verify=False).json()
     except:
         jsonfile = _get_file_list_internal()
 

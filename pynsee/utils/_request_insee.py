@@ -3,6 +3,7 @@
 
 import os
 import requests
+import urllib3
 
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
@@ -16,7 +17,8 @@ def _request_insee(
     # sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
     # api_url = 'https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES/?firstNObservations=4&lastNObservations=1'
-
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    
     keys = _get_credentials()
 
     try:
@@ -66,8 +68,8 @@ def _request_insee(
 
             # avoid reaching the limit of 30 queries per minute from insee api
             _wait_api_query_limit(api_url)
-
-            results = requests.get(api_url, proxies=proxies, headers=headers)
+            
+            results = requests.get(api_url, proxies=proxies, headers=headers, verify=False)
 
             success = True
 
@@ -95,7 +97,7 @@ def _request_insee(
 
                 if sdmx_url is not None:
 
-                    results = requests.get(sdmx_url, proxies=proxies)
+                    results = requests.get(sdmx_url, proxies=proxies, verify=False)
 
                     if print_msg:
                         print("\n!!! SDMX web service used instead of API !!!")
@@ -129,7 +131,7 @@ def _request_insee(
                 if print_msg:
                     print("{}{}{}{}".format(msg1, msg2, msg3, msg4))
 
-                results = requests.get(sdmx_url, proxies=proxies)
+                results = requests.get(sdmx_url, proxies=proxies, verify=False)
 
                 if results.status_code == 200:
                     return results
@@ -141,7 +143,7 @@ def _request_insee(
     else:
         # api_url is None
         if sdmx_url is not None:
-            results = requests.get(sdmx_url, proxies=proxies)
+            results = requests.get(sdmx_url, proxies=proxies, verify=False)
 
             if results.status_code == 200:
                 return results
