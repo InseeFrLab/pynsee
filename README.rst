@@ -1,6 +1,6 @@
-.. role:: raw-html(raw)
-    :format: html
-    
+.. role:: raw-html-m2r(raw)
+   :format: html
+
 Introduction to pynsee package
 ==============================
 
@@ -29,8 +29,6 @@ Introduction to pynsee package
    :alt: Code formatting
 
 
-:raw-html:`<br />`
-    
 ``pynsee`` package contains tools to easily search and download data from INSEE and IGN.
 
 ``pynsee`` gives a quick access to more than 150 000 macroeconomic series,
@@ -57,8 +55,7 @@ API credentials can be created here : `api.insee.fr <https://api.insee.fr/catalo
    # pip install .[full]
 
    # Subscribe to api.insee.fr and get your credentials!
-   # Save once and for all your credentials with init_conn function.
-   # Then, functions requiring authentication will use the credentials saved locally on your machine by innit_conn
+   # Save your credentials with init_conn function :      
    from pynsee.utils.init_conn import init_conn
    init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 
@@ -79,6 +76,9 @@ Data Search and Collection Advice
 * **Files on insee.fr**: get the list of available files on insee.fr with ``get_file_list`` and then download it with ``download_file``
 
 For further advice, have a look at the documentation and gallery of the `examples <https://pynsee.readthedocs.io/en/latest/examples.html>`_.
+
+
+.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/example_gdp_picture.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
 
 Example - Population Map
 ------------------------
@@ -158,7 +158,8 @@ Example - Population Map
                 format='svg', dpi=1200,
                 bbox_inches = 'tight',
                 pad_inches = 0)
-    
+ 
+
 How to avoid proxy issues ?
 ---------------------------
 
@@ -169,21 +170,14 @@ How to avoid proxy issues ?
    init_conn(insee_key="my_insee_key",
              insee_secret="my_insee_secret",
              proxy_server="http://my_proxy_server:port")
-             
-   # Alternativety you can use directly environment variables as follows. 
-   # Beware not to commit your credentials!
-   import os
-   os.environ['insee_key'] = 'my_insee_key'
-   os.environ['insee_secret'] = 'my_insee_secret'
-   os.environ['http_proxy'] = "http://my_proxy_server:port"
 
-   # Any change to the keys should be tested after having cleared the cache
+   # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
 
 Support
 -------
 
-Feel free to open an issue with any question about this package using <https://github.com/InseeFrLab/Py-Insee-Data/issues> Github repository.
+Feel free to open an issue with any question about this package using <https://github.com/InseeFrLab/Py-Insee-Data> Github repository.
 
 Contributing
 ------------
