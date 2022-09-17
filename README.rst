@@ -78,8 +78,6 @@ Data Search and Collection Advice
 For further advice, have a look at the documentation and gallery of the `examples <https://pynsee.readthedocs.io/en/latest/examples.html>`_.
 
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/Py-Insee-Data/master/docs/examples/pictures/example_gdp_picture.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
-
 Example - Population Map
 ------------------------
 
