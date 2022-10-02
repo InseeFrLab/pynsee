@@ -9,8 +9,6 @@ on:
         - "*/tests/*"
         - "*/.github/workflows/pkgTests.yml"
   pull_request:
-    branches:
-      - master
     paths:
         - "*/pynsee/*"
         - "*/tests/*"
