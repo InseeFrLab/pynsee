@@ -23,4 +23,4 @@ Examples
    examples/example_rp_logement_2017.ipynb
    examples/example_marie_firstname.ipynb
    examples/example_doctors_idf.ipynb
-   examples/example_automotive_industry_sites.ipynb
+   examples/example_automotive_industry_sirene.ipynb
