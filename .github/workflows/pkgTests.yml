@@ -3,18 +3,10 @@ name: pynsee package tests
 on:
   push:
       branches:
-        - master
-      paths:
-        - "./pynsee/*"
-        - "./tests/*"
-        - "./.github/workflows/pkgTests.yml"
+        - 'master'
   pull_request:
     branches:
-      - master
-    paths:
-        - "./pynsee/*"
-        - "./tests/*"
-        - "./.github/workflows/pkgTests.yml"
+        - 'master'
 
 jobs:
   build:

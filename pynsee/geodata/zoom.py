@@ -29,6 +29,9 @@ def zoom(
         radius (float, optional): radius used with center point to make offshore point, distance in meter
 
         startAngle (float, optional): start angle defining offshore point, by default it is pi * (1 - 2.5 * 1/9))
+        
+        factor (float, optional): make departements bigger or smaller.
+        This parameter is used by shapely.affinity.scale function, please refer to its documentation to choose the value.
 
     Notes:
         by default zoom method focuses on the closest departements to Paris, but the function can be used to make a zoom on

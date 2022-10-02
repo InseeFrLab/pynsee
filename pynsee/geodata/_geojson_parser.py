@@ -34,6 +34,12 @@ def _geojson_parser(data):
         geom = data[c]["geometry"]["coordinates"]
 
         data_type = data[c]["geometry"]["type"]
+        
+        try:
+            if 'id' not in df2.columns:
+                df2['id'] = data[c]['id']
+        except:
+            pass
 
         Shape = shape({"type": data_type, "coordinates": geom})
         # list_shapes = [Shape.geoms[x] for x in range(len(Shape.geoms))]
