@@ -7,7 +7,7 @@ with open("README.rst", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="pynsee",
-    version="0.1.0",
+    version="0.0.16",
     author="Hadrien Leclerc, Lino Galiana",
     author_email="leclerc.hadrien@gmail.com",
     description="Tools to Easily Search and Download Data From INSEE and IGN",
@@ -32,11 +32,10 @@ setuptools.setup(
     install_requires=[
             "pandas>=0.24.2",
             "tqdm>=4.56.0",
-            "requests>=2.25.1",
+            "requests>=2.23",
             "appdirs>=1.4.4",
-            "unidecode>=1.2.0",
-            "shapely==1.8.0",
-            "datetime>=3.5.9",
+            "unidecode>=1.1.0",
+            "shapely>=1.8.0,<2.0",
             "urllib3",
             "pathlib"],
     extras_require={
