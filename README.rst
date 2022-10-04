@@ -52,6 +52,8 @@ Credentials are necessary to access some of the INSEE APIs available through `py
 API credentials can be created here : `api.insee.fr <https://api.insee.fr/catalogue/>`_
 
 .. code-block:: python
+   # Download Pypi package
+   pip install pynsee
 
    # Get the development version from GitHub
    # git clone https://github.com/InseeFrLab/pynsee.git

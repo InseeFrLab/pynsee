@@ -1,5 +1,5 @@
 
-# pynsee 0.0.8 : first version to be released 
+# pynsee 0.1.0 
 
 * tools to search and download data from INSEE APIs : BDM, LocalData, MetaData, SIRENE
 * automatic token generator for api.insee.fr from user's credentials saved locally 
