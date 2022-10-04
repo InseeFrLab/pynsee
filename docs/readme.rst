@@ -8,6 +8,9 @@
 Introduction to pynsee package
 ==============================
 
+.. image:: https://badge.fury.io/py/pynsee.svg
+   :target: https://pypi.org/project/pynsee/
+   :alt: Pypi version
 
 .. image:: https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg
    :target: https://github.com/InseeFrLab/pynsee/actions
