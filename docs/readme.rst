@@ -36,6 +36,10 @@ Introduction to pynsee package
    :target: https://pypi.org/project/black/
    :alt: Code formatting
    
+.. image:: https://img.shields.io/pypi/dm/pynsee
+   :target: https://pypi.org/project/pynsee/
+   :alt: PyPi Downloads
+   
 :raw-html:`<br />`
    
 `pynsee` package contains tools to easily search and download data from INSEE and IGN.
@@ -56,8 +60,9 @@ Credentials are necessary to access some of the INSEE APIs available through `py
 API credentials can be created here : `api.insee.fr <https://api.insee.fr/catalogue/>`_
 
 .. code-block:: python
+
    # Download Pypi package
-   pip install pynsee
+   pip install pynsee[full]
    
    # Get the development version from GitHub
    # git clone https://github.com/InseeFrLab/pynsee.git
