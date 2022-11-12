@@ -13,7 +13,8 @@ def _dwn_idbank_files():
     # creating the date object of today's date
     todays_date = date.today()
 
-    main_link = "https://www.insee.fr/en/statistiques/fichier/2868055/"
+    main_link_en = "https://www.insee.fr/en/statistiques/fichier/2868055/"
+    main_link_fr = "https://www.insee.fr/fr/statistiques/fichier/2862759/"
 
     curr_year = todays_date.year
     last_year = curr_year - 1
@@ -25,7 +26,9 @@ def _dwn_idbank_files():
 
     patt = "_correspondance_idbank_dimension"
     patterns = [y + x + patt for y in years for x in months]
-    files = [main_link + f + ".zip" for f in patterns]
+    files_en = [main_link_en + f + ".zip" for f in patterns]
+    files_fr = [main_link_fr + f + ".zip" for f in patterns]
+    files = files_fr + files_en
 
     try:
         file_to_dwn = os.environ["pynsee_idbank_file"]
@@ -62,6 +65,7 @@ def _dwn_idbank_files():
             try:
                 data = _dwn_idbank_file(file_to_dwn=files[i])
             except:
+                # print(f'!!! File not found:\n{files[i]}')
                 idbank_file_not_found = True
             else:
                 idbank_file_not_found = False
