@@ -36,7 +36,7 @@ Introduction to pynsee package
    :target: https://pypi.org/project/pynsee/
    :alt: PyPi Downloads
 
-``pynsee`` package contains tools to easily search and download data from INSEE and IGN.
+``pynsee`` package contains tools to easily search and download French data from INSEE and IGN APIs.
 
 ``pynsee`` gives a quick access to more than 150 000 macroeconomic series,
 a dozen datasets of local data, numerous sources available on `insee.fr <https://www.insee.fr>`_, 
