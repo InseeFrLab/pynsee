@@ -97,9 +97,10 @@ jobs:
           asset_name: ${{ env.name }}
           asset_content_type: application/zip      
 
-      - name: Upload Release Assets to TestPyPI
+      - name: Upload Release Assets to PyPI
         uses: pypa/gh-action-pypi-publish@v1.4.2
         with:
           user: __token__
-          password: ${{ secrets.testpypi_password }}
-          repository_url: https://test.pypi.org/legacy/
+          password: ${{ secrets.pypi_password }}
+          skip_existing: true
+          #repository_url: https://test.pypi.org/legacy/
