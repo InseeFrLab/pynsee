@@ -90,7 +90,7 @@ def _get_dataset_metadata(dataset, update=False):
         print("import os; os.environ['pynsee_idbank_file'] = 'my_new_idbank_file'")
         print("!!! Please contact the package maintainer if this error persists !!!")
 
-        idbank_list_dataset = _get_idbank_internal_data()
+        idbank_list_dataset = _get_idbank_internal_data(update=update)
         idbank_list_dataset = idbank_list_dataset[
             idbank_list_dataset["DATASET"] == dataset
         ]
