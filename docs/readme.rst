@@ -37,7 +37,7 @@ Introduction to pynsee package
    :alt: Code formatting
    
 .. image:: https://img.shields.io/pypi/dm/pynsee
-   :target: https://pypi.org/project/pynsee/
+   :target: https://pypistats.org/packages/pynsee
    :alt: PyPi Downloads
    
 :raw-html:`<br />`

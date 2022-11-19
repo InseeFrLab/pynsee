@@ -1,4 +1,10 @@
 
+# pynsee 0.1.1
+
+* idbank file download from both French and English webpages on insee.fr
+* internal idbank list update
+* readme update
+
 # pynsee 0.1.0 
 
 * tools to search and download data from INSEE APIs : BDM, LocalData, MetaData, SIRENE

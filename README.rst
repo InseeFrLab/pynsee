@@ -33,7 +33,7 @@ Introduction to pynsee package
    :alt: Code formatting
    
 .. image:: https://img.shields.io/pypi/dm/pynsee
-   :target: https://pypi.org/project/pynsee/
+   :target: https://pypistats.org/packages/pynsee
    :alt: PyPi Downloads
 
 ``pynsee`` package contains tools to easily search and download French data from INSEE and IGN APIs.
