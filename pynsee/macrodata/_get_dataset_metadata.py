@@ -73,7 +73,7 @@ def _get_dataset_metadata(dataset, update=False):
                 idbank_list_dataset = pd.read_pickle(file_dataset_metadata)
             except:
                 os.remove(file_dataset_metadata)
-                idbank_list_dataset = _get_dataset_metadata(dataset, update=update)
+                idbank_list_dataset = _get_dataset_metadata(dataset=dataset, update=True)
 
             # print("Cached data has been used")
     except:

@@ -49,7 +49,7 @@ def _get_idbank_internal_data(update=False):
             idbank_list = pd.read_pickle(data_final_file)
         except:
             os.remove(data_final_file)
-            idbank_list = _get_idbank_internal_data()
+            idbank_list = _get_idbank_internal_data(update=True)
         # else:
         #   print('Cached data used')
 
