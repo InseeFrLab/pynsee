@@ -17,7 +17,7 @@ setuptools.setup(
         'Bug Tracker': 'https://github.com/InseeFrLab/Py-Insee-Data/issues'
     },
     packages=setuptools.find_packages(),
-    license='OPEN LICENCE 2.0/LICENCE OUVERTE 2.0',
+    license='MIT',
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
