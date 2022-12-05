@@ -1,4 +1,8 @@
 
+# pynsee 0.1.2
+
+* license change from open license 2.0 to MIT license
+
 # pynsee 0.1.1
 
 * idbank file download from both French and English webpages on insee.fr
