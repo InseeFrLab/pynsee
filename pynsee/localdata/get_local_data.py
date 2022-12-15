@@ -36,7 +36,7 @@ def get_local_data(
     Args:
         variables (str): one or several variables separated by an hyphen (see get_local_metadata)
 
-        dataset_version (str): code of a dataset version (see get_local_metadata)
+        dataset_version (str): code of a dataset version (see get_local_metadata), if dates are replaced by 'latest' the function triggers a loop to find the latest data available (examples: 'GEOlatestRPlatest', 'GEOlatestFLORESlatest')
 
         nivgeo (str): code of kind of French administrative area (see get_nivgeo_list), by default it is 'FE' ie all France
 
@@ -60,10 +60,19 @@ def get_local_data(
         >>>                        variables =  'SEXE-DIPL_19',
         >>>                        nivgeo = 'DEP',
         >>>                        geocodes = ['91','92'])
+        >>> #
+        >>> # get latest data for from RP (Recensement / Census) on socio-professional categories by sexe in Paris
+        >>> data_paris = get_local_data(dataset_version='GEOlatestRPlatest',
+        >>>                        variables =  'CS1_8-SEXE',
+        >>>                        nivgeo = 'COM',
+        >>>                        geocodes = '75056')
     """
 
     if isinstance(geocodes, pd.core.series.Series):
         geocodes = geocodes.to_list()
+    
+    if type(geocodes) == str:
+        geocodes = [geocodes]
 
     if type(geocodes) != list:
         raise ValueError("!!! geocodes must be a list !!!")
