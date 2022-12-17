@@ -148,7 +148,7 @@ class TestFunction(TestCase):
             data = get_local_data(dataset_version='GEO2020FLORES2017',
                                   variables='EFFECSAL5T_1_100P',
                                   nivgeo='REG',
-                                  geocodes=['11'])
+                                  geocodes='11')
             test = test & isinstance(data, pd.DataFrame)
 
             data = get_local_data(dataset_version='GEO2019REE2018',
@@ -162,6 +162,9 @@ class TestFunction(TestCase):
                                   nivgeo='COM',
                                   geocodes=['91477'])
             test = test & isinstance(data, pd.DataFrame)
+            
+            data = get_local_data(dataset_version='GEOlatestRPlatest', variables = 'CS1_6')
+            test = test & isinstance(data, pd.DataFrame)
 
             for geo in ["DEP", "REG", "FE", "METRODOM"]:
                 data = get_local_data(dataset_version = 'GEO2020FLORES2017',
@@ -172,6 +175,14 @@ class TestFunction(TestCase):
             test = test & isinstance(data, pd.DataFrame)
 
             self.assertTrue(test)
+            
+        def test_get_local_data_latest_error(self):
+            
+            def getlocaldataTestError():
+                data = get_local_data(dataset_version='GEOlatestTESTlatest', variables = 'CS1_6')
+                return data
+
+            self.assertRaises(ValueError, getlocaldataTestError)
 
         def test_get_area_list_1(self):
             def get_area_list_test():
