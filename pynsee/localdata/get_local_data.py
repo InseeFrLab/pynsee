@@ -10,6 +10,7 @@ import re
 import sys
 import datetime
 
+from pynsee.localdata._find_latest_local_dataset import _find_latest_local_dataset
 from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
 from pynsee.localdata.get_geo_list import get_geo_list
 from pynsee.utils._create_insee_folder import _create_insee_folder
@@ -102,40 +103,9 @@ def get_local_data(
     pattern = re.compile('^GEOlatest.*latest$')
 
     if pattern.match(dataset_version):
-
-        datasetname = dataset_version.replace('latest', '').replace('GEO', '')
-
-        current_year = int(datetime.datetime.today().strftime('%Y'))   
-        backwardperiod = 5
-        list_geo_dates = range(current_year, current_year-backwardperiod, -1)        
-        list_data_dates = range(current_year, current_year-backwardperiod, -1)
-
-        list_dataset_version = ['GEO' + str(gdate) + datasetname + str(ddate)
-                        for gdate in list_geo_dates
-                        for ddate in list_data_dates]
-
-        codegeo = geocodes[0]
-
-        for dvindex in trange(len(list_dataset_version),
-                              desc='Finding Latest Dataset Version'):
-
-            dv = list_dataset_version[dvindex]
-
-            try:
-                sys.stdout = open(os.devnull, 'w')
-                df = _get_insee_local_onegeo(
-                            variables, dv, nivgeo='FE', codegeo='1'
-                        ) 
-                sys.stdout = sys.__stdout__
-            except:            
-                if dv == list_dataset_version[-1]:
-                    msg = '!!! Latest dataset version not found !!!\n'
-                    msg += 'Please, consider having a look at api.insee.fr or get_local_metadata function'
-                    raise ValueError(msg)
-            else:
-                dataset_version = dv
-                break
         
+        dataset_version = _find_latest_local_dataset(dataset_version, variables, update)
+       
     if (not os.path.exists(file_localdata)) or update:
 
         list_data_all = []
