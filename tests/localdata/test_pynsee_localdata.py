@@ -165,6 +165,15 @@ class TestFunction(TestCase):
             
             data = get_local_data(dataset_version='GEOlatestRPlatest', variables = 'CS1_6')
             test = test & isinstance(data, pd.DataFrame)
+            
+            # test data cached
+            data = get_local_data(dataset_version='GEOlatestRPlatest', variables = 'TYPMR')
+            test = test & isinstance(data, pd.DataFrame)
+            
+            data = get_local_data(dataset_version='GEOlatestRPlatest', variables = 'TF4',
+                                 nivgeo='COM', geocodes = ['75056'])
+            test = test & isinstance(data, pd.DataFrame)            
+            
 
             for geo in ["DEP", "REG", "FE", "METRODOM"]:
                 data = get_local_data(dataset_version = 'GEO2020FLORES2017',
