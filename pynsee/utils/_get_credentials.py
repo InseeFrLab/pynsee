@@ -18,7 +18,7 @@ def _get_credentials():
         os.environ["insee_key"] = str(cred.loc[0, "insee_key"])
         os.environ["insee_secret"] = str(cred.loc[0, "insee_secret"])
         proxy_server = cred.loc[0, "proxy_server"]
-        if (proxy_server is None) or (np.isnan(proxy_server)):
+        if (proxy_server is None) or (not isinstance(proxy_server, str)):
             proxy_server = ""
         os.environ["http_proxy"] = str(proxy_server)
         os.environ["https_proxy"] = str(proxy_server)
