@@ -108,25 +108,31 @@ def get_local_data(
        
     if (not os.path.exists(file_localdata)) or update:
 
-        list_data_all = []
-
+        list_data_all = []       
+        
         for cdg in trange(len(geocodes), desc="Getting data"):
-
+            
             codegeo = geocodes[cdg]
+            df_default = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": np.nan}, index=[0])
+            
             try:
                 df = _get_insee_local_onegeo(
                     variables, dataset_version, nivgeo, codegeo
                 )
                 
             except:
-                df = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": np.nan}, index=[0])
+                df = df_default
 
             list_data_all.append(df)
 
         data_final = pd.concat(list_data_all).reset_index(drop=True)
-        data_final.to_pickle(file_localdata)
-        print(f"Data saved: {file_localdata}")
-
+        
+        if data_final.equals(df_default):
+            print(f"!!! Error or no data found !!!")            
+        else:
+            data_final.to_pickle(file_localdata)
+            print(f"Data saved: {file_localdata}")
+            
     else:
         try:
             data_final = pd.read_pickle(file_localdata)

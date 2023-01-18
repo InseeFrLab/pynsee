@@ -49,11 +49,10 @@ def _find_latest_local_dataset(dataset_version, variables, update):
                 dataset_version = dv
                 break
             
-            pickle.dump(dataset_version, open(file_localdata, "wb"))
-            print(f"Data saved: {file_localdata}")
+        pickle.dump(dataset_version, open(file_localdata, "wb"))
     else:
         try:
-            dataset_version = favorite_color = pickle.load(open(file_localdata, "rb"))
+            dataset_version = pickle.load(open(file_localdata, "rb"))
         except:
             os.remove(file_localdata)
             dataset_version = _find_latest_local_dataset(
@@ -62,8 +61,6 @@ def _find_latest_local_dataset(dataset_version, variables, update):
                 update=True
             )
         else:
-            print(
-                f"Locally saved data has been used\nSet update=True to trigger an update"
-            )
+            print("Latest dataset version previously found has been used\nSet update=True to get the most up-to-date data")
         
     return dataset_version
