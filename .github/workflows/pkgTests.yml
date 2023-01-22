@@ -7,6 +7,9 @@ on:
   pull_request:
     branches:
         - 'master'
+  pull_request_target:
+    branches:
+        - 'master'
 
 jobs:
   build:
@@ -16,6 +19,10 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10"]
 
     steps:
+    - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: "refs/pull/${{ github.event.number }}/merge"
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
