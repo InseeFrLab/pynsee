@@ -36,6 +36,10 @@ Get local data
 
 .. autofunction:: pynsee.localdata.get_new_city
 
+.. autofunction:: pynsee.localdata.get_territory_descendants
+
+.. autofunction:: pynsee.localdata.get_territory_descendants
+
 Get metadata
 ------------
 
