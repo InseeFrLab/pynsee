@@ -39,7 +39,6 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
         >>> os.environ['insee_key'] = 'my_insee_key'
         >>> os.environ['insee_secret'] = 'my_insee_secret'
         >>> os.environ['http_proxy'] = "http://my_proxy_server:port"
-        >>> os.environ['https_proxy'] = "http://my_proxy_server:port"
     """
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     home = str(Path.home())
@@ -74,7 +73,7 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
         print(f"Token has been created")
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
 

@@ -23,7 +23,7 @@ def _get_token_from_insee(insee_key, insee_secret):
     data = {"grant_type": "client_credentials"}
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
 

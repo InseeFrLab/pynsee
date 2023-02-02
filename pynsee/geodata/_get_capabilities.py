@@ -17,7 +17,7 @@ def _get_capabilities(key, version="1.0.0", service="wmts", tweak=""):
     )
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
     
