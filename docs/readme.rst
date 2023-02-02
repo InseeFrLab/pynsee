@@ -187,6 +187,7 @@ How to avoid proxy issues ?
    os.environ['insee_key'] = 'my_insee_key'
    os.environ['insee_secret'] = 'my_insee_secret'
    os.environ['http_proxy'] = "http://my_proxy_server:port"
+   os.environ['https_proxy'] = "http://my_proxy_server:port"
 
    # Any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
