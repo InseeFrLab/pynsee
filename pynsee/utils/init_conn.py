@@ -39,6 +39,7 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
         >>> os.environ['insee_key'] = 'my_insee_key'
         >>> os.environ['insee_secret'] = 'my_insee_secret'
         >>> os.environ['http_proxy'] = "http://my_proxy_server:port"
+        >>> os.environ['https_proxy'] = "http://my_proxy_server:port"
     """
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     home = str(Path.home())
