@@ -116,7 +116,7 @@ def _get_geodata(
     headers = {"User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")}
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
 

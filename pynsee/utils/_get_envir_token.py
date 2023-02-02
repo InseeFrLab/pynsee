@@ -10,7 +10,7 @@ from functools import lru_cache
 def _get_envir_token():
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
 
