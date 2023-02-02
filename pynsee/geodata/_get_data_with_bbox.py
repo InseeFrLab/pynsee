@@ -60,7 +60,7 @@ def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
     link_query = link + BBOX
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
 

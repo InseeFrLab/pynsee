@@ -49,7 +49,7 @@ def _request_insee(
                     print("\n" + sdmx_url)
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
 
