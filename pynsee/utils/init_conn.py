@@ -74,7 +74,7 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
         print(f"Token has been created")
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
 
