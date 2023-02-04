@@ -12,13 +12,14 @@ from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 
-def init_conn(insee_key, insee_secret, proxy_server=""):
+def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
     """Save your credentials to connect to INSEE APIs, subscribe to api.insee.fr
 
     Args:
         insee_key (str): user's key
         insee_secret (str): user's secret
-        proxy_server (str, optional): Proxy server address, e.g. 'http://my_proxy_server:port'. Defaults to "".
+        http_proxy (str, optional): Proxy server address, e.g. 'http://my_proxy_server:port'. Defaults to "".
+        https_proxy (str, optional): Proxy server address, e.g. 'http://my_proxy_server:port'. Defaults to "".
 
     Notes:
         Environment variables can be used instead of init_conn function
@@ -27,11 +28,12 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
         >>> from pynsee.utils.init_conn import init_conn
         >>> init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
         >>> #
-        >>> # if the user has to use a proxy server use proxy_server argument as follows:
+        >>> # if the user has to use a proxy server use http_proxy and https_proxy arguments as follows:
         >>> from pynsee.utils.init_conn import init_conn
         >>> init_conn(insee_key="my_insee_key",
         >>>           insee_secret="my_insee_secret",
-        >>>           proxy_server="http://my_proxy_server:port")
+        >>>           http_proxy="http://my_proxy_server:port",
+        >>>           https_proxy="http://my_proxy_server:port")
         >>> #
         >>> # Alternativety you can use directly environment variables as follows:
         >>> # Beware not to commit your credentials!
@@ -49,7 +51,8 @@ def init_conn(insee_key, insee_secret, proxy_server=""):
         {
             "insee_key": insee_key,
             "insee_secret": insee_secret,
-            "proxy_server": proxy_server,
+            "http_proxy": http_proxy,
+            "https_proxy": https_proxy,
         },
         index=[0],
     )
