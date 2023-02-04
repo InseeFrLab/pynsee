@@ -20,7 +20,7 @@ def _warning_territory_ascendants():
 @lru_cache(maxsize=None)
 def get_territory_ascendants(territory: str, code: str, date: str = None, type: str = None):
     """
-    Get informations about territories containing a given territory
+    Get information about territories containing a given territory
 
     Args:
         territory (str): case sensitive, territory type, any of ('arrondissement', 'arrondissementMunicipal', 'circonscriptionTerritoriale', 'commune', 'communeAssociee', 'communeDeleguee', 'departement', 'district')

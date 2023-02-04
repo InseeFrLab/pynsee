@@ -20,7 +20,7 @@ def _warning_territory_descendants():
 @lru_cache(maxsize=None)
 def get_territory_descendants(territory: str, code: str, date: str = None, type: str = None):
     """
-    Get informations about territories contained in a given territory
+    Get information about territories contained in a given territory
 
     Args:
         territory (str): case sensitive, territory type, any of ('aireDAttractionDesVilles2020', 'arrondissement', 'collectiviteDOutreMer', 'commune', 'departement', 'region', 'uniteUrbaine2020', 'zoneDEmploi2020')
