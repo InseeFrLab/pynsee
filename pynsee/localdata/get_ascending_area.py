@@ -18,7 +18,7 @@ from pynsee.utils._request_insee import _request_insee
 
 
 @lru_cache(maxsize=None)
-def get_area_ascending(area: str, code: str, date: str = None, type: str = None):
+def get_ascending_area(area: str, code: str, date: str = None, type: str = None):
     """
     Get information about areas containing a given area
 
@@ -32,9 +32,9 @@ def get_area_ascending(area: str, code: str, date: str = None, type: str = None)
         date (str, optional): date used to analyse the data, format : 'AAAA-MM-JJ'. If date is None, by default the current date is used.
 
     Examples:
-        >>> from pynsee.localdata import get_area_ascending
-        >>> df = get_area_ascending("commune", code='59350', date='2018-01-01')
-        >>> df = get_area_ascending("departement", code='59', date='2018-01-01')
+        >>> from pynsee.localdata import get_ascending_area
+        >>> df = get_ascending_area("commune", code='59350', date='2018-01-01')
+        >>> df = get_ascending_area("departement", code='59', date='2018-01-01')
     """
 
     areas = {

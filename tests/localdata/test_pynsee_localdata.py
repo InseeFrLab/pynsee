@@ -19,6 +19,8 @@ from pynsee.localdata.get_local_metadata import get_local_metadata
 from pynsee.localdata.get_population import get_population
 from pynsee.localdata.get_old_city import get_old_city
 from pynsee.localdata.get_new_city import get_new_city
+from pynsee.localdata.get_area_ascending import get_area_ascending
+from pynsee.localdata.get_area_descending import get_area_descending
 
 class TestFunction(TestCase):    
 

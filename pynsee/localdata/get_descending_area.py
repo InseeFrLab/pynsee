@@ -18,7 +18,7 @@ from pynsee.utils._request_insee import _request_insee
 
 
 @lru_cache(maxsize=None)
-def get_area_descending(area: str, code: str, date: str = None, type: str = None):
+def get_descending_area(area: str, code: str, date: str = None, type: str = None):
     """
     Get information about areas contained in a given area
 
@@ -33,9 +33,9 @@ def get_area_descending(area: str, code: str, date: str = None, type: str = None
 
     Examples:
         >>> from pynsee.localdata import get_area_descending
-        >>> df = get_area_descending("commune", code='59350', date='2018-01-01')
-        >>> df = get_area_descending("departement", code='59', date='2018-01-01')
-        >>> df = get_area_descending("zoneDEmploi2020", code='1109')
+        >>> df = get_descending_area("commune", code='59350', date='2018-01-01')
+        >>> df = get_descending_area("departement", code='59', date='2018-01-01')
+        >>> df = get_descending_area("zoneDEmploi2020", code='1109')
     """
 
     areas = {
