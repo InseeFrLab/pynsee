@@ -13,17 +13,17 @@ from pynsee.utils._request_insee import _request_insee
 
 
 @lru_cache(maxsize=None)
-def _warning_territory_descendants():
+def _warning_territory_ascendants():
     print("\ndate is None, by default it's supposed to be ten years before current year")
 
 
 @lru_cache(maxsize=None)
-def get_territory_descendants(territory: str, code: str, date: str = None, type: str = None):
+def get_area_ascending(area: str, code: str, date: str = None, type: str = None):
     """
-    Get information about territories contained in a given territory
+    Get information about territories containing a given territory
 
     Args:
-        territory (str): case sensitive, territory type, any of ('aireDAttractionDesVilles2020', 'arrondissement', 'collectiviteDOutreMer', 'commune', 'departement', 'region', 'uniteUrbaine2020', 'zoneDEmploi2020')
+        territory (str): case sensitive, territory type, any of ('arrondissement', 'arrondissementMunicipal', 'circonscriptionTerritoriale', 'commune', 'communeAssociee', 'communeDeleguee', 'departement', 'district')
             
         code (str): territory code
 
@@ -32,41 +32,41 @@ def get_territory_descendants(territory: str, code: str, date: str = None, type:
         date (str, optional): date used to analyse the data, format : 'AAAA-MM-JJ'. If date is None, by default it supposed to be ten years before current year.
 
     Examples:
-        >>> from pynsee.localdata import get_territory_ascendants
-        >>> df = get_territory_ascendants("commune", code='59350', date='2018-01-01')
-        >>> df = get_territory_ascendants("departement", code='59', date='2018-01-01')
+        >>> from pynsee.localdata import get_area_ascending
+        >>> df = get_area_ascending("commune", code='59350', date='2018-01-01')
+        >>> df = get_area_ascending("departement", code='59', date='2018-01-01')
     """
 
-    territories = {
-            'aireDAttractionDesVilles2020', 
+    areas = {
             'arrondissement', 
-            'collectiviteDOutreMer', 
+            'arrondissementMunicipal', 
+            'circonscriptionTerritoriale', 
             'commune', 
+            'communeAssociee', 
+            'communeDeleguee', 
             'departement', 
-            'region', 
-            'uniteUrbaine2020', 
-            'zoneDEmploi2020',
+            'district',
             }
-    if territory not in territories:
+    if area not in areas:
         msg = (
-            f"territory must be one of {territories} "
-            f"- found '{territory}' instead"
+            f"territory must be one of {areas} "
+            f"- found '{area}' instead"
             )
         raise ValueError(msg)
             
     
     INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
 
-    api_link = INSEE_localdata_api_link + territory + "/" + str(code) + "/descendants"
+    api_link = INSEE_localdata_api_link + territory + "/" + str(code) + "/ascendants"
 
     if date is not None:
         api_link = api_link + "?date=" + date
-    else:
-        _warning_territory_descendants()
+    #else:
+    #    _warning_territory_ascendants()
 
-        now = datetime.datetime.now()
-        date = str(now.year - 10)
-        api_link = api_link + "?date=" + date + "-01-01"
+     #   now = datetime.datetime.now()
+     #   date = str(now.year - 10)
+     #   api_link = api_link + "?date=" + date + "-01-01"
 
     if type is not None:
         api_link += "&type=" + type
