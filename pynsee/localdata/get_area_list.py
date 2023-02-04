@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from functools import lru_cache
 import pandas as pd
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._paste import _paste
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._hash import _hash
 
-
-@lru_cache(maxsize=None)
-def get_area_list(area=None):
+def get_area_list(area=None, update=False):
     """Get a list of non administrative areas : urban, employment or functional areas
 
     Args:
@@ -23,10 +22,18 @@ def get_area_list(area=None):
         >>> area_list = get_area_list()
     """
 
-    list_available_area = [
+    list_available_area = [       
+        'departements',
+        'regions',
+        'communes',
+        'communesAssociees',
+        'communesDeleguees',
+        'arrondissementsMunicipaux',        
+        'arrondissements',
         "zonesDEmploi2020",
         "airesDAttractionDesVilles2020",
         "unitesUrbaines2020",
+        "collectivitesDOutreMer"
     ]
     area_string = _paste(list_available_area, collapse=" ")
 
@@ -60,33 +67,51 @@ def get_area_list(area=None):
         else:
             list_available_area = [area]
 
-    list_data = []
+    filename = _hash("".join(['get_area_list'] + list_available_area))
+    insee_folder = _create_insee_folder()
+    file_data = insee_folder + "/" + filename   
+    
+    if (not os.path.exists(file_data)) or update:
 
-    for a in list_available_area:
-        api_url = "https://api.insee.fr/metadonnees/V1/geo/" + a + "?date=*"
+        list_data = []
 
-        request = _request_insee(api_url=api_url, file_format="application/json")
+        for a in list_available_area:
+            api_url = "https://api.insee.fr/metadonnees/V1/geo/" + a + "?date=*"
 
-        data = request.json()
+            request = _request_insee(api_url=api_url, file_format="application/json")
 
-        for i in range(len(data)):
-            df = pd.DataFrame(data[i], index=[0])
-            list_data.append(df)
+            data = request.json()
 
-    data_all = pd.concat(list_data).reset_index(drop=True)
+            for i in range(len(data)):
+                df = pd.DataFrame(data[i], index=[0])
+                list_data.append(df)
 
-    data_all.rename(
-        columns={
-            "code": "CODE",
-            "uri": "URI",
-            "dateCreation": "DATE_CREATION",
-            "intituleSansArticle": "TITLE_SHORT",
-            "type": "AREA_TYPE",
-            "typeArticle": "DETERMINER_TYPE",
-            "intitule": "TITLE",
-            "dateSuppression": "DATE_DELETION",
-        },
-        inplace=True,
-    )
+        data_all = pd.concat(list_data).reset_index(drop=True)
+        
+        data_all.rename(
+            columns={
+                "code": "CODE",
+                "uri": "URI",
+                "dateCreation": "DATE_CREATION",
+                "intituleSansArticle": "TITLE_SHORT",
+                "type": "AREA_TYPE",
+                "typeArticle": "DETERMINER_TYPE",
+                "intitule": "TITLE",
+                "dateSuppression": "DATE_DELETION",
+            },
+            inplace=True,
+        )
+        data_all.to_pickle(file_data)
+        print(f"Data saved: {file_data}")
+    else:
+        try:
+            data_all = pd.read_pickle(file_data)
+        except:
+            os.remove(file_data)
+            data_all = get_area_list(area=area, update=True)
+        else:
+            print(
+                f"Locally saved data has been used\nSet update=True to trigger an update"
+            )
 
     return data_all
