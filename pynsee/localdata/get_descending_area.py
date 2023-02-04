@@ -11,12 +11,6 @@ from functools import lru_cache
 
 from pynsee.utils._request_insee import _request_insee
 
-
-#@lru_cache(maxsize=None)
-#def _warning_territory_descendants():
-#    print("\ndate is None, by default it's supposed to be ten years before current year")
-
-
 @lru_cache(maxsize=None)
 def get_descending_area(area: str, code: str, date: str = None, type: str = None):
     """
@@ -60,16 +54,9 @@ def get_descending_area(area: str, code: str, date: str = None, type: str = None
 
     api_link = INSEE_localdata_api_link + area + "/" + str(code) + "/descendants"
 
-    
     if date is not None:
         api_link = api_link + "?date=" + date
-    #else:
-        #_warning_territory_descendants()
-
-        #now = datetime.datetime.now()
-        #date = str(now.year - 10)
-        #api_link = api_link + "?date=" + date + "-01-01"
-
+   
     if type is not None:
         api_link += "&type=" + type
 
