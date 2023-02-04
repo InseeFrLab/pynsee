@@ -2,6 +2,7 @@
 # Copyright : INSEE, 2021
 
 import pandas as pd
+import os
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._paste import _paste
