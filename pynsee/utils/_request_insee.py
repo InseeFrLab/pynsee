@@ -93,7 +93,7 @@ def _request_insee(
             if "status_code" not in dir(results):
                 success = False
             elif code in CODES:
-                msg = f"Error {code} - {CODES[code]}"
+                msg = f"Error {code} - {CODES[code]}\nQuery:\n{api_url}"
                 raise requests.exceptions.RequestException(msg)
             elif code != 200:
                 success = False
