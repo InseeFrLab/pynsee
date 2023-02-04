@@ -12,24 +12,24 @@ from functools import lru_cache
 from pynsee.utils._request_insee import _request_insee
 
 
-@lru_cache(maxsize=None)
-def _warning_territory_ascendants():
-    print("\ndate is None, by default it's supposed to be ten years before current year")
+#@lru_cache(maxsize=None)
+#def _warning_territory_ascendants():
+#    print("\ndate is None, by default it's supposed to be ten years before current year")
 
 
 @lru_cache(maxsize=None)
 def get_area_ascending(area: str, code: str, date: str = None, type: str = None):
     """
-    Get information about territories containing a given territory
+    Get information about areas containing a given area
 
     Args:
-        territory (str): case sensitive, territory type, any of ('arrondissement', 'arrondissementMunicipal', 'circonscriptionTerritoriale', 'commune', 'communeAssociee', 'communeDeleguee', 'departement', 'district')
+        area (str): case sensitive, area type, any of ('arrondissement', 'arrondissementMunicipal', 'circonscriptionTerritoriale', 'commune', 'communeAssociee', 'communeDeleguee', 'departement', 'district')
             
-        code (str): territory code
+        code (str): area code
 
         type (str) : case insensitive, any of 'Arrondissement', 'Departement', 'Region', 'UniteUrbaine2020', 'ZoneDEmploi2020', ...
 
-        date (str, optional): date used to analyse the data, format : 'AAAA-MM-JJ'. If date is None, by default it supposed to be ten years before current year.
+        date (str, optional): date used to analyse the data, format : 'AAAA-MM-JJ'. If date is None, by default the current date is used.
 
     Examples:
         >>> from pynsee.localdata import get_area_ascending
@@ -57,7 +57,7 @@ def get_area_ascending(area: str, code: str, date: str = None, type: str = None)
     
     INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
 
-    api_link = INSEE_localdata_api_link + territory + "/" + str(code) + "/ascendants"
+    api_link = INSEE_localdata_api_link + area + "/" + str(code) + "/ascendants"
 
     if date is not None:
         api_link = api_link + "?date=" + date
