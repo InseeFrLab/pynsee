@@ -19,9 +19,9 @@ def _get_credentials():
         os.environ["insee_secret"] = str(cred.loc[0, "insee_secret"])
         http_proxy = cred.loc[0, "http_proxy"]
         https_proxy = cred.loc[0, "https_proxy"]
-        if (http_proxy is None) or (np.isnan(http_proxy)):
+        if (http_proxy is None) or (not isinstance(http_proxy, str)):
             http_proxy = ""
-        if (https_proxy is None) or (np.isnan(https_proxy)):
+        if (https_proxy is None) or (not isinstance(https_proxy, str)):
             https_proxy = ""
         os.environ["http_proxy"] = str(http_proxy)
         os.environ["https_proxy"] = str(https_proxy)
