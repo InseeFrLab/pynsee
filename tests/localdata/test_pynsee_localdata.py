@@ -19,8 +19,8 @@ from pynsee.localdata.get_local_metadata import get_local_metadata
 from pynsee.localdata.get_population import get_population
 from pynsee.localdata.get_old_city import get_old_city
 from pynsee.localdata.get_new_city import get_new_city
-from pynsee.localdata.get_area_ascending import get_area_ascending
-from pynsee.localdata.get_area_descending import get_area_descending
+from pynsee.localdata.get_ascending_area import get_ascending_area
+from pynsee.localdata.get_descending_area import get_descending_area
 
 class TestFunction(TestCase):    
 
@@ -183,6 +183,25 @@ class TestFunction(TestCase):
                                     nivgeo = geo)
                 test = test & isinstance(data, pd.DataFrame)
 
+            test = test & isinstance(data, pd.DataFrame)
+            
+            #
+            # test get_descending_area and get_ascending_are
+            #
+            
+            df = get_descending_area("commune", code='59350', date='2018-01-01')
+            test = test & isinstance(df, pd.DataFrame)
+            
+            df = get_descending_area("departement", code='59')
+            test = test & isinstance(data, pd.DataFrame)
+            
+            df = get_descending_area("zoneDEmploi2020", code='1109')
+            test = test & isinstance(data, pd.DataFrame)
+            
+            df = get_ascending_area("commune", code='59350', date='2018-01-01')
+            test = test & isinstance(data, pd.DataFrame)
+            
+            df = get_ascending_area("departement", code='59')
             test = test & isinstance(data, pd.DataFrame)
 
             self.assertTrue(test)
