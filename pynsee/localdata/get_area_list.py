@@ -10,7 +10,7 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
 def get_area_list(area=None, update=False):
-    """Get a list of non administrative areas : urban, employment or functional areas
+    """Get an exhaustive list of administrative areas : communes, departments, and urban, employment or functional areas
 
     Args:
         area (str, optional): Defaults to None, then get all values
@@ -21,6 +21,9 @@ def get_area_list(area=None, update=False):
     Examples:
         >>> from pynsee.localdata import get_area_list
         >>> area_list = get_area_list()
+        >>> #
+        >>> # get list of all communes in France
+        >>> com = get_area_list(area='communes')
     """
 
     list_available_area = [       
