@@ -28,6 +28,9 @@ class MyTests(unittest.TestCase):
         
         self.assertTrue(isinstance(df, pd.DataFrame))
         
+    def test_download_big_file(self):
+        df = download_file("RP_LOGEMENT_2017", variables = ["COMMUNE", "IRIS", "ACHL", "IPONDL"])
+        self.assertTrue(isinstance(df, pd.DataFrame))
         
     def test_download_file_all(self):
         meta = get_file_list()
