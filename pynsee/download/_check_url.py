@@ -40,7 +40,7 @@ def _check_url(url):
 
         print(f"File not found on insee.fr:\n{url}")
 
-        print("Please open an issue on:\nhttps://github.com/InseeFrLab/Py-Insee-Data")
+        print("Please open an issue on:\nhttps://github.com/InseeFrLab/pynsee")
 
         for d in list_potential_dates:
 
