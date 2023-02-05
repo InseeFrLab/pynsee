@@ -193,16 +193,16 @@ class TestFunction(TestCase):
             test = test & isinstance(df, pd.DataFrame)
             
             df = get_descending_area("departement", code='59')
-            test = test & isinstance(data, pd.DataFrame)
+            test = test & isinstance(df, pd.DataFrame)
             
             df = get_descending_area("zoneDEmploi2020", code='1109')
-            test = test & isinstance(data, pd.DataFrame)
+            test = test & isinstance(df, pd.DataFrame)
             
             df = get_ascending_area("commune", code='59350', date='2018-01-01')
-            test = test & isinstance(data, pd.DataFrame)
+            test = test & isinstance(df, pd.DataFrame)
             
             df = get_ascending_area("departement", code='59')
-            test = test & isinstance(data, pd.DataFrame)
+            test = test & isinstance(df, pd.DataFrame)
 
             self.assertTrue(test)
             
@@ -215,6 +215,21 @@ class TestFunction(TestCase):
             self.assertRaises(ValueError, getlocaldataTestError)
 
         def test_get_area_list_1(self):
+
+            test = True
+
+            df = get_area_list(update=True)
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_list(update=False)
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_list(area='communes')
+            test = test & isinstance(df, pd.DataFrame)
+            
+            self.assertTrue(test)
+
+        def test_get_area_list_2(self):
             def get_area_list_test():
                 get_area_list('a')
             self.assertRaises(ValueError, get_area_list_test)
@@ -235,4 +250,6 @@ class TestFunction(TestCase):
 
             data_final = pd.concat(list_data)
 
-            self.assertTrue(isinstance(data_final, pd.DataFrame))
+            test = isinstance(data_final, pd.DataFrame)
+
+            self.assertTrue(test)
