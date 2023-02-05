@@ -7,11 +7,15 @@ from pandas import pandas as pd
 from pynsee.metadata.get_definition_list import get_definition_list
 from pynsee.metadata.get_definition import get_definition
 from pynsee.metadata.get_activity_list import get_activity_list
-
+from pynsee.metadata.get_legal_entity import get_legal_entity
 
 class TestFunction(TestCase):
 
     if True:
+        
+        def test_get_legal_entity(self):
+            data = get_legal_entity(codes = ['5599', '83'])
+            self.assertTrue(isinstance(data, pd.DataFrame))
 
         def test_get_definition_list(self):
             data = get_definition_list()
