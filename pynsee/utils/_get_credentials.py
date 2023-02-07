@@ -17,11 +17,14 @@ def _get_credentials():
         cred = pd.read_csv(pynsee_credentials_file)
         os.environ["insee_key"] = str(cred.loc[0, "insee_key"])
         os.environ["insee_secret"] = str(cred.loc[0, "insee_secret"])
-        proxy_server = cred.loc[0, "proxy_server"]
-        if (proxy_server is None) or (np.isnan(proxy_server)):
-            proxy_server = ""
-        os.environ["http_proxy"] = str(proxy_server)
-        os.environ["https_proxy"] = str(proxy_server)
+        http_proxy = cred.loc[0, "http_proxy"]
+        https_proxy = cred.loc[0, "https_proxy"]
+        if (http_proxy is None) or (not isinstance(http_proxy, str)):
+            http_proxy = ""
+        if (https_proxy is None) or (not isinstance(https_proxy, str)):
+            https_proxy = ""
+        os.environ["http_proxy"] = str(http_proxy)
+        os.environ["https_proxy"] = str(https_proxy)
     except:
         envir_var_used = True
 

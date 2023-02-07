@@ -36,6 +36,10 @@ Get local data
 
 .. autofunction:: pynsee.localdata.get_new_city
 
+.. autofunction:: pynsee.localdata.get_ascending_area
+
+.. autofunction:: pynsee.localdata.get_descending_area
+
 Get metadata
 ------------
 

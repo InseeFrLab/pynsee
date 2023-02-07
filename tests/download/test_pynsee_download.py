@@ -3,12 +3,19 @@ import os
 import pandas as pd
 
 from pynsee.download import *
+from pynsee.download._check_url import _check_url
 from pynsee.download import download_file
 from pynsee.download import get_file_list
 from pynsee.download import get_column_metadata
 from pynsee.utils.clear_all_cache import clear_all_cache
 
+
 class MyTests(unittest.TestCase):
+    
+    def test_check_url(self):
+        url = 'https://www.insee.fr/fr/statistiques/fichier/2540004/nat2020_csv.zip'
+        url2 = _check_url(url)
+        self.assertTrue(isinstance(url2, str))
     
     def test_get_file_list_error(self):
         
@@ -21,6 +28,9 @@ class MyTests(unittest.TestCase):
         
         self.assertTrue(isinstance(df, pd.DataFrame))
         
+    def test_download_big_file(self):
+        df = download_file("RP_LOGEMENT_2017", variables = ["COMMUNE", "IRIS", "ACHL", "IPONDL"])
+        self.assertTrue(isinstance(df, pd.DataFrame))
         
     def test_download_file_all(self):
         meta = get_file_list()
