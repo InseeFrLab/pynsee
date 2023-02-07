@@ -3,6 +3,7 @@
 
 import unittest
 from unittest import TestCase
+import requests
 
 import os
 import sys
@@ -47,7 +48,7 @@ class TestFunction(TestCase):
             def request_insee_test(sdmx_url=sdmx_url, api_url=api_url):
                 _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-            self.assertRaises(ValueError, request_insee_test)
+            self.assertRaises(requests.exceptions.RequestException, request_insee_test)
 
         if test_SDMX:
             def test_request_insee_2(self):
@@ -82,7 +83,7 @@ class TestFunction(TestCase):
             def request_insee_test(sdmx_url=sdmx_url, api_url=api_url):
                 _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-            self.assertRaises(ValueError, request_insee_test)
+            self.assertRaises(requests.exceptions.RequestException, request_insee_test)
 
         def test_request_insee_4(self):
             # token is none and sdmx query is None
@@ -98,7 +99,7 @@ class TestFunction(TestCase):
             def request_insee_test(sdmx_url=None, api_url=api_url):
                 _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-            self.assertRaises(ValueError, request_insee_test)
+            self.assertRaises(requests.exceptions.RequestException, request_insee_test)
 
         def test_request_insee_5(self):
             # api query is none and sdmx query fails
@@ -107,7 +108,7 @@ class TestFunction(TestCase):
             def request_insee_test(sdmx_url=sdmx_url, api_url=None):
                 _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-            self.assertRaises(ValueError, request_insee_test)
+            self.assertRaises(requests.exceptions.RequestException, request_insee_test)
 
         def test_get_envir_token(self):
 
