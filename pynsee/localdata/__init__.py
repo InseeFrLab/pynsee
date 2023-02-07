@@ -1,6 +1,5 @@
 from .get_area_list import get_area_list
 from .get_geo_list import get_geo_list
-
 from .get_local_data import get_local_data
 from .get_included_area import get_included_area
 from .get_nivgeo_list import get_nivgeo_list
@@ -8,6 +7,8 @@ from .get_local_metadata import get_local_metadata
 from .get_population import get_population
 from .get_old_city import get_old_city
 from .get_new_city import get_new_city
+from .get_ascending_area import get_ascending_area
+from .get_descending_area import get_descending_area
 
 __all__ = [
     "get_area_list",
@@ -19,4 +20,6 @@ __all__ = [
     "get_population",
     "get_old_city",
     "get_new_city",
+    "get_ascending_area",
+    "get_descending_area",
 ]

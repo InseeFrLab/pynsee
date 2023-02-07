@@ -17,7 +17,7 @@ def _set_global_var(args):
     crsPolygon0 = args[2]
 
     session = requests.Session()
-    retry = Retry(connect=3, backoff_factor=1)
+    retry = Retry(connect=3, backoff_factor=1, status_forcelist=[502])
     adapter = HTTPAdapter(max_retries=retry)
     session.mount("http://", adapter)
     session.mount("https://", adapter)
@@ -60,7 +60,7 @@ def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
     link_query = link + BBOX
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
 
@@ -68,18 +68,13 @@ def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
         session = requests.Session()
 
     with session.get(link_query, proxies=proxies) as r:
-        data_json = r.json()
-
-    if r.status_code == 502:
-        time.sleep(1)
-        with session.get(link_query, proxies=proxies) as r:
+        try:
             data_json = r.json()
-
-    if r.status_code == 502:
-        print(
-            f"!!! The following query failed, some data might be missing !!!\n{link_query}"
-        )
-        return pd.DataFrame()
+        except Exception:
+            print(
+                f"!!! The following query failed, some data might be missing !!!\n{link_query}"
+            )
+            return pd.DataFrame()
 
     if "features" in data_json.keys():
 

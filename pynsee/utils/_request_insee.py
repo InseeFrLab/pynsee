@@ -9,6 +9,21 @@ from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
+CODES = {
+    # 200:"Opération réussie",
+    # 301:"Moved Permanently" -> r.headers['location']
+    400:"Bad Request",
+    401:"Unauthorized : token missing",
+    403:"Forbidden : missing subscription to API", #
+    404:"Not Found : no results available",
+    406:"Not acceptable : incorrect 'Accept' header",
+    413:"Too many results, query must be splitted",
+    414:"Request-URI Too Long",
+    429:"Too Many Requests : allocated quota overloaded",
+    500:"Internal Server Error ",
+    503:"Service Unavailable",
+    }
+
 
 def _request_insee(
     api_url=None, sdmx_url=None, file_format="application/xml", print_msg=True
@@ -34,7 +49,7 @@ def _request_insee(
                     print("\n" + sdmx_url)
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["http_proxy"]}
+        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
 
@@ -73,11 +88,15 @@ def _request_insee(
 
             success = True
 
+            code = results.status_code
+            
             if "status_code" not in dir(results):
                 success = False
-            else:
-                if results.status_code != 200:
-                    success = False
+            elif code in CODES:
+                msg = f"Error {code} - {CODES[code]}\nQuery:\n{api_url}"
+                raise requests.exceptions.RequestException(msg)
+            elif code != 200:
+                success = False
 
             if success is True:
                 return results

@@ -5,7 +5,7 @@ from pynsee.localdata._get_insee_one_area import _get_insee_one_area
 
 import pandas as pd
 from tqdm import trange
-
+from warnings import warn
 
 def get_included_area(area_type, codeareas):
     """Get all areas included in the list of areas provided
@@ -23,6 +23,7 @@ def get_included_area(area_type, codeareas):
         >>> area_list = get_area_list()
         >>> paris_empl_area = get_included_area(area_type = 'zonesDEmploi2020', codeareas = '1109')
     """
+    warn('This function is deprecated.\nPlease, use get_descending_area instead.', DeprecationWarning, stacklevel=2)
 
     if type(codeareas) == str:
         codeareas = [codeareas]

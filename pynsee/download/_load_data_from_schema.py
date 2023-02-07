@@ -65,7 +65,8 @@ def _load_data_from_schema(
         raise ValueError("File cannot be found")
 
     if telechargementFichier["result"]["type"] == "csv":
-        if os.path.getsize(file_to_import) >= limit_chunk_size:
+        # big file data load
+        if os.path.getsize(file_to_import) >= limit_chunk_size:            
             list_chunk = []
             chunksize = 10**6
             with pd.read_csv(
