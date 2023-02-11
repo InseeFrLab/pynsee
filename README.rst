@@ -1,8 +1,8 @@
 .. role:: raw-html-m2r(raw)
    :format: html
 
-Introduction to pynsee package
-==============================
+Pynsee python package contains tools to easily search and download French data from INSEE and IGN APIs
+======================================================================================================
 
 .. image:: https://badge.fury.io/py/pynsee.svg
    :target: https://pypi.org/project/pynsee/
@@ -36,7 +36,6 @@ Introduction to pynsee package
    :target: https://pypistats.org/packages/pynsee
    :alt: PyPi Downloads
 
-``pynsee`` package contains tools to easily search and download French data from INSEE and IGN APIs.
 
 ``pynsee`` gives a quick access to more than 150 000 macroeconomic series,
 a dozen datasets of local data, numerous sources available on `insee.fr <https://www.insee.fr>`_, 
