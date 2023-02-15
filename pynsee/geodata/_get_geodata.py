@@ -232,6 +232,6 @@ def _get_geodata(
         else:
             _warning_cached_data(file_name)
 
-    data_all_clean["crs"] = crs
+    data_all_clean["crsCoord"] = crs
 
     return data_all_clean

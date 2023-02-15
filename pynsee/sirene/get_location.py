@@ -152,7 +152,7 @@ def get_location(self):
                         "latitude": lat,
                         "longitude": lon,
                         "category": category,
-                        "crs": "EPSG:4326",
+                        "crsCoord": "EPSG:4326",
                         "type": typeLoc,
                         "importance": importance,
                     },
