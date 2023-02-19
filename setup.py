@@ -39,7 +39,7 @@ setuptools.setup(
             "urllib3",
             "pathlib"],
     extras_require={
-        'full': ['openpyxl', "xlrd>=2.0.1"]
+        'full': ['openpyxl<=3.1.0', "xlrd>=2.0.1"]
     },
     package_data={
         "": ["*.zip"]},
