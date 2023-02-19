@@ -177,7 +177,8 @@ How to avoid proxy issues ?
    from pynsee.utils.init_conn import init_conn
    init_conn(insee_key="my_insee_key",
              insee_secret="my_insee_secret",
-             proxy_server="http://my_proxy_server:port")
+             http_proxy="http://my_proxy_server:port",
+             https_proxy="http://my_proxy_server:port")
              
    # Alternativety you can use directly environment variables as follows. 
    # Beware not to commit your credentials!
