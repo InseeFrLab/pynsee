@@ -102,37 +102,12 @@ def _request_insee(
                 return results
             else:
 
-                msg1 = "\n!!! An error occurred !!!"
-
-                if print_msg:
-
-                    print("{}".format(msg1))
-                    print("Query : {}".format(api_url))
-                    print(results.text)
-                    print("\n!!! Make sure you have subscribed to all APIs !!!")
-                    print(
-                        "Click on all APIs' icons one by one, select your application, and click on Subscribe\n"
-                    )
-
-                if sdmx_url is not None:
-
-                    results = requests.get(sdmx_url, proxies=proxies, verify=False)
-
-                    if print_msg:
-                        print("\n!!! SDMX web service used instead of API !!!")
-
-                    if results.status_code == 200:
-                        return results
-                    else:
-                        raise ValueError(results.text + "\n" + sdmx_url)
-                else:
-                    if print_msg:
-                        try:
-                            print("Error %s\n" % results.status_code)
-                        except:
-                            pass
-
-                    raise ValueError(results.text)
+                msg1 = "\n!!! An error occurred !!!\n"
+                msg1 += "Query : {}\n".format(api_url)
+                msg1 += results.text
+                msg1 += "\n!!! Make sure you have subscribed to all APIs !!!"
+                msg1 += "\nClick on all APIs' icons one by one, select your application, and click on Subscribe\n"
+                raise requests.exceptions.RequestException(msg)
 
         else:
             # token is None

@@ -59,7 +59,7 @@ def translate(
 
         df = self
 
-        crs = df.crs.unique()
+        crs = df.crsCoord.unique()
 
         if crs != "EPSG:3857":
             raise ValueError(
