@@ -45,7 +45,8 @@ extensions = [
      'sphinx_copybutton',
      'nbsphinx', 
      "m2r2",
-     'sphinx.ext.imgconverter',
+     #'sphinx.ext.imgconverter',
+    "sphinxcontrib.rsvgconverter",
      'sphinx.ext.mathjax',       
      'IPython.sphinxext.ipython_console_highlighting',
      "sphinx_gallery.load_style"
