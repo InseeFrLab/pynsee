@@ -14,8 +14,14 @@ def _check_url(url):
         proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
+        
+    session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=1)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
 
-    check = requests.get(url, proxies=proxies, stream=True, verify=False)
+    check = session.get(url, proxies=proxies, stream=True, verify=False)
 
     if check.status_code == 200:
         return url
@@ -27,17 +33,19 @@ def _check_url(url):
         dates = re.findall("2\d{3}|\d{2}", filename)
         current_year = date.today().year
         current_year_short = int(str(current_year)[-2:])
-
-        list_close_year = list(range(current_year - 3, current_year + 3)) + list(
-            range(current_year_short - 3, current_year_short + 3)
+        
+        timespan = 10
+        list_close_year = list(range(current_year - timespan, current_year + timespan)) + list(
+            range(current_year_short - timespan, current_year_short + timespan)
         )
         list_close_year = [str(y) for y in list_close_year]
 
-        dates = [y for y in dates if str(y) in list_close_year]
-        datefile = int(dates[len(dates) - 1])
+        #dates = [y for y in dates if str(y) in list_close_year]
+        #datefile = int(dates[len(dates) - 1])
 
-        list_potential_dates = [datefile + 1] + list(range(datefile - 3, datefile + 3))
-
+        #list_potential_dates = [datefile + 1] + list(range(datefile - 3, datefile + 3))
+        list_potential_dates = list_close_year
+        
         print(f"File not found on insee.fr:\n{url}")
 
         print("Please open an issue on:\nhttps://github.com/InseeFrLab/pynsee")
@@ -49,7 +57,7 @@ def _check_url(url):
                 list_string_split[: (len(list_string_split) - 1)] + [filename2]
             )
 
-            results = requests.get(url2, proxies=proxies, stream=True, verify=False)
+            results = session.get(url2, proxies=proxies, stream=True, verify=False)
             if results.status_code == 200:
                 print(f"Following file has been used instead:\n{url2}")
                 return url2
