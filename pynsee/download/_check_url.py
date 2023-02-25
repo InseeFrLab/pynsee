@@ -3,8 +3,8 @@ import requests
 import re
 import os
 import urllib3
-
-
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 def _check_url(url):
     
@@ -26,40 +26,61 @@ def _check_url(url):
     if check.status_code == 200:
         return url
     else:
-
-        list_string_split = url.split("/")
-        filename = list_string_split[len(list_string_split) - 1]
-
-        dates = re.findall("2\d{3}|\d{2}", filename)
-        current_year = date.today().year
-        current_year_short = int(str(current_year)[-2:])
-        
-        timespan = 10
-        list_close_year = list(range(current_year - timespan, current_year + timespan)) + list(
-            range(current_year_short - timespan, current_year_short + timespan)
-        )
-        list_close_year = [str(y) for y in list_close_year]
-
-        #dates = [y for y in dates if str(y) in list_close_year]
-        #datefile = int(dates[len(dates) - 1])
-
-        #list_potential_dates = [datefile + 1] + list(range(datefile - 3, datefile + 3))
-        list_potential_dates = list_close_year
-        
         print(f"File not found on insee.fr:\n{url}")
-
         print("Please open an issue on:\nhttps://github.com/InseeFrLab/pynsee")
+        
+        try:
+            list_string_split = url.split("/")
+            filename = list_string_split[-1]
 
-        for d in list_potential_dates:
+            list_potential_dates = []
 
-            filename2 = filename.replace(str(datefile), str(d))
-            url2 = "/".join(
-                list_string_split[: (len(list_string_split) - 1)] + [filename2]
-            )
+            def get_close_dates_list(start_year, timespan=10):   
 
-            results = session.get(url2, proxies=proxies, stream=True, verify=False)
-            if results.status_code == 200:
-                print(f"Following file has been used instead:\n{url2}")
-                return url2
+                start_year = int(start_year)    
+                start_year_short = int(str(start_year)[-2:])
 
-        raise ValueError("Please, report this issue")
+                list_close_year = list(range(start_year, start_year + timespan)) + \
+                                    list(range(start_year, start_year - timespan, -1)) + \
+                                    list(range(start_year_short, start_year_short + timespan)) + \
+                                    list(range(start_year_short, start_year_short - timespan, -1)) 
+
+                list_close_year = [str(y) for y in list_close_year]
+
+                return list_close_year
+
+            datefile = re.findall("2\d{3}|\d{2}", filename)[0]
+
+            list_potential_dates += get_close_dates_list(datefile)
+
+            current_year = date.today().year
+
+            list_potential_dates += get_close_dates_list(current_year)
+            list_potential_dates = list(dict.fromkeys(list_potential_dates))        
+
+            for d in list_potential_dates:
+
+                filename2 = filename.replace(str(datefile), str(d))
+                url2 = "/".join(
+                    list_string_split[: (len(list_string_split) - 1)] + [filename2]
+                )
+                results = session.get(url2, proxies=proxies, stream=True, verify=False)
+
+                if results.status_code == 200:
+                    break
+
+                if d == list_potential_dates[-1]:
+                    print(f"No other similar files have been found")
+                    url2 = url
+        except:
+            print(f"Error raised while trying to find another similar file")
+        
+        if url != url2:
+            print(f"The following file has been used instead:\n{url2}")
+        
+        return url2
+            
+        
+        
+        
+
