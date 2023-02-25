@@ -75,8 +75,11 @@ def _check_url(url):
         except:
             print(f"Error raised while trying to find another similar file")
         
-        if url != url2:
-            print(f"The following file has been used instead:\n{url2}")
+        if 'url2' in locals():
+            if url != url2:
+                print(f"The following file has been used instead:\n{url2}")
+        else:
+            url2 = url
         
         return url2
             
