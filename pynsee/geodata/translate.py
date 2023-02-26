@@ -62,9 +62,9 @@ def translate(
         crs = df.crsCoord.unique()
 
         if crs != "EPSG:3857":
-            raise ValueError(
-                "!!! Translation is performed only if the crs is EPSG:3857 !!!"
-            )
+            msg = "!!! Translation is performed only if the crs is EPSG:3857 !!!"
+            msg += "\nSet column crsCoord to 'EPSG:3857'"
+            raise ValueError(msg)
 
         if "insee_dep" not in df.columns:
             df = _add_insee_dep(df.copy())
