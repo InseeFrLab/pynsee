@@ -3,6 +3,5 @@ tqdm>=4.56.0
 requests>=2.23
 appdirs>=1.4.4
 unidecode>=1.1.0
-pathlib
 urllib3
 shapely>=1.8.0,<2.0
