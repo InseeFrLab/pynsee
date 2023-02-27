@@ -64,8 +64,7 @@ jobs:
     # git push --delete origin refs/tags/refs/heads/publish
     # git push origin v0.0.1  
     
-    steps:
-      
+    steps:      
       - uses: actions/download-artifact@v2
         with:
           name: artifact
@@ -98,7 +97,7 @@ jobs:
           asset_name: ${{ env.name }}
           asset_content_type: application/zip 
           
-     - name: Upload Release Assets to PyPI
+      - name: Upload Release Assets to PyPI
         uses: pypa/gh-action-pypi-publish@v1.4.2
         with:
           user: __token__
