@@ -1,4 +1,17 @@
 
+# pynsee 0.1.3
+
+* get_area_list provides list of communes, departements etc.
+* get_included_area is deprecated, get_descending_area should be used instead
+* get_ascending_area returns admnistrative areas containing the area provided as input
+* geopandas bugfix: crs is no longer contained in 'crs' column but in 'crsCoord'
+* init_conn arguments names changed + proxy server settings have been tested
+* error handling messages improved in _request_insee function
+* GEOlatest\<datasetName\>latest used as input of get_local_data returns the latest data available
+* pull requests use secrets from repo
+* pathlib dependency removed + openpyxl<=3.1.0
+* doc update
+
 # pynsee 0.1.2
 
 * license change from open license 2.0 to MIT license
