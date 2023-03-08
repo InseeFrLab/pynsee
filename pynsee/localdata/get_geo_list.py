@@ -11,6 +11,8 @@ from pynsee.localdata._get_geo_list_simple import _get_geo_list_simple
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
+import logging
+logger = logging.getLogger(__name__)
 
 
 def get_geo_list(geo=None, date=None, update=False):
@@ -263,7 +265,7 @@ def get_geo_list(geo=None, date=None, update=False):
             os.remove(file_localdata)
             df_geo = get_geo_list(geo=geo, date=date, update=True)
         else:
-            print(
+            logger.info(
                 f"Locally saved data has been used\nSet update=True to trigger an update"
             )
 

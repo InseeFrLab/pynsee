@@ -6,6 +6,8 @@ import zipfile
 import re
 import pandas as pd
 import urllib3
+import logging
+logger = logging.getLogger(__name__)
 
 
 def _dwn_idbank_files():
@@ -65,7 +67,7 @@ def _dwn_idbank_files():
             try:
                 data = _dwn_idbank_file(file_to_dwn=files[i])
             except:
-                # print(f'!!! File not found:\n{files[i]}')
+                # logger.info(f'!!! File not found:\n{files[i]}')
                 idbank_file_not_found = True
             else:
                 idbank_file_not_found = False

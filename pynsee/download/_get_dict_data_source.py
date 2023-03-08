@@ -6,6 +6,8 @@ import urllib3
 
 from pynsee.download._get_file_list_internal import _get_file_list_internal
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _get_dict_data_source():
@@ -29,9 +31,9 @@ def _get_dict_data_source():
     except:
         jsonfile = _get_file_list_internal()
 
-        print("\n!!! Package's internal data has been used !!!\n")
-        print("!!! File list download failed !!!")
-        print("!!! Please contact the package maintainer if this error persists !!!\n")
+        logger.info("\n!!! Package's internal data has been used !!!\n")
+        logger.info("!!! File list download failed !!!")
+        logger.info("!!! Please contact the package maintainer if this error persists !!!\n")
 
     # HACK BECAUSE OF DUPLICATED ENTRIES -------------------------------
 

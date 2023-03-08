@@ -1,10 +1,13 @@
 from datetime import date
+import logging
 import requests
 import re
 import os
 import urllib3
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+
+logger = logging.getLogger(__name__)
 
 def _check_url(url):
     
@@ -26,8 +29,8 @@ def _check_url(url):
     if check.status_code == 200:
         return url
     else:
-        print(f"File not found on insee.fr:\n{url}")
-        print("Please open an issue on:\nhttps://github.com/InseeFrLab/pynsee")
+        logger.info(f"File not found on insee.fr:\n{url}")
+        logger.info("Please open an issue on:\nhttps://github.com/InseeFrLab/pynsee")
         
         try:
             list_string_split = url.split("/")
@@ -70,14 +73,14 @@ def _check_url(url):
                     break
 
                 if d == list_potential_dates[-1]:
-                    print(f"No other similar files have been found")
+                    logger.info(f"No other similar files have been found")
                     url2 = url
         except:
-            print(f"Error raised while trying to find another similar file")
+            logger.info(f"Error raised while trying to find another similar file")
         
         if 'url2' in locals():
             if url != url2:
-                print(f"The following file has been used instead:\n{url2}")
+                logger.info(f"The following file has been used instead:\n{url2}")
         else:
             url2 = url
         

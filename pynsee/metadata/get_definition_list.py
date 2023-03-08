@@ -11,11 +11,13 @@ import os
 import pkg_resources
 import pandas as pd
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _warning_definition_internal_data():
     msg1 = "!!! Internal package data has been used !!!\n!!! If some data is missing, please use get_definition !!!"
-    print(msg1)
+    logger.info(msg1)
 
 
 @lru_cache(maxsize=None)

@@ -13,17 +13,19 @@ from pynsee.sirene.SireneDataFrame import SireneDataFrame
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _warning_search_sirene():
-    print(
+    logger.info(
         "\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!"
     )
 
 
 @lru_cache(maxsize=None)
 def _warning_data_save():
-    print(f"Locally saved data has been used\nSet update=True to trigger an update")
+    logger.info(f"Locally saved data has been used\nSet update=True to trigger an update")
 
 
 def search_sirene(
@@ -199,7 +201,7 @@ def search_sirene(
         data_final = _request_sirene(query=query, kind=kind, number=number)
 
         data_final.to_pickle(file_sirene)
-        print(f"Data saved: {file_sirene}")
+        logger.info(f"Data saved: {file_sirene}")
 
     else:
         try:

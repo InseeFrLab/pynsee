@@ -11,6 +11,8 @@ from pynsee.macrodata._get_date import _get_date
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._get_temp_dir import _get_temp_dir
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _get_insee(api_query, sdmx_query, step="1/1"):
@@ -128,6 +130,6 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
             pd.to_numeric, errors="coerce"
         )
 
-    print("\nData has been cached\n")
+    logger.info("\nData has been cached\n")
 
     return data_final

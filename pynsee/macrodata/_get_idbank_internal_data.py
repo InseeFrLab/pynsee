@@ -9,6 +9,9 @@ import os
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
+import logging
+logger = logging.getLogger(__name__)
+
 # from functools import lru_cache
 
 # @lru_cache(maxsize=None)
@@ -51,6 +54,6 @@ def _get_idbank_internal_data(update=False):
             os.remove(data_final_file)
             idbank_list = _get_idbank_internal_data(update=True)
         # else:
-        #   print('Cached data used')
+        #   logger.info('Cached data used')
 
     return idbank_list

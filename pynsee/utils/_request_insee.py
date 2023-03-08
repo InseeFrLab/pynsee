@@ -9,6 +9,10 @@ from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 CODES = {
     # 200:"Opération réussie",
     # 301:"Moved Permanently" -> r.headers['location']
@@ -43,10 +47,10 @@ def _request_insee(
     else:
         if pynsee_query_print == "True":
             if api_url is not None:
-                print("\n" + api_url)
+                logger.info("\n" + api_url)
             else:
                 if sdmx_url is not None:
-                    print("\n" + sdmx_url)
+                    logger.info("\n" + sdmx_url)
 
     try:
         proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
@@ -123,7 +127,7 @@ def _request_insee(
             if sdmx_url is not None:
                 msg4 = "\nSDMX web service used instead of API"
                 if print_msg:
-                    print("{}{}{}{}".format(msg1, msg2, msg3, msg4))
+                    logger.info("{}{}{}{}".format(msg1, msg2, msg3, msg4))
 
                 results = requests.get(sdmx_url, proxies=proxies, verify=False)
 

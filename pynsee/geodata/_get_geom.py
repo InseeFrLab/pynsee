@@ -7,6 +7,8 @@ from shapely.geometry import (
     MultiPoint,
 )
 
+import logging
+logger = logging.getLogger(__name__)
 
 def _get_geom(df, col="geometry"):
 
@@ -36,7 +38,7 @@ def _get_geom(df, col="geometry"):
                 "Point",
                 "LineString",
             ]
-            print(
+            logger.info(
                 "!!! one shape in geometry column is not among supported shapely classes or is None:\n %s"
                 % ", ".join(shapes)
             )
