@@ -8,6 +8,10 @@ Pynsee python package contains tools to easily search and download French data f
    :target: https://pypi.org/project/pynsee/
    :alt: Pypi version
 
+.. image:: https://img.shields.io/conda/vn/conda-forge/pynsee.svg
+   :target: https://anaconda.org/conda-forge/pynsee
+   :alt: Conda Forge Version
+
 .. image:: https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg
    :target: https://github.com/InseeFrLab/pynsee/actions
    :alt: Build Status
