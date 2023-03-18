@@ -3,7 +3,6 @@ name: Build tar and wheel
 on:
   push:
     branches:
-      - master
       - publish
     tags:
       - "*"
@@ -64,7 +63,8 @@ jobs:
     # git ls-remote --tags origin 
     # git push --delete origin refs/tags/refs/heads/publish
     # git push origin v0.0.1  
-    steps:
+    
+    steps:      
       - uses: actions/download-artifact@v2
         with:
           name: artifact
@@ -74,13 +74,13 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           draft: false
           prerelease: false
-
       - name: Get Asset name
         run: |
           export PKG=$(ls dist/ | grep tar)
@@ -95,8 +95,8 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: dist/${{ env.name }}
           asset_name: ${{ env.name }}
-          asset_content_type: application/zip      
-
+          asset_content_type: application/zip 
+          
       - name: Upload Release Assets to PyPI
         uses: pypa/gh-action-pypi-publish@v1.4.2
         with:
@@ -104,3 +104,5 @@ jobs:
           password: ${{ secrets.pypi_password }}
           skip_existing: true
           #repository_url: https://test.pypi.org/legacy/
+
+      

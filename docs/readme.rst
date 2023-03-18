@@ -194,7 +194,7 @@ How to avoid proxy issues ?
 Support
 -------
 
-Feel free to open an issue with any question about this package using <https://github.com/InseeFrLab/Py-Insee-Data/issues> Github repository.
+Feel free to open an issue with any question about this package using <https://github.com/InseeFrLab/pynsee/issues> Github repository.
 
 Contributing
 ------------

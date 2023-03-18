@@ -181,11 +181,19 @@ How to avoid proxy issues ?
 
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import *; clear_all_cache()
+   
+   # Alternativety you can use directly environment variables as follows. 
+   # Beware not to commit your credentials!
+   import os
+   os.environ['insee_key'] = 'my_insee_key'
+   os.environ['insee_secret'] = 'my_insee_secret'
+   os.environ['http_proxy'] = "http://my_proxy_server:port"
+   os.environ['https_proxy'] = "http://my_proxy_server:port"
 
 Support
 -------
 
-Feel free to open an issue with any question about this package using <https://github.com/InseeFrLab/Py-Insee-Data> Github repository.
+Feel free to open an issue with any question about this package using <https://github.com/InseeFrLab/pynsee/issues> Github repository.
 
 Contributing
 ------------
