@@ -123,8 +123,8 @@ def _request_insee(
                 "Token missing, please check your credentials "
                 "on api.insee.fr !\n"
                 
-                f"Please do the following to use your "
-                "credentials: {commands}\n\n"
+                "Please do the following to use your "
+                f"credentials: {commands}\n\n"
                 
                 "If your token still does not work, please try to clear "
                 "the cache :\n "
