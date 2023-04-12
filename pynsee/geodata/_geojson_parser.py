@@ -57,7 +57,7 @@ def _geojson_parser(data):
             list_shapes += [Shape]
             data_list.append(df2)
         else:
-            logger.info(f"Unsupported shape {data_type} has been removed")
+            logger.warning(f"Unsupported shape {data_type} has been removed")
 
     data_all = pd.concat(data_list)
 

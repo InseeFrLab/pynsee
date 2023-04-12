@@ -110,7 +110,7 @@ def get_area_list(area=None, update=False):
             inplace=True,
         )
         data_all.to_pickle(file_data)
-        logger.info(f"Data saved: {file_data}")
+        logger.debug(f"Data saved: {file_data}")
     else:
         try:
             data_all = pd.read_pickle(file_data)
@@ -119,7 +119,8 @@ def get_area_list(area=None, update=False):
             data_all = get_area_list(area=area, update=True)
         else:
             logger.info(
-                f"Locally saved data has been used\nSet update=True to trigger an update"
+                "Locally saved data has been used\n"
+                "Set update=True to trigger an update"
             )
 
     return data_all

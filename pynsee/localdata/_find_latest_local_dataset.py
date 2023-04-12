@@ -64,6 +64,9 @@ def _find_latest_local_dataset(dataset_version, variables, update):
                 update=True
             )
         else:
-            logger.info("Latest dataset version previously found has been used\nSet update=True to get the most up-to-date data")
+            logger.info(
+                "Latest dataset version previously found has been used\n"
+                "Set update=True to get the most up-to-date data"
+                )
         
     return dataset_version

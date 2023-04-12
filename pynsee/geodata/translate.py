@@ -111,7 +111,9 @@ def translate(
                     list_new_dep += [ovdep]
 
                 else:
-                    logger.info(f"!!! {departement[d]} is missing from insee_dep column !!!")
+                    logger.warning(
+                        f"{departement[d]} is missing from insee_dep column !"
+                        )
 
             if len(list_new_dep) > 0:
 

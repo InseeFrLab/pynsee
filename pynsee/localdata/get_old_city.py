@@ -50,7 +50,7 @@ def get_old_city(code, date=None):
         data_final = pd.concat(list_data).reset_index(drop=True)
 
     except:
-        logger.info("!!! No data found !!!")
+        logger.error("No data found !")
         data_final = None
 
     return data_final

@@ -38,7 +38,7 @@ def _get_token_from_insee(insee_key, insee_secret):
             verify=True,
         )
     except ConnectionError:
-        logger.info("\n!!! Connection to insee.fr failed !!!\n")
+        logger.critical("Connection to insee.fr failed !")
 
     content = response.content.decode("utf-8")
     content_splitted = content.split(",")

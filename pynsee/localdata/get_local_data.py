@@ -92,7 +92,7 @@ def get_local_data(
         elif nivgeo == "FE":
             _warning_nivgeo(_warning_nivgeo)
         elif nivgeo != "METRODOM":
-            logger.info("!!! Please, provide a list with geocodes argument !!!")
+            logger.warning("Please provide a list with geocodes argument !")
 
     filename = _hash("".join([variables] + [dataset_version] + [nivgeo] + geocodes))
     insee_folder = _create_insee_folder()
@@ -130,10 +130,10 @@ def get_local_data(
         data_final = pd.concat(list_data_all).reset_index(drop=True)
         
         if data_final.equals(df_default):
-            logger.info(f"!!! Error or no data found !!!")            
+            logger.error("Error or no data found !")            
         else:
             data_final.to_pickle(file_localdata)
-            logger.info(f"Data saved: {file_localdata}")
+            logger.debug(f"Data saved: {file_localdata}")
             
     else:
         try:
@@ -149,7 +149,8 @@ def get_local_data(
             )
         else:
             logger.info(
-                f"Locally saved data has been used\nSet update=True to trigger an update"
+                "Locally saved data has been used\n"
+                "Set update=True to trigger an update"
             )
 
     return data_final

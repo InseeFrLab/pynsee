@@ -69,8 +69,8 @@ def get_file_list():
 def warning_metadata_download():
 
     logger.info(
-        "pynsee.download's metadata rely on volunteering contributors and their manual updates"
-    )
-    logger.info(
-        "get_file_list does not provide data from official Insee's metadata API\nConsequently, please report any issue"
+        "pynsee.download's metadata rely on volunteering contributors and "
+        "their manual updates. "
+        "get_file_list does not provide data from official Insee's metadata "
+        "API\nConsequently, please report any issue"
     )

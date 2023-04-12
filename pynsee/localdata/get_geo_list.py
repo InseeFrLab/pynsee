@@ -266,7 +266,8 @@ def get_geo_list(geo=None, date=None, update=False):
             df_geo = get_geo_list(geo=geo, date=date, update=True)
         else:
             logger.info(
-                f"Locally saved data has been used\nSet update=True to trigger an update"
+                "Locally saved data has been used\n"
+                "Set update=True to trigger an update"
             )
 
     return df_geo

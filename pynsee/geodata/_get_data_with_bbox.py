@@ -73,8 +73,9 @@ def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
         try:
             data_json = r.json()
         except Exception:
-            logger.info(
-                f"!!! The following query failed, some data might be missing !!!\n{link_query}"
+            logger.error(
+                "The following query failed, some data might be missing !\n"
+                f"{link_query}"
             )
             return pd.DataFrame()
 

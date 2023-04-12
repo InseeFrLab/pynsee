@@ -47,10 +47,10 @@ def _request_insee(
     else:
         if pynsee_query_print == "True":
             if api_url is not None:
-                logger.info("\n" + api_url)
+                logger.debug("\n" + api_url)
             else:
                 if sdmx_url is not None:
-                    logger.info("\n" + sdmx_url)
+                    logger.debug("\n" + sdmx_url)
 
     try:
         proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
@@ -106,28 +106,35 @@ def _request_insee(
                 return results
             else:
 
-                msg1 = "\n!!! An error occurred !!!\n"
-                msg1 += "Query : {}\n".format(api_url)
-                msg1 += results.text
-                msg1 += "\n!!! Make sure you have subscribed to all APIs !!!"
-                msg1 += "\nClick on all APIs' icons one by one, select your application, and click on Subscribe\n"
+                msg = (
+                    "An error occurred !\n"
+                    "Query : {api_url}\n"
+                    f"{results.text}\n"
+                    "Make sure you have subscribed to all APIs !\n"
+                    "Click on all APIs' icons one by one, select your "
+                    "application, and click on Subscribe"
+                    )
                 raise requests.exceptions.RequestException(msg)
 
         else:
             # token is None
             commands = "\n\ninit_conn(insee_key='my_insee_key', insee_secret='my_insee_secret')\n"
-            msg1 = (
-                "!!! Token missing, please check your credentials on api.insee.fr !!!\n"
-            )
-            msg2 = "!!! Please do the following to use your credentials : {}".format(
-                commands
-            )
-            msg3 = "\n!!! If your token still does not work, please try to clear the cache :\n from pynsee.utils import clear_all_cache; clear_all_cache() !!!\n"
+            msg = (
+                "Token missing, please check your credentials "
+                "on api.insee.fr !\n"
+                
+                f"Please do the following to use your "
+                "credentials: {commands}\n\n"
+                
+                "If your token still does not work, please try to clear "
+                "the cache :\n "
+                "from pynsee.utils import clear_all_cache; clear_all_cache()\n"
+                )
 
             if sdmx_url is not None:
-                msg4 = "\nSDMX web service used instead of API"
+                msg2 = "\nSDMX web service used instead of API"
                 if print_msg:
-                    logger.info("{}{}{}{}".format(msg1, msg2, msg3, msg4))
+                    logger.critical(msg + msg2)
 
                 results = requests.get(sdmx_url, proxies=proxies, verify=False)
 
@@ -137,7 +144,7 @@ def _request_insee(
                     raise ValueError(results.text + "\n" + sdmx_url)
 
             else:
-                raise ValueError("{}{}{}".format(msg1, msg2, msg3))
+                raise ValueError(msg)
     else:
         # api_url is None
         if sdmx_url is not None:

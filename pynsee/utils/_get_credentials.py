@@ -55,13 +55,16 @@ def _get_credentials():
 @lru_cache(maxsize=None)
 def _warning_credentials(string):
     if string == "envir_var_used":
-        logger.info(
-            "!!! Existing environment variables used, instead of locally saved credentials !!!"
+        logger.debug(
+            "Existing environment variables used, instead of locally "
+            "saved credentials"
         )
     if string == "key_dict_none":
-        logger.info("INSEE API credentials have not been found")
-        logger.info("Please try to reuse pynsee.utils.init_conn to save them locally")
-        logger.info("Otherwise, you can still use environment variables as follow:")
-        logger.info("import os")
-        logger.info("os.environ['insee_key'] = 'my_insee_key'")
-        logger.info("os.environ['insee_secret'] = 'my_insee_secret'")
+        logger.critical(
+            "INSEE API credentials have not been found: please try to reuse "
+            "pynsee.utils.init_conn to save them locally.\n"
+            "Otherwise, you can still use environment variables as follow:\n"
+            "import os\n"
+            "os.environ['insee_key'] = 'my_insee_key'\n"
+            "os.environ['insee_secret'] = 'my_insee_secret'"
+            )

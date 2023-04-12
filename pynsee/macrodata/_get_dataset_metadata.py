@@ -25,7 +25,8 @@ def _get_dataset_metadata(dataset, update=False):
             trigger_update = True
             if not update:
                 logger.info(
-                    "%s : metadata update triggered because it is not found locally"
+                    "%s : metadata update triggered because it is not "
+                    "found locally"
                     % dataset
                 )
         else:
@@ -48,14 +49,15 @@ def _get_dataset_metadata(dataset, update=False):
             if day_lapse > 90:
                 trigger_update = True
                 if not update:
-                    logger.info(
-                        "%s : metadata update triggered because the file is older than 3 months"
+                    logger.debug(
+                        "%s : metadata update triggered because the file is "
+                        "older than 3 months"
                         % dataset
                     )
 
         if update:
             trigger_update = True
-            logger.info("%s : metadata update triggered manually" % dataset)
+            logger.debug("%s : metadata update triggered manually" % dataset)
 
         if trigger_update:
 
@@ -81,17 +83,17 @@ def _get_dataset_metadata(dataset, update=False):
     except:
         # if the download of the idbank file and the build of the metadata fail
         # package's internal data is provided to the user, should be exceptional, used as a backup
-        logger.info("\n!!! Package's internal data has been used !!!\n")
-        logger.info(
-            "!!! Idbank file download failed, have a look at the following page and find the new link !!!"
-        )
-        logger.info("https://www.insee.fr/en/information/2868055")
-        logger.info(
-            "!!! You may change the downloaded file changing the following environment variable !!!"
-        )
-        logger.info("import os; os.environ['pynsee_idbank_file'] = 'my_new_idbank_file'")
-        logger.info("!!! Please contact the package maintainer if this error persists !!!")
-
+        logger.error(
+            "Package's internal data has been used !\n"
+            "Idbank file download failed, have a look at the following page "
+            "and find the new link !\n"
+            "https://www.insee.fr/en/information/2868055\n\n"
+            "You may change the downloaded file changing the following "
+            "environment variable !\n"
+            "import os; os.environ['pynsee_idbank_file'] = 'my_new_idbank_file'"
+            "Please contact the package maintainer if this error persists !"
+            )
+        
         idbank_list_dataset = _get_idbank_internal_data(update=update)
         idbank_list_dataset = idbank_list_dataset[
             idbank_list_dataset["DATASET"] == dataset

@@ -114,16 +114,20 @@ def _request_sirene(query, kind, number=1001):
 
                         list_dataframe.append(df)
                     else:
-                        logger.info("{} - No more data found".format(query_number))
+                        logger.debug(
+                            "{} - No more data found".format(query_number)
+                            )
 
                     if cursor == following_cursor:
                         i_query += 1
                         query_number = "{}/{}".format(i_query, n_query_total)
-                        logger.info("{} - No more data found".format(query_number))
+                        logger.debug(
+                            "{} - No more data found".format(query_number)
+                            )
 
                     if df_nrows == number:
-                        logger.info(
-                            "!!! maximum reached, increase value of number argument !!!"
+                        logger.warning(
+                            "maximum reached, increase value of number argument !"
                         )
 
                     # if i_query == query_limit:
@@ -140,12 +144,13 @@ def _request_sirene(query, kind, number=1001):
 
         if sirenCol is not None:
             if len(data_final[sirenCol].unique()) == number_query_limit:
-                logger.info("The query reached maximum item limit,")
-                logger.info(
-                    f"Please change argument number to get more than {number_query_limit} different {sirenCol}"
+                logger.warning(
+                    "The query reached maximum item limit, "
+                    "please change argument number to get more than "
+                    f"{number_query_limit} different {sirenCol}"
                 )
 
         return data_final
     else:
-        logger.info(request.text)
+        logger.error(request.text)
         return None

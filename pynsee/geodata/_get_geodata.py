@@ -132,9 +132,9 @@ def _get_geodata(
             data = session.get(link, proxies=proxies, headers=headers)
 
         if data.status_code != 200:
-            logger.info("Query:\n%s" % link)
-            logger.info(data)
-            logger.info(data.text)
+            logger.debug("Query:\n%s" % link)
+            logger.debug(data)
+            logger.debug(data.text)
             return pd.DataFrame(
                 {"status": data.status_code, "comment": data.text}, index=[0]
             )
@@ -173,12 +173,13 @@ def _get_geodata(
             data_all = _geojson_parser(json).reset_index(drop=True)
 
         else:
-            msg = "!!! Query is correct but no data found !!!"
-            logger.info(msg)
-            logger.info("Query:\n%s" % link)
+            msg = "Query is correct but no data found !"
+            logger.error(msg)
+            logger.debug("Query:\n%s" % link)
             if polygon is not None:
-                logger.info(
-                    "!!! Check that crsPolygon argument corresponds to polygon data  !!!"
+                logger.warning(
+                    "Check that crsPolygon argument corresponds "
+                    "to polygon data !"
                 )
 
             return pd.DataFrame({"status": 200, "comment": msg}, index=[0])
@@ -207,8 +208,9 @@ def _get_geodata(
         # drop data outside polygon
         if polygon is not None:
 
-            logger.info(
-                "Further checks from the user are needed as results obtained using polygon argument can be imprecise"
+            logger.warning(
+                "Further checks from the user are needed as results obtained "
+                "using polygon argument can be imprecise"
             )
 
             row_selected = []
@@ -222,7 +224,7 @@ def _get_geodata(
         data_all_clean = data_all_clean.reset_index(drop=True)
 
         data_all_clean.to_pickle(file_name)
-        logger.info("Data saved: {}".format(file_name))
+        logger.debug("Data saved: {}".format(file_name))
     else:
         try:
             data_all_clean = pd.read_pickle(file_name)

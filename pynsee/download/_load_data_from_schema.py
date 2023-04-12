@@ -11,12 +11,13 @@ logger = logging.getLogger(__name__)
 @lru_cache(maxsize=None)
 def warning_file(missingFile, foundFile):
 
-    logger.info(f"Data file missing in the zip file:\n{missingFile}")
+    msg = f"Data file missing in the zip file:\n{missingFile}\n"
     if not foundFile == "":
-        logger.info(f"Following file has been used instead:\n{foundFile}")
+        msg += f"Following file has been used instead:\n{foundFile}\n"
     else:
-        logger.info("No replacement file has been found")
-    logger.info("Please report this issue")
+        msg += "No replacement file has been found\n"
+    msg += "Please report this issue !"
+    logger.error(msg)
 
 
 def _load_data_from_schema(

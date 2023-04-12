@@ -18,14 +18,18 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _warning_get_location():
-    logger.info(
-        "For at least one point, exact location has not been found, city location has been given instead"
+    logger.warning(
+        "For at least one point, exact location has not been found, city "
+        "location has been given instead"
     )
 
 @lru_cache(maxsize=None)
 def _warning_OSM():
-    logger.info("This function returns data made available by OpenStreetMap and its contributors")
-    logger.info("Please comply with Openstreetmap's Copyright and ODbL Licence")
+    logger.info(
+        "This function returns data made available by OpenStreetMap and its "
+        "contributors.\n"
+        "Please comply with Openstreetmap's Copyright and ODbL Licence"
+        )
 
 def get_location(self):
     """Get latitude and longitude from OpenStreetMap, add geometry column and turn SireneDataframe into GeoFrDataFrame

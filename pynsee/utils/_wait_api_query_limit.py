@@ -16,7 +16,9 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _warning_query_limit():
-    logger.info("\nAPI query number limit reached - function might be slowed down")
+    logger.debug(
+        "API query number limit reached - function might be slowed down"
+        )
 
 
 def _wait_api_query_limit(query):

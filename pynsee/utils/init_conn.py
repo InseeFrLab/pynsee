@@ -45,9 +45,7 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
         >>> os.environ['http_proxy'] = "http://my_proxy_server:port"
         >>> os.environ['https_proxy'] = "http://my_proxy_server:port"
     """
-    logger.info("SHOULD GET LOGGING")
-    logging.error(f"Init conn")
-    logging.info(f"Init conn")
+    logger.debug("SHOULD GET LOGGING")
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     home = str(Path.home())
     pynsee_credentials_file = home + "/" + "pynsee_credentials.csv"
@@ -79,7 +77,7 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
             "!!! Token is missing, please check insee_key and insee_secret are correct !!!"
         )
     else:
-        logger.info(f"Token has been created")
+        logger.debug(f"Token has been created")
 
     try:
         proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
@@ -112,13 +110,16 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
         results = requests.get(api_url, proxies=proxies, headers=headers, verify=False)
 
         if results.status_code != 200:
-            logger.info("!!! Please subscribe to {} API on api.insee.fr !!!".format(apis[q]))
+            logger.critical(
+                f"Please subscribe to {apis[q]} API on api.insee.fr !"
+                )
         list_requests_status += [results.status_code]
 
     if all([sts == 200 for sts in list_requests_status]):
-        logger.info("Subscription to all INSEE's APIs has been successfull")
-        logger.info("Unless the user wants to change key or secret,")
         logger.info(
-            "using this function is no longer needed as the credentials to get the token have been saved locally here:"
+            "Subscription to all INSEE's APIs has been successfull\n"
+            "Unless the user wants to change key or secret, using this "
+            "function is no longer needed as the credentials to get the token "
+            "have been saved locally here:\n"
+            + pynsee_credentials_file
         )
-        logger.info(pynsee_credentials_file)

@@ -88,9 +88,11 @@ def get_dataset_list():
     except:
         df = _get_dataset_list_internal()
 
-        logger.info("\n!!! Package's internal data has been used !!!\n")
-        logger.info("!!! Dataset list download failed !!!")
-        logger.info("!!! Please contact the package maintainer if this error persists !!!")
+        logger.error(
+            "Package's internal data has been used !\n"
+            "Dataset list download failed !"
+            "Please contact the package maintainer if this error persists !"
+            )
 
     df = df.reset_index(drop=True)
 

@@ -1,5 +1,4 @@
 import logging
-import os
 
 from pynsee.sirene import *
 from pynsee.macrodata import *
@@ -11,10 +10,10 @@ from pynsee.download import *
 
 
 # Set loglevel from env variable
-LOGLEVEL = os.environ.get('LOGLEVEL', 'INFO').upper()
-logging.basicConfig(level=LOGLEVEL,
+logging.basicConfig(
     format="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",
-    datefmt="%d/%b/%Y %H:%M:%S")
+    datefmt="%d/%b/%Y %H:%M:%S",
+)
 
 # Set default logging handler to avoid "No handler found" warnings.
-logging.getLogger(__name__).addHandler(logging.NullHandler())
+# logging.getLogger(__name__).addHandler(logging.NullHandler())

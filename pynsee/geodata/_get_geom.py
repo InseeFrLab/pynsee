@@ -38,8 +38,9 @@ def _get_geom(df, col="geometry"):
                 "Point",
                 "LineString",
             ]
-            logger.info(
-                "!!! one shape in geometry column is not among supported shapely classes or is None:\n %s"
+            logger.warning(
+                "One shape in geometry column is not among supported shapely "
+                "classes or is None:\n %s"
                 % ", ".join(shapes)
             )
 

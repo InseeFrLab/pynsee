@@ -16,7 +16,8 @@ logger = logging.getLogger(__name__)
 @lru_cache(maxsize=None)
 def _warning_legaldata_save():
     logger.info(
-        f"Locally saved legal data has been used\nSet update=True to trigger an update"
+        "Locally saved legal data has been used\n"
+        "Set update=True to trigger an update"
     )
 
 
@@ -52,7 +53,7 @@ def get_legal_entity(codes, print_err_msg=True, update=False):
 
         data_final = data_final.rename(columns={"intitule": "title"})
         data_final.to_pickle(file_legal_entity)
-        logger.info(f"Data saved: {file_legal_entity}")
+        logger.debug(f"Data saved: {file_legal_entity}")
 
     else:
         try:

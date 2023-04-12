@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 @lru_cache(maxsize=None)
 def _warning_get_data():
     logger.info(
-        "\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!"
+        "This function may return personal data, please check and comply "
+        "with the legal framework relating to personal data protection !"
     )
 
 

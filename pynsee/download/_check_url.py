@@ -29,8 +29,10 @@ def _check_url(url):
     if check.status_code == 200:
         return url
     else:
-        logger.info(f"File not found on insee.fr:\n{url}")
-        logger.info("Please open an issue on:\nhttps://github.com/InseeFrLab/pynsee")
+        logger.error(
+            f"File not found on insee.fr:\n{url} - please open an issue on:\n"
+            "https://github.com/InseeFrLab/pynsee"
+            )
         
         try:
             list_string_split = url.split("/")
@@ -73,14 +75,18 @@ def _check_url(url):
                     break
 
                 if d == list_potential_dates[-1]:
-                    logger.info(f"No other similar files have been found")
+                    logger.warning(f"No other similar files have been found")
                     url2 = url
         except:
-            logger.info(f"Error raised while trying to find another similar file")
+            logger.error(
+                "Error raised while trying to find another similar file"
+                )
         
         if 'url2' in locals():
             if url != url2:
-                logger.info(f"The following file has been used instead:\n{url2}")
+                logger.warning(
+                    f"The following file has been used instead:\n{url2}"
+                    )
         else:
             url2 = url
         
