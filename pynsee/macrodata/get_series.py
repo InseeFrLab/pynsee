@@ -8,6 +8,7 @@ from pynsee.macrodata._get_insee import _get_insee
 from pynsee.macrodata.get_series_list import get_series_list
 from pynsee.macrodata.search_macrodata import search_macrodata
 from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata
+from pynsee.macrodata._load_dataset_data import _load_dataset_data
 from pynsee.utils._paste import _paste
 
 
@@ -134,31 +135,22 @@ def get_series(
 
     if metadata:
         try:
-            all_idbank = search_macrodata()
-            list_all_idbank = all_idbank.IDBANK.to_list()
+            metadata_df = _load_dataset_data()
 
-            list_data_idbank = data.IDBANK.unique()
-            idbank_available_bool = [
-                (idb in list_all_idbank) for idb in list_data_idbank
-            ]
+            if metadata_df is not None:
 
-            if any(idbank_available_bool):
+                metadata_df['IDBANK'] = metadata_df['idbank']
+                del metadata_df['idbank']
+                
+                list_idbank_data = list(data.IDBANK.unique())
+                metadata_df = metadata_df[metadata_df['IDBANK'].isin(list_idbank_data)].reset_index(drop=True)
 
-                idbank_available = list_data_idbank[idbank_available_bool]
-                list_dataset = all_idbank[all_idbank.IDBANK.isin(idbank_available)]
-                list_dataset = list(list_dataset.DATASET.unique())
-
-                idbank_list = get_series_list(list_dataset)
-                newcol = [
-                    col for col in idbank_list.columns if col not in data.columns
-                ] + ["IDBANK"]
-                idbank_list = idbank_list[newcol]
-
-                data = data.merge(idbank_list, on="IDBANK", how="left")
+                data = data.merge(metadata_df, on="IDBANK", how="left")
 
                 # remove all na columns
                 data = data.dropna(axis=1, how="all")
-        except:
+        except Exception as e:
+            #print(e)
             pass
 
         try:

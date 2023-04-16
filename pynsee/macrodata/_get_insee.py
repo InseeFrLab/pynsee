@@ -68,7 +68,7 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
             list_obs.append(df)
 
         if len(list_obs) > 0:
-            obs_series = pd.concat(list_obs)
+            obs_series = pd.concat(list_obs).reset_index(drop=True)
 
         #
         # collect attributes values from the series
@@ -81,7 +81,7 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
             dict_attr[a] = attr_series[a]._value
 
         col_attr = list(dict_attr.keys())
-        attr_series = pd.DataFrame(dict_attr, columns=col_attr, index=[0])
+        attr_series = pd.DataFrame(dict_attr, columns=col_attr, index=[0]).reset_index(drop=True)
 
         if len(list_obs) > 0:
             data_series = pd.concat([obs_series, attr_series], axis=1)
