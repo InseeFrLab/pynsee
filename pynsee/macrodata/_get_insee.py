@@ -84,7 +84,11 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
         attr_series = pd.DataFrame(dict_attr, columns=col_attr, index=[0]).reset_index(drop=True)
 
         if len(list_obs) > 0:
-            data_series = pd.concat([obs_series, attr_series], axis=1)
+            data_series = obs_series
+            if len(dict_attr.keys()) > 0:
+                for k in dict_attr.keys():
+                    data_series[k] = dict_attr[k]
+            # data_series = pd.concat([obs_series, attr_series], axis=1)
         else:
             data_series = pd.concat([attr_series], axis=1)
 

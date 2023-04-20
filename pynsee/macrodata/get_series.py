@@ -131,7 +131,7 @@ def get_series(
 
         list_data.append(df)
 
-    data = pandas.concat(list_data)
+    data = pandas.concat(list_data).reset_index(drop=True)
 
     if metadata:
         try:
@@ -153,7 +153,7 @@ def get_series(
             #print(e)
             pass
 
-        try:
+        try:            
             data = _add_numeric_metadata(data)
         except:
             pass
