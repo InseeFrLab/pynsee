@@ -14,6 +14,7 @@ from pynsee.geodata._get_geodata import _get_geodata
 from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox, _set_global_var
+from pynsee.geodata._get_geodata_with_backup import _get_geodata_with_backup
 
 # manual commands for testing only on geodata module
 # coverage run -m unittest tests/geodata/test_pynsee_geodata.py
@@ -24,6 +25,11 @@ class TestFunction(TestCase):
     version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
 
     if version_3_7 is False:
+        
+        def test_get_geodata_with_backup(self):
+            df = _get_geodata_with_backup("ADMINEXPRESS-COG.LATEST:departement")
+            self.assertTrue(isinstance(df, pd.DataFrame))  
+            
         def test_get_geodata_short(self):
             
             global session
