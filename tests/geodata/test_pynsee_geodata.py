@@ -5,6 +5,7 @@ from unittest import TestCase
 import pandas as pd
 import sys
 import requests
+import unittest
 
 from shapely.geometry import Polygon, MultiPolygon, MultiLineString, MultiPoint, Point
 
@@ -160,3 +161,7 @@ class TestFunction(TestCase):
             test = all([typegeo in [Polygon, MultiPolygon, MultiLineString, MultiPoint] for typegeo in list_geom_type])
 
             self.assertTrue(test)
+
+
+if __name__ == '__main__':
+    unittest.main()
