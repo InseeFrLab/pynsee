@@ -75,7 +75,9 @@ def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
                 f"!!! The following query failed, some data might be missing !!!\n{link_query}"
             )
             return pd.DataFrame()
-
+        
+    session.close()
+    
     if "features" in data_json.keys():
 
         json = data_json["features"]

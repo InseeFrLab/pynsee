@@ -138,9 +138,8 @@ def get_series(
             metadata_df = _load_dataset_data()
 
             if metadata_df is not None:
-
-                metadata_df['IDBANK'] = metadata_df['idbank']
-                del metadata_df['idbank']
+                
+                metadata_df = metadata_df.rename(columns={'idbank' : 'IDBANK'})
                 
                 list_idbank_data = list(data.IDBANK.unique())
                 metadata_df = metadata_df[metadata_df['IDBANK'].isin(list_idbank_data)].reset_index(drop=True)
