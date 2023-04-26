@@ -101,12 +101,6 @@ def _get_geodata(
     insee_folder = _create_insee_folder()
     file_name = insee_folder + "/" + _hash(link)
 
-    session = requests.Session()
-    retry = Retry(connect=3, backoff_factor=1)
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-
     try:
         home = str(Path.home())
         user_agent = os.path.basename(home)
@@ -122,13 +116,21 @@ def _get_geodata(
 
     if (not os.path.exists(file_name)) | (update is True):
         
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=1)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         data = session.get(link, proxies=proxies, headers=headers, verify=False)
 
         if data.status_code == 502:
             time.sleep(1)
             data = session.get(link, proxies=proxies, headers=headers)
-
+            
+        session.close()
+        
         if data.status_code != 200:
             print("Query:\n%s" % link)
             print(data)
@@ -233,5 +235,5 @@ def _get_geodata(
             _warning_cached_data(file_name)
 
     data_all_clean["crsCoord"] = crs
-
+    
     return data_all_clean

@@ -19,7 +19,7 @@ def _warning_query_limit():
 
 def _wait_api_query_limit(query):
 
-    max_query_insee_api = 30
+    max_query_insee_api = 29
     timespan_insee_api = 60
 
     insee_folder = _create_insee_folder()

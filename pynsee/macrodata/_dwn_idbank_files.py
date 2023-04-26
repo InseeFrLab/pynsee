@@ -6,7 +6,8 @@ import zipfile
 import re
 import pandas as pd
 import urllib3
-
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 def _dwn_idbank_files():
 
@@ -59,11 +60,17 @@ def _dwn_idbank_files():
                 pynsee_idbank_loop_url = False
         except:
             pass
+    
+    session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=1, status_forcelist=[502])
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
 
     if pynsee_idbank_loop_url:
         while idbank_file_not_found & (i <= len(files) - 1):
             try:
-                data = _dwn_idbank_file(file_to_dwn=files[i])
+                data = _dwn_idbank_file(file_to_dwn=files[i], session=session)
             except:
                 # print(f'!!! File not found:\n{files[i]}')
                 idbank_file_not_found = True
@@ -74,7 +81,7 @@ def _dwn_idbank_files():
     return data
 
 
-def _dwn_idbank_file(file_to_dwn):
+def _dwn_idbank_file(file_to_dwn, session):
 
     separator = ";"
 
@@ -84,7 +91,8 @@ def _dwn_idbank_file(file_to_dwn):
         proxies = {"http": "", "https": ""}
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    results = requests.get(file_to_dwn, proxies=proxies, verify=False)
+    
+    results = session.get(file_to_dwn, proxies=proxies, verify=False)
 
     dirpath = tempfile.mkdtemp()
 

@@ -4,6 +4,7 @@
 import os
 import requests
 import urllib3
+import time
 
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
@@ -90,8 +91,18 @@ def _request_insee(
 
             code = results.status_code
             
-            if "status_code" not in dir(results):
+            if "status_code" not in dir(results):            
                 success = False
+            elif code == 429:
+                
+                time.sleep(10)
+
+                request_again = _request_insee(api_url=api_url, 
+                sdmx_url=sdmx_url, file_format=file_format,
+                print_msg=print_msg)
+
+                return request_again
+
             elif code in CODES:
                 msg = f"Error {code} - {CODES[code]}\nQuery:\n{api_url}"
                 raise requests.exceptions.RequestException(msg)
