@@ -35,7 +35,7 @@ setuptools.setup(
             "requests>=2.23",
             "appdirs>=1.4.4",
             "unidecode>=1.1.0",
-            "shapely>=2.0.0",
+            "shapely>=1.8.0",
             "urllib3"],
     extras_require={
         'full': ['openpyxl<=3.1.0', "xlrd>=2.0.1"]
