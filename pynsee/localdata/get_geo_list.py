@@ -11,8 +11,6 @@ from pynsee.localdata._get_geo_list_simple import _get_geo_list_simple
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
-import logging
-logger = logging.getLogger(__name__)
 
 
 def get_geo_list(geo=None, date=None, update=False):
@@ -65,7 +63,6 @@ def get_geo_list(geo=None, date=None, update=False):
     file_localdata = insee_folder + "/" + filename
 
     if (not os.path.exists(file_localdata)) or update:
-
         reg = _get_geo_list_simple("regions", progress_bar=True)
         reg.columns = [
             "TITLE",
@@ -149,7 +146,9 @@ def get_geo_list(geo=None, date=None, update=False):
                 ]
             if geo == "arrondissementsMunicipaux":
                 data_all = data_all.loc[
-                    data_all["TYPE"].str.match("^ArrondissementMunicipal$", na=False)
+                    data_all["TYPE"].str.match(
+                        "^ArrondissementMunicipal$", na=False
+                    )
                 ]
             if geo == "departements":
                 data_all = data_all.loc[
@@ -171,18 +170,22 @@ def get_geo_list(geo=None, date=None, update=False):
                     ]
                 ]
             else:
-                data_all = data_all[
-                    [
-                        "TITLE",
-                        "TYPE",
-                        "DATECREATION",
-                        "TITLE_SHORT",
-                        "CODE",
-                        "URI",
-                        "CODE_REG",
-                        "TITLE_REG",
-                    ]
+                cols = [
+                    "TITLE",
+                    "TYPE",
+                    "DATECREATION",
+                    "TITLE_SHORT",
+                    "CHEFLIEU",
+                    "CODE",
+                    "URI",
+                    "CODE_REG",
+                    "TITLE_REG",
                 ]
+                try:
+                    data_all = data_all[cols]
+                except KeyError:
+                    cols.remove("CHEFLIEU")
+                    data_all = data_all[cols]
 
             if geo != "departements":
                 dep = _get_geo_list_simple("departements", progress_bar=True)
@@ -207,19 +210,33 @@ def get_geo_list(geo=None, date=None, update=False):
                 )
 
                 data_all = data_all.merge(
-                    dep_short, how="left", left_on="code_dep1", right_on="CODE_dep"
+                    dep_short,
+                    how="left",
+                    left_on="code_dep1",
+                    right_on="CODE_dep",
                 )
                 data_all = data_all.merge(
-                    dep_short2, how="left", left_on="code_dep2", right_on="CODE_dep"
+                    dep_short2,
+                    how="left",
+                    left_on="code_dep2",
+                    right_on="CODE_dep",
                 )
 
                 for i in range(len(data_all.index)):
                     if pd.isna(data_all.loc[i, "TITLE_DEP1"]):
-                        data_all.loc[i, "CODE_DEP"] = data_all.loc[i, "code_dep2"]
-                        data_all.loc[i, "TITLE_DEP"] = data_all.loc[i, "TITLE_DEP2"]
+                        data_all.loc[i, "CODE_DEP"] = data_all.loc[
+                            i, "code_dep2"
+                        ]
+                        data_all.loc[i, "TITLE_DEP"] = data_all.loc[
+                            i, "TITLE_DEP2"
+                        ]
                     else:
-                        data_all.loc[i, "CODE_DEP"] = data_all.loc[i, "code_dep1"]
-                        data_all.loc[i, "TITLE_DEP"] = data_all.loc[i, "TITLE_DEP1"]
+                        data_all.loc[i, "CODE_DEP"] = data_all.loc[
+                            i, "code_dep1"
+                        ]
+                        data_all.loc[i, "TITLE_DEP"] = data_all.loc[
+                            i, "TITLE_DEP1"
+                        ]
 
                 if len(data_all.columns) == 8:
                     data_all = data_all[
@@ -238,20 +255,24 @@ def get_geo_list(geo=None, date=None, update=False):
                         ]
                     ]
                 else:
-                    data_all = data_all[
-                        [
-                            "TITLE",
-                            "TYPE",
-                            "DATECREATION",
-                            "TITLE_SHORT",
-                            "CODE",
-                            "URI",
-                            "CODE_REG",
-                            "TITLE_REG",
-                            "CODE_DEP",
-                            "TITLE_DEP",
-                        ]
+                    cols = [
+                        "TITLE",
+                        "TYPE",
+                        "DATECREATION",
+                        "TITLE_SHORT",
+                        "CHEFLIEU",
+                        "CODE",
+                        "URI",
+                        "CODE_REG",
+                        "TITLE_REG",
+                        "CODE_DEP",
+                        "TITLE_DEP",
                     ]
+                    try:
+                        data_all = data_all[cols]
+                    except KeyError:
+                        cols.remove("CHEFLIEU")
+                        data_all = data_all[cols]
 
             df_geo = data_all
         else:
@@ -265,9 +286,8 @@ def get_geo_list(geo=None, date=None, update=False):
             os.remove(file_localdata)
             df_geo = get_geo_list(geo=geo, date=date, update=True)
         else:
-            logger.info(
-                "Locally saved data has been used\n"
-                "Set update=True to trigger an update"
+            print(
+                f"Locally saved data has been used\nSet update=True to trigger an update"
             )
 
     return df_geo
