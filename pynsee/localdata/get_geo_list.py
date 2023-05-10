@@ -171,18 +171,22 @@ def get_geo_list(geo=None, date=None, update=False):
                     ]
                 ]
             else:
-                data_all = data_all[
-                    [
-                        "TITLE",
-                        "TYPE",
-                        "DATECREATION",
-                        "TITLE_SHORT",
-                        "CODE",
-                        "URI",
-                        "CODE_REG",
-                        "TITLE_REG",
-                    ]
+                cols = [
+                    "TITLE",
+                    "TYPE",
+                    "DATECREATION",
+                    "TITLE_SHORT",
+                    "CHEFLIEU",
+                    "CODE",
+                    "URI",
+                    "CODE_REG",
+                    "TITLE_REG",
                 ]
+                try:
+                    data_all = data_all[cols]
+                except KeyError:
+                    cols.remove("CHEFLIEU")
+                    data_all = data_all[cols]
 
             if geo != "departements":
                 dep = _get_geo_list_simple("departements", progress_bar=True)
@@ -238,20 +242,24 @@ def get_geo_list(geo=None, date=None, update=False):
                         ]
                     ]
                 else:
-                    data_all = data_all[
-                        [
-                            "TITLE",
-                            "TYPE",
-                            "DATECREATION",
-                            "TITLE_SHORT",
-                            "CODE",
-                            "URI",
-                            "CODE_REG",
-                            "TITLE_REG",
-                            "CODE_DEP",
-                            "TITLE_DEP",
-                        ]
+                    cols = [
+                        "TITLE",
+                        "TYPE",
+                        "DATECREATION",
+                        "TITLE_SHORT",
+                        "CHEFLIEU",
+                        "CODE",
+                        "URI",
+                        "CODE_REG",
+                        "TITLE_REG",
+                        "CODE_DEP",
+                        "TITLE_DEP",
                     ]
+                    try:
+                        data_all = data_all[cols]
+                    except KeyError:
+                        cols.remove("CHEFLIEU")
+                        data_all = data_all[cols]
 
             df_geo = data_all
         else:
