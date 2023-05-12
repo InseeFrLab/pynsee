@@ -4,11 +4,14 @@
 import os
 import requests
 import urllib3
-import time
 
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
+
+import logging
+logger = logging.getLogger(__name__)
+
 
 CODES = {
     # 200:"Opération réussie",
@@ -44,10 +47,10 @@ def _request_insee(
     else:
         if pynsee_query_print == "True":
             if api_url is not None:
-                print("\n" + api_url)
+                logger.debug("\n" + api_url)
             else:
                 if sdmx_url is not None:
-                    print("\n" + sdmx_url)
+                    logger.debug("\n" + sdmx_url)
 
     try:
         proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
@@ -91,18 +94,8 @@ def _request_insee(
 
             code = results.status_code
             
-            if "status_code" not in dir(results):            
+            if "status_code" not in dir(results):
                 success = False
-            elif code == 429:
-                
-                time.sleep(10)
-
-                request_again = _request_insee(api_url=api_url, 
-                sdmx_url=sdmx_url, file_format=file_format,
-                print_msg=print_msg)
-
-                return request_again
-
             elif code in CODES:
                 msg = f"Error {code} - {CODES[code]}\nQuery:\n{api_url}"
                 raise requests.exceptions.RequestException(msg)
@@ -113,28 +106,35 @@ def _request_insee(
                 return results
             else:
 
-                msg1 = "\n!!! An error occurred !!!\n"
-                msg1 += "Query : {}\n".format(api_url)
-                msg1 += results.text
-                msg1 += "\n!!! Make sure you have subscribed to all APIs !!!"
-                msg1 += "\nClick on all APIs' icons one by one, select your application, and click on Subscribe\n"
+                msg = (
+                    "An error occurred !\n"
+                    "Query : {api_url}\n"
+                    f"{results.text}\n"
+                    "Make sure you have subscribed to all APIs !\n"
+                    "Click on all APIs' icons one by one, select your "
+                    "application, and click on Subscribe"
+                    )
                 raise requests.exceptions.RequestException(msg)
 
         else:
             # token is None
             commands = "\n\ninit_conn(insee_key='my_insee_key', insee_secret='my_insee_secret')\n"
-            msg1 = (
-                "!!! Token missing, please check your credentials on api.insee.fr !!!\n"
-            )
-            msg2 = "!!! Please do the following to use your credentials : {}".format(
-                commands
-            )
-            msg3 = "\n!!! If your token still does not work, please try to clear the cache :\n from pynsee.utils import clear_all_cache; clear_all_cache() !!!\n"
+            msg = (
+                "Token missing, please check your credentials "
+                "on api.insee.fr !\n"
+                
+                "Please do the following to use your "
+                f"credentials: {commands}\n\n"
+                
+                "If your token still does not work, please try to clear "
+                "the cache :\n "
+                "from pynsee.utils import clear_all_cache; clear_all_cache()\n"
+                )
 
             if sdmx_url is not None:
-                msg4 = "\nSDMX web service used instead of API"
+                msg2 = "\nSDMX web service used instead of API"
                 if print_msg:
-                    print("{}{}{}{}".format(msg1, msg2, msg3, msg4))
+                    logger.critical(msg + msg2)
 
                 results = requests.get(sdmx_url, proxies=proxies, verify=False)
 
@@ -144,7 +144,7 @@ def _request_insee(
                     raise ValueError(results.text + "\n" + sdmx_url)
 
             else:
-                raise ValueError("{}{}{}".format(msg1, msg2, msg3))
+                raise ValueError(msg)
     else:
         # api_url is None
         if sdmx_url is not None:

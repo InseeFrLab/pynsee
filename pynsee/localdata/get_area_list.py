@@ -9,6 +9,10 @@ from pynsee.utils._paste import _paste
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 def get_area_list(area=None, update=False):
     """Get an exhaustive list of administrative areas : communes, departments, and urban, employment or functional areas
 
@@ -106,7 +110,7 @@ def get_area_list(area=None, update=False):
             inplace=True,
         )
         data_all.to_pickle(file_data)
-        print(f"Data saved: {file_data}")
+        logger.debug(f"Data saved: {file_data}")
     else:
         try:
             data_all = pd.read_pickle(file_data)
@@ -114,8 +118,9 @@ def get_area_list(area=None, update=False):
             os.remove(file_data)
             data_all = get_area_list(area=area, update=True)
         else:
-            print(
-                f"Locally saved data has been used\nSet update=True to trigger an update"
+            logger.info(
+                "Locally saved data has been used\n"
+                "Set update=True to trigger an update"
             )
 
     return data_all

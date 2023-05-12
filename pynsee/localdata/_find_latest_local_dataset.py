@@ -10,6 +10,9 @@ from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
+import logging
+logger = logging.getLogger(__name__)
+
 def _find_latest_local_dataset(dataset_version, variables, update):
     
     filename = _hash("".join([dataset_version] + ['_find_latest_local_dataset']))
@@ -61,6 +64,9 @@ def _find_latest_local_dataset(dataset_version, variables, update):
                 update=True
             )
         else:
-            print("Latest dataset version previously found has been used\nSet update=True to get the most up-to-date data")
+            logger.info(
+                "Latest dataset version previously found has been used\n"
+                "Set update=True to get the most up-to-date data"
+                )
         
     return dataset_version

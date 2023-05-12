@@ -13,17 +13,23 @@ from shapely.errors import ShapelyDeprecationWarning
 from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
 from pynsee.sirene._get_location_openstreetmap import _get_location_openstreetmap
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _warning_get_location():
-    print(
-        "For at least one point, exact location has not been found, city location has been given instead"
+    logger.warning(
+        "For at least one point, exact location has not been found, city "
+        "location has been given instead"
     )
 
 @lru_cache(maxsize=None)
 def _warning_OSM():
-    print("This function returns data made available by OpenStreetMap and its contributors")
-    print("Please comply with Openstreetmap's Copyright and ODbL Licence")
+    logger.info(
+        "This function returns data made available by OpenStreetMap and its "
+        "contributors.\n"
+        "Please comply with Openstreetmap's Copyright and ODbL Licence"
+        )
 
 def get_location(self):
     """Get latitude and longitude from OpenStreetMap, add geometry column and turn SireneDataframe into GeoFrDataFrame

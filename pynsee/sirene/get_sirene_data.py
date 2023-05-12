@@ -11,11 +11,14 @@ from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.sirene.SireneDataFrame import SireneDataFrame
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _warning_get_data():
-    print(
-        "\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!"
+    logger.info(
+        "This function may return personal data, please check and comply "
+        "with the legal framework relating to personal data protection !"
     )
 
 

@@ -8,6 +8,8 @@ import pandas as pd
 from pynsee.geodata._geojson_parser import _geojson_parser
 from pynsee.geodata._distance import _distance
 
+import logging
+logger = logging.getLogger(__name__)
 
 def _set_global_var(args):
 
@@ -71,13 +73,12 @@ def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
         try:
             data_json = r.json()
         except Exception:
-            print(
-                f"!!! The following query failed, some data might be missing !!!\n{link_query}"
+            logger.error(
+                "The following query failed, some data might be missing !\n"
+                f"{link_query}"
             )
             return pd.DataFrame()
-        
-    session.close()
-    
+
     if "features" in data_json.keys():
 
         json = data_json["features"]

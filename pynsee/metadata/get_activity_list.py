@@ -15,11 +15,13 @@ from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
 from pynsee.metadata._add_A17_activity import _add_A17_activity
 from pynsee.metadata._add_A5_activity import _get_A5_activity_label, _add_A5_activity
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _warning_activity():
     msg1 = "This function renders package's internal data"
-    print(msg1)
+    logger.info(msg1)
 
 
 @lru_cache(maxsize=None)

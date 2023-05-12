@@ -9,6 +9,8 @@ from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
+import logging
+logger = logging.getLogger(__name__)
 
 def get_geodata_list(update=False):
     """Get a list of geographical limits of French administrative areas from IGN API
@@ -60,7 +62,7 @@ def get_geodata_list(update=False):
 
         data_all = data_list.reset_index(drop=True)
 
-        print("\nData saved : {}".format(file_name))
+        logger.debug("\nData saved : {}".format(file_name))
 
         data_all.to_pickle(file_name)
     else:

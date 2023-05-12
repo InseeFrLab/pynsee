@@ -16,17 +16,19 @@ from pynsee.localdata.get_geo_list import get_geo_list
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _warning_nivgeo(nivgeo):
     if nivgeo == "DEP":
         nivgeo_label = "departements"
-        print(f"By default, the query is on all {nivgeo_label}")
+        logger.info(f"By default, the query is on all {nivgeo_label}")
     elif nivgeo == "REG":
         nivgeo_label = "regions"
-        print(f"By default, the query is on all {nivgeo_label}")
+        logger.info(f"By default, the query is on all {nivgeo_label}")
     elif nivgeo == "FE":
-        print("By default, the query is on all France territory")
+        logger.info("By default, the query is on all France territory")
 
 
 def get_local_data(
@@ -90,7 +92,7 @@ def get_local_data(
         elif nivgeo == "FE":
             _warning_nivgeo(_warning_nivgeo)
         elif nivgeo != "METRODOM":
-            print("!!! Please, provide a list with geocodes argument !!!")
+            logger.warning("Please provide a list with geocodes argument !")
 
     filename = _hash("".join([variables] + [dataset_version] + [nivgeo] + geocodes))
     insee_folder = _create_insee_folder()
@@ -128,10 +130,10 @@ def get_local_data(
         data_final = pd.concat(list_data_all).reset_index(drop=True)
         
         if data_final.equals(df_default):
-            print(f"!!! Error or no data found !!!")            
+            logger.error("Error or no data found !")            
         else:
             data_final.to_pickle(file_localdata)
-            print(f"Data saved: {file_localdata}")
+            logger.debug(f"Data saved: {file_localdata}")
             
     else:
         try:
@@ -146,8 +148,9 @@ def get_local_data(
                 update=True,
             )
         else:
-            print(
-                f"Locally saved data has been used\nSet update=True to trigger an update"
+            logger.info(
+                "Locally saved data has been used\n"
+                "Set update=True to trigger an update"
             )
 
     return data_final

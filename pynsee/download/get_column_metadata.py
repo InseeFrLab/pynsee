@@ -1,10 +1,12 @@
 import pandas as pd
 import difflib
+import logging
 
 from pynsee.download._get_value_label import _get_value_label
 from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.utils._move_col_after import _move_col_before
 
+logger = logging.getLogger(__name__)
 
 def get_column_metadata(id):
     """Get metadata about an insee.fr file
@@ -34,7 +36,7 @@ def get_column_metadata(id):
         if len(suggestions) > 0:
             id_used = suggestions[0]
             if not id == id_used:
-                print(
+                logger.warning(
                     f"Metadata for {id} has not been found, metadata for {id_used} is provided instead"
                 )
         else:
@@ -53,7 +55,7 @@ def get_column_metadata(id):
             labels = _move_col_before(labels, "column", "column_label_fr")
             labels = labels.reset_index(drop=True)
         else:
-            print("Columns labels not found in metadata")
+            logger.info("Columns labels not found in metadata")
             labels = None
 
         val_col = _get_value_label(id_used)
@@ -76,7 +78,9 @@ def get_column_metadata(id):
                 labels = labels[
                     ["column", "value", "value_label_fr", "column_label_fr"]
                 ]
-                print("Column-specific metadata has been found for this file")
+                logger.info(
+                    "Column-specific metadata has been found for this file"
+                    )
 
     else:
         raise ValueError(

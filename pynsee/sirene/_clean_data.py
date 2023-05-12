@@ -9,6 +9,9 @@ from pynsee.sirene._employee_metadata import _employee_metadata
 from pynsee.sirene._street_metadata import _street_metadata
 from pynsee.utils._move_col_after import _move_col_after
 
+import logging
+logger = logging.getLogger(__name__)
+
 # @lru_cache(maxsize=None)
 
 
@@ -177,7 +180,7 @@ def _clean_data(
         if clean:
             data_final = data_final.dropna(axis=1, how="all")
     # except:
-    # print('\n!!! Error : Data cleaning and harmonization failed !!!')
+    # logger.info('\n!!! Error : Data cleaning and harmonization failed !!!')
     # raise ValueError('\n!!! Error : Data cleaning and harmonization failed !!!')
 
     return data_final

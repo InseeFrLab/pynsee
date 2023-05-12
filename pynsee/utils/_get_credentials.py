@@ -7,6 +7,8 @@ import pandas as pd
 from functools import lru_cache
 import numpy as np
 
+import logging
+logger = logging.getLogger(__name__)
 
 def _get_credentials():
 
@@ -53,13 +55,16 @@ def _get_credentials():
 @lru_cache(maxsize=None)
 def _warning_credentials(string):
     if string == "envir_var_used":
-        print(
-            "!!! Existing environment variables used, instead of locally saved credentials !!!"
+        logger.debug(
+            "Existing environment variables used, instead of locally "
+            "saved credentials"
         )
     if string == "key_dict_none":
-        print("INSEE API credentials have not been found")
-        print("Please try to reuse pynsee.utils.init_conn to save them locally")
-        print("Otherwise, you can still use environment variables as follow:")
-        print("import os")
-        print("os.environ['insee_key'] = 'my_insee_key'")
-        print("os.environ['insee_secret'] = 'my_insee_secret'")
+        logger.critical(
+            "INSEE API credentials have not been found: please try to reuse "
+            "pynsee.utils.init_conn to save them locally.\n"
+            "Otherwise, you can still use environment variables as follow:\n"
+            "import os\n"
+            "os.environ['insee_key'] = 'my_insee_key'\n"
+            "os.environ['insee_secret'] = 'my_insee_secret'"
+            )

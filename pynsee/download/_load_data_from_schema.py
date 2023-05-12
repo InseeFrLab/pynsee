@@ -2,19 +2,22 @@ import os
 import pandas as pd
 from functools import lru_cache
 import difflib
+import logging
 
 from pynsee.download._unzip_pb import _unzip_pb
 
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def warning_file(missingFile, foundFile):
 
-    print(f"Data file missing in the zip file:\n{missingFile}")
+    msg = f"Data file missing in the zip file:\n{missingFile}\n"
     if not foundFile == "":
-        print(f"Following file has been used instead:\n{foundFile}")
+        msg += f"Following file has been used instead:\n{foundFile}\n"
     else:
-        print("No replacement file has been found")
-    print("Please report this issue")
+        msg += "No replacement file has been found\n"
+    msg += "Please report this issue !"
+    logger.error(msg)
 
 
 def _load_data_from_schema(

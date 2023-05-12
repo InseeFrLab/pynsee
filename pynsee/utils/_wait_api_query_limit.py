@@ -11,15 +11,19 @@ from datetime import datetime
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _warning_query_limit():
-    print("\nAPI query number limit reached - function might be slowed down")
+    logger.debug(
+        "API query number limit reached - function might be slowed down"
+        )
 
 
 def _wait_api_query_limit(query):
 
-    max_query_insee_api = 29
+    max_query_insee_api = 30
     timespan_insee_api = 60
 
     insee_folder = _create_insee_folder()
@@ -54,7 +58,7 @@ def _wait_api_query_limit(query):
         qCount = qCount.loc[qCount["oneMin"] == True]
         n_query = len(qCount.index)
 
-        # print("n query in 1 min : %s" % n_query)
+        # logger.info("n query in 1 min : %s" % n_query)
 
         if n_query >= max_query_insee_api - 1:
 
@@ -64,7 +68,7 @@ def _wait_api_query_limit(query):
             #            for t in trange(waiting_time, desc = "Waiting time - %s secs" % waiting_time):
             #                time.sleep(1)
             _warning_query_limit()
-            # print("\nWai!ting time - %s secs" % waiting_time)'
+            # logger.info("\nWai!ting time - %s secs" % waiting_time)'
             time.sleep(waiting_time)
 
         new_query_time = pd.DataFrame(

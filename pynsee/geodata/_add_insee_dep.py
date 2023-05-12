@@ -2,7 +2,7 @@ from tqdm import trange
 from pandas.api.types import CategoricalDtype
 
 from pynsee.geodata._get_geodata import _get_geodata
-from pynsee.geodata._get_geodata_with_backup import _get_geodata_with_backup
+
 
 def _add_insee_dep(df):
 
@@ -26,15 +26,12 @@ def _add_insee_dep_region(df):
         if "insee_dep_geometry" not in df.columns:
             if "id" in df.columns:
                 if all(df.id.str.contains("^REGION")):
-                    dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
-                    dep = _get_geodata_with_backup(dataset_id)
-                        
+                    dep = _get_geodata("ADMINEXPRESS-COG.LATEST:departement")
                     dep = dep[["insee_dep", "insee_reg", "geometry"]]
                     dep = dep.rename(columns={"geometry": "insee_dep_geometry"})
                     df = df.merge(dep, on="insee_reg", how="left")
 
-    except Exception as e:
-        #print(e)
+    except:
         pass
 
     return df
@@ -45,22 +42,17 @@ def _add_insee_dep_from_id_com(df):
     try:
 
         if ("id_com" in df.columns) and ("insee_dep_geometry" not in df.columns):
-            dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:commune"
-            com = _get_geodata_with_backup(dataset_id)
-                     
+            com = _get_geodata("ADMINEXPRESS-COG-CARTO.LATEST:commune")
             com = com[["id", "insee_dep"]]
             com = com.rename(columns={"id": "id_com"})
             df = df.merge(com, on="id_com", how="left")
 
-            dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
-            dep = _get_geodata_with_backup(dataset_id)
-            
+            dep = _get_geodata("ADMINEXPRESS-COG.LATEST:departement")
             dep = dep[["insee_dep", "geometry"]]
             dep = dep.rename(columns={"geometry": "insee_dep_geometry"})
 
             df = df.merge(dep, on="insee_dep", how="left")
-    except Exception as e:
-        #print(e)
+    except:
         pass
 
     return df
@@ -75,10 +67,8 @@ def _add_insee_dep_from_geodata(df):
 
             list_dep = []
             list_dep_geo = []
-            
-            dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
-            dep_list = _get_geodata_with_backup(dataset_id)
-            
+
+            dep_list = _get_geodata("ADMINEXPRESS-COG.LATEST:departement")
             list_ovdep = ["971", "972", "974", "973", "976"]
             list_other_dep = [d for d in dep_list.insee_dep if d not in list_ovdep]
             dep_order = list_ovdep + list_other_dep
@@ -110,8 +100,7 @@ def _add_insee_dep_from_geodata(df):
 
             df["insee_dep"] = list_dep
             df["insee_dep_geometry"] = list_dep_geo
-    except Exception as e:
-        #print(e)
+    except:
         pass
 
     return df
