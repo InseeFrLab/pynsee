@@ -53,5 +53,5 @@ def _get_geo_list_simple(geo, date=None, progress_bar=False):
 
         list_data_geo.append(data_geo)
 
-    df_geo = pd.concat(list_data_geo)
+    df_geo = pd.concat(list_data_geo, ignore_index=True)
     return df_geo
