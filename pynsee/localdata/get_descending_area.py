@@ -6,15 +6,21 @@ Created on Wed Feb  1 13:52:54 2023
 """
 
 import pandas as pd
-import datetime
 from functools import lru_cache
+import os
 
 from pynsee.utils._request_insee import _request_insee
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._hash import _hash
 
 
 @lru_cache(maxsize=None)
 def get_descending_area(
-    area: str, code: str, date: str = None, type: str = None
+    area: str,
+    code: str,
+    date: str = None,
+    type: str = None,
+    update: bool = False,
 ):
     """
     Get information about areas contained in a given area
@@ -27,6 +33,8 @@ def get_descending_area(
         type (str) : case insensitive, any of 'Arrondissement', 'Departement', 'Region', 'UniteUrbaine2020', 'ZoneDEmploi2020', ...
 
         date (str, optional): date used to analyse the data, format : 'AAAA-MM-JJ'. If date is None, by default the current date is used/
+
+        update (bool): locally saved data is used by default. Trigger an update with update=True.
 
     Examples:
         >>> from pynsee.localdata import get_area_descending
@@ -49,33 +57,57 @@ def get_descending_area(
         msg = f"area must be one of {areas} " f"- found '{area}' instead"
         raise ValueError(msg)
 
-    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
+    params_hash = ["get_descending_area", area, code, date, type]
+    params_hash = [x if x else "_" for x in params_hash]
+    filename = _hash("".join(params_hash))
+    insee_folder = _create_insee_folder()
+    file_data = insee_folder + "/" + filename
 
-    api_link = INSEE_localdata_api_link + area + f"/{code}/descendants?"
+    if (not os.path.exists(file_data)) or update:
+        INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
 
-    params = []
-    if date is not None:
-        params.append(f"date={date}")
-    if type is not None:
-        params.append(f"type={type}")
+        api_link = INSEE_localdata_api_link + area + f"/{code}/descendants?"
 
-    api_link = api_link + "&".join(params)
+        params = []
+        if date is not None:
+            params.append(f"date={date}")
+        if type is not None:
+            params.append(f"type={type}")
 
-    request = _request_insee(api_url=api_link, file_format="application/json")
+        api_link = api_link + "&".join(params)
 
-    try:
-        data = request.json()
+        request = _request_insee(
+            api_url=api_link, file_format="application/json"
+        )
 
-        list_data = []
+        try:
+            data = request.json()
 
-        for i in range(len(data)):
-            df = pd.DataFrame(data[i], index=[0])
-            list_data.append(df)
+            list_data = []
 
-        data_final = pd.concat(list_data).reset_index(drop=True)
+            for i in range(len(data)):
+                df = pd.DataFrame(data[i], index=[0])
+                list_data.append(df)
 
-    except:
-        print("!!! No data found !!!")
-        data_final = None
+            data_final = pd.concat(list_data).reset_index(drop=True)
+
+            data_final.to_pickle(file_data)
+            print(f"Data saved: {file_data}")
+
+        except Exception:
+            print("!!! No data found !!!")
+            data_final = None
+    else:
+        try:
+            data_final = pd.read_pickle(file_data)
+        except Exception:
+            os.remove(file_data)
+            data_final = get_descending_area(
+                area=area, code=code, date=date, type=type, update=True
+            )
+        else:
+            print(
+                "Locally saved data has been used\nSet update=True to trigger an update"
+            )
 
     return data_final
