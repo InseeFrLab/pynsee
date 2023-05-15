@@ -11,6 +11,8 @@ from pynsee.utils._hash import _hash
 
 
 import logging
+
+
 logger = logging.getLogger(__name__)
 
 def get_area_list(area=None, update=False):
@@ -30,18 +32,18 @@ def get_area_list(area=None, update=False):
         >>> com = get_area_list(area='communes')
     """
 
-    list_available_area = [       
-        'departements',
-        'regions',
-        'communes',
-        'communesAssociees',
-        'communesDeleguees',
-        'arrondissementsMunicipaux',        
-        'arrondissements',
+    list_available_area = [
+        "departements",
+        "regions",
+        "communes",
+        "communesAssociees",
+        "communesDeleguees",
+        "arrondissementsMunicipaux",
+        "arrondissements",
         "zonesDEmploi2020",
         "airesDAttractionDesVilles2020",
         "unitesUrbaines2020",
-        "collectivitesDOutreMer"
+        "collectivitesDOutreMer",
     ]
     area_string = _paste(list_available_area, collapse=" ")
 
@@ -53,13 +55,11 @@ def get_area_list(area=None, update=False):
     ]
     list_UU20 = ["UU2020", "unitesUrbaines2020", "UniteUrbaine2020"]
 
-    list_ZE20 = [s.lower() for s in list_ZE20]
-    list_AAV20 = [s.lower() for s in list_AAV20]
-    list_UU20 = [s.lower() for s in list_UU20]
+    list_ZE20 = list_ZE20 + [s.lower() for s in list_ZE20]
+    list_AAV20 = list_AAV20 + [s.lower() for s in list_AAV20]
+    list_UU20 = list_UU20 + [s.lower() for s in list_UU20]
 
     if area is not None:
-        area = area.lower()
-
         if area in list_ZE20:
             area = "zonesDEmploi2020"
         if area in list_AAV20:
@@ -67,7 +67,9 @@ def get_area_list(area=None, update=False):
         if area in list_UU20:
             area = "unitesUrbaines2020"
 
-        if area not in list_available_area:
+        if area not in list_available_area + [
+            x.lower() for x in list_available_area
+        ]:
             msg = "!!! {} is not available\nPlease choose area among:\n{}".format(
                 area, area_string
             )
@@ -75,18 +77,21 @@ def get_area_list(area=None, update=False):
         else:
             list_available_area = [area]
 
-    filename = _hash("".join(['get_area_list'] + list_available_area))
+    filename = _hash("".join(["get_area_list"] + list_available_area))
     insee_folder = _create_insee_folder()
-    file_data = insee_folder + "/" + filename   
-    
-    if (not os.path.exists(file_data)) or update:
+    file_data = insee_folder + "/" + filename
 
+    if (not os.path.exists(file_data)) or update:
         list_data = []
 
         for a in list_available_area:
-            api_url = "https://api.insee.fr/metadonnees/V1/geo/" + a + "?date=*"
+            api_url = (
+                "https://api.insee.fr/metadonnees/V1/geo/" + a + "?date=*"
+            )
 
-            request = _request_insee(api_url=api_url, file_format="application/json")
+            request = _request_insee(
+                api_url=api_url, file_format="application/json"
+            )
 
             data = request.json()
 
@@ -95,7 +100,7 @@ def get_area_list(area=None, update=False):
                 list_data.append(df)
 
         data_all = pd.concat(list_data).reset_index(drop=True)
-        
+
         data_all.rename(
             columns={
                 "code": "CODE",
@@ -110,6 +115,7 @@ def get_area_list(area=None, update=False):
             inplace=True,
         )
         data_all.to_pickle(file_data)
+
         logger.info(f"Data saved: {file_data}")
     else:
         try:
