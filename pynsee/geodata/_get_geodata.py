@@ -123,13 +123,12 @@ def _get_geodata(
         "User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")
     }
 
-    try:
-        proxies = {
-            "http": os.environ["http_proxy"],
-            "https": os.environ["https_proxy"],
-        }
-    except Exception:
-        proxies = {"http": "", "https": ""}
+    proxies = {}
+    for key in ["http", "https"]:
+        try:
+            proxies[key] = os.environ[f"{key}_proxy"]
+        except KeyError:
+            proxies[key] = ""
 
     if (not os.path.exists(file_name)) | (update is True):
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
