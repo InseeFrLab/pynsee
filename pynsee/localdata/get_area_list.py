@@ -130,7 +130,7 @@ def get_area_list(area=None, date=None, update=False):
     else:
         try:
             data_all = pd.read_pickle(file_data)
-        except:
+        except Exception:
             os.remove(file_data)
             data_all = get_area_list(area=area, update=True)
         else:
