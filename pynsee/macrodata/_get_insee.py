@@ -12,11 +12,12 @@ from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._get_temp_dir import _get_temp_dir
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _get_insee(api_query, sdmx_query, step="1/1"):
-
     # create temporary directory
     dirpath = _get_temp_dir()
 
@@ -44,7 +45,6 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
     list_series = []
 
     for j in trange(n_series, desc="%s - Getting series" % step):
-
         data = root.getElementsByTagName("Series")[j]
 
         n_obs = len(data.getElementsByTagName("Obs"))
@@ -56,7 +56,6 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
         list_obs = []
 
         for i in range(n_obs):
-
             obs = data.getElementsByTagName("Obs")[i]._attrs
 
             dict_obs = {}
@@ -130,6 +129,6 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
             pd.to_numeric, errors="coerce"
         )
 
-    logger.debug("\nData has been cached\n")
+    logger.debug("Data has been cached")
 
     return data_final
