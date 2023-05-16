@@ -10,11 +10,15 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
 
-def get_area_list(area=None, update=False):
+def get_area_list(area=None, date=None, update=False):
     """Get an exhaustive list of administrative areas : communes, departments, and urban, employment or functional areas
 
     Args:
         area (str, optional): Defaults to None, then get all values
+
+        date (str): date of validity (AAAA-MM-DD)
+
+        update (bool): locally saved data is used by default. Trigger an update with update=True.
 
     Raises:
         ValueError: Error if area is not available
@@ -72,7 +76,13 @@ def get_area_list(area=None, update=False):
         else:
             list_available_area = [area]
 
-    filename = _hash("".join(["get_area_list"] + list_available_area))
+    date_hash = ""
+    if date is not None:
+        date_hash = date
+
+    filename = _hash(
+        "".join(["get_area_list"] + list_available_area + [date_hash])
+    )
     insee_folder = _create_insee_folder()
     file_data = insee_folder + "/" + filename
 
@@ -80,9 +90,9 @@ def get_area_list(area=None, update=False):
         list_data = []
 
         for a in list_available_area:
-            api_url = (
-                "https://api.insee.fr/metadonnees/V1/geo/" + a + "?date=*"
-            )
+            api_url = "https://api.insee.fr/metadonnees/V1/geo/" + a
+            if date:
+                api_url += f"?date={date}"
 
             request = _request_insee(
                 api_url=api_url, file_format="application/json"
