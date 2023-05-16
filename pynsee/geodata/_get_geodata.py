@@ -188,9 +188,8 @@ def _get_geodata(
             data_all = _geojson_parser(json).reset_index(drop=True)
 
         else:
-            msg = "Query is correct but no data found !"
+            msg = f"Query is correct but no data found : {link}"
             logger.error(msg)
-            logger.debug("Query:\n%s" % link)
             if polygon is not None:
                 logger.warning(
                     "Check that crsPolygon argument corresponds "
