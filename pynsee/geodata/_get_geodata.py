@@ -21,7 +21,9 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 def _get_geodata(
     id, polygon=None, update=False, crs="EPSG:3857", crsPolygon="EPSG:4326"
@@ -48,7 +50,9 @@ def _get_geodata(
     """
 
     if crsPolygon not in ["EPSG:3857", "EPSG:4326"]:
-        raise ValueError("crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'")
+        raise ValueError(
+            "crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'"
+        )
 
     topic = "administratif"
     service = "WFS"
@@ -112,20 +116,26 @@ def _get_geodata(
     try:
         home = str(Path.home())
         user_agent = os.path.basename(home)
-    except:
+    except Exception:
         user_agent = ""
 
-    headers = {"User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")}
+    headers = {
+        "User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")
+    }
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
+        proxies = {
+            "http": os.environ["http_proxy"],
+            "https": os.environ["https_proxy"],
+        }
+    except Exception:
         proxies = {"http": "", "https": ""}
 
     if (not os.path.exists(file_name)) | (update is True):
-        
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        data = session.get(link, proxies=proxies, headers=headers, verify=False)
+        data = session.get(
+            link, proxies=proxies, headers=headers, verify=False
+        )
 
         if data.status_code == 502:
             time.sleep(1)
@@ -146,7 +156,6 @@ def _get_geodata(
         # if maximum reached
         # split the query with the bouding box list
         if len(json) == 1000:
-
             list_bbox = _get_bbox_list(
                 polygon=polygon, update=update, crsPolygon=crsPolygon
             )
@@ -157,19 +166,20 @@ def _get_geodata(
             irange = range(len(list_bbox))
 
             with multiprocessing.Pool(
-                initializer=_set_global_var, initargs=(args,), processes=Nprocesses
+                initializer=_set_global_var,
+                initargs=(args,),
+                processes=Nprocesses,
             ) as pool:
-
                 list_data = list(
                     tqdm.tqdm(
-                        pool.imap(_get_data_with_bbox2, irange), total=len(list_bbox)
+                        pool.imap(_get_data_with_bbox2, irange),
+                        total=len(list_bbox),
                     )
                 )
 
             data_all = pd.concat(list_data).reset_index(drop=True)
 
         elif len(json) != 0:
-
             data_all = _geojson_parser(json).reset_index(drop=True)
 
         else:
@@ -188,8 +198,9 @@ def _get_geodata(
         data_col = data_all.columns
 
         if "geometry" in data_col:
-
-            selected_col = [col for col in data_col if col not in ["geometry", "bbox"]]
+            selected_col = [
+                col for col in data_col if col not in ["geometry", "bbox"]
+            ]
             data_all_clean = data_all[selected_col].drop_duplicates()
 
             row_selected = [int(i) for i in data_all_clean.index]
@@ -207,7 +218,6 @@ def _get_geodata(
 
         # drop data outside polygon
         if polygon is not None:
-
             logger.warning(
                 "Further checks from the user are needed as results obtained "
                 "using polygon argument can be imprecise"
@@ -228,10 +238,14 @@ def _get_geodata(
     else:
         try:
             data_all_clean = pd.read_pickle(file_name)
-        except:
+        except Exception:
             os.remove(file_name)
             data_all_clean = _get_geodata(
-                id=id, polygon=polygon, crsPolygon=crsPolygon, crs=crs, update=True
+                id=id,
+                polygon=polygon,
+                crsPolygon=crsPolygon,
+                crs=crs,
+                update=True,
             )
         else:
             _warning_cached_data(file_name)
