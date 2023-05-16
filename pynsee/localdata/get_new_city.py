@@ -8,14 +8,16 @@ from functools import lru_cache
 from pynsee.utils._request_insee import _request_insee
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _warning_get_new_city():
     logger.info(
         "date is None, by default it is supposed to be ten years before "
         "current year"
-        )
+    )
 
 
 @lru_cache(maxsize=None)
@@ -45,7 +47,6 @@ def get_new_city(code, date=None):
     if date is not None:
         api_link = api_link + "?date=" + date
     else:
-        # logger.info('date is None, by default it supposed to be ten years before current year')
         _warning_get_new_city()
 
         now = datetime.datetime.now()
