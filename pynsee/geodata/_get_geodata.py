@@ -10,6 +10,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from pathlib import Path
 import urllib3
+import warnings
 
 from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
@@ -132,23 +133,26 @@ def _get_geodata(
                 except KeyError:
                     proxies[key] = ""
 
-            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-            data = session.get(
-                link, proxies=proxies, headers=headers, verify=False
-            )
-
-            if data.status_code == 502:
-                time.sleep(1)
-                data = session.get(link, proxies=proxies, headers=headers)
-
-            if data.status_code != 200:
-                logger.debug("Query:\n%s" % link)
-                logger.debug(data)
-                logger.debug(data.text)
-                return pd.DataFrame(
-                    {"status": data.status_code, "comment": data.text},
-                    index=[0],
+            with warnings.catch_warnings():
+                warnings.simplefilter(
+                    "ignore", urllib3.exceptions.InsecureRequestWarning
                 )
+                data = session.get(
+                    link, proxies=proxies, headers=headers, verify=False
+                )
+
+                if data.status_code == 502:
+                    time.sleep(1)
+                    data = session.get(link, proxies=proxies, headers=headers)
+
+                if data.status_code != 200:
+                    logger.debug("Query:\n%s" % link)
+                    logger.debug(data)
+                    logger.debug(data.text)
+                    return pd.DataFrame(
+                        {"status": data.status_code, "comment": data.text},
+                        index=[0],
+                    )
 
         data_json = data.json()
 
