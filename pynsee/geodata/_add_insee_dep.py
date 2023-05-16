@@ -1,7 +1,6 @@
 from tqdm import trange
 from pandas.api.types import CategoricalDtype
 
-from pynsee.geodata._get_geodata import _get_geodata
 from pynsee.geodata._get_geodata_with_backup import _get_geodata_with_backup
 
 
@@ -105,7 +104,7 @@ def _add_insee_dep_from_geodata(df):
                             break
                         else:
                             depgeo = None
-                except:
+                except Exception:
                     pass
 
                 list_dep += [dep]
