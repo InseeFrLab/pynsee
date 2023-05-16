@@ -107,46 +107,48 @@ def _get_geodata(
     insee_folder = _create_insee_folder()
     file_name = insee_folder + "/" + _hash(link)
 
-    session = requests.Session()
-    retry = Retry(connect=3, backoff_factor=1)
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-
-    try:
-        home = str(Path.home())
-        user_agent = os.path.basename(home)
-    except Exception:
-        user_agent = ""
-
-    headers = {
-        "User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")
-    }
-
-    proxies = {}
-    for key in ["http", "https"]:
-        try:
-            proxies[key] = os.environ[f"{key}_proxy"]
-        except KeyError:
-            proxies[key] = ""
-
     if (not os.path.exists(file_name)) | (update is True):
-        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-        data = session.get(
-            link, proxies=proxies, headers=headers, verify=False
-        )
+        with requests.Session() as session:
+            retry = Retry(connect=3, backoff_factor=1)
+            adapter = HTTPAdapter(max_retries=retry)
+            session.mount("http://", adapter)
+            session.mount("https://", adapter)
 
-        if data.status_code == 502:
-            time.sleep(1)
-            data = session.get(link, proxies=proxies, headers=headers)
+            try:
+                home = str(Path.home())
+                user_agent = os.path.basename(home)
+            except Exception:
+                user_agent = ""
 
-        if data.status_code != 200:
-            logger.debug("Query:\n%s" % link)
-            logger.debug(data)
-            logger.debug(data.text)
-            return pd.DataFrame(
-                {"status": data.status_code, "comment": data.text}, index=[0]
+            headers = {
+                "User-Agent": "python_package_pynsee_"
+                + user_agent.replace("/", "")
+            }
+
+            proxies = {}
+            for key in ["http", "https"]:
+                try:
+                    proxies[key] = os.environ[f"{key}_proxy"]
+                except KeyError:
+                    proxies[key] = ""
+
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            data = session.get(
+                link, proxies=proxies, headers=headers, verify=False
             )
+
+            if data.status_code == 502:
+                time.sleep(1)
+                data = session.get(link, proxies=proxies, headers=headers)
+
+            if data.status_code != 200:
+                logger.debug("Query:\n%s" % link)
+                logger.debug(data)
+                logger.debug(data.text)
+                return pd.DataFrame(
+                    {"status": data.status_code, "comment": data.text},
+                    index=[0],
+                )
 
         data_json = data.json()
 
