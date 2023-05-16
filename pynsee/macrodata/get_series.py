@@ -5,8 +5,6 @@ import pandas
 import math
 
 from pynsee.macrodata._get_insee import _get_insee
-from pynsee.macrodata.get_series_list import get_series_list
-from pynsee.macrodata.search_macrodata import search_macrodata
 from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata
 from pynsee.macrodata._load_dataset_data import _load_dataset_data
 from pynsee.utils._paste import _paste
