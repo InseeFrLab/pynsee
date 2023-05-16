@@ -5,19 +5,26 @@ import pandas as pd
 import os
 from datetime import datetime
 
-from pynsee.macrodata._get_dataset_metadata_core import _get_dataset_metadata_core
-from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data
+from pynsee.macrodata._get_dataset_metadata_core import (
+    _get_dataset_metadata_core,
+)
+from pynsee.macrodata._get_idbank_internal_data import (
+    _get_idbank_internal_data,
+)
 from pynsee.utils._hash import _hash
 from pynsee.utils._create_insee_folder import _create_insee_folder
 
 import logging
+
 logger = logging.getLogger(__name__)
 
-def _get_dataset_metadata(dataset, update=False):
 
+def _get_dataset_metadata(dataset, update=False):
     try:
         insee_folder = _create_insee_folder()
-        file_dataset_metadata = insee_folder + "/" + _hash("idbank_list" + dataset)
+        file_dataset_metadata = (
+            insee_folder + "/" + _hash("idbank_list" + dataset)
+        )
 
         trigger_update = False
 
@@ -26,11 +33,9 @@ def _get_dataset_metadata(dataset, update=False):
             if not update:
                 logger.info(
                     "%s : metadata update triggered because it is not "
-                    "found locally"
-                    % dataset
+                    "found locally" % dataset
                 )
         else:
-
             try:
                 # only used for testing purposes
                 insee_date_time_now = os.environ["insee_date_test"]
@@ -49,10 +54,9 @@ def _get_dataset_metadata(dataset, update=False):
             if day_lapse > 90:
                 trigger_update = True
                 if not update:
-                    logger.debug(
+                    logger.info(
                         "%s : metadata update triggered because the file is "
-                        "older than 3 months"
-                        % dataset
+                        "older than 3 months" % dataset
                     )
 
         if update:
@@ -60,7 +64,6 @@ def _get_dataset_metadata(dataset, update=False):
             logger.debug("%s : metadata update triggered manually" % dataset)
 
         if trigger_update:
-
             idbank_list_dataset = _get_dataset_metadata_core(
                 dataset=dataset, update=update
             )
@@ -77,7 +80,9 @@ def _get_dataset_metadata(dataset, update=False):
                 idbank_list_dataset = pd.read_pickle(file_dataset_metadata)
             except:
                 os.remove(file_dataset_metadata)
-                idbank_list_dataset = _get_dataset_metadata(dataset=dataset, update=True)
+                idbank_list_dataset = _get_dataset_metadata(
+                    dataset=dataset, update=True
+                )
 
             # logger.info("Cached data has been used")
     except:
@@ -92,8 +97,8 @@ def _get_dataset_metadata(dataset, update=False):
             "environment variable !\n"
             "import os; os.environ['pynsee_idbank_file'] = 'my_new_idbank_file'"
             "Please contact the package maintainer if this error persists !"
-            )
-        
+        )
+
         idbank_list_dataset = _get_idbank_internal_data(update=update)
         idbank_list_dataset = idbank_list_dataset[
             idbank_list_dataset["DATASET"] == dataset
