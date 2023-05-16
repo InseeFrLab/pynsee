@@ -4,40 +4,40 @@
 import os
 import requests
 import urllib3
+import time
 
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 import logging
-logger = logging.getLogger(__name__)
 
+logger = logging.getLogger(__name__)
 
 CODES = {
     # 200:"Opération réussie",
     # 301:"Moved Permanently" -> r.headers['location']
-    400:"Bad Request",
-    401:"Unauthorized : token missing",
-    403:"Forbidden : missing subscription to API", #
-    404:"Not Found : no results available",
-    406:"Not acceptable : incorrect 'Accept' header",
-    413:"Too many results, query must be splitted",
-    414:"Request-URI Too Long",
-    429:"Too Many Requests : allocated quota overloaded",
-    500:"Internal Server Error ",
-    503:"Service Unavailable",
-    }
+    400: "Bad Request",
+    401: "Unauthorized : token missing",
+    403: "Forbidden : missing subscription to API",  #
+    404: "Not Found : no results available",
+    406: "Not acceptable : incorrect 'Accept' header",
+    413: "Too many results, query must be splitted",
+    414: "Request-URI Too Long",
+    429: "Too Many Requests : allocated quota overloaded",
+    500: "Internal Server Error ",
+    503: "Service Unavailable",
+}
 
 
 def _request_insee(
     api_url=None, sdmx_url=None, file_format="application/xml", print_msg=True
 ):
-
     # sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
     # api_url = 'https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES/?firstNObservations=4&lastNObservations=1'
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    
+
     keys = _get_credentials()
 
     try:
@@ -47,15 +47,17 @@ def _request_insee(
     else:
         if pynsee_query_print == "True":
             if api_url is not None:
-                logger.debug("\n" + api_url)
+                logger.debug(api_url)
             else:
                 if sdmx_url is not None:
-                    logger.debug("\n" + sdmx_url)
+                    logger.debug(sdmx_url)
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = {}
+    for key in ["http", "https"]:
+        try:
+            proxies[key] = os.environ[f"{key}_proxy"]
+        except KeyError:
+            proxies[key] = ""
 
     # force sdmx use with a system variable
     try:
@@ -73,7 +75,6 @@ def _request_insee(
     # if api url is missing sdmx url is used
 
     if api_url is not None:
-
         if keys is not None:
             insee_key = keys["insee_key"]
             insee_secret = keys["insee_secret"]
@@ -83,19 +84,36 @@ def _request_insee(
             token = None
 
         if token is not None:
-            headers = {"Accept": file_format, "Authorization": "Bearer " + token}
+            headers = {
+                "Accept": file_format,
+                "Authorization": "Bearer " + token,
+            }
 
             # avoid reaching the limit of 30 queries per minute from insee api
             _wait_api_query_limit(api_url)
-            
-            results = requests.get(api_url, proxies=proxies, headers=headers, verify=False)
+
+            results = requests.get(
+                api_url, proxies=proxies, headers=headers, verify=False
+            )
 
             success = True
 
             code = results.status_code
-            
+
             if "status_code" not in dir(results):
                 success = False
+            elif code == 429:
+                time.sleep(10)
+
+                request_again = _request_insee(
+                    api_url=api_url,
+                    sdmx_url=sdmx_url,
+                    file_format=file_format,
+                    print_msg=print_msg,
+                )
+
+                return request_again
+
             elif code in CODES:
                 msg = f"Error {code} - {CODES[code]}\nQuery:\n{api_url}"
                 raise requests.exceptions.RequestException(msg)
@@ -105,7 +123,6 @@ def _request_insee(
             if success is True:
                 return results
             else:
-
                 msg = (
                     "An error occurred !\n"
                     "Query : {api_url}\n"
@@ -113,7 +130,7 @@ def _request_insee(
                     "Make sure you have subscribed to all APIs !\n"
                     "Click on all APIs' icons one by one, select your "
                     "application, and click on Subscribe"
-                    )
+                )
                 raise requests.exceptions.RequestException(msg)
 
         else:
@@ -122,14 +139,12 @@ def _request_insee(
             msg = (
                 "Token missing, please check your credentials "
                 "on api.insee.fr !\n"
-                
                 "Please do the following to use your "
                 f"credentials: {commands}\n\n"
-                
                 "If your token still does not work, please try to clear "
                 "the cache :\n "
                 "from pynsee.utils import clear_all_cache; clear_all_cache()\n"
-                )
+            )
 
             if sdmx_url is not None:
                 msg2 = "\nSDMX web service used instead of API"
