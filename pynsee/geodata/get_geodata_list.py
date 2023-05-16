@@ -10,7 +10,9 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 def get_geodata_list(update=False):
     """Get a list of geographical limits of French administrative areas from IGN API
@@ -32,7 +34,6 @@ def get_geodata_list(update=False):
     file_name = pynsee_folder + "/" + _hash("".join(topic + format))
 
     if (not os.path.exists(file_name)) | (update is True):
-
         data_full_list = _get_full_list_wfs(topic=topic, version=version)
 
         if len(data_full_list) > 0:
@@ -48,7 +49,9 @@ def get_geodata_list(update=False):
                 "Format",
             ]
 
-            list_col = [col for col in data_full_list.columns if col in list_var]
+            list_col = [
+                col for col in data_full_list.columns if col in list_var
+            ]
 
             data_list = data_full_list[list_col]
             data_list = data_list.drop_duplicates().reset_index(drop=True)
@@ -62,7 +65,7 @@ def get_geodata_list(update=False):
 
         data_all = data_list.reset_index(drop=True)
 
-        logger.debug("\nData saved : {}".format(file_name))
+        logger.debug("Data saved : {}".format(file_name))
 
         data_all.to_pickle(file_name)
     else:
