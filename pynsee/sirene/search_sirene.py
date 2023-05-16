@@ -209,7 +209,7 @@ def search_sirene(
         data_final = _request_sirene(query=query, kind=kind, number=number)
 
         data_final.to_pickle(file_sirene)
-        logger.debug(f"Data saved: {file_sirene}")
+        logger.info(f"Data saved: {file_sirene}")
 
     else:
         try:

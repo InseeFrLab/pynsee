@@ -11,7 +11,9 @@ import os
 from pynsee.utils._request_insee import _request_insee
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _warning_legaldata_save():
@@ -37,7 +39,6 @@ def get_legal_entity(codes, print_err_msg=True, update=False):
     file_legal_entity = insee_folder + "/" + filename
 
     if (not os.path.exists(file_legal_entity)) or update:
-
         list_data = []
 
         for c in trange(len(codes), desc="Getting legal entities"):
@@ -53,7 +54,7 @@ def get_legal_entity(codes, print_err_msg=True, update=False):
 
         data_final = data_final.rename(columns={"intitule": "title"})
         data_final.to_pickle(file_legal_entity)
-        logger.debug(f"Data saved: {file_legal_entity}")
+        logger.info(f"Data saved: {file_legal_entity}")
 
     else:
         try:
@@ -73,15 +74,18 @@ def get_legal_entity(codes, print_err_msg=True, update=False):
 
 @lru_cache(maxsize=None)
 def _get_one_legal_entity(c, print_err_msg=True):
-
     if len(c) == 2:
         n = "n2"
     elif len(c) == 4:
         n = "n3"
     else:
-        raise ValueError("!!! Legal entity code should have 2 or 4 charaters !!!")
+        raise ValueError(
+            "!!! Legal entity code should have 2 or 4 charaters !!!"
+        )
 
-    INSEE_legal_entity_n3 = "https://api.insee.fr/metadonnees/V1/codes/cj/" + n + "/"
+    INSEE_legal_entity_n3 = (
+        "https://api.insee.fr/metadonnees/V1/codes/cj/" + n + "/"
+    )
 
     request = _request_insee(
         api_url=INSEE_legal_entity_n3 + c,

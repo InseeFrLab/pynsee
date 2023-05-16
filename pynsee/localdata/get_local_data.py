@@ -133,7 +133,7 @@ def get_local_data(
             logger.error("Error or no data found !")            
         else:
             data_final.to_pickle(file_localdata)
-            logger.debug(f"Data saved: {file_localdata}")
+            logger.info(f"Data saved: {file_localdata}")
             
     else:
         try:

@@ -65,7 +65,7 @@ def get_geodata_list(update=False):
 
         data_all = data_list.reset_index(drop=True)
 
-        logger.debug("Data saved : {}".format(file_name))
+        logger.info("Data saved : {}".format(file_name))
 
         data_all.to_pickle(file_name)
     else:

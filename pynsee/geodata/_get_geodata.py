@@ -238,7 +238,7 @@ def _get_geodata(
         data_all_clean = data_all_clean.reset_index(drop=True)
 
         data_all_clean.to_pickle(file_name)
-        logger.debug("Data saved: {}".format(file_name))
+        logger.info("Data saved: {}".format(file_name))
     else:
         try:
             data_all_clean = pd.read_pickle(file_name)
