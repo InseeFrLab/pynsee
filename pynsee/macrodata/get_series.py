@@ -160,7 +160,7 @@ def get_series(
 
         try:
             data = _add_numeric_metadata(data)
-        except:
+        except Exception:
             pass
 
     return data
