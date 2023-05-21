@@ -4,6 +4,8 @@
 import os
 import pandas as pd
 from tqdm import trange
+import numpy as np
+from requests.exceptions import RequestException
 
 from pynsee.utils._paste import _paste
 from pynsee.localdata._get_geo_relation import _get_geo_relation
@@ -67,30 +69,38 @@ def get_geo_list(geo=None, date=None, update=False):
     insee_folder = _create_insee_folder()
     file_localdata = insee_folder + "/" + filename
 
+    RENAME = {
+        "Intitule": "TITLE",
+        "Type": "TYPE",
+        "DateCreation": "DATECREATION",
+        "DateSuppression": "DATESUPPRESSION",
+        "IntituleSansArticle": "TITLE_SHORT",
+        "ChefLieu": "CHEFLIEU",
+        "code": "CODE",
+        "uri": "URI",
+    }
+
     if (not os.path.exists(file_localdata)) or update:
-        reg = _get_geo_list_simple("regions", progress_bar=True)
-        reg.columns = [
-            "TITLE",
-            "TYPE",
-            "DATECREATION",
-            "TITLE_SHORT",
-            "CHEFLIEU",
-            "CODE",
-            "URI",
-        ]
+        reg = _get_geo_list_simple("regions", date=date, progress_bar=True)
+        try:
+            reg["DateSuppression"]
+        except KeyError:
+            reg["DateSuppression"] = np.nan
+
+        reg = reg.rename(RENAME, axis=1)
 
         if geo != "regions":
             list_reg = list(reg.CODE)
             list_data_reg = []
 
-            if geo == "communes":
-                type_geo = "commune"
-            elif geo == "departements":
-                type_geo = "departement"
+            if geo != "arrondissementsMunicipaux":
+                type_geo = geo.rstrip("s")
             else:
-                type_geo = None
+                type_geo = "ArrondissementMunicipal"
 
-            for r in trange(len(list_reg), desc="Getting {}".format(geo)):
+            for r in trange(
+                len(list_reg), desc="Getting {}".format(geo), leave=False
+            ):
                 try:
                     df = _get_geo_relation(
                         geo="region",
@@ -99,33 +109,21 @@ def get_geo_list(geo=None, date=None, update=False):
                         date=date,
                         type=type_geo,
                     )
-                except Exception:
-                    pass
-                else:
+                except RequestException:
+                    df = _get_geo_relation(
+                        geo="region",
+                        code=list_reg[r],
+                        relation="descendants",
+                        date=date,
+                        type=None,
+                    )
+
+                finally:
                     list_data_reg.append(df)
 
             data_all = pd.concat(list_data_reg)
-            if len(data_all.columns) == 8:
-                data_all.columns = [
-                    "TITLE",
-                    "TYPE",
-                    "DATECREATION",
-                    "TITLE_SHORT",
-                    "CHEFLIEU",
-                    "CODE",
-                    "URI",
-                    "geo_init",
-                ]
-            else:
-                data_all.columns = [
-                    "TITLE",
-                    "TYPE",
-                    "DATECREATION",
-                    "TITLE_SHORT",
-                    "CODE",
-                    "URI",
-                    "geo_init",
-                ]
+
+            data_all = data_all.rename(RENAME, axis=1)
 
             reg_short = reg[["TITLE", "CODE"]]
             reg_short.columns = ["TITLE_REG", "CODE_REG"]
@@ -160,45 +158,16 @@ def get_geo_list(geo=None, date=None, update=False):
                     data_all["TYPE"].str.match("^Departement$", na=False)
                 ]
 
-            if len(data_all.columns) == 8:
-                data_all = data_all[
-                    [
-                        "TITLE",
-                        "TYPE",
-                        "DATECREATION",
-                        "TITLE_SHORT",
-                        "CHEFLIEU",
-                        "CODE",
-                        "URI",
-                        "CODE_REG",
-                        "TITLE_REG",
-                    ]
-                ]
-            else:
-                data_all = data_all[
-                    [
-                        "TITLE",
-                        "TYPE",
-                        "DATECREATION",
-                        "TITLE_SHORT",
-                        "CODE",
-                        "URI",
-                        "CODE_REG",
-                        "TITLE_REG",
-                    ]
-                ]
+            try:
+                data_all = data_all.drop("geo_init", axis=1)
+            except KeyError:
+                pass
 
             if geo != "departements":
-                dep = _get_geo_list_simple("departements", progress_bar=True)
-                dep.columns = [
-                    "TITLE",
-                    "TYPE",
-                    "DATECREATION",
-                    "TITLE_SHORT",
-                    "CHEFLIEU",
-                    "CODE",
-                    "URI",
-                ]
+                dep = _get_geo_list_simple(
+                    "departements", date=date, progress_bar=True
+                )
+                dep = dep.rename(RENAME, axis=1)
                 dep_short = dep[["CODE", "TITLE"]]
                 dep_short.columns = ["CODE_dep", "TITLE_DEP1"]
 
@@ -239,37 +208,17 @@ def get_geo_list(geo=None, date=None, update=False):
                             i, "TITLE_DEP1"
                         ]
 
-                if len(data_all.columns) == 8:
-                    data_all = data_all[
-                        [
-                            "TITLE",
-                            "TYPE",
-                            "DATECREATION",
-                            "TITLE_SHORT",
-                            "CHEFLIEU",
-                            "CODE",
-                            "URI",
-                            "CODE_REG",
-                            "TITLE_REG",
-                            "CODE_DEP",
-                            "TITLE_DEP",
-                        ]
-                    ]
-                else:
-                    data_all = data_all[
-                        [
-                            "TITLE",
-                            "TYPE",
-                            "DATECREATION",
-                            "TITLE_SHORT",
-                            "CODE",
-                            "URI",
-                            "CODE_REG",
-                            "TITLE_REG",
-                            "CODE_DEP",
-                            "TITLE_DEP",
-                        ]
-                    ]
+                data_all = data_all.drop(
+                    [
+                        "code_dep1",
+                        "code_dep2",
+                        "CODE_dep_x",
+                        "CODE_dep_y",
+                        "TITLE_DEP1",
+                        "TITLE_DEP2",
+                    ],
+                    axis=1,
+                )
 
             df_geo = data_all
         else:
