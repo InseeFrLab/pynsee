@@ -10,6 +10,7 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 # from functools import lru_cache
@@ -18,15 +19,15 @@ logger = logging.getLogger(__name__)
 
 
 def _get_idbank_internal_data(update=False):
-
     insee_folder = _create_insee_folder()
 
     data_file = insee_folder + "/" + "idbank_list_internal.csv"
     data_final_file = insee_folder + "/" + _hash("idbank_list_internal_final")
-    zip_file = pkg_resources.resource_stream(__name__, "data/idbank_list_internal.zip")
+    zip_file = pkg_resources.resource_stream(
+        __name__, "data/idbank_list_internal.zip"
+    )
 
     if (not os.path.exists(data_final_file)) | update:
-
         with zipfile.ZipFile(zip_file, "r") as zip_ref:
             zip_ref.extractall(insee_folder)
 
@@ -43,6 +44,7 @@ def _get_idbank_internal_data(update=False):
 
         os.remove(data_file)
         idbank_list.to_pickle(data_final_file)
+        logger.info(f"Data saved: {data_final_file}")
     else:
         # pickle format depends on python version
         # then read_pickle can fail, if so
@@ -53,7 +55,10 @@ def _get_idbank_internal_data(update=False):
         except:
             os.remove(data_final_file)
             idbank_list = _get_idbank_internal_data(update=True)
-        # else:
-        #   logger.info('Cached data used')
+        else:
+            logger.info(
+                "Locally saved data has been used\n"
+                "Set update=True to trigger an update"
+            )
 
     return idbank_list

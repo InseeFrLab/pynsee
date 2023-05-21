@@ -8,10 +8,11 @@ from functools import lru_cache
 import numpy as np
 
 import logging
+
 logger = logging.getLogger(__name__)
 
-def _get_credentials():
 
+def _get_credentials():
     envir_var_used = False
     try:
         home = str(Path.home())
@@ -55,7 +56,7 @@ def _get_credentials():
 @lru_cache(maxsize=None)
 def _warning_credentials(string):
     if string == "envir_var_used":
-        logger.debug(
+        logger.warning(
             "Existing environment variables used, instead of locally "
             "saved credentials"
         )
@@ -67,4 +68,4 @@ def _warning_credentials(string):
             "import os\n"
             "os.environ['insee_key'] = 'my_insee_key'\n"
             "os.environ['insee_secret'] = 'my_insee_secret'"
-            )
+        )

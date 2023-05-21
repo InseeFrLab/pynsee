@@ -70,7 +70,7 @@ def _get_dataset_metadata(dataset, update=False):
 
             # save data
             idbank_list_dataset.to_pickle(file_dataset_metadata)
-            # logger.info("Data cached")
+            logger.info(f"Data saved: {file_dataset_metadata}")
         else:
             # pickle format depends on python version
             # then read_pickle can fail, if so
@@ -78,13 +78,16 @@ def _get_dataset_metadata(dataset, update=False):
             # testing requires multiple python versions
             try:
                 idbank_list_dataset = pd.read_pickle(file_dataset_metadata)
+                logger.info(
+                    "Locally saved data has been used\n"
+                    "Set update=True to trigger an update"
+                )
             except:
                 os.remove(file_dataset_metadata)
                 idbank_list_dataset = _get_dataset_metadata(
                     dataset=dataset, update=True
                 )
 
-            # logger.info("Cached data has been used")
     except:
         # if the download of the idbank file and the build of the metadata fail
         # package's internal data is provided to the user, should be exceptional, used as a backup

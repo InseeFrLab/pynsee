@@ -45,12 +45,12 @@ def _request_insee(
     except:
         pass
     else:
-        if pynsee_query_print == "True":
-            if api_url is not None:
-                logger.debug(api_url)
-            else:
-                if sdmx_url is not None:
-                    logger.debug(sdmx_url)
+        level = "warning" if pynsee_query_print == "True" else "debug"
+        if api_url is not None:
+            getattr(logger, level)(api_url)
+        else:
+            if sdmx_url is not None:
+                getattr(logger, level)(sdmx_url)
 
     proxies = {}
     for key in ["http", "https"]:

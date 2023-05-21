@@ -8,6 +8,7 @@ from pynsee.utils._move_col_after import _move_col_before
 
 logger = logging.getLogger(__name__)
 
+
 def get_column_metadata(id):
     """Get metadata about an insee.fr file
 
@@ -45,7 +46,6 @@ def get_column_metadata(id):
         id_used = id
 
     if id_used in dict_data_source.keys():
-
         dict_data = dict_data_source[id_used]
 
         if "label_col" in dict_data.keys():
@@ -55,13 +55,12 @@ def get_column_metadata(id):
             labels = _move_col_before(labels, "column", "column_label_fr")
             labels = labels.reset_index(drop=True)
         else:
-            logger.info("Columns labels not found in metadata")
+            logger.warning("Columns labels not found in metadata")
             labels = None
 
         val_col = _get_value_label(id_used)
 
         if val_col is not None:
-
             list_val_col = []
 
             for k in val_col.keys():
@@ -80,7 +79,7 @@ def get_column_metadata(id):
                 ]
                 logger.info(
                     "Column-specific metadata has been found for this file"
-                    )
+                )
 
     else:
         raise ValueError(
