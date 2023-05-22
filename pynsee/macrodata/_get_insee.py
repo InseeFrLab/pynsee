@@ -135,6 +135,6 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
             pd.to_numeric, errors="coerce"
         )
 
-    print("\nData has been cached\n")
+    logger.debug("Data has been cached")
 
     return data_final
