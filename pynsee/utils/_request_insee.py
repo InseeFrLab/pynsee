@@ -40,17 +40,10 @@ def _request_insee(
 
     keys = _get_credentials()
 
-    try:
-        pynsee_query_print = os.environ["pynsee_query_print"]
-    except:
-        pass
-    else:
-        level = "warning" if pynsee_query_print == "True" else "debug"
-        if api_url is not None:
-            getattr(logger, level)(api_url)
-        else:
-            if sdmx_url is not None:
-                getattr(logger, level)(sdmx_url)
+    if api_url is not None:
+        logger.debug(api_url)
+    elif sdmx_url is not None:
+        logger.debug(sdmx_url)
 
     proxies = {}
     for key in ["http", "https"]:

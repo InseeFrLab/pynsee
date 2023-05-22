@@ -11,7 +11,6 @@ import pandas as pd
 
 
 def _build_series_list(dt=["CNA-2014-ERE"]):
-
     #
     # FIRST change the link, file name and separator in _download_idbank_list
     # THEN build the package and try to use the following to make a new idbank_list file
@@ -22,7 +21,6 @@ def _build_series_list(dt=["CNA-2014-ERE"]):
     # SET dt = None TO BUILD THE FULL DATAFRAME
     #
 
-    # os.environ['pynsee_query_print']= "True"
     os.environ["pynsee_use_sdmx"] = "True"
 
     if dt is None:
@@ -72,7 +70,9 @@ def _build_series_list(dt=["CNA-2014-ERE"]):
                 columns={"TITLE_FR": "TITLE_FR2", "TITLE_EN": "TITLE_EN2"}
             )
 
-            series_list_new2 = series_list_new.merge(titles, on="IDBANK", how="left")
+            series_list_new2 = series_list_new.merge(
+                titles, on="IDBANK", how="left"
+            )
 
             for i in range(len(series_list_new2.index)):
                 tt_fr = series_list_new2.loc[i, "TITLE_FR"]
@@ -87,12 +87,18 @@ def _build_series_list(dt=["CNA-2014-ERE"]):
                         i, "TITLE_EN2"
                     ]
 
-            series_list_new2 = series_list_new2.drop(columns={"TITLE_FR2", "TITLE_EN2"})
+            series_list_new2 = series_list_new2.drop(
+                columns={"TITLE_FR2", "TITLE_EN2"}
+            )
             # series_not_found2 = series_list_new2[pd.isna(series_list_new2['TITLE_FR'])]
             series_list_new2 = series_list_new2.dropna(subset={"TITLE_FR"})
-            series_list_new2 = series_list_new2[["IDBANK", "TITLE_FR", "TITLE_EN"]]
+            series_list_new2 = series_list_new2[
+                ["IDBANK", "TITLE_FR", "TITLE_EN"]
+            ]
 
-            series_list2 = series_list.merge(series_list_new2, on="IDBANK", how="right")
+            series_list2 = series_list.merge(
+                series_list_new2, on="IDBANK", how="right"
+            )
 
             # !!!!!!!!!
             # CREATE FILE FOR PACKAGE INTERNAL DATA
