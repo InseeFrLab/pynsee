@@ -10,6 +10,8 @@ import datetime
 from functools import lru_cache
 
 from pynsee.utils._request_insee import _request_insee
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def get_descending_area(area: str, code: str, date: str = None, type: str = None):
@@ -74,7 +76,7 @@ def get_descending_area(area: str, code: str, date: str = None, type: str = None
         data_final = pd.concat(list_data).reset_index(drop=True)
 
     except:
-        print("!!! No data found !!!")
+        logger.error("No data found !")
         data_final = None
 
     return data_final

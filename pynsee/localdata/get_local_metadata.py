@@ -10,11 +10,15 @@ import pandas as pd
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _warning_data():
-    print(
-        "!!! This function renders only package's internal data,\nit might not be the most up-to-date\nHave a look at api.insee.fr !!!"
+    logger.info(
+        "This function renders only package's internal data, "
+        "it might not be the most up-to-date.\n"
+        "Have a look at api.insee.fr !"
     )
 
 
@@ -117,7 +121,7 @@ def get_local_metadata():
                 df = df.assign(dataset=file_id, tab=var)
 
             except:
-                #  print('error {} {}'.format(list_files[f], var))
+                #  logger.info('error {} {}'.format(list_files[f], var))
                 pass
             else:
                 list_var_data.append(df)

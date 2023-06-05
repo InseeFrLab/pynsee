@@ -13,17 +13,25 @@ from pynsee.sirene.SireneDataFrame import SireneDataFrame
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _warning_search_sirene():
-    print(
-        "\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!"
+    logger.warning(
+        "This function may return personal data, please check and comply with "
+        "the legal framework relating to personal data protection !"
     )
 
 
 @lru_cache(maxsize=None)
 def _warning_data_save():
-    print(f"Locally saved data has been used\nSet update=True to trigger an update")
+    logger.info(
+        "Locally saved data has been used\n"
+        "Set update=True to trigger an update"
+    )
 
 
 def search_sirene(
@@ -109,7 +117,9 @@ def search_sirene(
         else:
             phntc_list = [False] * len(variable)
     else:
-        check_phonetic_search = all([(x in [True, False]) for x in phonetic_search])
+        check_phonetic_search = all(
+            [(x in [True, False]) for x in phonetic_search]
+        )
         if check_phonetic_search is False:
             raise ValueError(
                 "!!! phonetic_search must be True, False or a list of True and False !!!"
@@ -162,7 +172,6 @@ def search_sirene(
     list_var_pattern = []
 
     for var, patt, phntc in zip(variable, pattern, phntc_list):
-
         if phntc is False:
             phntc_string = ""
         else:
@@ -175,7 +184,9 @@ def search_sirene(
         list_var_patt = []
         for ptt in list_patt:
             if var in list_hist_variable:
-                list_var_patt.append("periode({}{}:{})".format(var, phntc_string, ptt))
+                list_var_patt.append(
+                    "periode({}{}:{})".format(var, phntc_string, ptt)
+                )
             else:
                 list_var_patt.append("{}{}:{}".format(var, phntc_string, ptt))
 
@@ -195,11 +206,10 @@ def search_sirene(
     file_sirene = insee_folder + "/" + filename
 
     if (not os.path.exists(file_sirene)) or update:
-
         data_final = _request_sirene(query=query, kind=kind, number=number)
 
         data_final.to_pickle(file_sirene)
-        print(f"Data saved: {file_sirene}")
+        logger.info(f"Data saved: {file_sirene}")
 
     else:
         try:

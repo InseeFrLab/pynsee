@@ -5,29 +5,37 @@ import pandas as pd
 import os
 from datetime import datetime
 
-from pynsee.macrodata._get_dataset_metadata_core import _get_dataset_metadata_core
-from pynsee.macrodata._get_idbank_internal_data import _get_idbank_internal_data
+from pynsee.macrodata._get_dataset_metadata_core import (
+    _get_dataset_metadata_core,
+)
+from pynsee.macrodata._get_idbank_internal_data import (
+    _get_idbank_internal_data,
+)
 from pynsee.utils._hash import _hash
 from pynsee.utils._create_insee_folder import _create_insee_folder
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def _get_dataset_metadata(dataset, update=False):
-
     try:
         insee_folder = _create_insee_folder()
-        file_dataset_metadata = insee_folder + "/" + _hash("idbank_list" + dataset)
+        file_dataset_metadata = (
+            insee_folder + "/" + _hash("idbank_list" + dataset)
+        )
 
         trigger_update = False
 
         if not os.path.exists(file_dataset_metadata):
             trigger_update = True
             if not update:
-                print(
-                    "%s : metadata update triggered because it is not found locally"
-                    % dataset
+                logger.info(
+                    "%s : metadata update triggered because it is not "
+                    "found locally" % dataset
                 )
         else:
-
             try:
                 # only used for testing purposes
                 insee_date_time_now = os.environ["insee_date_test"]
@@ -46,24 +54,23 @@ def _get_dataset_metadata(dataset, update=False):
             if day_lapse > 90:
                 trigger_update = True
                 if not update:
-                    print(
-                        "%s : metadata update triggered because the file is older than 3 months"
-                        % dataset
+                    logger.info(
+                        "%s : metadata update triggered because the file is "
+                        "older than 3 months" % dataset
                     )
 
         if update:
             trigger_update = True
-            print("%s : metadata update triggered manually" % dataset)
+            logger.debug("%s : metadata update triggered manually" % dataset)
 
         if trigger_update:
-
             idbank_list_dataset = _get_dataset_metadata_core(
                 dataset=dataset, update=update
             )
 
             # save data
             idbank_list_dataset.to_pickle(file_dataset_metadata)
-            # print("Data cached")
+            logger.info(f"Data saved: {file_dataset_metadata}")
         else:
             # pickle format depends on python version
             # then read_pickle can fail, if so
@@ -71,24 +78,29 @@ def _get_dataset_metadata(dataset, update=False):
             # testing requires multiple python versions
             try:
                 idbank_list_dataset = pd.read_pickle(file_dataset_metadata)
+                logger.info(
+                    "Locally saved data has been used\n"
+                    "Set update=True to trigger an update"
+                )
             except:
                 os.remove(file_dataset_metadata)
-                idbank_list_dataset = _get_dataset_metadata(dataset=dataset, update=True)
+                idbank_list_dataset = _get_dataset_metadata(
+                    dataset=dataset, update=True
+                )
 
-            # print("Cached data has been used")
     except:
         # if the download of the idbank file and the build of the metadata fail
         # package's internal data is provided to the user, should be exceptional, used as a backup
-        print("\n!!! Package's internal data has been used !!!\n")
-        print(
-            "!!! Idbank file download failed, have a look at the following page and find the new link !!!"
+        logger.error(
+            "Package's internal data has been used !\n"
+            "Idbank file download failed, have a look at the following page "
+            "and find the new link !\n"
+            "https://www.insee.fr/en/information/2868055\n\n"
+            "You may change the downloaded file changing the following "
+            "environment variable !\n"
+            "import os; os.environ['pynsee_idbank_file'] = 'my_new_idbank_file'"
+            "Please contact the package maintainer if this error persists !"
         )
-        print("https://www.insee.fr/en/information/2868055")
-        print(
-            "!!! You may change the downloaded file changing the following environment variable !!!"
-        )
-        print("import os; os.environ['pynsee_idbank_file'] = 'my_new_idbank_file'")
-        print("!!! Please contact the package maintainer if this error persists !!!")
 
         idbank_list_dataset = _get_idbank_internal_data(update=update)
         idbank_list_dataset = idbank_list_dataset[

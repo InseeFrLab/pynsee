@@ -11,11 +11,16 @@ from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.sirene.SireneDataFrame import SireneDataFrame
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _warning_get_data():
-    print(
-        "\n!!! This function may return personal data, please check and\n comply with the legal framework relating to personal data protection !!!"
+    logger.warning(
+        "This function may return personal data, please check and comply "
+        "with the legal framework relating to personal data protection !"
     )
 
 
@@ -46,16 +51,18 @@ def get_sirene_data(*id):
     list_data = []
 
     for i in range(len(list_ids)):
-
         for kind in ["siret", "siren"]:
-
             if kind == "siren":
                 main_key = "uniteLegale"
             elif kind == "siret":
                 main_key = "etablissement"
 
-            INSEE_api_sirene = "https://api.insee.fr/entreprises/sirene/V3/" + kind
-            link = INSEE_api_sirene + "/" + re.sub(r"\s+", "", str(list_ids[i]))
+            INSEE_api_sirene = (
+                "https://api.insee.fr/entreprises/sirene/V3/" + kind
+            )
+            link = (
+                INSEE_api_sirene + "/" + re.sub(r"\s+", "", str(list_ids[i]))
+            )
 
             try:
                 sys.stdout = open(os.devnull, "w")
@@ -70,7 +77,9 @@ def get_sirene_data(*id):
                     data = data_request[main_key]
                 except:
                     main_key_list = [
-                        key for key in list(data_request.keys()) if key != "header"
+                        key
+                        for key in list(data_request.keys())
+                        if key != "header"
                     ]
                     main_key = main_key_list[0]
                     data = data_request[main_key]

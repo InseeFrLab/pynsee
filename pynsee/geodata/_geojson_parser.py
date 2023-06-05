@@ -4,6 +4,8 @@ import pandas as pd
 from shapely.geometry import shape
 import warnings
 
+import logging
+logger = logging.getLogger(__name__)
 
 def _geojson_parser(data):
 
@@ -55,7 +57,7 @@ def _geojson_parser(data):
             list_shapes += [Shape]
             data_list.append(df2)
         else:
-            print(f"Unsupported shape {data_type} has been removed")
+            logger.warning(f"Unsupported shape {data_type} has been removed")
 
     data_all = pd.concat(data_list)
 
