@@ -14,6 +14,8 @@ from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def get_ascending_area(
@@ -82,7 +84,6 @@ def get_ascending_area(
 
         try:
             data = request.json()
-
             list_data = []
 
             for i in range(len(data)):
@@ -95,7 +96,7 @@ def get_ascending_area(
             print(f"Data saved: {file_data}")
 
         except Exception:
-            print("!!! No data found !!!")
+            logger.error("No data found !")
             data_final = None
 
     else:
@@ -107,8 +108,9 @@ def get_ascending_area(
                 area=area, code=code, date=date, type=type, update=True
             )
         else:
-            print(
-                "Locally saved data has been used\nSet update=True to trigger an update"
+            logger.info(
+                "Locally saved data has been used\n"
+                "Set update=True to trigger an update"
             )
 
     return data_final

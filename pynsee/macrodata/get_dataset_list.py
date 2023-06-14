@@ -11,6 +11,8 @@ from pynsee.macrodata._get_dataset_list_internal import _get_dataset_list_intern
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._get_temp_dir import _get_temp_dir
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def get_dataset_list():
@@ -86,9 +88,11 @@ def get_dataset_list():
     except:
         df = _get_dataset_list_internal()
 
-        print("\n!!! Package's internal data has been used !!!\n")
-        print("!!! Dataset list download failed !!!")
-        print("!!! Please contact the package maintainer if this error persists !!!")
+        logger.error(
+            "Package's internal data has been used !\n"
+            "Dataset list download failed !"
+            "Please contact the package maintainer if this error persists !"
+            )
 
     df = df.reset_index(drop=True)
 

@@ -20,3 +20,5 @@ docs/auto_examples/
 docs/examples/*.html
 docs/examples/.jupyter_cache/*
 /.quarto/
+.spyproject/
+poetry.lock

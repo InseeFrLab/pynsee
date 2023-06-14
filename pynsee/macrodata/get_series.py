@@ -5,8 +5,6 @@ import pandas
 import math
 
 from pynsee.macrodata._get_insee import _get_insee
-from pynsee.macrodata.get_series_list import get_series_list
-from pynsee.macrodata.search_macrodata import search_macrodata
 from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata
 from pynsee.macrodata._load_dataset_data import _load_dataset_data
 from pynsee.utils._paste import _paste
@@ -57,8 +55,12 @@ def get_series(
         >>> # get data
         >>> data = get_series(df_idbank.IDBANK)
     """
-    INSEE_sdmx_link_idbank = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/"
-    INSEE_api_link_idbank = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/"
+    INSEE_sdmx_link_idbank = (
+        "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/"
+    )
+    INSEE_api_link_idbank = (
+        "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/"
+    )
 
     #
     # create the parameters to be added to the query
@@ -109,14 +111,17 @@ def get_series(
     list_data = []
 
     for q in range(max_seq_idbank):
-
         min_range = q * idbank_limit
         max_range = min((q + 1) * idbank_limit, n_idbank + 1)
 
         list_idbank_q = list_idbank[min_range:max_range]
 
-        sdmx_query = INSEE_sdmx_link_idbank + _paste(list_idbank_q, collapse="+")
-        api_query = INSEE_api_link_idbank + _paste(list_idbank_q, collapse="%2B")
+        sdmx_query = INSEE_sdmx_link_idbank + _paste(
+            list_idbank_q, collapse="+"
+        )
+        api_query = INSEE_api_link_idbank + _paste(
+            list_idbank_q, collapse="%2B"
+        )
 
         if len(list_addded_param) > 0:
             sdmx_query = sdmx_query + added_param_string
@@ -138,23 +143,24 @@ def get_series(
             metadata_df = _load_dataset_data()
 
             if metadata_df is not None:
-                
-                metadata_df = metadata_df.rename(columns={'idbank' : 'IDBANK'})
-                
+                metadata_df = metadata_df.rename(columns={"idbank": "IDBANK"})
+
                 list_idbank_data = list(data.IDBANK.unique())
-                metadata_df = metadata_df[metadata_df['IDBANK'].isin(list_idbank_data)].reset_index(drop=True)
+                metadata_df = metadata_df[
+                    metadata_df["IDBANK"].isin(list_idbank_data)
+                ].reset_index(drop=True)
 
                 data = data.merge(metadata_df, on="IDBANK", how="left")
 
                 # remove all na columns
                 data = data.dropna(axis=1, how="all")
         except Exception as e:
-            #print(e)
+            # print(e)
             pass
 
-        try:            
+        try:
             data = _add_numeric_metadata(data)
-        except:
+        except Exception:
             pass
 
     return data

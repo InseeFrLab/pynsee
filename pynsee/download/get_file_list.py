@@ -4,6 +4,8 @@ from functools import lru_cache
 from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.utils._move_col_after import _move_col_before
 
+import logging
+logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def get_file_list():
@@ -66,9 +68,9 @@ def get_file_list():
 @lru_cache(maxsize=None)
 def warning_metadata_download():
 
-    print(
-        "pynsee.download's metadata rely on volunteering contributors and their manual updates"
-    )
-    print(
-        "get_file_list does not provide data from official Insee's metadata API\nConsequently, please report any issue"
+    logger.info(
+        "pynsee.download's metadata rely on volunteering contributors and "
+        "their manual updates. "
+        "get_file_list does not provide data from official Insee's metadata "
+        "API\nConsequently, please report any issue"
     )
