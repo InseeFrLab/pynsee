@@ -80,13 +80,10 @@ def get_area_list(area=None, date=None, update=False):
         else:
             list_available_area = [area]
 
-    date_hash = ""
-    if date is not None:
-        date_hash = date
-
     filename = _hash(
-        "".join(["get_area_list"] + list_available_area + [date_hash])
+        "".join(["get_area_list"] + list_available_area + [date or ""])
     )
+
     insee_folder = _create_insee_folder()
     file_data = insee_folder + "/" + filename
 
