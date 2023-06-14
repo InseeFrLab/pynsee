@@ -6,7 +6,6 @@ Created on Wed Feb  1 13:52:54 2023
 """
 
 import pandas as pd
-import datetime
 from functools import lru_cache
 import os
 
@@ -15,7 +14,9 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def get_ascending_area(
