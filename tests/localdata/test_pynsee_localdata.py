@@ -241,11 +241,13 @@ class TestFunction(TestCase):
             df = get_descending_area("zoneDEmploi2020", code="1109")
             test = test & isinstance(df, pd.DataFrame)
 
-            df = get_descending_area("departement", code="59", update=True)
+            df = get_descending_area(
+                "departement", code="59", type="arrondissement", update=True
+            )
             test = test & isinstance(df, pd.DataFrame)
 
-            df = get_ascending_area(
-                "departement", code="59", type="region", update=False
+            df = get_descending_area(
+                "departement", code="59", type="arrondissement", update=False
             )
             test = test & isinstance(df, pd.DataFrame)
 
