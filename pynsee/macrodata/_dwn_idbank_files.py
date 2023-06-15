@@ -8,9 +8,10 @@ import pandas as pd
 import urllib3
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+import warnings
+
 
 def _dwn_idbank_files():
-
     # creating the date object of today's date
     todays_date = date.today()
 
@@ -33,12 +34,12 @@ def _dwn_idbank_files():
 
     try:
         file_to_dwn = os.environ["pynsee_idbank_file"]
-    except:
+    except Exception:
         file_to_dwn = "https://www.insee.fr/en/statistiques/fichier/2868055/202201_correspondance_idbank_dimension.zip"
 
     try:
         data = _dwn_idbank_file(file_to_dwn=file_to_dwn)
-    except:
+    except Exception:
         idbank_file_not_found = True
     else:
         idbank_file_not_found = False
@@ -49,18 +50,20 @@ def _dwn_idbank_files():
 
     try:
         pynsee_idbank_loop_url = os.environ["pynsee_idbank_loop_url"]
-        if (pynsee_idbank_loop_url == "False") or (pynsee_idbank_loop_url == "FALSE"):
+        if (pynsee_idbank_loop_url == "False") or (
+            pynsee_idbank_loop_url == "FALSE"
+        ):
             pynsee_idbank_loop_url = False
-    except:
+    except Exception:
         try:
             pynsee_idbank_loop_url = os.environ["PYNSEE_IDBANK_LOOP_URL"]
             if (pynsee_idbank_loop_url == "False") or (
                 pynsee_idbank_loop_url == "FALSE"
             ):
                 pynsee_idbank_loop_url = False
-        except:
+        except Exception:
             pass
-    
+
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=1, status_forcelist=[502])
     adapter = HTTPAdapter(max_retries=retry)
@@ -71,7 +74,7 @@ def _dwn_idbank_files():
         while idbank_file_not_found & (i <= len(files) - 1):
             try:
                 data = _dwn_idbank_file(file_to_dwn=files[i], session=session)
-            except:
+            except Exception:
                 # print(f'!!! File not found:\n{files[i]}')
                 idbank_file_not_found = True
             else:
@@ -82,17 +85,22 @@ def _dwn_idbank_files():
 
 
 def _dwn_idbank_file(file_to_dwn, session):
-
     separator = ";"
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = {}
+    for key in ["http", "https"]:
+        try:
+            proxies[key] = os.environ[f"{key}_proxy"]
+        except KeyError:
+            proxies[key] = ""
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    
-    results = session.get(file_to_dwn, proxies=proxies, verify=False)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter(
+            "ignore", urllib3.exceptions.InsecureRequestWarning
+        )
+        results = session.get(file_to_dwn, proxies=proxies, verify=False)
 
     dirpath = tempfile.mkdtemp()
 
@@ -108,7 +116,9 @@ def _dwn_idbank_file(file_to_dwn, session):
     with zipfile.ZipFile(idbank_zip_file, "r") as zip_ref:
         zip_ref.extractall(dirpath)
 
-    file_to_read = [f for f in os.listdir(dirpath) if not re.match(".*.zip$", f)]
+    file_to_read = [
+        f for f in os.listdir(dirpath) if not re.match(".*.zip$", f)
+    ]
     file2load = dirpath + "/" + file_to_read[0]
     data = pd.read_csv(file2load, dtype="str", sep=separator)
 

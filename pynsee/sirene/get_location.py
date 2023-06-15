@@ -11,19 +11,31 @@ import warnings
 from shapely.errors import ShapelyDeprecationWarning
 
 from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
-from pynsee.sirene._get_location_openstreetmap import _get_location_openstreetmap
+from pynsee.sirene._get_location_openstreetmap import (
+    _get_location_openstreetmap,
+)
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=None)
 def _warning_get_location():
-    print(
-        "For at least one point, exact location has not been found, city location has been given instead"
+    logger.warning(
+        "For at least one point, exact location has not been found, city "
+        "location has been given instead"
     )
+
 
 @lru_cache(maxsize=None)
 def _warning_OSM():
-    print("This function returns data made available by OpenStreetMap and its contributors")
-    print("Please comply with Openstreetmap's Copyright and ODbL Licence")
+    logger.info(
+        "This function returns data made available by OpenStreetMap and its "
+        "contributors.\n"
+        "Please comply with Openstreetmap's Copyright and ODbL Licence"
+    )
+
 
 def get_location(self):
     """Get latitude and longitude from OpenStreetMap, add geometry column and turn SireneDataframe into GeoFrDataFrame
@@ -49,8 +61,9 @@ def get_location(self):
         >>> # Get location
         >>> df = df.get_location()
     """
-    _warning_OSM()    
-    
+
+    _warning_OSM()
+
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
 
@@ -73,7 +86,6 @@ def get_location(self):
         ]
 
         if set(list_col).issubset(df.columns):
-
             list_location = []
             timeSleep = 1
             session = requests.Session()
@@ -83,7 +95,6 @@ def get_location(self):
             session.mount("https://", adapter)
 
             for i in trange(len(df.index), desc="Getting location"):
-
                 siret = clean(df.loc[i, "siret"])
                 nb = clean(df.loc[i, "numeroVoieEtablissement"])
                 street_type = clean(df.loc[i, "typeVoieEtablissementLibelle"])
@@ -94,8 +105,12 @@ def get_location(self):
                 city = re.sub("[0-9]|EME", "", city)
 
                 city = re.sub(" D ", " D'", re.sub(" L ", " L'", city))
-                street_name = re.sub(" D ", " D'", re.sub(" L ", " L'", street_name))
-                street_type = re.sub(" D ", " D'", re.sub(" L ", " L'", street_type))
+                street_name = re.sub(
+                    " D ", " D'", re.sub(" L ", " L'", street_name)
+                )
+                street_type = re.sub(
+                    " D ", " D'", re.sub(" L ", " L'", street_type)
+                )
 
                 list_var = []
                 for var in [nb, street_type, street_name, postal_code, city]:
@@ -122,7 +137,9 @@ def get_location(self):
                         category,
                         typeLoc,
                         importance,
-                    ) = _get_location_openstreetmap(query=query, session=session)
+                    ) = _get_location_openstreetmap(
+                        query=query, session=session
+                    )
                 except:
                     try:
                         (
@@ -171,7 +188,6 @@ def get_location(self):
             list_points = []
 
             for i in range(len(sirene_df.index)):
-
                 if (sirene_df.loc[i, "latitude"] is None) or np.isnan(
                     sirene_df.loc[i, "latitude"]
                 ):
@@ -179,7 +195,8 @@ def get_location(self):
                 else:
                     list_points += [
                         Point(
-                            sirene_df.loc[i, "longitude"], sirene_df.loc[i, "latitude"]
+                            sirene_df.loc[i, "longitude"],
+                            sirene_df.loc[i, "latitude"],
                         )
                     ]
 

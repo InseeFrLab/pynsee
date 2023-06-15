@@ -7,6 +7,10 @@ from functools import lru_cache
 from pynsee.utils._request_insee import _request_insee
 from pynsee.sirene._make_dataframe import _make_dataframe
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _request_sirene(query, kind, number=1001):
@@ -41,14 +45,15 @@ def _request_sirene(query, kind, number=1001):
     if number > number_query_limit:
         link = link + "&curseur=*"
 
-    request = _request_insee(api_url=link, file_format="application/json;charset=utf-8")
+    request = _request_insee(
+        api_url=link, file_format="application/json;charset=utf-8"
+    )
 
     list_dataframe = []
 
     request_status = request.status_code
 
     if request_status == 200:
-
         data_request = request.json()
 
         data_request_1 = _make_dataframe(data_request, main_key, "1")
@@ -65,7 +70,6 @@ def _request_sirene(query, kind, number=1001):
         list_header_keys = list(data_request["header"].keys())
 
         if "curseur" in list_header_keys:
-
             cursor = data_request["header"]["curseur"]
             following_cursor = data_request["header"]["curseurSuivant"]
 
@@ -75,7 +79,6 @@ def _request_sirene(query, kind, number=1001):
                 & (request_status == 200)
                 & (df_nrows < number)
             ):
-
                 i_query += 1
                 query_number = "{}/{}".format(i_query, n_query_total)
 
@@ -87,21 +90,23 @@ def _request_sirene(query, kind, number=1001):
                 )
 
                 request_new = _request_insee(
-                    api_url=new_query, file_format="application/json;charset=utf-8"
+                    api_url=new_query,
+                    file_format="application/json;charset=utf-8",
                 )
 
                 request_status = request_new.status_code
 
                 if request_status == 200:
-
                     data_request_new = request_new.json()
                     cursor = data_request_new["header"]["curseur"]
-                    following_cursor = data_request_new["header"]["curseurSuivant"]
-                    # print(f'cursor:{cursor}, next_cursor:{following_cursor}\n')
+                    following_cursor = data_request_new["header"][
+                        "curseurSuivant"
+                    ]
 
                     if len(data_request_new[main_key]) > 0:
-
-                        df = _make_dataframe(data_request_new, main_key, query_number)
+                        df = _make_dataframe(
+                            data_request_new, main_key, query_number
+                        )
 
                         if "siret" in df.columns:
                             df_nrows += len(df.siret.unique())
@@ -112,20 +117,21 @@ def _request_sirene(query, kind, number=1001):
 
                         list_dataframe.append(df)
                     else:
-                        print("{} - No more data found".format(query_number))
+                        logger.debug(
+                            "{} - No more data found".format(query_number)
+                        )
 
                     if cursor == following_cursor:
                         i_query += 1
                         query_number = "{}/{}".format(i_query, n_query_total)
-                        print("{} - No more data found".format(query_number))
-
-                    if df_nrows == number:
-                        print(
-                            "!!! maximum reached, increase value of number argument !!!"
+                        logger.debug(
+                            "{} - No more data found".format(query_number)
                         )
 
-                    # if i_query == query_limit:
-                    #    print('!!! maximum reached, increase value of query_limit argument !!!')
+                    if df_nrows == number:
+                        logger.warning(
+                            "maximum reached, increase value of number argument !"
+                        )
 
         data_final = pd.concat(list_dataframe)
 
@@ -138,12 +144,13 @@ def _request_sirene(query, kind, number=1001):
 
         if sirenCol is not None:
             if len(data_final[sirenCol].unique()) == number_query_limit:
-                print("The query reached maximum item limit,")
-                print(
-                    f"Please change argument number to get more than {number_query_limit} different {sirenCol}"
+                logger.warning(
+                    "The query reached maximum item limit, "
+                    "please change argument number to get more than "
+                    f"{number_query_limit} different {sirenCol}"
                 )
 
         return data_final
     else:
-        print(request.text)
+        logger.error(request.text)
         return None

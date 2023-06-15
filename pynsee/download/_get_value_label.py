@@ -1,5 +1,7 @@
+import logging
 from pynsee.download._get_dict_data_source import _get_dict_data_source
 
+logger = logging.getLogger(__name__)
 
 def _get_value_label(id):
 
@@ -42,7 +44,7 @@ def _add_metadata(id, df):
             df = pd.concat([df] + list_df_metadata, axis=1)
         
     else:
-        print("No column-specific metadata has been found for this file")
+        logger.info("No column-specific metadata has been found for this file")
     
     return df
 """
