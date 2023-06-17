@@ -5,6 +5,7 @@ import time
 from unittest import TestCase
 import pandas as pd
 import sys
+from requests.exceptions import RequestException
 
 from pynsee.localdata._get_geo_relation import _get_geo_relation
 from pynsee.localdata._get_insee_one_area import _get_insee_one_area
@@ -261,10 +262,11 @@ class TestFunction(TestCase):
                 "departement", code="59", type="region", update=True
             )
             test = test & isinstance(df, pd.DataFrame)
+              
+            df = get_ascending_area("commune", code="59350", date="2018-01-01")
+            test = test & isinstance(df, pd.DataFrame)
 
-            df = get_ascending_area(
-                "departement", code="59", type="region", update=False
-            )
+            df = get_ascending_area("departement", code="59")
             test = test & isinstance(df, pd.DataFrame)
 
             self.assertTrue(test)
@@ -290,6 +292,15 @@ class TestFunction(TestCase):
             df = get_area_list(area="communes")
             test = test & isinstance(df, pd.DataFrame)
 
+            df = get_area_list(area="collectivitesDOutreMer", update=True)
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_list(area="UU2020", update=True)
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_list(area="regions", date="2023-01-01", update=True)
+            test = test & isinstance(df, pd.DataFrame)
+
             self.assertTrue(test)
 
         def test_get_area_list_2(self):
@@ -297,6 +308,13 @@ class TestFunction(TestCase):
                 get_area_list("a")
 
             self.assertRaises(ValueError, get_area_list_test)
+
+
+        def test_get_area_list_3(self):
+            def get_area_list_test():
+                get_area_list(area="regions", date="1900-01-01", update=True)
+
+            self.assertRaises(RequestException, get_area_list_test)
 
         def test_get_included_area(self):
             list_available_area = [
