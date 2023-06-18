@@ -8,9 +8,12 @@ import pandas as pd
 from pynsee.geodata._geojson_parser import _geojson_parser
 from pynsee.geodata._distance import _distance
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def _set_global_var(args):
-
     global link0, list_bbox_full, session, crsPolygon0
     link0 = args[0]
     list_bbox_full = args[1]
@@ -30,7 +33,6 @@ def _get_data_with_bbox2(i):
 
 
 def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
-
     # list_bbox = (5.0, 43.0, 6.0, 44.5)
     # bounds = [str(b) for b in list_bbox]
     # bounds = [bounds[1], bounds[0], bounds[3], bounds[2]]
@@ -59,29 +61,36 @@ def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
 
     link_query = link + BBOX
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
-
     if ("session" not in globals()) or ("session" not in locals()):
         session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=1, status_forcelist=[502])
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+
+    proxies = {}
+    for key in ["http", "https"]:
+        try:
+            proxies[key] = os.environ[f"{key}_proxy"]
+        except KeyError:
+            proxies[key] = ""
 
     with session.get(link_query, proxies=proxies) as r:
         try:
             data_json = r.json()
         except Exception:
-            print(
-                f"!!! The following query failed, some data might be missing !!!\n{link_query}"
+            logger.error(
+                "The following query failed, some data might be missing !\n"
+                f"{link_query}"
             )
             return pd.DataFrame()
+        finally:
+            session.close()
 
     if "features" in data_json.keys():
-
         json = data_json["features"]
 
         if len(json) > 0:
-
             if len(json) == 1000:
                 # data limit reached
                 # data searched relaunch with a smaller bbox

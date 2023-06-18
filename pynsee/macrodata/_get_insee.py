@@ -11,10 +11,13 @@ from pynsee.macrodata._get_date import _get_date
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._get_temp_dir import _get_temp_dir
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _get_insee(api_query, sdmx_query, step="1/1"):
-
     # create temporary directory
     dirpath = _get_temp_dir()
 
@@ -42,7 +45,6 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
     list_series = []
 
     for j in trange(n_series, desc="%s - Getting series" % step):
-
         data = root.getElementsByTagName("Series")[j]
 
         n_obs = len(data.getElementsByTagName("Obs"))
@@ -54,7 +56,6 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
         list_obs = []
 
         for i in range(n_obs):
-
             obs = data.getElementsByTagName("Obs")[i]._attrs
 
             dict_obs = {}
@@ -68,7 +69,7 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
             list_obs.append(df)
 
         if len(list_obs) > 0:
-            obs_series = pd.concat(list_obs)
+            obs_series = pd.concat(list_obs).reset_index(drop=True)
 
         #
         # collect attributes values from the series
@@ -81,10 +82,16 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
             dict_attr[a] = attr_series[a]._value
 
         col_attr = list(dict_attr.keys())
-        attr_series = pd.DataFrame(dict_attr, columns=col_attr, index=[0])
+        attr_series = pd.DataFrame(
+            dict_attr, columns=col_attr, index=[0]
+        ).reset_index(drop=True)
 
         if len(list_obs) > 0:
-            data_series = pd.concat([obs_series, attr_series], axis=1)
+            data_series = obs_series
+            if len(dict_attr.keys()) > 0:
+                for k in dict_attr.keys():
+                    data_series[k] = dict_attr[k]
+            # data_series = pd.concat([obs_series, attr_series], axis=1)
         else:
             data_series = pd.concat([attr_series], axis=1)
 
@@ -128,6 +135,6 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
             pd.to_numeric, errors="coerce"
         )
 
-    print("\nData has been cached\n")
+    logger.debug("Data has been cached")
 
     return data_final

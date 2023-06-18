@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import unittest
 from unittest import TestCase
 from pandas import pandas as pd
 import os
@@ -243,3 +244,11 @@ class TestFunction(TestCase):
             #     test = isinstance(df, pd.DataFrame)
             #     os.environ['pynsee_use_sdmx'] = "False"
             #     self.assertTrue(test)
+
+
+if __name__ == '__main__':
+    unittest.main()
+    #python test_pynsee_macrodata.py TestFunction.test_get_series_2
+    #python test_pynsee_macrodata.py TestFunction.test_get_column_title_1
+
+    

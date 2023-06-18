@@ -11,6 +11,10 @@ from pynsee.utils._get_token_from_insee import _get_token_from_insee
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
     """Save your credentials to connect to INSEE APIs, subscribe to api.insee.fr
@@ -43,6 +47,7 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
         >>> os.environ['http_proxy'] = "http://my_proxy_server:port"
         >>> os.environ['https_proxy'] = "http://my_proxy_server:port"
     """
+    logger.debug("SHOULD GET LOGGING")
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     home = str(Path.home())
     pynsee_credentials_file = home + "/" + "pynsee_credentials.csv"
@@ -74,10 +79,13 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
             "!!! Token is missing, please check insee_key and insee_secret are correct !!!"
         )
     else:
-        print(f"Token has been created")
+        logger.info("Token has been created")
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
+        proxies = {
+            "http": os.environ["http_proxy"],
+            "https": os.environ["https_proxy"],
+        }
     except:
         proxies = {"http": "", "https": ""}
 
@@ -99,21 +107,27 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
     list_requests_status = []
 
     for q in range(len(queries)):
-
-        headers = {"Accept": file_format[q], "Authorization": "Bearer " + token}
+        headers = {
+            "Accept": file_format[q],
+            "Authorization": "Bearer " + token,
+        }
         api_url = queries[q]
 
         _wait_api_query_limit(api_url)
-        results = requests.get(api_url, proxies=proxies, headers=headers, verify=False)
+        results = requests.get(
+            api_url, proxies=proxies, headers=headers, verify=False
+        )
 
         if results.status_code != 200:
-            print("!!! Please subscribe to {} API on api.insee.fr !!!".format(apis[q]))
+            logger.critical(
+                f"Please subscribe to {apis[q]} API on api.insee.fr !"
+            )
         list_requests_status += [results.status_code]
 
     if all([sts == 200 for sts in list_requests_status]):
-        print("Subscription to all INSEE's APIs has been successfull")
-        print("Unless the user wants to change key or secret,")
-        print(
-            "using this function is no longer needed as the credentials to get the token have been saved locally here:"
+        logger.info(
+            "Subscription to all INSEE's APIs has been successfull\n"
+            "Unless the user wants to change key or secret, using this "
+            "function is no longer needed as the credentials to get the token "
+            "have been saved locally here:\n" + pynsee_credentials_file
         )
-        print(pynsee_credentials_file)

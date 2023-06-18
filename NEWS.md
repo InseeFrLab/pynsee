@@ -1,4 +1,13 @@
 
+# pynsee 0.1.5
+
+* shapely>= 1.8.0 defined in both setup.py and requirements 
+
+# pynsee 0.1.4
+
+* translate method: bug fix due to IGN data flow discontinuity
+* package compatible with shapely 2.0 + deprecation warnings removed
+
 # pynsee 0.1.3
 
 * get_area_list provides list of communes, departements etc.

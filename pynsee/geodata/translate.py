@@ -9,6 +9,8 @@ from pynsee.geodata._rescale_geom import _rescale_geom
 from pynsee.geodata._get_center import _get_center
 from pynsee.geodata._add_insee_dep import _add_insee_dep
 
+import logging
+logger = logging.getLogger(__name__)
 
 def translate(
     self,
@@ -109,7 +111,9 @@ def translate(
                     list_new_dep += [ovdep]
 
                 else:
-                    print(f"!!! {departement[d]} is missing from insee_dep column !!!")
+                    logger.warning(
+                        f"{departement[d]} is missing from insee_dep column !"
+                        )
 
             if len(list_new_dep) > 0:
 

@@ -2,19 +2,25 @@ import os
 import pandas as pd
 from functools import lru_cache
 import difflib
+import logging
 
 from pynsee.download._unzip_pb import _unzip_pb
+
+logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=None)
 def warning_file(missingFile, foundFile):
-
-    print(f"Data file missing in the zip file:\n{missingFile}")
+    msgs = [("error", f"Data file missing in the zip file: {missingFile}")]
     if not foundFile == "":
-        print(f"Following file has been used instead:\n{foundFile}")
+        msgs.append(
+            ("error", f"Following file has been used instead: {foundFile}")
+        )
     else:
-        print("No replacement file has been found")
-    print("Please report this issue")
+        msgs.append(("warning", "No replacement file has been found"))
+    msgs.append(("error", "Please report this issue !"))
+    for level, msg in msgs:
+        getattr(logger, level)(msg)
 
 
 def _load_data_from_schema(
@@ -37,7 +43,6 @@ def _load_data_from_schema(
     file_to_import = telechargementFichier["file_to_import"]
 
     if telechargementFichier["result"]["zip"] is True:
-
         zipDirectory = f"{telechargementFichier['import_args']['file']}_temp"
 
         _unzip_pb(telechargementFichier["file_archive"], f"{zipDirectory}")
@@ -46,10 +51,11 @@ def _load_data_from_schema(
         dataPathFile = f"{zipDirectory}/{dataFile}"
 
         if not os.path.exists(dataPathFile):
-
             list_file_dir = os.listdir(zipDirectory)
 
-            suggestions = difflib.get_close_matches(dataFile, list_file_dir, n=1)
+            suggestions = difflib.get_close_matches(
+                dataFile, list_file_dir, n=1
+            )
 
             if not len(suggestions) == 0:
                 foundFile = suggestions[0]
@@ -66,7 +72,7 @@ def _load_data_from_schema(
 
     if telechargementFichier["result"]["type"] == "csv":
         # big file data load
-        if os.path.getsize(file_to_import) >= limit_chunk_size:            
+        if os.path.getsize(file_to_import) >= limit_chunk_size:
             list_chunk = []
             chunksize = 10**6
             with pd.read_csv(
@@ -100,16 +106,19 @@ def _load_data_from_schema(
                 if not useEncoding:
                     df_insee = pd.read_csv(
                         file_to_import,
-                        delimiter=telechargementFichier["import_args"]["delim"],
+                        delimiter=telechargementFichier["import_args"][
+                            "delim"
+                        ],
                         dtype="str",
                         usecols=variables,
                         engine="python",
                     )
                 else:
-
                     df_insee = pd.read_csv(
                         file_to_import,
-                        delimiter=telechargementFichier["import_args"]["delim"],
+                        delimiter=telechargementFichier["import_args"][
+                            "delim"
+                        ],
                         dtype="str",
                         usecols=variables,
                         engine="python",

@@ -7,7 +7,7 @@ with open("README.rst", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="pynsee",
-    version="0.1.3",
+    version="0.1.4",
     author="Hadrien Leclerc, Lino Galiana",
     author_email="leclerc.hadrien@gmail.com",
     description="Tools to Easily Search and Download French Data From INSEE and IGN APIs",
@@ -35,7 +35,7 @@ setuptools.setup(
             "requests>=2.23",
             "appdirs>=1.4.4",
             "unidecode>=1.1.0",
-            "shapely>=1.8.0,<2.0",
+            "shapely>=1.8.0",
             "urllib3"],
     extras_require={
         'full': ['openpyxl<=3.1.0', "xlrd>=2.0.1"]

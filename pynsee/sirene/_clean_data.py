@@ -9,13 +9,21 @@ from pynsee.sirene._employee_metadata import _employee_metadata
 from pynsee.sirene._street_metadata import _street_metadata
 from pynsee.utils._move_col_after import _move_col_after
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 # @lru_cache(maxsize=None)
 
 
 def _clean_data(
-    data_final, kind="siren", clean=True, activity=True, legal=True, only_alive=True
+    data_final,
+    kind="siren",
+    clean=True,
+    activity=True,
+    legal=True,
+    only_alive=True,
 ):
-
     # try:
     # add activity metadata
     if data_final is not None:
@@ -24,7 +32,6 @@ def _clean_data(
             naf5 = naf5[["NAF5", "TITLE_NAF5_FR"]]
 
             if "activitePrincipaleUniteLegale" in data_final.columns:
-
                 naf5_merge = naf5.rename(
                     columns={
                         "NAF5": "activitePrincipaleUniteLegale",
@@ -36,7 +43,10 @@ def _clean_data(
                 )
 
             if "activitePrincipaleEtablissement" in data_final.columns:
-                if "activitePrincipaleEtablissementLibelle" not in data_final.columns:
+                if (
+                    "activitePrincipaleEtablissementLibelle"
+                    not in data_final.columns
+                ):
                     naf5_merge = naf5.rename(
                         columns={
                             "NAF5": "activitePrincipaleEtablissement",
@@ -44,7 +54,9 @@ def _clean_data(
                         }
                     )
                     data_final = data_final.merge(
-                        naf5_merge, on="activitePrincipaleEtablissement", how="left"
+                        naf5_merge,
+                        on="activitePrincipaleEtablissement",
+                        how="left",
                     )
 
         # remove companies which no longer exist
@@ -63,7 +75,10 @@ def _clean_data(
         # add legal entities title
         if legal:
             if "categorieJuridiqueUniteLegale" in data_final.columns:
-                if "categorieJuridiqueUniteLegaleLibelle" not in data_final.columns:
+                if (
+                    "categorieJuridiqueUniteLegaleLibelle"
+                    not in data_final.columns
+                ):
                     try:
                         list_legal_code = (
                             data_final.categorieJuridiqueUniteLegale.unique()
@@ -79,7 +94,9 @@ def _clean_data(
                             }
                         )
                         data_final = data_final.merge(
-                            data_legal, on="categorieJuridiqueUniteLegale", how="left"
+                            data_legal,
+                            on="categorieJuridiqueUniteLegale",
+                            how="left",
                         )
                     except:
                         pass
@@ -145,7 +162,9 @@ def _clean_data(
         if "trancheEffectifsEtablissement" in data_final.columns:
             if "effectifsMinEtablissement" not in data_final.columns:
                 data_final = data_final.merge(
-                    df_empl_siret, on="trancheEffectifsEtablissement", how="left"
+                    df_empl_siret,
+                    on="trancheEffectifsEtablissement",
+                    how="left",
                 )
 
         # add street metadata
@@ -163,7 +182,6 @@ def _clean_data(
             "activitePrincipaleEtablissement",
             "typeVoieEtablissement",
         ]:
-
             data_final = _move_col_after(data_final, var + "Libelle", var)
 
         for k in ["Etablissement", "UniteLegale"]:
@@ -176,8 +194,5 @@ def _clean_data(
 
         if clean:
             data_final = data_final.dropna(axis=1, how="all")
-    # except:
-    # print('\n!!! Error : Data cleaning and harmonization failed !!!')
-    # raise ValueError('\n!!! Error : Data cleaning and harmonization failed !!!')
 
     return data_final
