@@ -20,6 +20,7 @@ from pynsee.localdata.get_local_metadata import get_local_metadata
 from pynsee.localdata.get_population import get_population
 from pynsee.localdata.get_old_city import get_old_city
 from pynsee.localdata.get_new_city import get_new_city
+from pynsee.localdata.get_area_projection import get_area_projection
 from pynsee.localdata.get_ascending_area import get_ascending_area
 from pynsee.localdata.get_descending_area import get_descending_area
 
@@ -54,13 +55,98 @@ class TestFunction(TestCase):
             test = test & isinstance(df, pd.DataFrame)
             df = get_new_city(code="24431")
             test = test & isinstance(df, pd.DataFrame)
-            self.assertTrue(isinstance(df, pd.DataFrame))
+            self.assertTrue(test)
+
+        def test_get_area_projection(self):
+            test = True
+            df = get_area_projection(
+                area="commune", code="01039", date="2020-01-01"
+            )
+            test = test & isinstance(df, pd.DataFrame)
+            test = test & (df.loc[0, "code"] == "01138")
+
+            df = get_area_projection(
+                area="commune",
+                code="01039",
+                date="2020-01-01",
+                dateProjection="1900-01-01",
+            )
+            test = test & (df is None)
+
+            df = get_area_projection(
+                area="commune",
+                code="01039",
+                date="2020-01-01",
+                dateProjection="2023-04-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+            test = test & (df.loc[0, "code"] == "01138")
+
+            df = get_area_projection(
+                area="commune",
+                code="01039",
+                date="2020-01-01",
+                dateProjection="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+            test = test & (df.loc[0, "code"] == "01039")
+
+            df = get_area_projection(
+                area="departement",
+                code="01",
+                date="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_projection(
+                area="arrondissement",
+                code="011",
+                date="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_projection(
+                area="arrondissementmunicipal",
+                code="75113",
+                date="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_projection(
+                area="arrondissementMunicipal",
+                code="75113",
+                date="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_projection(
+                area="region",
+                code="32",
+                date="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_projection(
+                area="intercommunalite",
+                code="200046977",
+                date="2020-01-01",
+            )
+            self.assertTrue(test)
+
+        def test_get_area_projection_dummy(self):
+            self.assertRaises(
+                ValueError,
+                get_area_projection,
+                "dummy",
+                "32",
+                "2020-01-01",
+            )
 
         def test_get_old_city(self):
             test = True
             df = get_old_city(code="24259")
             test = test & isinstance(df, pd.DataFrame)
-            self.assertTrue(isinstance(df, pd.DataFrame))
+            self.assertTrue(test)
 
         def test_get_geo_list_1(self):
             list_available_geo = [
