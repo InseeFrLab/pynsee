@@ -50,9 +50,11 @@ def _find_latest_local_dataset(dataset_version, variables, nivgeo, codegeo, upda
                         ) 
                 sys.stdout = sys.__stdout__
                 
-                df_default = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": None}, index=[0])
-                if df == df_default:
-                    print(1 + '1')
+                if type(df) == pd.core.frame.DataFrame:
+                    if len(df.index) == 1:
+                        if df['OBS_VALUE'][0] is None:
+                            raise ValueError('No data found')
+                        
             except:            
                 if dv == list_dataset_version[-1]:
                     msg = '!!! Latest dataset version not found !!!\n'
