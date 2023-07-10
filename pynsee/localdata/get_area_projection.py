@@ -85,7 +85,10 @@ def get_area_projection(
         data = pd.DataFrame(request.json())
 
     except Exception:
-        logger.error("No data found !")
+        logger.error(
+            f"No data found for projection of area {area} of code {code} "
+            f"from date {date} to date {dateProjection}"
+        )
         data = None
 
     return data
