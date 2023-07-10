@@ -52,6 +52,13 @@ def _request_insee(
         except KeyError:
             proxies[key] = ""
 
+    try:
+        print_url = os.environ["pynsee_print_url"]
+        if print_url == "True":
+            print(api_url)
+    except:
+        pass
+        
     # force sdmx use with a system variable
     try:
         pynsee_use_sdmx = os.environ["pynsee_use_sdmx"]

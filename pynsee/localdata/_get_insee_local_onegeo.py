@@ -115,7 +115,8 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
 
         data["OBS_VALUE"] = pd.to_numeric(data["OBS_VALUE"])
 
-    except:
-        data = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": np.nan}, index=[0])
+    except Exception as e:
+        #print(e)
+        data = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": None}, index=[0])
 
     return data

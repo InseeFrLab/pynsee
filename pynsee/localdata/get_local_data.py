@@ -102,11 +102,11 @@ def get_local_data(
     # LATEST AVAILABLE DATASET OPTION
     #
     
-    pattern = re.compile('^GEOlatest.*latest$')
+    pattern = re.compile('.*latest$')
 
     if pattern.match(dataset_version):
         
-        dataset_version = _find_latest_local_dataset(dataset_version, variables, update)
+        dataset_version = _find_latest_local_dataset(dataset_version, variables, nivgeo, geocodes[0], update)
        
     if (not os.path.exists(file_localdata)) or update:
 
@@ -122,7 +122,8 @@ def get_local_data(
                     variables, dataset_version, nivgeo, codegeo
                 )
                 
-            except:
+            except Exception as e:
+                #display(e)
                 df = df_default
 
             list_data_all.append(df)

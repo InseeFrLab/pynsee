@@ -217,6 +217,41 @@ class TestFunction(TestCase):
             )
             test = test & isinstance(data, pd.DataFrame)
 
+            data = get_local_data(dataset_version='GEOlatestFILOlatest',
+                       variables =  'INDICS_FILO_DISP',
+                       nivgeo = 'COM',
+                       update=True,
+                       geocodes = '75056')
+            test = test & isinstance(data, pd.DataFrame)
+
+            data = get_local_data(dataset_version='POPLEGlatest',
+                       variables =  'IND_POPLEGALES',
+                       nivgeo = 'COM',
+                       update=True,
+                       geocodes = '75056')
+            test = test & isinstance(data, pd.DataFrame)
+
+            data = get_local_data(dataset_version='GEOlatestRFDlatest',
+                       variables =  'INDICS_ETATCIVIL',
+                       nivgeo = 'COM',
+                       update=True,
+                       geocodes = '75056')
+            test = test & isinstance(data, pd.DataFrame)
+
+            data = get_local_data(dataset_version='BDCOMlatest',
+                       variables =  'INDICS_BDCOM',
+                       nivgeo = 'COM',
+                       update=True,
+                       geocodes = '75056')
+            test = test & isinstance(data, pd.DataFrame)
+
+            data = get_local_data(dataset_version='GEOlatestREElatest',
+                       variables =  'NA10_HORS_AZ-ENTR_INDIVIDUELLE',
+                       nivgeo = 'COM',
+                       update=True,
+                       geocodes = '75056')
+            test = test & isinstance(data, pd.DataFrame)
+
             for geo in ["DEP", "REG", "FE", "METRODOM"]:
                 data = get_local_data(
                     dataset_version="GEO2020FLORES2017",
