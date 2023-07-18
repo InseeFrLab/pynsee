@@ -14,7 +14,7 @@ def _get_token(insee_key, insee_secret):
     if token_envir is None:
         try:
             token = _get_token_from_insee(insee_key, insee_secret)
-        except:
+        except Exception:
             token = None
     else:
         token = token_envir

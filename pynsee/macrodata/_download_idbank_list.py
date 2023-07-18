@@ -35,7 +35,7 @@ def _download_idbank_list(update=False):
             insee_date_time_now = datetime.strptime(
                 insee_date_time_now, "%Y-%m-%d %H:%M:%S.%f"
             )
-        except:
+        except Exception:
             insee_date_time_now = datetime.now()
 
         # file date creation
@@ -49,9 +49,8 @@ def _download_idbank_list(update=False):
         trigger_update = True
 
     if trigger_update:
-
         # INSEE api credentials are not useful here, but proxy settings stored in pynsee_api_credentials are useful
-        keys = _get_credentials()
+        _get_credentials()
 
         data = _dwn_idbank_files()
 
@@ -68,7 +67,7 @@ def _download_idbank_list(update=False):
         # testing requires multiple python versions
         try:
             data = pd.read_pickle(file)
-        except:
+        except Exception:
             os.remove(file)
             data = _download_idbank_list()
 

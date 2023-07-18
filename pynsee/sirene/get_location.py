@@ -1,21 +1,23 @@
+import logging
 import re
-import pandas as pd
-from tqdm import trange
-import numpy as np
-from functools import lru_cache
 import requests
+import warnings
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from functools import lru_cache
+
+import numpy as np
+import pandas as pd
 from shapely.geometry import Point
-import warnings
+from tqdm import trange
 from shapely.errors import ShapelyDeprecationWarning
 
+import pynsee
 from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
 from pynsee.sirene._get_location_openstreetmap import (
     _get_location_openstreetmap,
 )
 
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -61,7 +63,6 @@ def get_location(self):
         >>> # Get location
         >>> df = df.get_location()
     """
-
     _warning_OSM()
 
     with warnings.catch_warnings():
@@ -74,6 +75,7 @@ def get_location(self):
                 cleaned = ""
             else:
                 cleaned = string
+
             return cleaned
 
         list_col = [
@@ -94,7 +96,10 @@ def get_location(self):
             session.mount("http://", adapter)
             session.mount("https://", adapter)
 
-            for i in trange(len(df.index), desc="Getting location"):
+            for i in trange(
+                len(df.index), desc="Getting location",
+                disable=pynsee._config["hide_progress"]
+            ):
                 siret = clean(df.loc[i, "siret"])
                 nb = clean(df.loc[i, "numeroVoieEtablissement"])
                 street_type = clean(df.loc[i, "typeVoieEtablissementLibelle"])
@@ -140,7 +145,7 @@ def get_location(self):
                     ) = _get_location_openstreetmap(
                         query=query, session=session
                     )
-                except:
+                except Exception:
                     try:
                         (
                             lat,
@@ -152,7 +157,7 @@ def get_location(self):
                             query=query_backup, session=session
                         )
                         importance = None
-                    except:
+                    except Exception:
                         lat, lon, category, typeLoc, importance = (
                             None,
                             None,
@@ -205,5 +210,5 @@ def get_location(self):
             GeoDF = GeoFrDataFrame(sirene_df)
 
             return GeoDF
-        else:
-            return df
+
+        return df

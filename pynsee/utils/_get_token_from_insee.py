@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import requests
-import re
 import base64
 import os
+import logging
+import re
+import requests
 
 from functools import lru_cache
 
-import logging
+import pynsee
+
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _get_token_from_insee(insee_key, insee_secret):
-
     string_key = "{}:{}".format(insee_key, insee_secret)
     string_key_encoded = string_key.encode("utf-8")
     string = base64.b64encode(string_key_encoded).decode("utf-8")
@@ -24,10 +27,10 @@ def _get_token_from_insee(insee_key, insee_secret):
 
     data = {"grant_type": "client_credentials"}
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
+        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+    }
 
     try:
         response = requests.post(

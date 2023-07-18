@@ -1,14 +1,18 @@
-from datetime import date
 import tempfile
 import os
-import requests
-import zipfile
 import re
-import pandas as pd
+import requests
 import urllib3
+import warnings
+import zipfile
+
+from datetime import date
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-import warnings
+
+import pandas as pd
+
+import pynsee
 
 
 def _dwn_idbank_files():
@@ -87,12 +91,10 @@ def _dwn_idbank_files():
 def _dwn_idbank_file(file_to_dwn, session):
     separator = ";"
 
-    proxies = {}
-    for key in ["http", "https"]:
-        try:
-            proxies[key] = os.environ[f"{key}_proxy"]
-        except KeyError:
-            proxies[key] = ""
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
+        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+    }
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

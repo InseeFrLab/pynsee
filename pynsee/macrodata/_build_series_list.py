@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import os
+
+import pandas as pd
+from tqdm import trange
+
+import pynsee
 from pynsee.macrodata.get_dataset_list import get_dataset_list
 from pynsee.macrodata.get_series_list import get_series_list
 from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
-from tqdm import trange
-import os
-import pandas as pd
 
 
 def _build_series_list(dt=["CNA-2014-ERE"]):
@@ -29,7 +32,7 @@ def _build_series_list(dt=["CNA-2014-ERE"]):
 
     list_dt = []
 
-    for d in trange(len(dt)):
+    for d in trange(len(dt), disable=pynsee._config["hide_progress"]):
         dataset = dt[d]
         df = get_series_list(dataset, update=True)
         list_dt.append(df)

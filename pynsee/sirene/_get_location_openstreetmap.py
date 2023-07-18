@@ -30,10 +30,10 @@ def _get_location_openstreetmap(query, session=None):
 
     headers = {"User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")}
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
+        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+    }
 
     results = session.get(api_link, proxies=proxies, headers=headers)
     data = results.json()

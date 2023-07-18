@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import logging
 import os
-from pathlib import Path
-import pandas as pd
 import requests
 import urllib3
+from pathlib import Path
 
-from pynsee.utils._get_token_from_insee import _get_token_from_insee
+import pandas as pd
+
+import pynsee
+from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -61,33 +63,25 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
         },
         index=[0],
     )
+
     d.to_csv(pynsee_credentials_file)
 
-    keys = _get_credentials()
+    _get_credentials()
 
-    insee_key = keys["insee_key"]
-    insee_secret = keys["insee_secret"]
+    insee_key = pynsee._config["insee_key"]
+    insee_secret = pynsee._config["insee_secret"]
 
-    token = None
-    try:
-        token = _get_token_from_insee(insee_key, insee_secret)
-    except:
-        pass
+    token = _get_token(insee_key, insee_secret)
 
-    if token is None:
+    if not token:
         raise ValueError(
-            "!!! Token is missing, please check insee_key and insee_secret are correct !!!"
-        )
-    else:
-        logger.info("Token has been created")
+            "!!! Token is missing, please check that insee_key and "
+            "insee_secret are correct !!!")
 
-    try:
-        proxies = {
-            "http": os.environ["http_proxy"],
-            "https": os.environ["https_proxy"],
-        }
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
+        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+    }
 
     queries = [
         "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",
@@ -95,6 +89,7 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
         "https://api.insee.fr/entreprises/sirene/V3/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
         "https://api.insee.fr/donnees-locales/V0.1/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
     ]
+
     apis = ["BDM", "Metadata", "Sirene", "Local Data"]
 
     file_format = [

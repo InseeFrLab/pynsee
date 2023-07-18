@@ -1,34 +1,37 @@
-import requests
-import re
+import logging
 import os
-from functools import lru_cache
+import re
+import requests
 import urllib3
+from functools import lru_cache
 
+import pynsee
 from pynsee.download._get_file_list_internal import _get_file_list_internal
 
-import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _get_dict_data_source():
-
     try:
         URL_DATA_LIST = os.environ["pynsee_file_list"]
-    except:
+    except Exception:
         URL_DATA_LIST = (
             "https://raw.githubusercontent.com/"
             + "InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"
         )
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
-    
+
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
+        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+    }
+
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     try:
         jsonfile = requests.get(URL_DATA_LIST, proxies=proxies, verify=False).json()
-    except:
+    except Exception:
         jsonfile = _get_file_list_internal()
 
         logger.error(

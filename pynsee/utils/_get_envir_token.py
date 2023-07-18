@@ -5,14 +5,15 @@ import requests
 import urllib3
 from functools import lru_cache
 
+import pynsee
+
 
 @lru_cache(maxsize=None)
 def _get_envir_token():
-
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
+        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+    }
 
     try:
         token = os.environ["insee_token"]
@@ -22,6 +23,7 @@ def _get_envir_token():
         request_test = requests.get(url_test, proxies=proxies, headers=headers, verify=False)
         if request_test.status_code != 200:
             raise ValueError("Token from python environment is not working")
-    except:
+    except Exception:
         token = None
+
     return token

@@ -1,23 +1,27 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import datetime
+import logging
 import os
-from functools import lru_cache
-from tqdm import trange
-import pandas as pd
-import numpy as np
 import re
 import sys
-import datetime
+from functools import lru_cache
 
+import numpy as np
+import pandas as pd
+from tqdm import trange
+
+import pynsee
 from pynsee.localdata._find_latest_local_dataset import _find_latest_local_dataset
 from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
 from pynsee.localdata.get_geo_list import get_geo_list
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 
-import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _warning_nivgeo(nivgeo):
@@ -73,7 +77,7 @@ def get_local_data(
 
     if isinstance(geocodes, pd.core.series.Series):
         geocodes = geocodes.to_list()
-    
+
     if type(geocodes) == str:
         geocodes = [geocodes]
 
@@ -97,50 +101,56 @@ def get_local_data(
     filename = _hash("".join([variables] + [dataset_version] + [nivgeo] + geocodes))
     insee_folder = _create_insee_folder()
     file_localdata = insee_folder + "/" + filename
-    
+
     #
     # LATEST AVAILABLE DATASET OPTION
     #
-    
+
     pattern = re.compile('.*latest$')
 
     if pattern.match(dataset_version):
-        
+
         dataset_version = _find_latest_local_dataset(dataset_version, variables, nivgeo, geocodes[0], update)
-       
+
     if (not os.path.exists(file_localdata)) or update:
 
-        list_data_all = []       
-        
-        for cdg in trange(len(geocodes), desc="Getting data"):
-            
+        list_data_all = []
+
+        for cdg in trange(
+            len(geocodes),
+            desc="Getting data",
+            disable=pynsee._config["hide_progress"]
+        ):
             codegeo = geocodes[cdg]
             df_default = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": np.nan}, index=[0])
-            
+
             try:
                 df = _get_insee_local_onegeo(
                     variables, dataset_version, nivgeo, codegeo
                 )
-                
+
             except Exception as e:
-                #display(e)
+                logger.warning(f"Ignored error: {e}")
                 df = df_default
 
             list_data_all.append(df)
 
         data_final = pd.concat(list_data_all).reset_index(drop=True)
-        
+
         if data_final.equals(df_default):
-            logger.error("Error or no data found !")            
+            logger.error("Error or no data found !")
         else:
             data_final.to_pickle(file_localdata)
             logger.info(f"Data saved: {file_localdata}")
-            
+
     else:
         try:
             data_final = pd.read_pickle(file_localdata)
-        except:
+        except Exception as e:
+            logger.warning(f"Ignored error: {e}.")
+
             os.remove(file_localdata)
+
             data_final = get_local_data(
                 variables=variables,
                 dataset_version=dataset_version,

@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from functools import lru_cache
-import pandas as pd
-import xml.etree.ElementTree as ET
-from tqdm import trange
 import os
+import xml.etree.ElementTree as ET
+from functools import lru_cache
 
+import pandas as pd
+from tqdm import trange
+
+import pynsee
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._get_temp_dir import _get_temp_dir
 
@@ -35,7 +37,8 @@ def _get_geo_list_simple(geo, date=None, progress_bar=False):
     list_data_geo = []
 
     if progress_bar is True:
-        geo_range = trange(n_variable, desc="Getting %s" % geo, leave=False)
+        geo_range = trange(n_variable, desc="Getting %s" % geo, leave=False,
+                           disable=pynsee._config["hide_progress"])
     else:
         geo_range = range(n_variable)
 
