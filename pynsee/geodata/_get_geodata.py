@@ -126,12 +126,10 @@ def _get_geodata(
                 + user_agent.replace("/", "")
             }
 
-            proxies = {}
-            for key in ["http", "https"]:
-                try:
-                    proxies[key] = os.environ[f"{key}_proxy"]
-                except KeyError:
-                    proxies[key] = ""
+            proxies = {
+                "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
+                "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+            }
 
             with warnings.catch_warnings():
                 warnings.simplefilter(

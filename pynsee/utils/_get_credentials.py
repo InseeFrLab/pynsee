@@ -39,15 +39,16 @@ def _get_credentials():
                 pass
         except Exception as e:
             logging.warning(f"Failed to retrieve credentials from file: {e}.")
-            envir_var_used = True
 
         try:
             pynsee._config["insee_key"] = os.environ["insee_key"]
             pynsee._config["insee_secret"] = os.environ["insee_secret"]
-        except Exception:
+            envir_var_used = True
+        except KeyError:
             try:
                 pynsee._config["insee_key"] = os.environ["INSEE_KEY"]
                 pynsee._config["insee_secret"] = os.environ["INSEE_SECRET"]
+                envir_var_used = True
             except KeyError:
                 pass
 
