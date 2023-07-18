@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from pynsee.localdata._get_insee_one_area import _get_insee_one_area
+from warnings import warn
 
 import pandas as pd
 from tqdm import trange
-from warnings import warn
+
+import pynsee
+from pynsee.localdata._get_insee_one_area import _get_insee_one_area
+
 
 def get_included_area(area_type, codeareas):
     """Get all areas included in the list of areas provided
@@ -33,7 +36,7 @@ def get_included_area(area_type, codeareas):
 
     list_data = []
 
-    for c in trange(len(codeareas)):
+    for c in trange(len(codeareas), disable=pynsee._config["hide_progress"]):
         list_data.append(_get_insee_one_area(area_type, codeareas[c]))
 
     data_final = pd.concat(list_data)

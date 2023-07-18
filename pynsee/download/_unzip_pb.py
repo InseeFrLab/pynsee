@@ -1,9 +1,12 @@
+import os
 import zipfile
 from pathlib import Path
-from tqdm.utils import CallbackIOWrapper
-from tqdm import tqdm
 from shutil import copyfileobj
-import os
+
+from tqdm import tqdm
+from tqdm.utils import CallbackIOWrapper
+
+import pynsee
 
 
 def _unzip_pb(fzip, dest, desc="Extracting"):
@@ -27,6 +30,7 @@ def _unzip_pb(fzip, dest, desc="Extracting"):
         unit_scale=True,
         unit_divisor=1024,
         total=sum(getattr(i, "file_size", 0) for i in zipf.infolist()),
+        disable=pynsee._config["hide_progress"]
     ) as pbar:
         for i in zipf.infolist():
             if not getattr(i, "file_size", 0):  # directory

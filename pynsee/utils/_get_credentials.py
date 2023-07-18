@@ -1,56 +1,62 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from pathlib import Path
-import os
-import pandas as pd
-from functools import lru_cache
-import numpy as np
-
 import logging
+import os
+from functools import lru_cache
+from pathlib import Path
+
+import pandas as pd
+
+import pynsee
+
 
 logger = logging.getLogger(__name__)
 
 
 def _get_credentials():
-    envir_var_used = False
-    try:
-        home = str(Path.home())
-        pynsee_credentials_file = home + "/" + "pynsee_credentials.csv"
-        cred = pd.read_csv(pynsee_credentials_file)
-        os.environ["insee_key"] = str(cred.loc[0, "insee_key"])
-        os.environ["insee_secret"] = str(cred.loc[0, "insee_secret"])
-        http_proxy = cred.loc[0, "http_proxy"]
-        https_proxy = cred.loc[0, "https_proxy"]
-        if (http_proxy is None) or (not isinstance(http_proxy, str)):
-            http_proxy = ""
-        if (https_proxy is None) or (not isinstance(https_proxy, str)):
-            https_proxy = ""
-        os.environ["http_proxy"] = str(http_proxy)
-        os.environ["https_proxy"] = str(https_proxy)
-    except:
-        envir_var_used = True
+    ''' Store INSEE credentials into pynsee configuration dict '''
+    if not pynsee._config["insee_key"]:
+        envir_var_used = False
 
-    try:
-        key_dict = {
-            "insee_key": os.environ["insee_key"],
-            "insee_secret": os.environ["insee_secret"],
-        }
-    except:
         try:
-            key_dict = {
-                "insee_key": os.environ["INSEE_KEY"],
-                "insee_secret": os.environ["INSEE_SECRET"],
-            }
-        except:
-            key_dict = None
+            home = str(Path.home())
+            pynsee_credentials_file = home + "/" + "pynsee_credentials.csv"
+            cred = pd.read_csv(pynsee_credentials_file)
 
-    if (envir_var_used is True) & (key_dict is not None):
-        _warning_credentials("envir_var_used")
-    elif key_dict is None:
-        _warning_credentials("key_dict_none")
+            pynsee._config["insee_key"] = str(cred.loc[0, "insee_key"])
+            pynsee._config["insee_secret"] = str(cred.loc[0, "insee_secret"])
 
-    return key_dict
+            try:
+                http_proxy = cred.loc[0, "http_proxy"]
+                https_proxy = cred.loc[0, "https_proxy"]
+
+                if http_proxy:
+                    pynsee._config["http_proxy"] = http_proxy
+                if https_proxy:
+                    pynsee._config["https_proxy"] = https_proxy
+            except KeyError:
+                pass
+        except Exception as e:
+            logging.warning(f"Failed to retrieve credentials from file: {e}.")
+            envir_var_used = True
+
+        try:
+            pynsee._config["insee_key"] = os.environ["insee_key"]
+            pynsee._config["insee_secret"] = os.environ["insee_secret"]
+        except Exception:
+            try:
+                pynsee._config["insee_key"] = os.environ["INSEE_KEY"]
+                pynsee._config["insee_secret"] = os.environ["INSEE_SECRET"]
+            except KeyError:
+                pass
+
+        if not pynsee._config["insee_key"]:
+            _warning_credentials("key_dict_none")
+        elif envir_var_used:
+            _warning_credentials("envir_var_used")
+        else:
+            logger.info("Token has been created")
 
 
 @lru_cache(maxsize=None)

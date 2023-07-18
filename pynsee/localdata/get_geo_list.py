@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import logging
 import os
-import pandas as pd
-from tqdm import trange
-import numpy as np
 from requests.exceptions import RequestException
 
+import numpy as np
+import pandas as pd
+from tqdm import trange
+
+import pynsee
 from pynsee.utils._paste import _paste
 from pynsee.localdata._get_geo_relation import _get_geo_relation
 from pynsee.localdata._get_geo_list_simple import _get_geo_list_simple
-
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
-import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -99,7 +101,8 @@ def get_geo_list(geo=None, date=None, update=False):
                 type_geo = "ArrondissementMunicipal"
 
             for r in trange(
-                len(list_reg), desc="Getting {}".format(geo), leave=False
+                len(list_reg), desc="Getting {}".format(geo), leave=False,
+                disable=pynsee._config["hide_progress"]
             ):
                 try:
                     df = _get_geo_relation(
