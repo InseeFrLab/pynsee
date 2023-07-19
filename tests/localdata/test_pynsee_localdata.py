@@ -363,6 +363,27 @@ class TestFunction(TestCase):
             df = get_descending_area("zoneDEmploi2020", code="1109")
             test = test & isinstance(df, pd.DataFrame)
 
+            df = get_descending_area(
+                "departement", code="59", type="arrondissement", update=True
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_descending_area(
+                "departement", code="59", type="arrondissement", update=False
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_ascending_area("commune", code="59350", date="2018-01-01")
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_ascending_area("departement", code="59")
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_ascending_area(
+                "departement", code="59", type="region", update=True
+            )
+            test = test & isinstance(df, pd.DataFrame)
+              
             df = get_ascending_area("commune", code="59350", date="2018-01-01")
             test = test & isinstance(df, pd.DataFrame)
 
@@ -408,6 +429,7 @@ class TestFunction(TestCase):
                 get_area_list("a")
 
             self.assertRaises(ValueError, get_area_list_test)
+
 
         def test_get_area_list_3(self):
             def get_area_list_test():
