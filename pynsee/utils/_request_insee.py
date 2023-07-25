@@ -49,15 +49,10 @@ def _request_insee(
 
     proxies = {
         "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
-        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"]),
     }
 
-    try:
-        print_url = os.environ["pynsee_print_url"]
-        if print_url == "True":
-            print(api_url)
-    except Exception:
-        pass
+    logger.debug(api_url)
 
     # force sdmx use with a system variable
     try:
