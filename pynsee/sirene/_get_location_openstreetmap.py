@@ -5,6 +5,7 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import pandas as pd
 
+import pynsee
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 
 
@@ -17,18 +18,18 @@ def _get_location_openstreetmap(query, session=None):
         session.mount("http://", adapter)
         session.mount("https://", adapter)
 
-    api_link = "https://nominatim.openstreetmap.org/search.php?q={}&format=jsonv2&limit=1".format(
-        query
-    )
-    # api_link = 'https://nominatim.openstreetmap.org/search?q=ZONE+INDUSTRIELLE+54980+BATILLY+FRANCE&format=json&limit=1'
+    api_link = f"https://nominatim.openstreetmap.org/search.php?q={query}" \
+        "&format=jsonv2&limit=1"
 
     try:
         home = str(Path.home())
         user_agent = os.path.basename(home)
-    except:
+    except Exception:
         user_agent = ""
 
-    headers = {"User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")}
+    headers = {
+        "User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")
+    }
 
     try:
         proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}

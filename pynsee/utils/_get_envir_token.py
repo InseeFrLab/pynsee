@@ -11,7 +11,7 @@ def _get_envir_token():
 
     try:
         proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
+    except KeyError:
         proxies = {"http": "", "https": ""}
 
     try:
@@ -22,6 +22,6 @@ def _get_envir_token():
         request_test = requests.get(url_test, proxies=proxies, headers=headers, verify=False)
         if request_test.status_code != 200:
             raise ValueError("Token from python environment is not working")
-    except:
+    except Exception:
         token = None
     return token

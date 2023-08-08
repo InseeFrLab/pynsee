@@ -48,4 +48,6 @@ def _get_token_from_insee(insee_key, insee_secret):
 
     token = re.sub(':|"|}|{|access_token', "", selected_content)
 
+    logger.debug(f"Obtained token: {token}")
+
     return token

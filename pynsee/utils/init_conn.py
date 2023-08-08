@@ -71,22 +71,22 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
     token = None
     try:
         token = _get_token_from_insee(insee_key, insee_secret)
-    except:
+    except Exception:
         pass
 
     if token is None:
         raise ValueError(
-            "!!! Token is missing, please check insee_key and insee_secret are correct !!!"
-        )
+            "!!! Token is missing, please check that insee_key and "
+            "insee_secret are correct !!!")
     else:
-        logger.info("Token has been created")
+        logger.info("Token has been created.")
 
     try:
         proxies = {
             "http": os.environ["http_proxy"],
             "https": os.environ["https_proxy"],
         }
-    except:
+    except KeyError:
         proxies = {"http": "", "https": ""}
 
     queries = [

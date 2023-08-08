@@ -3,7 +3,6 @@
 
 from functools import lru_cache
 import pandas as pd
-import numpy as np
 
 from pynsee.utils._request_insee import _request_insee
 
