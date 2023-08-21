@@ -140,6 +140,7 @@ def get_location(self):
                     ) = _get_location_openstreetmap(
                         query=query, session=session
                     )
+                    exact_location = True
                 except:
                     try:
                         (
@@ -152,6 +153,7 @@ def get_location(self):
                             query=query_backup, session=session
                         )
                         importance = None
+                        exact_location = False
                     except:
                         lat, lon, category, typeLoc, importance = (
                             None,
@@ -160,6 +162,7 @@ def get_location(self):
                             None,
                             None,
                         )
+                        exact_location = False
                     else:
                         _warning_get_location()
 
@@ -172,6 +175,7 @@ def get_location(self):
                         "crsCoord": "EPSG:4326",
                         "type": typeLoc,
                         "importance": importance,
+                        'exact_location': exact_location,
                     },
                     index=[0],
                 )
