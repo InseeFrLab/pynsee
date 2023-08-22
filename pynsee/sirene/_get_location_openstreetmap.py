@@ -1,14 +1,20 @@
+import json
 import os
-from pathlib import Path
 import requests
+
+from pathlib import Path
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+
 import pandas as pd
 
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._hash import _hash
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
+from pynsee.utils._warning_cached_data import _warning_cached_data
 
 
-def _get_location_openstreetmap(query, session=None):
+def _get_location_openstreetmap(query, session=None, update=False):
 
     if session is None:
         session = requests.Session()
@@ -17,26 +23,38 @@ def _get_location_openstreetmap(query, session=None):
         session.mount("http://", adapter)
         session.mount("https://", adapter)
 
-    api_link = "https://nominatim.openstreetmap.org/search.php?q={}&format=jsonv2&limit=1".format(
-        query
-    )
-    # api_link = 'https://nominatim.openstreetmap.org/search?q=ZONE+INDUSTRIELLE+54980+BATILLY+FRANCE&format=json&limit=1'
+    api_link = "https://nominatim.openstreetmap.org/search.php?" \
+        f"q={query}&format=jsonv2&limit=1"
+
+    insee_folder = _create_insee_folder()
+    filename = os.path.join(insee_folder, f"{_hash(api_link)}.json")
 
     try:
         home = str(Path.home())
         user_agent = os.path.basename(home)
-    except:
+    except Exception:
         user_agent = ""
 
     headers = {"User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")}
 
     try:
         proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
+    except Exception:
         proxies = {"http": "", "https": ""}
 
-    results = session.get(api_link, proxies=proxies, headers=headers)
-    data = results.json()
+    data = None
+
+    if update or not os.path.isfile(filename):
+        results = session.get(api_link, proxies=proxies, headers=headers)
+        data = results.json()
+
+        with open(filename, "w") as f:
+            json.dump(data, f)
+    else:
+        with open(filename, "r") as f:
+            data = json.load(f)
+
+        _warning_cached_data(filename)
 
     list_dataframe = []
 
