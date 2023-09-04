@@ -54,6 +54,11 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
     home = str(Path.home())
     pynsee_credentials_file = home + "/" + "pynsee_credentials.csv"
 
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
+        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+    }
+
     d = pd.DataFrame(
         {
             "insee_key": insee_key,
@@ -78,12 +83,20 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
             "!!! Token is missing, please check that insee_key and "
             "insee_secret are correct !!!")
     else:
-        logger.info("Token has been created.")
+        headers = {
+            "Accept": "application/xml",
+            "Authorization": "Bearer " + token
+        }
 
-    proxies = {
-        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
-        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
-    }
+        url_test = "https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES"
+
+        request_test = requests.get(
+            url_test, proxies=proxies, headers=headers, verify=False)
+
+        if request_test.status_code != 200:
+            raise ValueError(f"This token is not working: {token}")
+
+    pynsee._config["token"] = token
 
     queries = [
         "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",

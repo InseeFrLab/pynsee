@@ -181,11 +181,12 @@ def search_sirene(
         # using OR, unless it's a range condition, cf.
         # https://www.sirene.fr/static-resources/htm/sommaire.html
         if not (
-            re.match(r"\[\w+\sTO\s\w+\]", patt) or
-            re.match(r"\{\w+\sTO\s\w+\}", patt)
+            re.match(r"\[\w+\s+TO\s+\w+\]", patt) or
+            re.match(r"\{\w+\s+TO\s+\w+\}", patt)
         ):
             patt = re.sub(r"\s+", "|", patt)
         else:
+            # only single spaces are accepted in ranges
             patt = re.sub(r"\s+", " ", patt)
 
         list_patt = patt.split("|")
@@ -223,7 +224,7 @@ def search_sirene(
     else:
         try:
             data_final = pd.read_pickle(file_sirene)
-        except:
+        except Exception:
             os.remove(file_sirene)
 
             data_final = search_sirene(

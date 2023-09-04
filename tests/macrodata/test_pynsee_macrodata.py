@@ -9,6 +9,11 @@ import sys
 from datetime import datetime
 from datetime import timedelta
 
+import pynsee
+
+from pynsee.macrodata import (
+    get_series_list, get_dataset_list, get_last_release, get_series,
+    get_dataset, get_column_title, get_series_title, search_macrodata)
 from pynsee.macrodata._get_insee import _get_insee
 from pynsee.macrodata._get_date import _get_date
 from pynsee.macrodata._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
@@ -18,18 +23,6 @@ from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
 from pynsee.macrodata._get_dataset_list_internal import _get_dataset_list_internal
-
-from pynsee.macrodata.get_series_list import get_series_list
-from pynsee.macrodata.get_dataset_list import get_dataset_list
-from pynsee.macrodata.get_last_release import get_last_release
-
-from pynsee.macrodata.get_series import get_series
-from pynsee.macrodata.get_dataset import get_dataset
-
-from pynsee.macrodata.get_column_title import get_column_title
-from pynsee.macrodata.get_series_title import get_series_title
-from pynsee.macrodata.search_macrodata import search_macrodata
-
 from pynsee.utils._clean_insee_folder import _clean_insee_folder
 
 test_SDMX = True
@@ -37,7 +30,7 @@ test_SDMX = True
 
 class TestFunction(TestCase):
 
-    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)      
+    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
 
     if (not version_3_7):
 
@@ -124,15 +117,13 @@ class TestFunction(TestCase):
             # test date provided manually error and switch to today
             os.environ['insee_date_test'] = "a"
             df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-            test3 = isinstance(df, pd.DataFrame)      
+            test3 = isinstance(df, pd.DataFrame)
 
             # test idbank file download crash and backup internal data
-            os.environ['pynsee_idbank_file'] = "test"
-            os.environ['pynsee_idbank_loop_url'] = "False"
+            pynsee.set_config({'pynsee_idbank_file': "test"})
             df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
             test3 = test3 & isinstance(df, pd.DataFrame)
-            os.environ['pynsee_idbank_loop_url'] = "True"     
-            
+
             self.assertTrue(test1 & test2 & test3)
 
         def test_get_dataset_metadata_2(self):
@@ -251,4 +242,4 @@ if __name__ == '__main__':
     #python test_pynsee_macrodata.py TestFunction.test_get_series_2
     #python test_pynsee_macrodata.py TestFunction.test_get_column_title_1
 
-    
+
