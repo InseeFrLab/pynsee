@@ -177,8 +177,18 @@ def search_sirene(
         else:
             phntc_string = ".phonetisation"
 
-        # if pattern has several words, split and put mutiple conditions with OR
-        patt = re.sub(r"\s+", "|", patt)
+        # if pattern has several words, split and put mutiple conditions
+        # using OR, unless it's a range condition, cf.
+        # https://www.sirene.fr/static-resources/htm/sommaire.html
+        if not (
+            re.match(r"\[\w+\s+TO\s+\w+\]", patt) or
+            re.match(r"\{\w+\s+TO\s+\w+\}", patt)
+        ):
+            patt = re.sub(r"\s+", "|", patt)
+        else:
+            # only single spaces are accepted in ranges
+            patt = re.sub(r"\s+", " ", patt)
+
         list_patt = patt.split("|")
 
         list_var_patt = []

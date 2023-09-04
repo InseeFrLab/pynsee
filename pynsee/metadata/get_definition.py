@@ -61,7 +61,7 @@ def get_definition(ids):
         return val
 
     for elt in tqdm(
-        len(ids),
+        ids,
         desc="Getting data",
         disable=pynsee._config["hide_progress"]
     ):

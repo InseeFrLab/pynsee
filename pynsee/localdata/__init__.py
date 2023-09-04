@@ -9,6 +9,7 @@ from .get_old_city import get_old_city
 from .get_new_city import get_new_city
 from .get_ascending_area import get_ascending_area
 from .get_descending_area import get_descending_area
+from .get_area_projection import get_area_projection
 
 __all__ = [
     "get_area_list",
@@ -22,4 +23,5 @@ __all__ = [
     "get_new_city",
     "get_ascending_area",
     "get_descending_area",
+    "get_area_projection",
 ]

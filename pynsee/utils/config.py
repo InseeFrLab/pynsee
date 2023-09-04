@@ -5,6 +5,15 @@ from typing import Any, Optional, Union
 import pynsee
 
 
+_authorized = set(
+    list(pynsee._config) + [
+        "pynsee_file_list",
+        "pynsee_use_sdmx",
+        "pynsee_idbank_file",
+    ]
+)
+
+
 def get_config(key: Optional[str] = None):
     '''
     Get pynsee configuration.
@@ -32,7 +41,7 @@ def set_config(config: Union[str, dict], value: Any = None):
         config = {config: value}
 
     for k, v in config.items():
-        if k in pynsee._config:
+        if k in _authorized:
             pynsee._config[k] = v
         else:
             raise KeyError(f"Invalid option '{k}'.")

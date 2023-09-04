@@ -14,13 +14,12 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _get_dict_data_source():
-    try:
-        URL_DATA_LIST = os.environ["pynsee_file_list"]
-    except Exception:
-        URL_DATA_LIST = (
-            "https://raw.githubusercontent.com/"
-            + "InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"
-        )
+    URL_DATA_LIST = os.environ.get(
+        "pynsee_file_list",
+        pynsee._config.get(
+            "pynsee_file_list", "https://raw.githubusercontent.com/"
+            + "InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json")
+    )
 
     proxies = {
         "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),

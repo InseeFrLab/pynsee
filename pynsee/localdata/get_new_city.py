@@ -29,6 +29,8 @@ def get_new_city(code, date=None):
         This classification evolves over time due to the merger of some cities.
         It is often useful to keep track of these mergers to reconcile some data.
 
+        To get a city at a given date, use get_area_projection instead.
+
     Args:
         code (str): city code
 

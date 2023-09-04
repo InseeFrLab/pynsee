@@ -82,13 +82,12 @@ def _get_dataset_metadata(dataset, update=False):
                     "Locally saved data has been used\n"
                     "Set update=True to trigger an update"
                 )
-            except:
+            except Exception:
                 os.remove(file_dataset_metadata)
                 idbank_list_dataset = _get_dataset_metadata(
                     dataset=dataset, update=True
                 )
-
-    except:
+    except Exception:
         # if the download of the idbank file and the build of the metadata fail
         # package's internal data is provided to the user, should be exceptional, used as a backup
         logger.error(
@@ -97,8 +96,8 @@ def _get_dataset_metadata(dataset, update=False):
             "and find the new link !\n"
             "https://www.insee.fr/en/information/2868055\n\n"
             "You may change the downloaded file changing the following "
-            "environment variable !\n"
-            "import os; os.environ['pynsee_idbank_file'] = 'my_new_idbank_file'"
+            "variable:\n"
+            "pynsee.set_config('pynsee_idbank_file': 'link/new_idbank_file')"
             "Please contact the package maintainer if this error persists !"
         )
 
