@@ -7,13 +7,11 @@ import sys
 from shapely.geometry import (
     Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint)
 
-from pynsee.sirene.get_sirene_data import get_sirene_data
-from pynsee.sirene.search_sirene import search_sirene
+from pynsee.geodata import GeoFrDataFrame
+from pynsee.sirene import (
+    SireneDataFrame, get_dimension_list, get_sirene_data,
+    get_sirene_relatives, search_sirene)
 from pynsee.sirene._request_sirene import _request_sirene
-from pynsee.sirene.get_dimension_list import get_dimension_list
-from pynsee.sirene.SireneDataFrame import SireneDataFrame
-from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
-from pynsee.sirene.get_sirene_relatives import get_sirene_relatives
 
 
 class TestFunction(TestCase):
