@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import warnings
-from pynsee.geodata import GeoFrDataFrame
+from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
 from pynsee.geodata._get_geodata import _get_geodata
 
 

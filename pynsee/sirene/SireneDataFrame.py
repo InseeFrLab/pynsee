@@ -14,7 +14,7 @@ from tqdm import trange
 from shapely.geometry import Point
 from shapely.errors import ShapelyDeprecationWarning
 
-from pynsee.geodata import GeoFrDataFrame
+from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
 from pynsee.sirene._get_location_openstreetmap import (
     _get_location_openstreetmap,
 )
