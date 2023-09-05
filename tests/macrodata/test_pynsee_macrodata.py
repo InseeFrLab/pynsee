@@ -11,9 +11,6 @@ from datetime import timedelta
 
 import pynsee
 
-from pynsee.macrodata import (
-    get_series_list, get_dataset_list, get_last_release, get_series,
-    get_dataset, get_column_title, get_series_title, search_macrodata)
 from pynsee.macrodata._get_insee import _get_insee
 from pynsee.macrodata._get_date import _get_date
 from pynsee.macrodata._get_idbank_internal_data_harmonized import _get_idbank_internal_data_harmonized
@@ -23,7 +20,20 @@ from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
 from pynsee.macrodata._get_dataset_list_internal import _get_dataset_list_internal
+
+from pynsee.macrodata.get_series_list import get_series_list
+from pynsee.macrodata.get_dataset_list import get_dataset_list
+from pynsee.macrodata.get_last_release import get_last_release
+
+from pynsee.macrodata.get_series import get_series
+from pynsee.macrodata.get_dataset import get_dataset
+
+from pynsee.macrodata.get_column_title import get_column_title
+from pynsee.macrodata.get_series_title import get_series_title
+from pynsee.macrodata.search_macrodata import search_macrodata
+
 from pynsee.utils._clean_insee_folder import _clean_insee_folder
+
 
 test_SDMX = True
 
