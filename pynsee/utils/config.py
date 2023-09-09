@@ -43,7 +43,6 @@ def set_config(config: Union[str, dict], value: Any = None):
 
     for k, v in config.items():
         if k == "token":
-            # reister the new token
             _register_token(v)
         elif k in ("insee_key", "insee_secret"):
             # register the key and secret

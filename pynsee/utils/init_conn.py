@@ -80,15 +80,24 @@ def init_conn(
 
     token = _get_token(insee_key, insee_secret)
 
-    _register_token(token, http_proxy=http_proxy, https_proxy=https_proxy)
+    if _register_token(token, http_proxy=http_proxy, https_proxy=https_proxy):
+        logger.info(
+            "Subscription to all INSEE's APIs has been successfull\n"
+            "Unless the user wants to change key or secret, using this "
+            "function is no longer needed as the credentials to get the token "
+            "have been saved locally here:\n" + pynsee_credentials_file
+        )
 
 
 def _register_token(
     token: str,
     http_proxy: Optional[str] = None,
     https_proxy: Optional[str] = None
-) -> None:
-    ''' Validate the token and register to INSEE APIs '''
+) -> bool:
+    '''
+    Validate the token and register to INSEE APIs.
+    Return True if the token is valid for all APIs.
+    '''
     proxies = {
         "http": http_proxy or os.environ.get(
             "http_proxy", pynsee._config["http_proxy"]),
@@ -155,9 +164,6 @@ def _register_token(
         list_requests_status += [results.status_code]
 
     if all([sts == 200 for sts in list_requests_status]):
-        logger.info(
-            "Subscription to all INSEE's APIs has been successfull\n"
-            "Unless the user wants to change key or secret, using this "
-            "function is no longer needed as the credentials to get the token "
-            "have been saved locally here:\n" + pynsee_credentials_file
-        )
+        return True
+
+    return False
