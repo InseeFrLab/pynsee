@@ -9,7 +9,6 @@ import os
 import sys
 
 from pynsee.utils._get_token import _get_token
-from pynsee.utils._get_envir_token import _get_envir_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.clear_all_cache import clear_all_cache
@@ -71,7 +70,6 @@ class TestFunction(TestCase):
             self.assertRaises(ValueError, init_conn_foo)
 
             _get_token.cache_clear()
-            _get_envir_token.cache_clear()
 
             os.environ["insee_token"] = "test"
             os.environ["insee_key"] = "key"
@@ -86,8 +84,6 @@ class TestFunction(TestCase):
 
         def test_request_insee_4(self):
             # token is none and sdmx query is None
-            # _get_token.cache_clear()
-            # _get_envir_token.cache_clear()
             clear_all_cache()
 
             os.environ["insee_token"] = "test"
@@ -110,9 +106,9 @@ class TestFunction(TestCase):
             self.assertRaises(ValueError, request_insee_test)
 
         def test_get_envir_token(self):
-            _get_envir_token.cache_clear()
+            _get_token.cache_clear()
             os.environ["insee_token"] = "a"
-            token = _get_envir_token()
+            token = _get_credentials()
             test = token is None
             self.assertTrue(test)
 
