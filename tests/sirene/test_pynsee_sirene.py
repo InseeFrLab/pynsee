@@ -7,7 +7,7 @@ import sys
 from shapely.geometry import (
     Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint)
 
-from pynsee.geodata import GeoFrDataFrame
+from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
 from pynsee.sirene import (
     SireneDataFrame, get_dimension_list, get_sirene_data,
     get_sirene_relatives, search_sirene)
