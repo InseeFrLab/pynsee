@@ -9,7 +9,9 @@ import unittest
 
 from shapely.geometry import Polygon, MultiPolygon, MultiPoint, Point
 
-from pynsee.geodata import GeoFrDataFrame, get_geodata, get_geodata_list
+from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
+from pynsee.geodata.get_geodata import get_geodata
+from pynsee.geodata.get_geodata_list import get_geodata_list
 from pynsee.geodata._get_geodata import _get_geodata
 from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox, _set_global_var
