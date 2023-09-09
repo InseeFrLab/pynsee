@@ -117,8 +117,6 @@ def _register_token(
 
         url_test = "https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES"
 
-        print(url_test, proxies, headers)
-
         request_test = requests.get(
             url_test, proxies=proxies, headers=headers, verify=False)
 
