@@ -3,6 +3,7 @@
 from typing import Any, Optional, Union
 
 import pynsee
+from pynsee.utils.init_conn import _register_token
 
 
 _authorized = set(
@@ -41,6 +42,18 @@ def set_config(config: Union[str, dict], value: Any = None):
         config = {config: value}
 
     for k, v in config.items():
+        if k == "token":
+            # reister the new token
+            _register_token(v)
+        elif k in ("insee_key", "insee_secret"):
+            # register the key and secret
+            key = config.get("insee_key", pynsee.get_config("insee_key"))
+
+            secret = config.get("insee_secret",
+                                pynsee.get_config("insee_secret"))
+
+            pynsee.init_conn(key, secret)
+
         if k in _authorized:
             pynsee._config[k] = v
         else:

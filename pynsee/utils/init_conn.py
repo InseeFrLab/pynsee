@@ -5,7 +5,9 @@ import logging
 import os
 import requests
 import urllib3
+
 from pathlib import Path
+from typing import Optional
 
 import pandas as pd
 
@@ -18,7 +20,12 @@ from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 logger = logging.getLogger(__name__)
 
 
-def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
+def init_conn(
+    insee_key: str,
+    insee_secret: str,
+    http_proxy: Optional[str] = None,
+    https_proxy: Optional[str] = None
+) -> None:
     """Save your credentials to connect to INSEE APIs, subscribe to api.insee.fr
 
     Args:
@@ -54,11 +61,6 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
     home = str(Path.home())
     pynsee_credentials_file = home + "/" + "pynsee_credentials.csv"
 
-    proxies = {
-        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
-        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
-    }
-
     d = pd.DataFrame(
         {
             "insee_key": insee_key,
@@ -78,6 +80,22 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
 
     token = _get_token(insee_key, insee_secret)
 
+    _register_token(token, http_proxy=http_proxy, https_proxy=https_proxy)
+
+
+def _register_token(
+    token: str,
+    http_proxy: Optional[str] = None,
+    https_proxy: Optional[str] = None
+) -> None:
+    ''' Validate the token and register to INSEE APIs '''
+    proxies = {
+        "http": http_proxy or os.environ.get(
+            "http_proxy", pynsee._config["http_proxy"]),
+        "https": https_proxy or os.environ.get(
+            "https_proxy", pynsee._config["https_proxy"])
+    }
+
     if not token:
         raise ValueError(
             "!!! Token is missing, please check that insee_key and "
@@ -85,10 +103,12 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
     else:
         headers = {
             "Accept": "application/xml",
-            "Authorization": "Bearer " + token
+            "Authorization": "Bearer " + (token or "")
         }
 
         url_test = "https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES"
+
+        print(url_test, proxies, headers)
 
         request_test = requests.get(
             url_test, proxies=proxies, headers=headers, verify=False)

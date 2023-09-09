@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import unittest
-from unittest import TestCase
-import requests
-
 import os
+import requests
 import sys
+import unittest
 
+from unittest import TestCase
+
+import pynsee
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._request_insee import _request_insee
@@ -22,11 +23,9 @@ class TestFunction(TestCase):
     version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
 
     if not version_3_7:
-        StartKeys = _get_credentials()
-
-        def test_get_token(self, StartKeys=StartKeys):
-            insee_key = StartKeys["insee_key"]
-            insee_secret = StartKeys["insee_secret"]
+        def test_get_token(self):
+            insee_key = pynsee.get_config("insee_key")
+            insee_secret = pynsee.get_config("insee_secret")
 
             init_conn(insee_key=insee_key, insee_secret=insee_secret)
             keys = _get_credentials()
@@ -80,7 +79,8 @@ class TestFunction(TestCase):
             def request_insee_test(sdmx_url=sdmx_url, api_url=api_url):
                 _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-            self.assertRaises(ValueError, request_insee_test)
+            self.assertRaises(requests.exceptions.RequestException,
+                              request_insee_test)
 
         def test_request_insee_4(self):
             # token is none and sdmx query is None
@@ -94,7 +94,8 @@ class TestFunction(TestCase):
             def request_insee_test(sdmx_url=None, api_url=api_url):
                 _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-            self.assertRaises(ValueError, request_insee_test)
+            self.assertRaises(requests.exceptions.RequestException,
+                              request_insee_test)
 
         def test_request_insee_5(self):
             # api query is none and sdmx query fails
@@ -107,10 +108,18 @@ class TestFunction(TestCase):
 
         def test_get_envir_token(self):
             _get_token.cache_clear()
+            old_token = os.environ.get("insee_token")
             os.environ["insee_token"] = "a"
-            token = _get_credentials()
-            test = token is None
+            _get_credentials()
+            test = pynsee.get_config("token") is None
             self.assertTrue(test)
+
+            # restore credentials
+            if old_token:
+                os.environ["insee_token"] = old_token
+            else:
+                del os.environ["insee_token"]
+            _get_credentials()
 
         def test_clear_all_cache(self):
             test = True

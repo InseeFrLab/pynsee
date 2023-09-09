@@ -31,9 +31,9 @@ def _get_credentials():
                 http_proxy = cred.loc[0, "http_proxy"]
                 https_proxy = cred.loc[0, "https_proxy"]
 
-                if http_proxy:
+                if isinstance(http_proxy, str):
                     pynsee._config["http_proxy"] = http_proxy
-                if https_proxy:
+                if isinstance(https_proxy, str):
                     pynsee._config["https_proxy"] = https_proxy
             except KeyError:
                 pass

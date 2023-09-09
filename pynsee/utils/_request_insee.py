@@ -156,6 +156,7 @@ def _request_insee(
         # api_url is None
         if sdmx_url is not None:
             results = requests.get(sdmx_url, proxies=proxies, verify=False)
+            print(sdmx_url, results.status_code)
 
             if results.status_code == 200:
                 return results
