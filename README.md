@@ -54,14 +54,14 @@ API credentials can be created here : [https://api.insee.fr/catalogue/](api.inse
 * **Geodata** : get the list of available geographical data with ``get_geodata_list`` and then retrieve it with ``get_geodata``
 * **Files on insee.fr**: get the list of available files on insee.fr with ``get_file_list`` and then download it with ``download_file``
 
-For further advice, have a look at the documentation and gallery of the `examples <https://pynsee.readthedocs.io/en/latest/examples.html>`_.
+For further advice, have a look at the documentation and gallery of the [https://pynsee.readthedocs.io/en/latest/examples.html](examples).
 
 
 ## Example - Population Map
 
 <h1 align="center">
 <img src="https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK">
-</h1><br>
+</h1>
 
 ```python
 
