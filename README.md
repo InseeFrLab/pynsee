@@ -1,37 +1,30 @@
 
-
 [![](https://badge.fury.io/py/pynsee.svg)](https://pypi.org/project/pynsee/)
-
 [![](https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
-
 [![](https://github.com/InseeFrLab/pynsee/actions/workflows/examples.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
-
 [![](https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK)](https://codecov.io/gh/InseeFrLab/pynsee?branch=master)
-
 [![](https://readthedocs.org/projects/pynsee/badge/?version=latest)](https://pynsee.readthedocs.io/en/latest/?badge=latest)
-
 [![](https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/badgepython.svg?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK)](https://www.python.org/)
-
 [![](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
-
 [![](https://img.shields.io/pypi/dm/pynsee)](https://pypistats.org/packages/pynsee)
 
 
 ``pynsee`` gives a quick access to more than 150 000 macroeconomic series,
-a dozen datasets of local data, numerous sources available on `insee.fr <https://www.insee.fr>`_, 
+a dozen datasets of local data, numerous sources available on [https://www.insee.fr](insee.fr), 
 geographical limits of administrative areas taken from IGN
 as well as key metadata and SIRENE database containing data on all French companies.
-Have a look at the detailed API page `api.insee.fr <https://api.insee.fr/catalogue/>`_.
+Have a look at the detailed API page [https://api.insee.fr/catalogue/](api.insee.fr).
 
 This package is a contribution to reproducible research and public data transparency. 
 It benefits from the developments made by teams working on APIs at INSEE and IGN.
 
 ## Installation & API subscription
 
-The files available on `insee.fr <https://www.insee.fr>`_ and IGN data, i.e. the use of `download` and `geodata` modules, do not require authentication.
+The files available on [https://www.insee.fr](insee.fr) and IGN data, i.e. the use of `download` and `geodata` modules, do not require authentication.
 Credentials are necessary to access some of the INSEE APIs available through `pynsee` by the modules `macrodata`, `localdata`, `metadata` and `sirene`. 
-API credentials can be created here : `api.insee.fr <https://api.insee.fr/catalogue/>`_
+API credentials can be created here : [https://api.insee.fr/catalogue/](api.insee.fr)
 
+```python 
    # Download Pypi package
    pip install pynsee[full] 
 
@@ -47,6 +40,7 @@ API credentials can be created here : `api.insee.fr <https://api.insee.fr/catalo
 
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
+```
 
 ##  Data Search and Collection Advice
 
@@ -68,6 +62,8 @@ For further advice, have a look at the documentation and gallery of the `example
 <h1 align="center">
 <img src="https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK">
 </h1><br>
+
+```python
 
     from pynsee.geodata import get_geodata_list, get_geodata, GeoFrDataFrame
 
@@ -140,8 +136,11 @@ For further advice, have a look at the documentation and gallery of the `example
                 bbox_inches = 'tight',
                 pad_inches = 0)
  
+```
 
 ## How to avoid proxy issues ?
+
+```python
 
    # Use the proxy_server argument of the init_conn function to change the proxy server address   
    from pynsee.utils.init_conn import init_conn
@@ -160,6 +159,8 @@ For further advice, have a look at the documentation and gallery of the `example
    os.environ['insee_secret'] = 'my_insee_secret'
    os.environ['http_proxy'] = "http://my_proxy_server:port"
    os.environ['https_proxy'] = "http://my_proxy_server:port"
+
+``` 
 
 ## Support
 
