@@ -55,7 +55,7 @@ init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
 * **Geodata** : get the list of available geographical data with ``get_geodata_list`` and then retrieve it with ``get_geodata``
 * **Files on insee.fr**: get the list of available files on insee.fr with ``get_file_list`` and then download it with ``download_file``
 
-For further advice, have a look at the documentation and gallery of the [https://pynsee.readthedocs.io/en/latest/examples.html](examples).
+For further advice, have a look at the documentation and gallery of the [examples](https://pynsee.readthedocs.io/en/latest/examples.html).
 
 
 ## Example - Population Map
