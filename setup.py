@@ -12,6 +12,7 @@ setuptools.setup(
     author_email="leclerc.hadrien@gmail.com",
     description="Tools to Easily Search and Download French Data From INSEE and IGN APIs",
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url="https://pynsee.readthedocs.io/en/latest/",
     project_urls={
         'Bug Tracker': 'https://github.com/InseeFrLab/pynsee/issues'
