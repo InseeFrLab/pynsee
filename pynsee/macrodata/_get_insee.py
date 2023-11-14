@@ -49,7 +49,7 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
     for j in trange(
         n_series,
         desc="%s - Getting series" % step,
-        disable=pynsee._config["hide_progress"]
+        disable=pynsee.get_config("hide_progress")
     ):
         data = root.getElementsByTagName("Series")[j]
 

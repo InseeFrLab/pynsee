@@ -102,7 +102,7 @@ def get_geo_list(geo=None, date=None, update=False):
 
             for r in trange(
                 len(list_reg), desc="Getting {}".format(geo), leave=False,
-                disable=pynsee._config["hide_progress"]
+                disable=pynsee.get_config("hide_progress")
             ):
                 try:
                     df = _get_geo_relation(

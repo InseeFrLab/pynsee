@@ -45,7 +45,7 @@ def get_legal_entity(codes, print_err_msg=True, update=False):
 
         for code in tqdm(
             codes, desc="Getting legal entities",
-            disable=pynsee._config["hide_progress"]
+            disable=pynsee.get_config("hide_progress")
         ):
             try:
                 data = _get_one_legal_entity(code, print_err_msg=print_err_msg)

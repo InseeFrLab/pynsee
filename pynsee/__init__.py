@@ -1,13 +1,3 @@
-_config: dict = {
-    "http_proxy": "",
-    "https_proxy": "",
-    "hide_progress": False,
-    "insee_key": None,
-    "insee_secret": None,
-    "token": None,
-}
-
-
 from pynsee.sirene import *
 from pynsee.macrodata import *
 from pynsee.localdata import *

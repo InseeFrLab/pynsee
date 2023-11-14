@@ -63,7 +63,7 @@ def get_definition(ids):
     for elt in tqdm(
         ids,
         desc="Getting data",
-        disable=pynsee._config["hide_progress"]
+        disable=pynsee.get_config("hide_progress")
     ):
         query = link + "/" + elt
 

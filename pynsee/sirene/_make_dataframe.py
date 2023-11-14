@@ -21,7 +21,7 @@ def _make_dataframe(data_request, main_key, query_number):
 
     for elt in tqdm(
         data, desc="{} - Getting data".format(query_number),
-        disable=pynsee._config["hide_progress"]
+        disable=pynsee.get_config("hide_progress")
     ):
         data_final = _make_dataframe_from_dict(elt)
 

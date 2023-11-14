@@ -119,7 +119,7 @@ def get_local_data(
         for cdg in trange(
             len(geocodes),
             desc="Getting data",
-            disable=pynsee._config["hide_progress"]
+            disable=pynsee.get_config("hide_progress")
         ):
             codegeo = geocodes[cdg]
             df_default = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": np.nan}, index=[0])

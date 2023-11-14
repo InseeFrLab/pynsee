@@ -38,7 +38,7 @@ def _get_geo_list_simple(geo, date=None, progress_bar=False):
 
     if progress_bar is True:
         geo_range = trange(n_variable, desc="Getting %s" % geo, leave=False,
-                           disable=pynsee._config["hide_progress"])
+                           disable=pynsee.get_config("hide_progress"))
     else:
         geo_range = range(n_variable)
 

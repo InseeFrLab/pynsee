@@ -21,8 +21,8 @@ def _download_pb(url: str, fname: str, total: int = None):
         fname {str} -- Destination where data will be written
     """
     proxies = {
-        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
-        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+        "http": os.environ.get("http_proxy", pynsee.get_config("http_proxy")),
+        "https": os.environ.get("https_proxy", pynsee.get_config("https_proxy"))
     }
 
     resp = requests.get(url, proxies=proxies, stream=True, verify=False)
@@ -36,7 +36,7 @@ def _download_pb(url: str, fname: str, total: int = None):
         unit="iB",
         unit_scale=True,
         unit_divisor=1024,
-        disable=pynsee._config["hide_progress"]
+        disable=pynsee.get_config("hide_progress")
     ) as obj:
         for data in resp.iter_content(chunk_size=1024):
             size = file.write(data)

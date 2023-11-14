@@ -48,8 +48,9 @@ def _request_insee(
         logger.debug(sdmx_url)
 
     proxies = {
-        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
-        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"]),
+        "http": os.environ.get("http_proxy", pynsee.get_config("http_proxy")),
+        "https": os.environ.get(
+            "https_proxy", pynsee.get_config("https_proxy")),
     }
 
     logger.debug(api_url)
@@ -70,8 +71,8 @@ def _request_insee(
     # if api url is missing sdmx url is used
 
     if api_url is not None:
-        insee_key = pynsee._config["insee_key"]
-        insee_secret = pynsee._config["insee_secret"]
+        insee_key = pynsee.get_config("insee_key")
+        insee_secret = pynsee.get_config("insee_secret")
 
         token = _get_token(insee_key, insee_secret)
 

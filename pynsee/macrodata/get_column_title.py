@@ -45,7 +45,7 @@ def get_column_title(dataset=None):
     for idt in trange(
         n_dataset,
         desc="1/2 - Getting columns list ",
-        disable=pynsee._config["hide_progress"]
+        disable=pynsee.get_config("hide_progress")
     ):
         dt = dataset_list[idt]
         dataset_dimension = _get_dataset_dimension(dt)

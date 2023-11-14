@@ -36,7 +36,7 @@ def get_included_area(area_type, codeareas):
 
     list_data = []
 
-    for c in trange(len(codeareas), disable=pynsee._config["hide_progress"]):
+    for c in trange(len(codeareas), disable=pynsee.get_config("hide_progress")):
         list_data.append(_get_insee_one_area(area_type, codeareas[c]))
 
     data_final = pd.concat(list_data)

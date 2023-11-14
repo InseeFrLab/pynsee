@@ -32,7 +32,7 @@ def _build_series_list(dt=["CNA-2014-ERE"]):
 
     list_dt = []
 
-    for d in trange(len(dt), disable=pynsee._config["hide_progress"]):
+    for d in trange(len(dt), disable=pynsee.get_config("hide_progress")):
         dataset = dt[d]
         df = get_series_list(dataset, update=True)
         list_dt.append(df)

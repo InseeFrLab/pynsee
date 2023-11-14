@@ -19,6 +19,22 @@ from pynsee.utils._get_credentials import _get_credentials
 test_SDMX = True
 
 
+def save_restore_cred(func):
+    def wrapper(*args, **kwargs):
+        saved_token = pynsee.get_config("insee_token")
+        saved_key = pynsee.get_config("insee_key")
+        saved_secret = pynsee.get_config("insee_secret")
+
+        res = fun(*args, **kwargs)
+
+        pynsee.set_config("insee_token", saved_token)
+        pynsee.set_config("insee_key", saved_key)
+        pynsee.set_config("insee_secret", saved_secret)
+
+        return res
+    return wrapper
+
+
 class TestFunction(TestCase):
     version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
 
@@ -46,14 +62,15 @@ class TestFunction(TestCase):
             )
 
         if test_SDMX:
-
+            @save_restore_cred
             def test_request_insee_2(self):
                 # if credentials are not well provided but sdmx url works
                 clear_all_cache()
 
-                os.environ["insee_token"] = "test"
-                os.environ["insee_key"] = "key"
-                os.environ["insee_secret"] = "secret"
+                pynsee.set_config("insee_token", "test")
+                pynsee.set_config("insee_key", "key")
+                pynsee.set_config("insee_secret", "secret")
+
                 sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
                 api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
 
@@ -61,6 +78,7 @@ class TestFunction(TestCase):
                 test = results.status_code == 200
                 self.assertTrue(test)
 
+        @save_restore_cred
         def test_request_insee_3(self):
             # token is none and sdmx query fails
             def init_conn_foo():
@@ -68,11 +86,10 @@ class TestFunction(TestCase):
 
             self.assertRaises(ValueError, init_conn_foo)
 
-            _get_token.cache_clear()
+            pynsee.set_config("insee_token", "test")
+            pynsee.set_config("insee_key", "key")
+            pynsee.set_config("insee_secret", "secret")
 
-            os.environ["insee_token"] = "test"
-            os.environ["insee_key"] = "key"
-            os.environ["insee_secret"] = "secret"
             sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
             api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
 
@@ -86,9 +103,10 @@ class TestFunction(TestCase):
             # token is none and sdmx query is None
             clear_all_cache()
 
-            os.environ["insee_token"] = "test"
-            os.environ["insee_key"] = "key"
-            os.environ["insee_secret"] = "secret"
+            pynsee.set_config("insee_token", "test")
+            pynsee.set_config("insee_key", "key")
+            pynsee.set_config("insee_secret", "secret")
+
             api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
 
             def request_insee_test(sdmx_url=None, api_url=api_url):
@@ -107,19 +125,15 @@ class TestFunction(TestCase):
             self.assertRaises(ValueError, request_insee_test)
 
         def test_get_envir_token(self):
-            _get_token.cache_clear()
-            old_token = os.environ.get("insee_token")
+            old_token = pynsee.get_config("insee_token")
             os.environ["insee_token"] = "a"
-            _get_credentials()
-            test = pynsee.get_config("token") is None
+            _get_token()
+            test = pynsee.get_config("insee_token") == "a"
             self.assertTrue(test)
 
-            # restore credentials
+            # restore token
             if old_token:
-                os.environ["insee_token"] = old_token
-            else:
-                del os.environ["insee_token"]
-            _get_credentials()
+                pynsee.set_config("insee_token", old_token)
 
         def test_clear_all_cache(self):
             test = True

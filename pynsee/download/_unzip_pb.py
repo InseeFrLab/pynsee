@@ -30,7 +30,7 @@ def _unzip_pb(fzip, dest, desc="Extracting"):
         unit_scale=True,
         unit_divisor=1024,
         total=sum(getattr(i, "file_size", 0) for i in zipf.infolist()),
-        disable=pynsee._config["hide_progress"]
+        disable=pynsee.get_config("hide_progress")
     ) as pbar:
         for i in zipf.infolist():
             if not getattr(i, "file_size", 0):  # directory

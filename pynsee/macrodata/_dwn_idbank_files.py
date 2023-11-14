@@ -76,8 +76,9 @@ def _dwn_idbank_file(file_to_dwn, session):
     separator = ";"
 
     proxies = {
-        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
-        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+        "http": os.environ.get("http_proxy", pynsee.get_config("http_proxy")),
+        "https": os.environ.get(
+            "https_proxy", pynsee.get_config("https_proxy"))
     }
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

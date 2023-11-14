@@ -18,8 +18,9 @@ def _check_url(url):
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     proxies = {
-        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
-        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+        "http": os.environ.get("http_proxy", pynsee.get_config("http_proxy")),
+        "https": os.environ.get(
+            "https_proxy", pynsee.get_config("https_proxy"))
     }
 
     session = requests.Session()
@@ -49,10 +50,11 @@ def _check_url(url):
                 start_year = int(start_year)
                 start_year_short = int(str(start_year)[-2:])
 
-                list_close_year = list(range(start_year, start_year + timespan)) + \
-                                    list(range(start_year, start_year - timespan, -1)) + \
-                                    list(range(start_year_short, start_year_short + timespan)) + \
-                                    list(range(start_year_short, start_year_short - timespan, -1))
+                list_close_year = \
+                    list(range(start_year, start_year + timespan)) + \
+                    list(range(start_year, start_year - timespan, -1)) + \
+                    list(range(start_year_short, start_year_short + timespan)) + \
+                    list(range(start_year_short, start_year_short - timespan, -1))
 
                 list_close_year = [str(y) for y in list_close_year]
 
@@ -95,8 +97,3 @@ def _check_url(url):
             url2 = url
 
         return url2
-
-
-
-
-

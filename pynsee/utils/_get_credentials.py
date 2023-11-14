@@ -9,6 +9,7 @@ from pathlib import Path
 import pandas as pd
 
 import pynsee
+from pynsee.utils._get_token import _get_token
 
 
 logger = logging.getLogger(__name__)
@@ -16,58 +17,21 @@ logger = logging.getLogger(__name__)
 
 def _get_credentials():
     ''' Store INSEE credentials into pynsee configuration dict '''
-    if not pynsee._config["insee_key"]:
-        envir_var_used = False
+    envir_var_used = False
 
+    try:
+        pynsee.set_config("insee_key", os.environ["insee_key"])
+        pynsee.set_config("insee_secret", os.environ["insee_secret"])
+        envir_var_used = True
+    except KeyError:
         try:
-            home = str(Path.home())
-            pynsee_credentials_file = home + "/" + "pynsee_credentials.csv"
-            cred = pd.read_csv(pynsee_credentials_file)
-
-            pynsee._config["insee_key"] = str(cred.loc[0, "insee_key"])
-            pynsee._config["insee_secret"] = str(cred.loc[0, "insee_secret"])
-
-            try:
-                http_proxy = cred.loc[0, "http_proxy"]
-                https_proxy = cred.loc[0, "https_proxy"]
-
-                if isinstance(http_proxy, str):
-                    pynsee._config["http_proxy"] = http_proxy
-                if isinstance(https_proxy, str):
-                    pynsee._config["https_proxy"] = https_proxy
-            except KeyError:
-                pass
-        except Exception as e:
-            logging.warning(f"Failed to retrieve credentials from file: {e}.")
-
-        try:
-            pynsee._config["insee_key"] = os.environ["insee_key"]
-            pynsee._config["insee_secret"] = os.environ["insee_secret"]
+            pynsee.set_config("insee_key", os.environ["INSEE_KEY"])
+            pynsee.set_config("insee_secret", os.environ["INSEE_SECRET"])
             envir_var_used = True
         except KeyError:
-            try:
-                pynsee._config["insee_key"] = os.environ["INSEE_KEY"]
-                pynsee._config["insee_secret"] = os.environ["INSEE_SECRET"]
-                envir_var_used = True
-            except KeyError:
-                pass
+            pass
 
-        if not pynsee._config["insee_key"]:
-            _warning_credentials("key_dict_none")
-        elif envir_var_used:
-            _warning_credentials("envir_var_used")
-        else:
-            logger.info("Token has been created")
-
-
-@lru_cache(maxsize=None)
-def _warning_credentials(string):
-    if string == "envir_var_used":
-        logger.warning(
-            "Existing environment variables used, instead of locally "
-            "saved credentials"
-        )
-    if string == "key_dict_none":
+    if not pynsee.get_config("insee_key"):
         logger.critical(
             "INSEE API credentials have not been found: please try to reuse "
             "pynsee.utils.init_conn to save them locally.\n"
@@ -75,4 +39,11 @@ def _warning_credentials(string):
             "import os\n"
             "os.environ['insee_key'] = 'my_insee_key'\n"
             "os.environ['insee_secret'] = 'my_insee_secret'"
+        )
+    elif envir_var_used:
+        # get token for these credentials
+        _get_token(pynsee.get_config("insee_key"), pynsee.get_config("insee_secret"))
+        logger.warning(
+            "Existing environment variables used, instead of locally "
+            "saved credentials"
         )

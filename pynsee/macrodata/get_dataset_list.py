@@ -60,7 +60,7 @@ def get_dataset_list():
         for i in trange(
             n_dataflow,
             desc="Getting datasets list",
-            disable=pynsee._config["hide_progress"]
+            disable=pynsee.get_config("hide_progress")
         ):
 
             dataset = {

@@ -6,10 +6,10 @@ import os
 import requests
 import urllib3
 
-from pathlib import Path
 from typing import Optional
 
 import pandas as pd
+import platformdirs
 
 import pynsee
 from pynsee.utils._get_token import _get_token
@@ -58,34 +58,25 @@ def init_conn(
     """
     logger.debug("SHOULD GET LOGGING")
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    home = str(Path.home())
-    pynsee_credentials_file = home + "/" + "pynsee_credentials.csv"
-
-    d = pd.DataFrame(
-        {
-            "insee_key": insee_key,
-            "insee_secret": insee_secret,
-            "http_proxy": http_proxy,
-            "https_proxy": https_proxy,
-        },
-        index=[0],
-    )
-
-    d.to_csv(pynsee_credentials_file)
-
-    _get_credentials()
-
-    insee_key = pynsee._config["insee_key"]
-    insee_secret = pynsee._config["insee_secret"]
 
     token = _get_token(insee_key, insee_secret)
 
     if _register_token(token, http_proxy=http_proxy, https_proxy=https_proxy):
-        logger.info(
+        config = {
+            "insee_key": insee_key,
+            "insee_secret": insee_secret,
+            "insee_token": token
+        }
+
+        pynsee.set_config(config)
+
+        pynsee.save_config()
+
+        logger.warning(
             "Subscription to all INSEE's APIs has been successfull\n"
             "Unless the user wants to change key or secret, using this "
             "function is no longer needed as the credentials to get the token "
-            "have been saved locally here:\n" + pynsee_credentials_file
+            "have been saved locally here:\n" + pynsee.utils.config._conf_file
         )
 
 
@@ -100,9 +91,9 @@ def _register_token(
     '''
     proxies = {
         "http": http_proxy or os.environ.get(
-            "http_proxy", pynsee._config["http_proxy"]),
+            "http_proxy", pynsee.get_config("http_proxy")),
         "https": https_proxy or os.environ.get(
-            "https_proxy", pynsee._config["https_proxy"])
+            "https_proxy", pynsee.get_config("https_proxy"))
     }
 
     if not token:
@@ -122,8 +113,6 @@ def _register_token(
 
         if request_test.status_code != 200:
             raise ValueError(f"This token is not working: {token}")
-
-    pynsee._config["token"] = token
 
     queries = [
         "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",

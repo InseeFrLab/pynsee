@@ -95,7 +95,7 @@ def _add_insee_dep_from_geodata(df):
             for i in trange(
                 len(df.index),
                 desc="Finding departement",
-                disable=pynsee._config["hide_progress"]
+                disable=pynsee.get_config("hide_progress")
             ):
                 geo = df.loc[i, "geometry"]
                 dep = None

@@ -44,7 +44,7 @@ def _find_latest_local_dataset(dataset_version, variables, nivgeo, codegeo, upda
         for dvindex in trange(
             len(list_dataset_version),
             desc='Finding Latest Dataset Version',
-            disable=pynsee._config["hide_progress"]
+            disable=pynsee.get_config("hide_progress")
         ):
             dv = list_dataset_version[dvindex]
 

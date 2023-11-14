@@ -16,7 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 @lru_cache(maxsize=None)
-def _get_token_from_insee(insee_key, insee_secret):
+def _get_token_from_insee(insee_key: str, insee_secret: str):
+    ''' Return the token from the key and secret '''
     string_key = "{}:{}".format(insee_key, insee_secret)
     string_key_encoded = string_key.encode("utf-8")
     string = base64.b64encode(string_key_encoded).decode("utf-8")
@@ -28,8 +29,9 @@ def _get_token_from_insee(insee_key, insee_secret):
     data = {"grant_type": "client_credentials"}
 
     proxies = {
-        "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
-        "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+        "http": os.environ.get("http_proxy", pynsee.get_config("http_proxy")),
+        "https": os.environ.get(
+            "https_proxy", pynsee.get_config("https_proxy"))
     }
 
     try:

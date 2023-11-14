@@ -127,8 +127,10 @@ def _get_geodata(
             }
 
             proxies = {
-                "http": os.environ.get("http_proxy", pynsee._config["http_proxy"]),
-                "https": os.environ.get("https_proxy", pynsee._config["https_proxy"])
+                "http": os.environ.get(
+                    "http_proxy", pynsee.get_config("http_proxy")),
+                "https": os.environ.get(
+                    "https_proxy", pynsee.get_config("https_proxy"))
             }
 
             with warnings.catch_warnings():
@@ -177,7 +179,7 @@ def _get_geodata(
                     tqdm.tqdm(
                         pool.imap(_get_data_with_bbox2, irange),
                         total=len(list_bbox),
-                        disable=pynsee._config["hide_progress"]
+                        disable=pynsee.get_config("hide_progress")
                     )
                 )
 
