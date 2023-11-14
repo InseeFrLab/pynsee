@@ -2,16 +2,17 @@
 
 import setuptools
 
-with open("README.rst", "r", encoding="utf-8") as fh:
+with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="pynsee",
-    version="0.1.4",
+    version="0.1.5",
     author="Hadrien Leclerc, Lino Galiana",
     author_email="leclerc.hadrien@gmail.com",
     description="Tools to Easily Search and Download French Data From INSEE and IGN APIs",
     long_description=long_description,
+    long_description_content_type='text/markdown',
     url="https://pynsee.readthedocs.io/en/latest/",
     project_urls={
         'Bug Tracker': 'https://github.com/InseeFrLab/pynsee/issues'

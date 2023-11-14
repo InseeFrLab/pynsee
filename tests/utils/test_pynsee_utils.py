@@ -25,7 +25,7 @@ def save_restore_cred(func):
         saved_key = pynsee.get_config("insee_key")
         saved_secret = pynsee.get_config("insee_secret")
 
-        res = fun(*args, **kwargs)
+        res = func(*args, **kwargs)
 
         pynsee.set_config("insee_token", saved_token)
         pynsee.set_config("insee_key", saved_key)
