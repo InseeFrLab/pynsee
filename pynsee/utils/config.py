@@ -100,7 +100,7 @@ def set_config(config: Union[str, dict], value: Any = None):
                                     get_config("insee_secret"))
 
                 token = config.get("insee_token",
-                                    get_config("insee_token"))
+                                   get_config("insee_token"))
 
                 if token is None:
                     token = _get_token(key, secret)
@@ -108,12 +108,6 @@ def set_config(config: Union[str, dict], value: Any = None):
                 if _register_token(token):
                     base_config["insee_token"] = token
                     register_token = False
-                else:
-                    cred = {"key": key, "secret": secret, "token": token}
-
-                    raise RuntimeError(
-                        "The provided credentials could not be validated "
-                        f"{cred}.")
 
             if k in _authorized:
                 base_config[k] = v

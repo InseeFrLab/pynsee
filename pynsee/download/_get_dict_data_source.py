@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def _get_dict_data_source():
     URL_DATA_LIST = os.environ.get(
         "pynsee_file_list",
-        pynsee._config.get(
+        pynsee.get_config().get(
             "pynsee_file_list", "https://raw.githubusercontent.com/"
             + "InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json")
     )

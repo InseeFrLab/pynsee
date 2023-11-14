@@ -38,7 +38,7 @@ def _dwn_idbank_files():
 
     file_to_dwn = os.environ.get(
         "pynsee_idbank_file",
-        pynsee._config.get(
+        pynsee.get_config().get(
             "pynsee_idbank_file",
             "https://www.insee.fr/en/statistiques/fichier/2868055/"
             "202201_correspondance_idbank_dimension.zip")

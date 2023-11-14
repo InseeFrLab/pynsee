@@ -10,7 +10,6 @@ from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files
 
 from pynsee.utils._hash import _hash
 from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._get_credentials import _get_credentials
 
 
 def _download_idbank_list(update=False):
@@ -49,9 +48,6 @@ def _download_idbank_list(update=False):
         trigger_update = True
 
     if trigger_update:
-        # INSEE api credentials are not useful here, but proxy settings stored in pynsee_api_credentials are useful
-        _get_credentials()
-
         data = _dwn_idbank_files()
 
         data = data.iloc[:, 0:3]

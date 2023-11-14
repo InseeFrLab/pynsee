@@ -16,7 +16,12 @@ from pynsee.utils.clear_all_cache import clear_all_cache
 from pynsee.utils.init_conn import init_conn
 from pynsee.utils._get_credentials import _get_credentials
 
+
 test_SDMX = True
+
+fake_credentials = {
+    "insee_key": "key", "insee_secret": "secret"
+}
 
 
 def save_restore_cred(func):
@@ -25,11 +30,12 @@ def save_restore_cred(func):
         saved_key = pynsee.get_config("insee_key")
         saved_secret = pynsee.get_config("insee_secret")
 
-        res = func(*args, **kwargs)
-
-        pynsee.set_config("insee_token", saved_token)
-        pynsee.set_config("insee_key", saved_key)
-        pynsee.set_config("insee_secret", saved_secret)
+        try:
+            res = func(*args, **kwargs)
+        finally:
+            pynsee.set_config("insee_token", saved_token)
+            pynsee.set_config("insee_key", saved_key)
+            pynsee.set_config("insee_secret", saved_secret)
 
         return res
     return wrapper
@@ -40,11 +46,12 @@ class TestFunction(TestCase):
 
     if not version_3_7:
         def test_get_token(self):
+            _get_credentials()
+
             insee_key = pynsee.get_config("insee_key")
             insee_secret = pynsee.get_config("insee_secret")
 
             init_conn(insee_key=insee_key, insee_secret=insee_secret)
-            keys = _get_credentials()
 
             token = _get_token(insee_key, insee_secret)
             self.assertTrue((token is not None))
@@ -67,9 +74,9 @@ class TestFunction(TestCase):
                 # if credentials are not well provided but sdmx url works
                 clear_all_cache()
 
-                pynsee.set_config("insee_token", "test")
-                pynsee.set_config("insee_key", "key")
-                pynsee.set_config("insee_secret", "secret")
+                pynsee.utils.config.base_config["insee_key"] = "key"
+                pynsee.utils.config.base_config["insee_secret"] = "secret"
+                pynsee.utils.config.base_config["insee_token"] = "test"
 
                 sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
                 api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
@@ -86,9 +93,9 @@ class TestFunction(TestCase):
 
             self.assertRaises(ValueError, init_conn_foo)
 
-            pynsee.set_config("insee_token", "test")
-            pynsee.set_config("insee_key", "key")
-            pynsee.set_config("insee_secret", "secret")
+            pynsee.utils.config.base_config["insee_key"] = "key"
+            pynsee.utils.config.base_config["insee_secret"] = "secret"
+            pynsee.utils.config.base_config["insee_token"] = "test"
 
             sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
             api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
@@ -99,13 +106,14 @@ class TestFunction(TestCase):
             self.assertRaises(requests.exceptions.RequestException,
                               request_insee_test)
 
+        @save_restore_cred
         def test_request_insee_4(self):
             # token is none and sdmx query is None
             clear_all_cache()
 
-            pynsee.set_config("insee_token", "test")
-            pynsee.set_config("insee_key", "key")
-            pynsee.set_config("insee_secret", "secret")
+            pynsee.utils.config.base_config["insee_key"] = "key"
+            pynsee.utils.config.base_config["insee_secret"] = "secret"
+            pynsee.utils.config.base_config["insee_token"] = "test"
 
             api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
 
@@ -125,15 +133,9 @@ class TestFunction(TestCase):
             self.assertRaises(ValueError, request_insee_test)
 
         def test_get_envir_token(self):
-            old_token = pynsee.get_config("insee_token")
             os.environ["insee_token"] = "a"
-            _get_token()
-            test = pynsee.get_config("insee_token") == "a"
-            self.assertTrue(test)
-
-            # restore token
-            if old_token:
-                pynsee.set_config("insee_token", old_token)
+            token = _get_token()
+            self.assertTrue(token == "a")
 
         def test_clear_all_cache(self):
             test = True

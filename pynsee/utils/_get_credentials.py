@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def _get_credentials():
-    ''' Store INSEE credentials into pynsee configuration dict '''
+    ''' Get INSEE credentials and return token '''
     envir_var_used = False
 
     try:
@@ -41,8 +41,6 @@ def _get_credentials():
             "os.environ['insee_secret'] = 'my_insee_secret'"
         )
     elif envir_var_used:
-        # get token for these credentials
-        _get_token(pynsee.get_config("insee_key"), pynsee.get_config("insee_secret"))
         logger.warning(
             "Existing environment variables used, instead of locally "
             "saved credentials"

@@ -13,7 +13,6 @@ import platformdirs
 
 import pynsee
 from pynsee.utils._get_token import _get_token
-from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 

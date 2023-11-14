@@ -49,10 +49,14 @@ def _get_token_from_insee(insee_key: str, insee_secret: str):
     content_splitted = content.split(",")
     list_access_token = [("access_token" in string) for string in content_splitted]
     selected_content = [x for x, y in zip(content_splitted, list_access_token) if y]
-    selected_content = selected_content[0]
 
-    token = re.sub(':|"|}|{|access_token', "", selected_content)
+    if selected_content:
+        selected_content = selected_content[0]
 
-    logger.debug(f"Obtained token: {token}")
+        token = re.sub(':|"|}|{|access_token', "", selected_content)
 
-    return token
+        logger.debug(f"Obtained token: {token}")
+
+        return token
+
+    return None
