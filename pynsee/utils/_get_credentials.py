@@ -20,16 +20,16 @@ def _get_credentials():
     envir_var_used = False
 
     try:
-        pynsee.set_config("insee_key", os.environ["insee_key"])
-        pynsee.set_config("insee_secret", os.environ["insee_secret"])
+        config = {
+            "insee_key": os.environ.get("insee_key", os.environ["INSEE_KEY"]),
+            "insee_secret": os.environ.get(
+                "insee_secret", os.environ["INSEE_SECRET"])
+        }
+
+        pynsee.set_config(config)
         envir_var_used = True
     except KeyError:
-        try:
-            pynsee.set_config("insee_key", os.environ["INSEE_KEY"])
-            pynsee.set_config("insee_secret", os.environ["INSEE_SECRET"])
-            envir_var_used = True
-        except KeyError:
-            pass
+        pass
 
     if not pynsee.get_config("insee_key"):
         logger.critical(
