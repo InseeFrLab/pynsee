@@ -21,9 +21,10 @@ def _get_credentials():
 
     try:
         config = {
-            "insee_key": os.environ.get("insee_key", os.environ["INSEE_KEY"]),
+            "insee_key": os.environ.get(
+                "insee_key", os.environ.get("INSEE_KEY")),
             "insee_secret": os.environ.get(
-                "insee_secret", os.environ["INSEE_SECRET"])
+                "insee_secret", os.environ.get("INSEE_SECRET"))
         }
 
         pynsee.set_config(config)
