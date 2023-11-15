@@ -19,7 +19,12 @@ def _get_token(
     Finally, if none of these are set, query the token from the INSEE server
     based on the key and secret.
     '''
-    if insee_key is not None and insee_secret is not None:
-        return _get_token_from_insee(insee_key, insee_secret)
+    if "insee_token" in os.environ:
+        return os.environ["insee_token"]
 
-    return os.environ.get("insee_token", pynsee.get_config("insee_token"))
+    config_token = pynsee.get_config("insee_token")
+
+    if config_token is not None:
+        return config_token
+
+    return _get_token_from_insee(insee_key, insee_secret)
