@@ -2,18 +2,13 @@
 # Copyright : INSEE, 2021
 
 import logging
-import os
-import requests
 import urllib3
 
 from typing import Optional
 
-import pandas as pd
-import platformdirs
-
-import pynsee
-from pynsee.utils._get_token import _get_token
-from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
+from .config import (
+    _conf_file, _register_token, get_config, set_config, save_config)
+from ._get_token_from_insee import _get_token_from_insee
 
 
 logger = logging.getLogger(__name__)
@@ -56,100 +51,25 @@ def init_conn(
         >>> os.environ['https_proxy'] = "http://my_proxy_server:port"
     """
     logger.debug("SHOULD GET LOGGING")
+
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-    token = _get_token(insee_key, insee_secret)
+    token = _get_token_from_insee(insee_key, insee_secret)
 
-    if _register_token(token, http_proxy=http_proxy, https_proxy=https_proxy):
+    if _register_token(token, http_proxy, https_proxy):
         config = {
             "insee_key": insee_key,
             "insee_secret": insee_secret,
             "insee_token": token
         }
 
-        pynsee.set_config(config)
+        set_config(config)
 
-        pynsee.save_config()
+        save_config()
 
         logger.warning(
             "Subscription to all INSEE's APIs has been successfull\n"
             "Unless the user wants to change key or secret, using this "
             "function is no longer needed as the credentials to get the token "
-            "have been saved locally here:\n" + pynsee.utils.config._conf_file
+            "have been saved locally here:\n" + _conf_file
         )
-
-
-def _register_token(
-    token: str,
-    http_proxy: Optional[str] = None,
-    https_proxy: Optional[str] = None
-) -> bool:
-    '''
-    Validate the token and register to INSEE APIs.
-    Return True if the token is valid for all APIs.
-    '''
-    proxies = {
-        "http": http_proxy or os.environ.get(
-            "http_proxy", pynsee.get_config("http_proxy")),
-        "https": https_proxy or os.environ.get(
-            "https_proxy", pynsee.get_config("https_proxy"))
-    }
-
-    if not token:
-        raise ValueError(
-            "!!! Token is missing, please check that insee_key and "
-            "insee_secret are correct !!!")
-    else:
-        headers = {
-            "Accept": "application/xml",
-            "Authorization": "Bearer " + (token or "")
-        }
-
-        url_test = "https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES"
-
-        request_test = requests.get(
-            url_test, proxies=proxies, headers=headers, verify=False)
-
-        if request_test.status_code != 200:
-            raise ValueError(f"This token is not working: {token}")
-
-    queries = [
-        "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",
-        "https://api.insee.fr/metadonnees/V1/codes/cj/n3/5599",
-        "https://api.insee.fr/entreprises/sirene/V3/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
-        "https://api.insee.fr/donnees-locales/V0.1/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
-    ]
-
-    apis = ["BDM", "Metadata", "Sirene", "Local Data"]
-
-    file_format = [
-        "application/xml",
-        "application/xml",
-        "application/json;charset=utf-8",
-        "application/xml",
-    ]
-
-    list_requests_status = []
-
-    for q in range(len(queries)):
-        headers = {
-            "Accept": file_format[q],
-            "Authorization": "Bearer " + token,
-        }
-        api_url = queries[q]
-
-        _wait_api_query_limit(api_url)
-        results = requests.get(
-            api_url, proxies=proxies, headers=headers, verify=False
-        )
-
-        if results.status_code != 200:
-            logger.critical(
-                f"Please subscribe to {apis[q]} API on api.insee.fr !"
-            )
-        list_requests_status += [results.status_code]
-
-    if all([sts == 200 for sts in list_requests_status]):
-        return True
-
-    return False

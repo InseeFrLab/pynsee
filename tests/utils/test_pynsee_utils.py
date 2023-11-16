@@ -10,11 +10,9 @@ from unittest import TestCase
 
 import pynsee
 from pynsee.utils._get_token import _get_token
-from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.clear_all_cache import clear_all_cache
 from pynsee.utils.init_conn import init_conn
-from pynsee.utils._get_credentials import _get_credentials
 
 
 test_SDMX = True
@@ -46,8 +44,6 @@ class TestFunction(TestCase):
 
     if not version_3_7:
         def test_get_token(self):
-            _get_credentials()
-
             insee_key = pynsee.get_config("insee_key")
             insee_secret = pynsee.get_config("insee_secret")
 
@@ -73,6 +69,7 @@ class TestFunction(TestCase):
             def test_request_insee_2(self):
                 # if credentials are not well provided but sdmx url works
                 clear_all_cache()
+                pynsee.set_config("pynsee_use_sdmx", True)
 
                 pynsee.utils.config.base_config["insee_key"] = "key"
                 pynsee.utils.config.base_config["insee_secret"] = "secret"
@@ -83,6 +80,9 @@ class TestFunction(TestCase):
 
                 results = _request_insee(api_url=api_url, sdmx_url=sdmx_url)
                 test = results.status_code == 200
+
+                pynsee.set_config("pynsee_use_sdmx", False)
+
                 self.assertTrue(test)
 
         @save_restore_cred

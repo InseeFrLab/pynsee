@@ -6,14 +6,17 @@ import os
 import requests
 import time
 import urllib3
+import warnings
 
 import pynsee
 from pynsee.utils._get_token import _get_token
-from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 
 logger = logging.getLogger(__name__)
+
+
+FALSE_VALUES = {"0", "False", "false"}
 
 
 CODES = {
@@ -40,8 +43,6 @@ def _request_insee(
     # api_url = 'https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES/?firstNObservations=4&lastNObservations=1'
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-    _get_credentials()
-
     if api_url is not None:
         logger.debug(api_url)
     elif sdmx_url is not None:
@@ -56,12 +57,11 @@ def _request_insee(
     logger.debug(api_url)
 
     # force sdmx use with a system variable
-    try:
-        pynsee_use_sdmx = os.environ["pynsee_use_sdmx"]
-        if pynsee_use_sdmx == "True":
-            api_url = None
-    except Exception:
-        pass
+    pynsee_use_sdmx = os.environ.get(
+        "pynsee_use_sdmx", pynsee.get_config("pynsee_use_sdmx"))
+
+    if pynsee_use_sdmx and pynsee_use_sdmx not in FALSE_VALUES:
+        api_url = None
 
     # if api_url is provided, it is used first,
     # and the sdmx url is used as a backup in two cases
@@ -71,10 +71,7 @@ def _request_insee(
     # if api url is missing sdmx url is used
 
     if api_url is not None:
-        insee_key = pynsee.get_config("insee_key")
-        insee_secret = pynsee.get_config("insee_secret")
-
-        token = _get_token(insee_key, insee_secret)
+        token = pynsee.get_config("insee_token")
 
         if token:
             headers = {
