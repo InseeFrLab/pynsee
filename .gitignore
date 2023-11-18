@@ -18,6 +18,8 @@ docs/auto_examples/
 .idea/
 .ipynb_checkpoints/
 docs/examples/*.html
+docs/examples/*.csv
+docs/examples/*.svg
 docs/examples/.jupyter_cache/*
 /.quarto/
 .spyproject/
