@@ -60,7 +60,7 @@ def _find_latest_local_dataset(dataset_version, variables, nivgeo, codegeo, upda
                         if df['OBS_VALUE'][0] is None:
                             raise ValueError('No data found')
 
-            except:
+            except Exception:
                 if dv == list_dataset_version[-1]:
                     msg = '!!! Latest dataset version not found !!!\n'
                     msg += 'Please, consider having a look at api.insee.fr or get_local_metadata function'
