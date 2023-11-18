@@ -71,10 +71,16 @@ def _request_insee(
     if api_url is not None:
         token = pynsee.get_config("insee_token")
 
+        try:
+            username = os.environ['USERNAME']
+        except:
+            username = "username"
+
         if token:
             headers = {
                 "Accept": file_format,
                 "Authorization": "Bearer " + token,
+                'User-Agent': f"python_pynsee_{username}"
             }
 
             results = requests.get(

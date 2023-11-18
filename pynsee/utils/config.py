@@ -152,9 +152,15 @@ def _register_token(
             "!!! Token is missing, please check that insee_key and "
             "insee_secret are correct !!!")
     else:
+        try:
+            username = os.environ['USERNAME']
+        except:
+            username = "username"
+            
         headers = {
             "Accept": "application/xml",
-            "Authorization": "Bearer " + (token or "")
+            "Authorization": "Bearer " + (token or ""),
+            'User-Agent': f"python_pynsee_{username}"
         }
 
         url_test = "https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES"
