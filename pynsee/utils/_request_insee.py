@@ -8,7 +8,6 @@ import time
 
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
-from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 import logging
 
@@ -88,9 +87,6 @@ def _request_insee(
                 "Accept": file_format,
                 "Authorization": "Bearer " + token,
             }
-
-            # avoid reaching the limit of 30 queries per minute from insee api
-            _wait_api_query_limit(api_url)
 
             results = requests.get(
                 api_url, proxies=proxies, headers=headers, verify=False

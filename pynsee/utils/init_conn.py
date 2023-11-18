@@ -9,7 +9,6 @@ import urllib3
 
 from pynsee.utils._get_token_from_insee import _get_token_from_insee
 from pynsee.utils._get_credentials import _get_credentials
-from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 import logging
 
@@ -113,7 +112,6 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
         }
         api_url = queries[q]
 
-        _wait_api_query_limit(api_url)
         results = requests.get(
             api_url, proxies=proxies, headers=headers, verify=False
         )
