@@ -3,10 +3,12 @@
 import json
 import logging
 import os
-import requests
+#import requests
 import urllib3
 
 from typing import Any, Optional, Union
+
+from pynsee.utils._request_insee import _request_insee
 
 import platformdirs
 
@@ -152,21 +154,23 @@ def _register_token(
             "!!! Token is missing, please check that insee_key and "
             "insee_secret are correct !!!")
     else:
-        try:
-            username = os.environ['USERNAME']
-        except:
-            username = "username"
+        #try:
+        #    username = os.environ['USERNAME']
+        #except Exception:
+        #    username = "username"
             
-        headers = {
-            "Accept": "application/xml",
-            "Authorization": "Bearer " + (token or ""),
-            'User-Agent': f"python_pynsee_{username}"
-        }
+        #headers = {
+        #    "Accept": "application/xml",
+        #    "Authorization": "Bearer " + (token or ""),
+        #    'User-Agent': f"python_pynsee_{username}"
+        #}
 
         url_test = "https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES"
 
-        request_test = requests.get(
-            url_test, proxies=proxies, headers=headers, verify=False)
+        request_test = _request_insee(api_url = url_test)
+
+        #request_test = requests.get(
+        #    url_test, proxies=proxies, headers=headers, verify=False)
 
         if request_test.status_code != 200:
             raise ValueError(f"This token is not working: {token}")
@@ -190,15 +194,17 @@ def _register_token(
     list_requests_status = []
 
     for q in range(len(queries)):
-        headers = {
-            "Accept": file_format[q],
-            "Authorization": "Bearer " + token,
-        }
+        #headers = {
+        #    "Accept": file_format[q],
+        #    "Authorization": "Bearer " + token,
+        #}
         api_url = queries[q]
 
-        results = requests.get(
-            api_url, proxies=proxies, headers=headers, verify=False
-        )
+        results = _request_insee(api_url = api_url, file_format = file_format[q])
+
+        #results = requests.get(
+        #    api_url, proxies=proxies, headers=headers, verify=False
+        #)
 
         if results.status_code != 200:
             logger.critical(

@@ -73,7 +73,7 @@ def _request_insee(
 
         try:
             username = os.environ['USERNAME']
-        except:
+        except Exception:
             username = "username"
 
         if token:
