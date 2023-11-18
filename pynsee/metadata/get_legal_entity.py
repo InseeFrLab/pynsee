@@ -38,7 +38,7 @@ def get_legal_entity(codes, print_err_msg=True, update=False):
 
     filename = _hash("get_legal_entity" + "".join(codes))
     insee_folder = _create_insee_folder()
-    file_legal_entity = insee_folder + "/" + filename
+    file_legal_entity = os.path.join(insee_folder, filename)
 
     if (not os.path.exists(file_legal_entity)) or update:
         list_data = []

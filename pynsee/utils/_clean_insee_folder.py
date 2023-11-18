@@ -22,4 +22,4 @@ def _clean_insee_folder():
 
         if len(list_file_insee) > 0:
             for f in list_file_insee:
-                os.remove(insee_folder + "/" + f)
+                os.remove(os.path.join(insee_folder, f))

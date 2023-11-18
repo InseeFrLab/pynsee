@@ -18,7 +18,7 @@ def _download_idbank_list(update=False):
     file_to_dwn_default = "idbank_" + str(todays_date.year) + str(todays_date.month)
 
     insee_folder = _create_insee_folder()
-    file = insee_folder + "/" + _hash(file_to_dwn_default)
+    file = os.path.join(insee_folder, _hash(file_to_dwn_default))
 
     trigger_update = False
 
