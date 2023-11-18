@@ -130,16 +130,19 @@ def set_config(config: Union[str, dict], value: Any = None):
 
         raise e
 
-def _request_with_429_error_catch(url, proxies, headers, verify):
+def _request_with_429_error_catch(url, proxies, headers, verify, session=None):
 
-    response = requests.get(
+    if session is None:
+        session = requests.Session()
+
+    response = session.get(
             url, proxies=proxies, headers=headers, verify=verify)
 
     if response.status_code == 429:
 
         time.sleep(10)
 
-        response_again = requests.get(
+        response_again = session.get(
             url, proxies=proxies, headers=headers, verify=verify)
 
         return response_again
@@ -181,7 +184,12 @@ def _register_token(
 
         url_test = "https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES"
 
-        request_test = _request_with_429_error_catch(url_test, proxies=proxies, headers=headers, verify=False)
+        session = requests.Session()
+
+        request_test = _request_with_429_error_catch(url_test,
+                                                     session=session,
+                                                     proxies=proxies,
+                                                     headers=headers, verify=False)
 
         #request_test = requests.get(
         #    url_test, proxies=proxies, headers=headers, verify=False)
@@ -216,7 +224,11 @@ def _register_token(
         
         api_url = queries[q]
 
-        results = _request_with_429_error_catch(api_url, proxies=proxies, headers=headers, verify=False)
+        results = _request_with_429_error_catch(api_url,
+                                                session=session,
+                                                proxies=proxies,
+                                                headers=headers,
+                                                verify=False)
 
         #results = requests.get(
         #    api_url, proxies=proxies, headers=headers, verify=False
@@ -227,6 +239,9 @@ def _register_token(
                 f"Please subscribe to {apis[q]} API on api.insee.fr !"
             )
         list_requests_status += [results.status_code]
+
+    # Close the session 
+    session.close()
 
     if all([sts == 200 for sts in list_requests_status]):
         return True
