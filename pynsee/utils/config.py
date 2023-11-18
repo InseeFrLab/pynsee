@@ -5,12 +5,10 @@ import logging
 import os
 import requests
 import urllib3
+import time
+import platformdirs
 
 from typing import Any, Optional, Union
-
-#from pynsee.utils._request_insee import _request_insee
-
-import platformdirs
 
 logger = logging.getLogger(__name__)
 
@@ -132,17 +130,17 @@ def set_config(config: Union[str, dict], value: Any = None):
 
         raise e
 
-def _request_with_429_error_catch(url, proxies, headers, verify=False):
+def _request_with_429_error_catch(url, proxies, headers, verify):
 
     response = requests.get(
-            url, proxies=proxies, headers=headers, verify=False)
+            url, proxies=proxies, headers=headers, verify=verify)
 
     if response.status_code == 429:
 
         time.sleep(10)
 
         response_again = requests.get(
-            url, proxies=proxies, headers=headers, verify=False)
+            url, proxies=proxies, headers=headers, verify=verify)
 
         return response_again
     else:
@@ -218,7 +216,7 @@ def _register_token(
         
         api_url = queries[q]
 
-        results = _request_with_429_error_catch(url_test, proxies=proxies, headers=headers, verify=False)
+        results = _request_with_429_error_catch(api_url, proxies=proxies, headers=headers, verify=False)
 
         #results = requests.get(
         #    api_url, proxies=proxies, headers=headers, verify=False
