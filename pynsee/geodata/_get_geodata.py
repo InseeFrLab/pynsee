@@ -168,21 +168,51 @@ def _get_geodata(
             Nprocesses = min(6, multiprocessing.cpu_count())
 
             args = [link0, list_bbox, crsPolygon]
-            irange = range(len(list_bbox))
+            length = len(list_bbox)
+            irange = range(length)
 
-            with multiprocessing.Pool(
-                initializer=_set_global_var,
-                initargs=(args,),
-                processes=Nprocesses,
-            ) as pool:
-                list_data = list(
-                    tqdm.tqdm(
-                        pool.imap(_get_data_with_bbox2, irange),
-                        total=len(list_bbox),
+            #with multiprocessing.Pool(
+            #    initializer=_set_global_var,
+            #    initargs=(args,),
+            #    processes=Nprocesses,
+            #) as pool:
+            #    list_data = list(
+            #        tqdm.tqdm(
+            #            pool.imap(_get_data_with_bbox2, irange),
+            #            total=len(list_bbox),
+            #        )
+            #    )
+                
+            func_settings = _set_global_var
+            func = _get_data_with_bbox2
+            ##
+            try:
+                with multiprocessing.Pool(
+                    initializer=func_settings, initargs=(args,), processes=Nprocesses
+                ) as pool:                    
+                    list_output = list(
+                        tqdm.tqdm(
+                            pool.imap(func, irange),
+                            total=length
+                        )
                     )
-                )
-
-            data_all = pd.concat(list_data).reset_index(drop=True)
+                    
+            except:
+                
+                func_settings(args)
+                list_output = []
+                for p in tqdm.trange(length):
+                    list_output.append(func(p))
+                    
+                msg = """
+                Multiprocessing failed in the geodata collection,
+                a traditional loop was used instead
+                """   
+                #print(msg)
+                logger.warning(msg)
+                    
+            ##
+            data_all = pd.concat(list_output).reset_index(drop=True)
 
         elif len(json) != 0:
             data_all = _geojson_parser(json).reset_index(drop=True)
