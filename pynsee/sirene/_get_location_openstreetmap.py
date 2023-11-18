@@ -8,6 +8,7 @@ from requests.packages.urllib3.util.retry import Retry
 
 import pandas as pd
 
+import pynsee
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
@@ -35,12 +36,15 @@ def _get_location_openstreetmap(query, session=None, update=False):
     except Exception:
         user_agent = ""
 
-    headers = {"User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")}
+    headers = {
+        "User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")
+    }
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except Exception:
-        proxies = {"http": "", "https": ""}
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee.get_config("http_proxy")),
+        "https": os.environ.get(
+            "https_proxy", pynsee.get_config("https_proxy"))
+    }
 
     data = None
 

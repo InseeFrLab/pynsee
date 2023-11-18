@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from functools import lru_cache
-import pandas as pd
+import logging
 import os
 import xml.dom.minidom
+from functools import lru_cache
+
+import pandas as pd
 from tqdm import trange
 
+import pynsee
 from pynsee.macrodata._get_date import _get_date
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._get_temp_dir import _get_temp_dir
 
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +46,11 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
 
     list_series = []
 
-    for j in trange(n_series, desc="%s - Getting series" % step):
+    for j in trange(
+        n_series,
+        desc="%s - Getting series" % step,
+        disable=pynsee.get_config("hide_progress")
+    ):
         data = root.getElementsByTagName("Series")[j]
 
         n_obs = len(data.getElementsByTagName("Obs"))

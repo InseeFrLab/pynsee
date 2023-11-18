@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from pynsee.sirene import search_sirene
+from pynsee.sirene.search_sirene import search_sirene
 
 
 def get_dimension_list(kind="siret"):

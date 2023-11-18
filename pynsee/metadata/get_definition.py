@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from pynsee.utils._request_insee import _request_insee
-from tqdm import trange
-
 import re
+
 import pandas as pd
+from tqdm import tqdm
+
+import pynsee
+from pynsee.utils._request_insee import _request_insee
 
 
 def get_definition(ids):
@@ -54,14 +56,16 @@ def get_definition(ids):
     def extract_data(data, item1, i, item2):
         try:
             val = data[item1][i][item2]
-        except:
+        except Exception:
             val = None
         return val
 
-    for i in trange(len(ids), desc="Getting data"):
-
-        id = ids[i]
-        query = link + "/" + id
+    for elt in tqdm(
+        ids,
+        desc="Getting data",
+        disable=pynsee.get_config("hide_progress")
+    ):
+        query = link + "/" + elt
 
         request = _request_insee(api_url=query, file_format="application/json")
 
@@ -97,7 +101,7 @@ def get_definition(ids):
                     )
                     def_short_fr = clean_definition(def_short_fr)
                     def_short_en = clean_definition(def_short_en)
-            except:
+            except Exception:
                 pass
 
             update = data["dateMiseAJour"]
@@ -106,7 +110,7 @@ def get_definition(ids):
 
             df = pd.DataFrame(
                 {
-                    "ID": id,
+                    "ID": elt,
                     "TITLE_FR": title_fr,
                     "TITLE_EN": title_en,
                     "DEFINITION_SHORT_FR": def_short_fr,
@@ -118,10 +122,10 @@ def get_definition(ids):
                 },
                 index=[0],
             )
-        except:
+        except Exception:
             df = pd.DataFrame(
                 {
-                    "ID": id,
+                    "ID": elt,
                     "TITLE_FR": None,
                     "TITLE_EN": None,
                     "DEFINITION_SHORT_FR": None,

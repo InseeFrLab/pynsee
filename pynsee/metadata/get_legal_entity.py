@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import pandas as pd
-from functools import lru_cache
-from tqdm import trange
-from pynsee.utils._hash import _hash
-from pynsee.utils._create_insee_folder import _create_insee_folder
+import logging
 import os
+from functools import lru_cache
 
+import pandas as pd
+from tqdm import tqdm
+
+import pynsee
+from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils._hash import _hash
 from pynsee.utils._request_insee import _request_insee
 
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -41,13 +43,14 @@ def get_legal_entity(codes, print_err_msg=True, update=False):
     if (not os.path.exists(file_legal_entity)) or update:
         list_data = []
 
-        for c in trange(len(codes), desc="Getting legal entities"):
-            # c = '5599'
-            code = codes[c]
+        for code in tqdm(
+            codes, desc="Getting legal entities",
+            disable=pynsee.get_config("hide_progress")
+        ):
             try:
                 data = _get_one_legal_entity(code, print_err_msg=print_err_msg)
                 list_data.append(data)
-            except:
+            except Exception:
                 pass
 
         data_final = pd.concat(list_data).reset_index(drop=True)
@@ -59,13 +62,12 @@ def get_legal_entity(codes, print_err_msg=True, update=False):
     else:
         try:
             data_final = pd.read_pickle(file_legal_entity)
-        except:
+        except Exception:
             os.remove(file_legal_entity)
 
             data_final = get_legal_entity(
                 codes=codes, print_err_msg=print_err_msg, update=True
             )
-
         else:
             _warning_legaldata_save()
 

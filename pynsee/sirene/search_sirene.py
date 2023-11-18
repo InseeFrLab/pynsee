@@ -224,7 +224,7 @@ def search_sirene(
     else:
         try:
             data_final = pd.read_pickle(file_sirene)
-        except:
+        except Exception:
             os.remove(file_sirene)
 
             data_final = search_sirene(

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import appdirs
+import platformdirs
 import os
 
 
 def _clean_insee_folder():
 
-    local_appdata_folder = appdirs.user_cache_dir()
+    local_appdata_folder = platformdirs.user_cache_dir()
     insee_folder = local_appdata_folder + "/pynsee" + "/pynsee"
 
     # delete all files in the folder

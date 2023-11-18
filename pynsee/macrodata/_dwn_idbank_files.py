@@ -1,14 +1,18 @@
-from datetime import date
 import tempfile
 import os
-import requests
-import zipfile
 import re
-import pandas as pd
+import requests
 import urllib3
+import warnings
+import zipfile
+
+from datetime import date
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-import warnings
+
+import pandas as pd
+
+import pynsee
 
 
 def _dwn_idbank_files():
@@ -32,10 +36,13 @@ def _dwn_idbank_files():
     files_fr = [main_link_fr + f + ".zip" for f in patterns]
     files = files_fr + files_en
 
-    try:
-        file_to_dwn = os.environ["pynsee_idbank_file"]
-    except Exception:
-        file_to_dwn = "https://www.insee.fr/en/statistiques/fichier/2868055/202201_correspondance_idbank_dimension.zip"
+    file_to_dwn = os.environ.get(
+        "pynsee_idbank_file",
+        pynsee.get_config().get(
+            "pynsee_idbank_file",
+            "https://www.insee.fr/en/statistiques/fichier/2868055/"
+            "202201_correspondance_idbank_dimension.zip")
+    )
 
     try:
         data = _dwn_idbank_file(file_to_dwn=file_to_dwn)
@@ -46,40 +53,21 @@ def _dwn_idbank_files():
 
     i = 0
 
-    pynsee_idbank_loop_url = True
-
-    try:
-        pynsee_idbank_loop_url = os.environ["pynsee_idbank_loop_url"]
-        if (pynsee_idbank_loop_url == "False") or (
-            pynsee_idbank_loop_url == "FALSE"
-        ):
-            pynsee_idbank_loop_url = False
-    except Exception:
-        try:
-            pynsee_idbank_loop_url = os.environ["PYNSEE_IDBANK_LOOP_URL"]
-            if (pynsee_idbank_loop_url == "False") or (
-                pynsee_idbank_loop_url == "FALSE"
-            ):
-                pynsee_idbank_loop_url = False
-        except Exception:
-            pass
-
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=1, status_forcelist=[502])
     adapter = HTTPAdapter(max_retries=retry)
     session.mount("http://", adapter)
     session.mount("https://", adapter)
 
-    if pynsee_idbank_loop_url:
-        while idbank_file_not_found & (i <= len(files) - 1):
-            try:
-                data = _dwn_idbank_file(file_to_dwn=files[i], session=session)
-            except Exception:
-                # print(f'!!! File not found:\n{files[i]}')
-                idbank_file_not_found = True
-            else:
-                idbank_file_not_found = False
-            i += 1
+    while idbank_file_not_found & (i <= len(files) - 1):
+        try:
+            data = _dwn_idbank_file(file_to_dwn=files[i], session=session)
+        except Exception:
+            # print(f'!!! File not found:\n{files[i]}')
+            idbank_file_not_found = True
+        else:
+            idbank_file_not_found = False
+        i += 1
 
     return data
 
@@ -87,12 +75,11 @@ def _dwn_idbank_files():
 def _dwn_idbank_file(file_to_dwn, session):
     separator = ";"
 
-    proxies = {}
-    for key in ["http", "https"]:
-        try:
-            proxies[key] = os.environ[f"{key}_proxy"]
-        except KeyError:
-            proxies[key] = ""
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee.get_config("http_proxy")),
+        "https": os.environ.get(
+            "https_proxy", pynsee.get_config("https_proxy"))
+    }
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

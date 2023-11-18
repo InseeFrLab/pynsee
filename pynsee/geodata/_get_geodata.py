@@ -1,27 +1,27 @@
 # -*- coding: utf-8 -*-
 
-import time
-import pandas as pd
-import requests
-import os
+import logging
 import multiprocessing
-import tqdm
+import os
+import requests
+import time
+import urllib3
+import warnings
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from pathlib import Path
-import urllib3
-import warnings
 
+import pandas as pd
+import tqdm
+
+import pynsee
 from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
-
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -126,12 +126,12 @@ def _get_geodata(
                 + user_agent.replace("/", "")
             }
 
-            proxies = {}
-            for key in ["http", "https"]:
-                try:
-                    proxies[key] = os.environ[f"{key}_proxy"]
-                except KeyError:
-                    proxies[key] = ""
+            proxies = {
+                "http": os.environ.get(
+                    "http_proxy", pynsee.get_config("http_proxy")),
+                "https": os.environ.get(
+                    "https_proxy", pynsee.get_config("https_proxy"))
+            }
 
             with warnings.catch_warnings():
                 warnings.simplefilter(
@@ -170,22 +170,10 @@ def _get_geodata(
             args = [link0, list_bbox, crsPolygon]
             length = len(list_bbox)
             irange = range(length)
-
-            #with multiprocessing.Pool(
-            #    initializer=_set_global_var,
-            #    initargs=(args,),
-            #    processes=Nprocesses,
-            #) as pool:
-            #    list_data = list(
-            #        tqdm.tqdm(
-            #            pool.imap(_get_data_with_bbox2, irange),
-            #            total=len(list_bbox),
-            #        )
-            #    )
                 
             func_settings = _set_global_var
             func = _get_data_with_bbox2
-            ##
+            
             try:
                 with multiprocessing.Pool(
                     initializer=func_settings, initargs=(args,), processes=Nprocesses
@@ -193,9 +181,9 @@ def _get_geodata(
                     list_output = list(
                         tqdm.tqdm(
                             pool.imap(func, irange),
-                            total=length
+                            total=length,
+                            disable=pynsee.get_config("hide_progress")
                         )
-                    )
                     
             except:
                 
@@ -208,10 +196,9 @@ def _get_geodata(
                 Multiprocessing failed in the geodata collection,
                 a traditional loop was used instead
                 """   
-                #print(msg)
+                
                 logger.warning(msg)
-                    
-            ##
+                   
             data_all = pd.concat(list_output).reset_index(drop=True)
 
         elif len(json) != 0:

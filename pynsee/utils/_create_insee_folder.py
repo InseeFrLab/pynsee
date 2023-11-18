@@ -3,7 +3,7 @@
 
 from functools import lru_cache
 import os
-import appdirs
+import platformdirs
 
 from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils._hash import _hash
@@ -11,11 +11,9 @@ from pynsee.utils._hash import _hash
 
 @lru_cache(maxsize=None)
 def _create_insee_folder():
-
     try:
-
         # find local folder
-        local_appdata_folder = appdirs.user_cache_dir()
+        local_appdata_folder = platformdirs.user_cache_dir()
         insee_folder = local_appdata_folder + "/pynsee"
 
         # create insee folder

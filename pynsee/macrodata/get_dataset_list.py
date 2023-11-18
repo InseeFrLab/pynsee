@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from functools import lru_cache
+import logging
 import os
 import xml.etree.ElementTree as ET
+from functools import lru_cache
+
 import pandas as pd
 from tqdm import trange
 
+import pynsee
 from pynsee.macrodata._get_dataset_list_internal import _get_dataset_list_internal
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._get_temp_dir import _get_temp_dir
 
-import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def get_dataset_list():
@@ -27,7 +31,6 @@ def get_dataset_list():
     """
 
     try:
-
         INSEE_sdmx_link_dataflow = "https://bdm.insee.fr/series/sdmx/dataflow"
         INSEE_api_link_dataflow = "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all"
 
@@ -54,7 +57,11 @@ def get_dataset_list():
 
         list_df = []
 
-        for i in trange(n_dataflow, desc="Getting datasets list"):
+        for i in trange(
+            n_dataflow,
+            desc="Getting datasets list",
+            disable=pynsee.get_config("hide_progress")
+        ):
 
             dataset = {
                 "id": [next(iter(data[i].attrib.values()))],
@@ -84,8 +91,7 @@ def get_dataset_list():
         df["Name.fr"] = df["Name.fr"].str.replace("^\\n\\s{0,}", "", regex=True)
         df = df[df["Name.en"] != ""]
         df = df[df["Name.fr"] != ""]
-
-    except:
+    except Exception:
         df = _get_dataset_list_internal()
 
         logger.error(

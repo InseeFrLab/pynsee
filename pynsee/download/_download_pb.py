@@ -1,9 +1,14 @@
-import requests
 import os
-from tqdm import tqdm
+import requests
 import urllib3
 
+from tqdm import tqdm
+
+import pynsee
+
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 
 def _download_pb(url: str, fname: str, total: int = None):
     """Useful function to get request with a progress bar
@@ -15,11 +20,10 @@ def _download_pb(url: str, fname: str, total: int = None):
         url {str} -- URL for the source file
         fname {str} -- Destination where data will be written
     """
-
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee.get_config("http_proxy")),
+        "https": os.environ.get("https_proxy", pynsee.get_config("https_proxy"))
+    }
 
     resp = requests.get(url, proxies=proxies, stream=True, verify=False)
 
@@ -32,6 +36,7 @@ def _download_pb(url: str, fname: str, total: int = None):
         unit="iB",
         unit_scale=True,
         unit_divisor=1024,
+        disable=pynsee.get_config("hide_progress")
     ) as obj:
         for data in resp.iter_content(chunk_size=1024):
             size = file.write(data)

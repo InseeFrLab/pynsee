@@ -1,19 +1,23 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import requests
-import re
 import base64
 import os
+import logging
+import re
+import requests
 
 from functools import lru_cache
 
-import logging
+from .config import get_config
+
+
 logger = logging.getLogger(__name__)
 
-@lru_cache(maxsize=None)
-def _get_token_from_insee(insee_key, insee_secret):
 
+@lru_cache(maxsize=None)
+def _get_token_from_insee(insee_key: str, insee_secret: str):
+    ''' Return the token from the key and secret '''
     string_key = "{}:{}".format(insee_key, insee_secret)
     string_key_encoded = string_key.encode("utf-8")
     string = base64.b64encode(string_key_encoded).decode("utf-8")
@@ -24,10 +28,10 @@ def _get_token_from_insee(insee_key, insee_secret):
 
     data = {"grant_type": "client_credentials"}
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = {
+        "http": os.environ.get("http_proxy", get_config("http_proxy")),
+        "https": os.environ.get("https_proxy", get_config("https_proxy"))
+    }
 
     try:
         response = requests.post(
@@ -44,8 +48,14 @@ def _get_token_from_insee(insee_key, insee_secret):
     content_splitted = content.split(",")
     list_access_token = [("access_token" in string) for string in content_splitted]
     selected_content = [x for x, y in zip(content_splitted, list_access_token) if y]
-    selected_content = selected_content[0]
 
-    token = re.sub(':|"|}|{|access_token', "", selected_content)
+    if selected_content:
+        selected_content = selected_content[0]
 
-    return token
+        token = re.sub(':|"|}|{|access_token', "", selected_content)
+
+        logger.debug(f"Obtained token: {token}")
+
+        return token
+
+    return None

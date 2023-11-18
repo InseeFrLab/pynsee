@@ -6,6 +6,8 @@ import tempfile
 import urllib3
 from functools import lru_cache
 
+import pynsee
+
 
 @lru_cache(maxsize=None)
 def _get_capabilities(key, version="1.0.0", service="wmts", tweak=""):
@@ -16,11 +18,12 @@ def _get_capabilities(key, version="1.0.0", service="wmts", tweak=""):
         key, tweak, service, service_upper, version
     )
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
-    
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee.get_config("http_proxy")),
+        "https": os.environ.get(
+            "https_proxy", pynsee.get_config("https_proxy"))
+    }
+
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     results = requests.get(link, proxies=proxies, verify=False)
 

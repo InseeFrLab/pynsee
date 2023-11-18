@@ -4,6 +4,7 @@
 import pandas as pd
 from tqdm import trange
 
+import pynsee
 from pynsee.macrodata.get_dataset_list import get_dataset_list
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
@@ -41,7 +42,11 @@ def get_column_title(dataset=None):
 
     n_dataset = len(dataset_list)
 
-    for idt in trange(n_dataset, desc="1/2 - Getting columns list "):
+    for idt in trange(
+        n_dataset,
+        desc="1/2 - Getting columns list ",
+        disable=pynsee.get_config("hide_progress")
+    ):
         dt = dataset_list[idt]
         dataset_dimension = _get_dataset_dimension(dt)
         dataset_dimension = dataset_dimension[["dimension", "local_representation"]]

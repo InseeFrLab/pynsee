@@ -1,23 +1,28 @@
-from datetime import date
 import logging
-import requests
 import re
+import requests
 import os
 import urllib3
+
+from datetime import date
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
+import pynsee
+
+
 logger = logging.getLogger(__name__)
 
+
 def _check_url(url):
-    
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
-        
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee.get_config("http_proxy")),
+        "https": os.environ.get(
+            "https_proxy", pynsee.get_config("https_proxy"))
+    }
+
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=1)
     adapter = HTTPAdapter(max_retries=retry)
@@ -33,22 +38,23 @@ def _check_url(url):
             f"File not found on insee.fr:\n{url} - please open an issue on:\n"
             "https://github.com/InseeFrLab/pynsee"
             )
-        
+
         try:
             list_string_split = url.split("/")
             filename = list_string_split[-1]
 
             list_potential_dates = []
 
-            def get_close_dates_list(start_year, timespan=10):   
+            def get_close_dates_list(start_year, timespan=10):
 
-                start_year = int(start_year)    
+                start_year = int(start_year)
                 start_year_short = int(str(start_year)[-2:])
 
-                list_close_year = list(range(start_year, start_year + timespan)) + \
-                                    list(range(start_year, start_year - timespan, -1)) + \
-                                    list(range(start_year_short, start_year_short + timespan)) + \
-                                    list(range(start_year_short, start_year_short - timespan, -1)) 
+                list_close_year = \
+                    list(range(start_year, start_year + timespan)) + \
+                    list(range(start_year, start_year - timespan, -1)) + \
+                    list(range(start_year_short, start_year_short + timespan)) + \
+                    list(range(start_year_short, start_year_short - timespan, -1))
 
                 list_close_year = [str(y) for y in list_close_year]
 
@@ -61,7 +67,7 @@ def _check_url(url):
             current_year = date.today().year
 
             list_potential_dates += get_close_dates_list(current_year)
-            list_potential_dates = list(dict.fromkeys(list_potential_dates))        
+            list_potential_dates = list(dict.fromkeys(list_potential_dates))
 
             for d in list_potential_dates:
 
@@ -81,7 +87,7 @@ def _check_url(url):
             logger.error(
                 "Error raised while trying to find another similar file"
                 )
-        
+
         if 'url2' in locals():
             if url != url2:
                 logger.warning(
@@ -89,10 +95,5 @@ def _check_url(url):
                     )
         else:
             url2 = url
-        
-        return url2
-            
-        
-        
-        
 
+        return url2

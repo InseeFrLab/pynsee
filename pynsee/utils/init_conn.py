@@ -1,21 +1,25 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import os
-from pathlib import Path
-import pandas as pd
-import requests
+import logging
 import urllib3
 
-from pynsee.utils._get_token_from_insee import _get_token_from_insee
-from pynsee.utils._get_credentials import _get_credentials
+from typing import Optional
 
-import logging
+from .config import (
+    _conf_file, _register_token, get_config, set_config, save_config)
+from ._get_token_from_insee import _get_token_from_insee
+
 
 logger = logging.getLogger(__name__)
 
 
-def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
+def init_conn(
+    insee_key: str,
+    insee_secret: str,
+    http_proxy: Optional[str] = None,
+    https_proxy: Optional[str] = None
+) -> None:
     """Save your credentials to connect to INSEE APIs, subscribe to api.insee.fr
 
     Args:
@@ -47,85 +51,25 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
         >>> os.environ['https_proxy'] = "http://my_proxy_server:port"
     """
     logger.debug("SHOULD GET LOGGING")
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    home = str(Path.home())
-    pynsee_credentials_file = home + "/" + "pynsee_credentials.csv"
 
-    d = pd.DataFrame(
-        {
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+    token = _get_token_from_insee(insee_key, insee_secret)
+
+    if _register_token(token, http_proxy, https_proxy):
+        config = {
             "insee_key": insee_key,
             "insee_secret": insee_secret,
-            "http_proxy": http_proxy,
-            "https_proxy": https_proxy,
-        },
-        index=[0],
-    )
-    d.to_csv(pynsee_credentials_file)
-
-    keys = _get_credentials()
-
-    insee_key = keys["insee_key"]
-    insee_secret = keys["insee_secret"]
-
-    token = None
-    try:
-        token = _get_token_from_insee(insee_key, insee_secret)
-    except:
-        pass
-
-    if token is None:
-        raise ValueError(
-            "!!! Token is missing, please check insee_key and insee_secret are correct !!!"
-        )
-    else:
-        logger.info("Token has been created")
-
-    try:
-        proxies = {
-            "http": os.environ["http_proxy"],
-            "https": os.environ["https_proxy"],
+            "insee_token": token
         }
-    except:
-        proxies = {"http": "", "https": ""}
 
-    queries = [
-        "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",
-        "https://api.insee.fr/metadonnees/V1/codes/cj/n3/5599",
-        "https://api.insee.fr/entreprises/sirene/V3/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
-        "https://api.insee.fr/donnees-locales/V0.1/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
-    ]
-    apis = ["BDM", "Metadata", "Sirene", "Local Data"]
+        set_config(config)
 
-    file_format = [
-        "application/xml",
-        "application/xml",
-        "application/json;charset=utf-8",
-        "application/xml",
-    ]
+        save_config()
 
-    list_requests_status = []
-
-    for q in range(len(queries)):
-        headers = {
-            "Accept": file_format[q],
-            "Authorization": "Bearer " + token,
-        }
-        api_url = queries[q]
-
-        results = requests.get(
-            api_url, proxies=proxies, headers=headers, verify=False
-        )
-
-        if results.status_code != 200:
-            logger.critical(
-                f"Please subscribe to {apis[q]} API on api.insee.fr !"
-            )
-        list_requests_status += [results.status_code]
-
-    if all([sts == 200 for sts in list_requests_status]):
-        logger.info(
+        logger.warning(
             "Subscription to all INSEE's APIs has been successfull\n"
             "Unless the user wants to change key or secret, using this "
             "function is no longer needed as the credentials to get the token "
-            "have been saved locally here:\n" + pynsee_credentials_file
+            "have been saved locally here:\n" + _conf_file
         )

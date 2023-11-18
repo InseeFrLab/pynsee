@@ -1,22 +1,30 @@
 # Copyright : INSEE, 2021
 
-from functools import lru_cache
+import os
+from typing import Optional
 
-from pynsee.utils._get_envir_token import _get_envir_token
+import pynsee
 from pynsee.utils._get_token_from_insee import _get_token_from_insee
 
 
-@lru_cache(maxsize=None)
-def _get_token(insee_key, insee_secret):
+def _get_token(
+    insee_key: Optional[str] = None,
+    insee_secret: Optional[str] = None
+):
+    '''
+    Get the token.
 
-    token_envir = _get_envir_token()
+    The environment variable `insee_token` is prioritized if it exists, then
+    comes the configuration variable.
+    Finally, if none of these are set, query the token from the INSEE server
+    based on the key and secret.
+    '''
+    if "insee_token" in os.environ:
+        return os.environ["insee_token"]
 
-    if token_envir is None:
-        try:
-            token = _get_token_from_insee(insee_key, insee_secret)
-        except:
-            token = None
-    else:
-        token = token_envir
+    config_token = pynsee.get_config("insee_token")
 
-    return token
+    if config_token is not None:
+        return config_token
+
+    return _get_token_from_insee(insee_key, insee_secret)

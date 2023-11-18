@@ -1,17 +1,22 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import logging
 import os
 import requests
-import urllib3
 import time
+import urllib3
+import warnings
 
+import pynsee
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
 
-import logging
-
 logger = logging.getLogger(__name__)
+
+
+FALSE_VALUES = {"0", "False", "false"}
+
 
 CODES = {
     # 200:"Opération réussie",
@@ -37,34 +42,25 @@ def _request_insee(
     # api_url = 'https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES/?firstNObservations=4&lastNObservations=1'
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-    keys = _get_credentials()
-
     if api_url is not None:
         logger.debug(api_url)
     elif sdmx_url is not None:
         logger.debug(sdmx_url)
 
-    proxies = {}
-    for key in ["http", "https"]:
-        try:
-            proxies[key] = os.environ[f"{key}_proxy"]
-        except KeyError:
-            proxies[key] = ""
+    proxies = {
+        "http": os.environ.get("http_proxy", pynsee.get_config("http_proxy")),
+        "https": os.environ.get(
+            "https_proxy", pynsee.get_config("https_proxy")),
+    }
 
-    try:
-        print_url = os.environ["pynsee_print_url"]
-        if print_url == "True":
-            print(api_url)
-    except:
-        pass
-        
+    logger.debug(api_url)
+
     # force sdmx use with a system variable
-    try:
-        pynsee_use_sdmx = os.environ["pynsee_use_sdmx"]
-        if pynsee_use_sdmx == "True":
-            api_url = None
-    except:
-        pass
+    pynsee_use_sdmx = os.environ.get(
+        "pynsee_use_sdmx", pynsee.get_config("pynsee_use_sdmx"))
+
+    if pynsee_use_sdmx and pynsee_use_sdmx not in FALSE_VALUES:
+        api_url = None
 
     # if api_url is provided, it is used first,
     # and the sdmx url is used as a backup in two cases
@@ -74,15 +70,9 @@ def _request_insee(
     # if api url is missing sdmx url is used
 
     if api_url is not None:
-        if keys is not None:
-            insee_key = keys["insee_key"]
-            insee_secret = keys["insee_secret"]
+        token = pynsee.get_config("insee_token")
 
-            token = _get_token(insee_key, insee_secret)
-        else:
-            token = None
-
-        if token is not None:
+        if token:
             headers = {
                 "Accept": file_format,
                 "Authorization": "Bearer " + token,
@@ -160,6 +150,7 @@ def _request_insee(
         # api_url is None
         if sdmx_url is not None:
             results = requests.get(sdmx_url, proxies=proxies, verify=False)
+            print(sdmx_url, results.status_code)
 
             if results.status_code == 200:
                 return results
