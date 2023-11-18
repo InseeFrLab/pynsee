@@ -10,7 +10,6 @@ import warnings
 
 import pynsee
 from pynsee.utils._get_token import _get_token
-from pynsee.utils._get_credentials import _get_credentials
 
 logger = logging.getLogger(__name__)
 
