@@ -26,9 +26,9 @@ from pynsee.localdata.get_descending_area import get_descending_area
 
 
 class TestFunction(TestCase):
-    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
+    version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
 
-    if version_3_7:
+    if version_3_8:
 
         def test_get_population(self):
             df = get_population()

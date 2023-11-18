@@ -25,7 +25,7 @@ openpyxl
 shapely>=1.8.0
 seaborn
 markupsafe==2.0.1
-geopandas>=0.13.0
+geopandas
 descartes
 py7zr
 jupyter-cache==0.5.0
