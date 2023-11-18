@@ -183,7 +183,7 @@ def _get_geodata(
                             pool.imap(func, irange),
                             total=length,
                             disable=pynsee.get_config("hide_progress")
-                        )
+                        ))
                     
             except:
                 
