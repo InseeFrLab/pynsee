@@ -185,7 +185,7 @@ def _get_geodata(
                             disable=pynsee.get_config("hide_progress")
                         ))
                     
-            except:
+            except Exception:
                 
                 func_settings(args)
                 list_output = []
