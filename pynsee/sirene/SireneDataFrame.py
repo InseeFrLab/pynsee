@@ -214,7 +214,9 @@ class SireneDataFrame(pd.DataFrame):
 
                     list_location.append(df_location)
 
-                df_location = pd.concat(list_location)
+                cleaned_list_of_dfs = [df.dropna(axis=1, how='all') for df in list_location]
+                df_location = pd.concat(cleaned_list_of_dfs)
+                
                 df_location = df_location.reset_index(drop=True)
 
                 sirene_df = pd.merge(

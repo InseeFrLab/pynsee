@@ -126,9 +126,13 @@ def get_local_data(
                 #display(e)
                 df = df_default
 
+            if df.empty:
+                df = df_default
+            
             list_data_all.append(df)
 
-        data_final = pd.concat(list_data_all).reset_index(drop=True)
+        cleaned_list_of_dfs = [df.dropna(axis=1, how='all') for df in list_data_all]
+        data_final = pd.concat(cleaned_list_of_dfs).reset_index(drop=True)
         
         if data_final.equals(df_default):
             logger.error("Error or no data found !")            
