@@ -37,9 +37,9 @@ test_SDMX = True
 
 class TestFunction(TestCase):
 
-    version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)      
+    version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
 
-    if (not version_3_8):
+    if not version_3_8:
 
         def test_get_dataset_list_internal(self):
             df = _get_dataset_list_internal()
