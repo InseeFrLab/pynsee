@@ -11,12 +11,21 @@ def _del_dataset_files():
         for f in list_dataset_files:
             os.remove(f)
 
+
 def _get_dataset_files():
     list_dataset = list(get_dataset_list().id.unique())
     insee_folder = _create_insee_folder()
-    file_dataset_metadata_list = [insee_folder + "/" + _hash("idbank_list" + dt) for dt in list_dataset] 
-    file_dataset_metadata_list_exist = [f for f in file_dataset_metadata_list if os.path.exists(f)]
+
+    file_dataset_metadata_list = [
+        os.path.join(insee_folder, _hash("idbank_list" + dt)) for dt in list_dataset
+    ]
+
+    file_dataset_metadata_list_exist = [
+        f for f in file_dataset_metadata_list if os.path.exists(f)
+    ]
+
     return file_dataset_metadata_list_exist
+
 
 def _load_dataset_data():
     list_dataset_files = _get_dataset_files()

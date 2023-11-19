@@ -36,9 +36,6 @@ CODES = {
 def _request_insee(
     api_url=None, sdmx_url=None, file_format="application/xml", print_msg=True
 ):
-    # sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
-    # api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
-    # api_url = 'https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES/?firstNObservations=4&lastNObservations=1'
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     if api_url is not None:
@@ -67,14 +64,10 @@ def _request_insee(
     # 2- if the api request fails
 
     # if api url is missing sdmx url is used
-
     if api_url is not None:
         token = pynsee.get_config("insee_token")
 
-        try:
-            username = os.environ['USERNAME']
-        except Exception:
-            username = "username"
+        username = os.environ.get("USERNAME", "username")
 
         if token:
             headers = {
@@ -113,54 +106,52 @@ def _request_insee(
 
             if success is True:
                 return results
-            else:
-                msg = (
-                    "An error occurred !\n"
-                    "Query : {api_url}\n"
-                    f"{results.text}\n"
-                    "Make sure you have subscribed to all APIs !\n"
-                    "Click on all APIs' icons one by one, select your "
-                    "application, and click on Subscribe"
-                )
-                raise requests.exceptions.RequestException(msg)
 
-        else:
-            # token is None
-            commands = "\n\ninit_conn(insee_key='my_insee_key', insee_secret='my_insee_secret')\n"
             msg = (
-                "Token missing, please check your credentials "
-                "on api.insee.fr !\n"
-                "Please do the following to use your "
-                f"credentials: {commands}\n\n"
-                "If your token still does not work, please try to clear "
-                "the cache :\n "
-                "from pynsee.utils import clear_all_cache; clear_all_cache()\n"
+                "An error occurred !\n"
+                "Query : {api_url}\n"
+                f"{results.text}\n"
+                "Make sure you have subscribed to all APIs !\n"
+                "Click on all APIs' icons one by one, select your "
+                "application, and click on Subscribe"
             )
 
-            if sdmx_url is not None:
-                msg2 = "\nSDMX web service used instead of API"
-                if print_msg:
-                    logger.critical(msg + msg2)
+            raise requests.exceptions.RequestException(msg)
 
-                results = requests.get(sdmx_url, proxies=proxies, verify=False)
+        # token is None
+        commands = "\n\ninit_conn(insee_key='my_insee_key', insee_secret='my_insee_secret')\n"
+        msg = (
+            "Token missing, please check your credentials "
+            "on api.insee.fr !\n"
+            "Please do the following to use your "
+            f"credentials: {commands}\n\n"
+            "If your token still does not work, please try to clear "
+            "the cache :\n "
+            "from pynsee.utils import clear_all_cache; clear_all_cache()\n"
+        )
 
-                if results.status_code == 200:
-                    return results
-                else:
-                    raise ValueError(results.text + "\n" + sdmx_url)
-
-            else:
-                raise ValueError(msg)
-    else:
-        # api_url is None
         if sdmx_url is not None:
+            msg2 = "\nSDMX web service used instead of API"
+            if print_msg:
+                logger.critical(msg + msg2)
+
             results = requests.get(sdmx_url, proxies=proxies, verify=False)
-            print(sdmx_url, results.status_code)
 
             if results.status_code == 200:
                 return results
-            else:
-                raise ValueError(results.text + "\n" + sdmx_url)
 
-        else:
-            raise ValueError("!!! Error : urls are missing")
+            raise ValueError(results.text + "\n" + sdmx_url)
+
+        raise ValueError(msg)
+
+    # api_url is None
+    if sdmx_url is not None:
+        results = requests.get(sdmx_url, proxies=proxies, verify=False)
+        logger.debug(f"{sdmx_url}: {results.status_code}")
+
+        if results.status_code == 200:
+            return results
+
+        raise ValueError(results.text + "\n" + sdmx_url)
+
+    raise ValueError("URLs are missing!")

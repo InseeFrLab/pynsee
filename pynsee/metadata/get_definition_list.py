@@ -33,7 +33,7 @@ def get_definition_list():
 
     insee_folder = _create_insee_folder()
 
-    insee_folder_local_def = insee_folder + "/" + "definition"
+    insee_folder_local_def = os.path.join(insee_folder, "definition")
 
     if not os.path.exists(insee_folder_local_def):
         os.mkdir(insee_folder_local_def)

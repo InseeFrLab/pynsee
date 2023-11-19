@@ -213,7 +213,7 @@ def search_sirene(
 
     filename = _hash(query + string)
     insee_folder = _create_insee_folder()
-    file_sirene = insee_folder + "/" + filename
+    file_sirene = os.path.join(insee_folder, filename)
 
     if (not os.path.exists(file_sirene)) or update:
         data_final = _request_sirene(query=query, kind=kind, number=number)

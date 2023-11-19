@@ -130,24 +130,20 @@ def set_config(config: Union[str, dict], value: Any = None):
 
         raise e
 
-def _request_with_429_error_catch(url, proxies, headers, verify, session=None):
-
-    if session is None:
-        session = requests.Session()
-
+def _request_with_429_error_catch(url, proxies, headers, verify, session):
+    ''' Workaround rate limitations '''
     response = session.get(
             url, proxies=proxies, headers=headers, verify=verify)
 
     if response.status_code == 429:
-
         time.sleep(10)
 
         response_again = session.get(
             url, proxies=proxies, headers=headers, verify=verify)
 
         return response_again
-    else:
-        return response        
+
+    return response
     
 
 def _register_token(
@@ -170,78 +166,63 @@ def _register_token(
         raise ValueError(
             "!!! Token is missing, please check that insee_key and "
             "insee_secret are correct !!!")
-    else:
-        try:
-            username = os.environ['USERNAME']
-        except Exception:
-            username = "username"
+
+    username = os.environ.get("USERNAME", "username")
             
-        headers = {
-            "Accept": "application/xml",
-            "Authorization": "Bearer " + (token or ""),
-            'User-Agent': f"python_pynsee_{username}"
-        }
+    headers = {
+        "Accept": "application/xml",
+        "Authorization": "Bearer " + (token or ""),
+        'User-Agent': f"python_pynsee_{username}"
+    }
 
-        url_test = "https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES"
+    url_test = "https://api.insee.fr/series/BDM/V1/data/CLIMAT-AFFAIRES"
 
-        session = requests.Session()
-
-        request_test = _request_with_429_error_catch(url_test,
-                                                     session=session,
-                                                     proxies=proxies,
-                                                     headers=headers, verify=False)
-
-        #request_test = requests.get(
-        #    url_test, proxies=proxies, headers=headers, verify=False)
+    with requests.Session() as session:
+        request_test = _request_with_429_error_catch(
+            url_test, proxies=proxies, headers=headers, verify=False,
+            session=session)
 
         if request_test.status_code != 200:
             raise ValueError(f"This token is not working: {token}")
 
-    queries = [
-        "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",
-        "https://api.insee.fr/metadonnees/V1/codes/cj/n3/5599",
-        "https://api.insee.fr/entreprises/sirene/V3/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
-        "https://api.insee.fr/donnees-locales/V0.1/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
-    ]
+        queries = [
+            "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",
+            "https://api.insee.fr/metadonnees/V1/codes/cj/n3/5599",
+            "https://api.insee.fr/entreprises/sirene/V3/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
+            "https://api.insee.fr/donnees-locales/V0.1/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
+        ]
 
-    apis = ["BDM", "Metadata", "Sirene", "Local Data"]
+        apis = ["BDM", "Metadata", "Sirene", "Local Data"]
 
-    file_format = [
-        "application/xml",
-        "application/xml",
-        "application/json;charset=utf-8",
-        "application/xml",
-    ]
+        file_format = [
+            "application/xml",
+            "application/xml",
+            "application/json;charset=utf-8",
+            "application/xml",
+        ]
 
-    list_requests_status = []
+        list_requests_status = []
 
-    for q in range(len(queries)):
-        headers = {
-            "Accept": file_format[q],
-            "Authorization": "Bearer " + token,
-            'User-Agent': f"python_pynsee_{username}"
-        }
-        
-        api_url = queries[q]
+        for q in range(len(queries)):
+            headers = {
+                "Accept": file_format[q],
+                "Authorization": "Bearer " + token,
+                'User-Agent': f"python_pynsee_{username}"
+            }
 
-        results = _request_with_429_error_catch(api_url,
-                                                session=session,
-                                                proxies=proxies,
-                                                headers=headers,
-                                                verify=False)
+            api_url = queries[q]
 
-        #results = requests.get(
-        #    api_url, proxies=proxies, headers=headers, verify=False
-        #)
+            results = _request_with_429_error_catch(
+                api_url, proxies=proxies, headers=headers, verify=False,
+                session=session)
 
-        if results.status_code != 200:
-            logger.critical(
-                f"Please subscribe to {apis[q]} API on api.insee.fr !"
-            )
-        list_requests_status += [results.status_code]
 
-    # Close the session 
-    session.close()
+            if results.status_code != 200:
+                logger.critical(
+                    f"Please subscribe to {apis[q]} API on api.insee.fr !"
+                )
+
+            list_requests_status += [results.status_code]
 
     if all([sts == 200 for sts in list_requests_status]):
         return True

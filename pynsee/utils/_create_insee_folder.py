@@ -14,23 +14,17 @@ def _create_insee_folder():
     try:
         # find local folder
         local_appdata_folder = platformdirs.user_cache_dir()
-        insee_folder = local_appdata_folder + "/pynsee"
+        insee_folder = os.path.join(local_appdata_folder, "pynsee")
 
         # create insee folder
         if not os.path.exists(insee_folder):
             os.mkdir(insee_folder)
 
-        insee_folder = insee_folder + "/pynsee"
+        insee_folder = os.path.join(insee_folder, "pynsee")
 
         # create insee folder
         if not os.path.exists(insee_folder):
             os.mkdir(insee_folder)
-
-        # create internal folder
-        # if folder is not None:
-        #     insee_folder = insee_folder + '/' + folder
-        #     if not os.path.exists(insee_folder):
-        #         os.mkdir(insee_folder)
 
         # test if saving a file is possible
         test_file = os.path.join(insee_folder, _hash("test_file"))

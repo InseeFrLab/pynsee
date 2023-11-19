@@ -22,7 +22,7 @@ def _find_latest_local_dataset(dataset_version, variables, nivgeo, codegeo, upda
 
     filename = _hash("".join([dataset_version] + ['_find_latest_local_dataset']))
     insee_folder = _create_insee_folder()
-    file_localdata = insee_folder + "/" + filename
+    file_localdata = os.path.join(insee_folder, filename)
 
     if (not os.path.exists(file_localdata)) or update:
 
