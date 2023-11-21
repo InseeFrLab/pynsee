@@ -25,7 +25,13 @@ def _download_pb(url: str, fname: str, total: int = None):
         "https": os.environ.get("https_proxy", pynsee.get_config("https_proxy"))
     }
 
-    resp = requests.get(url, proxies=proxies, stream=True, verify=False)
+    username = os.environ.get("USERNAME", "username")
+            
+    headers = {
+        'User-Agent': f"python_pynsee_{username}"
+    }
+
+    resp = requests.get(url, proxies=proxies, headers=headers, stream=True, verify=False)
 
     if total is None:
         total = int(resp.headers.get("content-length", 0))

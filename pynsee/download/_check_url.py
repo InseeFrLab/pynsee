@@ -22,6 +22,12 @@ def _check_url(url):
         "https": os.environ.get(
             "https_proxy", pynsee.get_config("https_proxy"))
     }
+    
+    username = os.environ.get("USERNAME", "username")
+            
+    headers = {
+        'User-Agent': f"python_pynsee_{username}"
+    }
 
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=1)
@@ -29,7 +35,7 @@ def _check_url(url):
     session.mount("http://", adapter)
     session.mount("https://", adapter)
 
-    check = session.get(url, proxies=proxies, stream=True, verify=False)
+    check = session.get(url, proxies=proxies, stream=True, headers=headers, verify=False)
 
     if check.status_code == 200:
         return url
@@ -75,7 +81,7 @@ def _check_url(url):
                 url2 = "/".join(
                     list_string_split[: (len(list_string_split) - 1)] + [filename2]
                 )
-                results = session.get(url2, proxies=proxies, stream=True, verify=False)
+                results = session.get(url2, proxies=proxies, stream=True, headers=headers, verify=False)
 
                 if results.status_code == 200:
                     break
@@ -95,5 +101,7 @@ def _check_url(url):
                     )
         else:
             url2 = url
+
+        session.close()
 
         return url2
