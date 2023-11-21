@@ -149,6 +149,7 @@ def _get_geodata(
                     logger.debug("Query:\n%s" % link)
                     logger.debug(data)
                     logger.debug(data.text)
+
                     return pd.DataFrame(
                         {"status": data.status_code, "comment": data.text},
                         index=[0],
@@ -170,7 +171,7 @@ def _get_geodata(
             args = [link0, list_bbox, crsPolygon]
             length = len(list_bbox)
             irange = range(length)
-                
+            
             func_settings = _set_global_var
             func = _get_data_with_bbox2
             
@@ -189,21 +190,20 @@ def _get_geodata(
                 
                 func_settings(args)
                 list_output = []
+
                 for p in tqdm.trange(length):
                     list_output.append(func(p))
                     
                 msg = """
                 Multiprocessing failed in the geodata collection,
                 a traditional loop was used instead
-                """   
-                
+                """                   
                 logger.warning(msg)
                    
             data_all = pd.concat(list_output).reset_index(drop=True)
 
         elif len(json) != 0:
             data_all = _geojson_parser(json).reset_index(drop=True)
-
         else:
             msg = f"Query is correct but no data found : {link}"
             logger.error(msg)
@@ -233,7 +233,6 @@ def _get_geodata(
                 data_all_clean["bbox"] = geom
 
             data_all_clean = data_all_clean.reset_index(drop=True)
-
         else:
             data_all_clean = data_all.drop_duplicates()
 
