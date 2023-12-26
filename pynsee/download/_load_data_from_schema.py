@@ -88,9 +88,9 @@ def _load_data_from_schema(
             df_insee = pd.concat(list_chunk)
         else:
             try:
-                df_insee = pd.read_csv(
-                    engine='python',
+                df_insee = pd.read_csv(                    
                     file_to_import,
+                    engine='python',
                     delimiter=telechargementFichier["import_args"]["delim"],
                     dtype="str",
                     usecols=variables,
