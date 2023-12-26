@@ -9,7 +9,7 @@ from pynsee.utils._clean_str import _clean_str
 
 
 @lru_cache(maxsize=None)
-def _get_full_list_wfs(topic, version="2.0.0"):
+def _get_full_list_wfs(topic='', version="2.0.0"):
 
     raw_data_file = _get_capabilities(key=topic, version=version, service="wfs")
 
