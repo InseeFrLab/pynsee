@@ -7,11 +7,7 @@ from pynsee.geodata._distance import _distance
 
 async def _get_data_from_bbox_list(list_bbox, id):
 
-    urls = []
-    
-    for bbox in list_bbox:    
-
-        urls += [make_geodata_query(bbox, id = id)]
+    urls = [make_geodata_query(bbox, id = id) for bbox in list_bbox]
         
     all_results = []
     
