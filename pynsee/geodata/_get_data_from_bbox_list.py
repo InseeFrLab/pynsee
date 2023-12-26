@@ -15,7 +15,8 @@ async def _get_data_from_bbox_list(id, list_bbox):
     while (len(urls) > 0):
         #print('\n')
         #print(list_bbox)
-        r = await _get_all_queries(urls)
+        #r = await _get_all_queries(urls)
+        r = asyncio.run(_get_all_queries(urls))
     
         list_retries = []
         # select queries whose results are full
@@ -55,7 +56,8 @@ async def get_all_queries(urls):
 
     # list of tasks (with the gather)
     tasks = [asyncio.create_task(get_response(url)) for url in urls]
-    responses = await asyncio.gather(*tasks)
+    responses = asyncio.run(asyncio.gather(*tasks))
+    #responses = await asyncio.gather(*tasks)
     #responses = tqdm_asyncio.gather(*tasks)
 
     # make the dict
