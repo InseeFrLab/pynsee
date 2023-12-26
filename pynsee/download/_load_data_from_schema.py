@@ -89,6 +89,7 @@ def _load_data_from_schema(
         else:
             try:
                 df_insee = pd.read_csv(
+                    engine='python',
                     file_to_import,
                     delimiter=telechargementFichier["import_args"]["delim"],
                     dtype="str",
