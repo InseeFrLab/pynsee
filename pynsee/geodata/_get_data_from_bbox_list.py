@@ -16,8 +16,8 @@ async def _get_data_from_bbox_list(list_bbox, id):
     all_results = []
     
     while (len(urls) > 0):
-        print('\n')
-        print(list_bbox)
+        #print('\n')
+        #print(list_bbox)
         r = await _get_all_queries(urls)
     
         list_retries = []
