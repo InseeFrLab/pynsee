@@ -6,6 +6,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 import urllib3
+import time
 
 from pynsee.utils._get_token_from_insee import _get_token_from_insee
 from pynsee.utils._get_credentials import _get_credentials
@@ -124,7 +125,7 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
         
         if code == 429:
             time.sleep(10)
-
+    
             results = requests.get(api_url,
                                   proxies=proxies,
                                   headers=headers,
