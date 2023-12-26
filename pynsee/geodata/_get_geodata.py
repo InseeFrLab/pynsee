@@ -20,6 +20,7 @@ from pynsee.geodata._geojson_parser import _geojson_parser
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
+from pynsee.utils.requests_params import _get_requests_headers, _get_requests_proxies
 
 import logging
 
@@ -70,7 +71,7 @@ def _get_geodata(
 
     link0 = (
         geoportail
-        + "/wfs?"
+        #+ "/wfs?"
         + Service
         + version
         + request
@@ -116,23 +117,8 @@ def _get_geodata(
             session.mount("http://", adapter)
             session.mount("https://", adapter)
 
-            try:
-                home = str(Path.home())
-                user_agent = os.path.basename(home)
-            except Exception:
-                user_agent = ""
-
-            headers = {
-                "User-Agent": "python_package_pynsee_"
-                + user_agent.replace("/", "")
-            }
-
-            proxies = {}
-            for key in ["http", "https"]:
-                try:
-                    proxies[key] = os.environ[f"{key}_proxy"]
-                except KeyError:
-                    proxies[key] = ""
+            headers = _get_requests_headers()
+            proxies = _get_requests_proxies()
 
             with warnings.catch_warnings():
                 warnings.simplefilter(

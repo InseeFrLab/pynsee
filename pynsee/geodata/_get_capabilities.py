@@ -5,10 +5,11 @@ import requests
 import tempfile
 import urllib3
 from functools import lru_cache
+from pynsee.utils.requests_params import _get_requests_headers, _get_requests_session, _get_requests_proxies
 
 
 @lru_cache(maxsize=None)
-def _get_capabilities(key, version="1.0.0", service="wmts", tweak=""):
+def _get_capabilities(key='', version="1.0.0", service="wmts", tweak=""):
 
     service_upper = service.upper()
 
@@ -17,18 +18,19 @@ def _get_capabilities(key, version="1.0.0", service="wmts", tweak=""):
     #)
     link = f"https://data.geopf.fr/{service}?SERVICE={service_upper}&VERSION={version}&REQUEST=GetCapabilities"
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    session = _get_requests_session()
+    headers = _get_requests_headers()
+    proxies = _get_requests_proxies()
     
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    results = requests.get(link, proxies=proxies, verify=False)
+    results = session.get(link, proxies=proxies, headers=headers, verify=False)
 
     raw_data_file = tempfile.mkdtemp() + "/" + "raw_data_file"
 
     with open(raw_data_file, "wb") as f:
         f.write(results.content)
         f.close()
+
+    session.close()
 
     return raw_data_file

@@ -49,18 +49,19 @@ def get_geodata_list(update=False):
                 "Format",
             ]
 
-            list_col = [
+            list_first_col = [
                 col for col in data_full_list.columns if col in list_var
             ]
+            list_other_col = [col for col in data_full_list.columns if col not in list_first_col]
 
-            data_list = data_full_list[list_col]
+            data_list = data_full_list[list_first_col + list_other_col]
             data_list = data_list.drop_duplicates().reset_index(drop=True)
 
             if "Name" in data_list.columns:
                 data_list.rename(columns={"Name": "Identifier"}, inplace=True)
 
             data_list["DataFormat"] = format
-            data_list["Topic"] = topic
+            #data_list["Topic"] = topic
             data_list["ApiVersion"] = version
 
         data_all = data_list.reset_index(drop=True)
