@@ -9,7 +9,9 @@ import urllib3
 
 from pynsee.utils._get_token_from_insee import _get_token_from_insee
 from pynsee.utils._get_credentials import _get_credentials
-from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
+#from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
+from pynsee.utils.requests_params import _get_requests_session, _get_requests_headers, _get_requests_proxies
+
 
 import logging
 
@@ -81,13 +83,7 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
     else:
         logger.info("Token has been created")
 
-    try:
-        proxies = {
-            "http": os.environ["http_proxy"],
-            "https": os.environ["https_proxy"],
-        }
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = _get_requests_proxies()
 
     queries = [
         "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",
@@ -106,17 +102,33 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
 
     list_requests_status = []
 
+    user_agent = _get_requests_headers()
+
+    session = _get_requests_session()
+
     for q in range(len(queries)):
         headers = {
             "Accept": file_format[q],
             "Authorization": "Bearer " + token,
+            'User-Agent': user_agent['User-Agent']
         }
         api_url = queries[q]
 
-        _wait_api_query_limit(api_url)
-        results = requests.get(
+        #_wait_api_query_limit(api_url)
+        
+        results = session.get(
             api_url, proxies=proxies, headers=headers, verify=False
         )
+        
+        code = results.status_code
+        
+        if code == 429:
+            time.sleep(10)
+
+            results = requests.get(api_url,
+                                  proxies=proxies,
+                                  headers=headers,
+                                  verify=False)
 
         if results.status_code != 200:
             logger.critical(
@@ -124,6 +136,8 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
             )
         list_requests_status += [results.status_code]
 
+    session.close()
+    
     if all([sts == 200 for sts in list_requests_status]):
         logger.info(
             "Subscription to all INSEE's APIs has been successfull\n"
