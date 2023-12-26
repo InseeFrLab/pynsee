@@ -1,11 +1,12 @@
 import asyncio
 import aiohttp
 from itertools import chain
+from tqdm.asyncio import tqdm_asyncio
 
 from pynsee.utils.requests_params import _get_requests_headers
 from pynsee.geodata._distance import _distance
 
-async def _get_data_from_bbox_list(list_bbox, id):
+async def _get_data_from_bbox_list(id, list_bbox):
 
     urls = [make_geodata_query(bbox, id = id) for bbox in list_bbox]
         
@@ -55,6 +56,7 @@ async def get_all_queries(urls):
     # list of tasks (with the gather)
     tasks = [asyncio.create_task(get_response(url)) for url in urls]
     responses = await asyncio.gather(*tasks)
+    #responses = tqdm_asyncio.gather(*tasks)
 
     # make the dict
     for i, response in enumerate(responses):
@@ -153,6 +155,6 @@ if __name__ == '__main__':
     bbox_list = bbox_list[:10]
     id = "ADMINEXPRESS-COG-CARTO.LATEST:commune"
 
-    results = await _get_data_from_bbox_list(bbox_list, id = id)
+    #results = await _get_data_from_bbox_list(bbox_list, id = id)
 
 
