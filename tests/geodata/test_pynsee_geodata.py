@@ -24,9 +24,9 @@ from pynsee.geodata._get_geodata_with_backup import _get_geodata_with_backup
 
 class TestFunction(TestCase):
 
-    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
+    version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
 
-    if version_3_7 is False:
+    if not version_3_8:
 
         def test_get_geodata_with_backup(self):
             df = _get_geodata_with_backup("ADMINEXPRESS-COG.LATEST:departement")
