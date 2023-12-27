@@ -4,18 +4,20 @@ import time
 import pandas as pd
 import requests
 import os
-import multiprocessing
 import tqdm
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 from pathlib import Path
 import urllib3
 import warnings
+import asyncio
+import nest_asyncio
 
 from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
-from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
-from pynsee.geodata._get_data_with_bbox import _set_global_var
+#from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
+#from pynsee.geodata._get_data_with_bbox import _set_global_var
+from pynsee.geodata._get_data_from_bbox_list import _get_data_from_bbox_list
 from pynsee.geodata._geojson_parser import _geojson_parser
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
@@ -27,13 +29,13 @@ logger = logging.getLogger(__name__)
 
 
 def _get_geodata(
-    id, polygon=None, update=False, crs="EPSG:3857", crsPolygon="EPSG:4326"
+    id, update=False, crs="EPSG:3857"
 ):
     """Get geographical data with identifier and from IGN API
 
     Args:
         id (str): _description_
-        polygon (Polygon, optional): Polygon used to constraint interested area, its crs must be EPSG:4326. Defaults to None.
+        to None.
         update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
         crs (str, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
 
@@ -49,11 +51,6 @@ def _get_geodata(
     Returns:
         _type_: _description_
     """
-
-    if crsPolygon not in ["EPSG:3857", "EPSG:4326"]:
-        raise ValueError(
-            "crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'"
-        )
 
     topic = "administratif"
     service = "WFS"
@@ -78,32 +75,7 @@ def _get_geodata(
         + "OUTPUTFORMAT=application/json&COUNT=1000"
     )
 
-    # add bounding box to link if polygon provided
-    if polygon is not None:
-        bounds = polygon.bounds
-        bounds = [str(b) for b in bounds]
-
-        if crsPolygon == "EPSG:3857":
-            bounds = [
-                bounds[0],
-                bounds[1],
-                bounds[2],
-                bounds[3],
-                "urn:ogc:def:crs:" + crsPolygon,
-            ]
-        else:
-            bounds = [
-                bounds[1],
-                bounds[0],
-                bounds[3],
-                bounds[2],
-                "urn:ogc:def:crs:" + crsPolygon,
-            ]
-
-        BBOX = "&BBOX={}".format(",".join(bounds))
-        link = link0 + BBOX
-    else:
-        link = link0
+    link = link0
 
     insee_folder = _create_insee_folder()
     file_name = insee_folder + "/" + _hash(link)
@@ -161,28 +133,28 @@ def _get_geodata(
         # if maximum reached
         # split the query with the bouding box list
         if len(json) == 1000:
-            list_bbox = _get_bbox_list(
-                polygon=polygon, update=update, crsPolygon=crsPolygon
-            )
+            list_bbox = _get_bbox_list(update=update)
+            loop = asyncio.get_event_loop()
+            list_data = asyncio.ensure_future(_get_data_from_bbox_list(id, list_bbox))
+            #list_data = asyncio.run(_get_data_from_bbox_list(id, list_bbox))
+            
+            #try:
+            #    list_data = asyncio.run(_get_data_from_bbox_list(id, list_bbox))
+            #except Exception as e:
+                # solution from
+                # https://github.com/langchain-ai/langchain/issues/8494
+                #print(e)
+                #print('\n')
+                #loop = asyncio.get_event_loop()
+                #list_data = loop.run_until_complete(_get_data_from_bbox_list(id, list_bbox))
 
-            Nprocesses = min(6, multiprocessing.cpu_count())
-
-            args = [link0, list_bbox, crsPolygon]
-            irange = range(len(list_bbox))
-
-            with multiprocessing.Pool(
-                initializer=_set_global_var,
-                initargs=(args,),
-                processes=Nprocesses,
-            ) as pool:
-                list_data = list(
-                    tqdm.tqdm(
-                        pool.imap(_get_data_with_bbox2, irange),
-                        total=len(list_bbox),
-                    )
-                )
-
-            data_all = pd.concat(list_data).reset_index(drop=True)
+                #list_data = nest_asyncio.apply(_get_data_from_bbox_list(id, list_bbox))
+                
+                #list_data = await _get_data_from_bbox_list(id, list_bbox)
+            
+            #list_data = [_geojson_parser(json) for json in list_data]
+            
+            #data_all = pd.concat(list_data).reset_index(drop=True)
 
         elif len(json) != 0:
             data_all = _geojson_parser(json).reset_index(drop=True)
@@ -190,55 +162,36 @@ def _get_geodata(
         else:
             msg = f"Query is correct but no data found : {link}"
             logger.error(msg)
-            if polygon is not None:
-                logger.warning(
-                    "Check that crsPolygon argument corresponds "
-                    "to polygon data !"
-                )
-
             return pd.DataFrame({"status": 200, "comment": msg}, index=[0])
 
         # drop duplicates
-        data_col = data_all.columns
+        try:
+            data_col = data_all.columns
+            if "geometry" in data_col:
+                selected_col = [
+                    col for col in data_col if col not in ["geometry", "bbox"]
+                ]
+                data_all_clean = data_all[selected_col].drop_duplicates()
+    
+                row_selected = [int(i) for i in data_all_clean.index]
+                geom = data_all.loc[row_selected, "geometry"]
+                data_all_clean["geometry"] = geom
+    
+                if "bbox" in data_col:
+                    geom = data_all.loc[row_selected, "bbox"]
+                    data_all_clean["bbox"] = geom
+    
+                data_all_clean = data_all_clean.reset_index(drop=True)
 
-        if "geometry" in data_col:
-            selected_col = [
-                col for col in data_col if col not in ["geometry", "bbox"]
-            ]
-            data_all_clean = data_all[selected_col].drop_duplicates()
-
-            row_selected = [int(i) for i in data_all_clean.index]
-            geom = data_all.loc[row_selected, "geometry"]
-            data_all_clean["geometry"] = geom
-
-            if "bbox" in data_col:
-                geom = data_all.loc[row_selected, "bbox"]
-                data_all_clean["bbox"] = geom
-
+            else:
+                data_all_clean = data_all.drop_duplicates()
+                
             data_all_clean = data_all_clean.reset_index(drop=True)
-
-        else:
-            data_all_clean = data_all.drop_duplicates()
-
-        # drop data outside polygon
-        if polygon is not None:
-            logger.warning(
-                "Further checks from the user are needed as results obtained "
-                "using polygon argument can be imprecise"
-            )
-
-            row_selected = []
-            for i in range(len(data_all_clean)):
-                geom = data_all_clean.loc[i, "geometry"]
-                if geom.intersects(polygon):
-                    row_selected.append(i)
-            if len(row_selected) > 0:
-                data_all_clean = data_all_clean.loc[row_selected, :]
-
-        data_all_clean = data_all_clean.reset_index(drop=True)
-
-        data_all_clean.to_pickle(file_name)
-        logger.info("Data saved: {}".format(file_name))
+            data_all_clean.to_pickle(file_name)
+            logger.info("Data saved: {}".format(file_name))
+        except:
+            data_all_clean = list_data
+        
     else:
         try:
             data_all_clean = pd.read_pickle(file_name)
@@ -246,14 +199,14 @@ def _get_geodata(
             os.remove(file_name)
             data_all_clean = _get_geodata(
                 id=id,
-                polygon=polygon,
-                crsPolygon=crsPolygon,
                 crs=crs,
                 update=True,
             )
         else:
             _warning_cached_data(file_name)
-
-    data_all_clean["crsCoord"] = crs
+    try:
+        data_all_clean["crsCoord"] = crs
+    except:
+        pass
 
     return data_all_clean
