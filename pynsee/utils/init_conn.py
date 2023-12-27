@@ -10,7 +10,6 @@ import time
 
 from pynsee.utils._get_token_from_insee import _get_token_from_insee
 from pynsee.utils._get_credentials import _get_credentials
-#from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 from pynsee.utils.requests_params import _get_requests_session, _get_requests_headers, _get_requests_proxies
 
 
@@ -114,8 +113,6 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
             'User-Agent': user_agent['User-Agent']
         }
         api_url = queries[q]
-
-        #_wait_api_query_limit(api_url)
         
         results = session.get(
             api_url, proxies=proxies, headers=headers, verify=False
