@@ -138,36 +138,36 @@ def search_sirene(
     if type(pattern) == str:
         pattern = [pattern]
 
-    #list_siren_hist_variable = [
-    #    "nomUniteLegale",
-    #    "nomUsageUniteLegale",
-    #    "denominationUniteLegale",
-    #    "denominationUsuelle1UniteLegale",
-    #    "denominationUsuelle2UniteLegale",
-    #    "denominationUsuelle3UniteLegale",
-    #    "categorieJuridiqueUniteLegale",
-    #    "etatAdministratifUniteLegale" "nicSiegeUniteLegale",
-    #    "activitePrincipaleUniteLegale",
-    #    "caractereEmployeurUniteLegale",
-    #    "economieSocialeSolidaireUniteLegale",
-    #    "nomenclatureActivitePrincipaleUniteLegale",
-    #]
+    list_siren_hist_variable = [
+        "nomUniteLegale",
+        "nomUsageUniteLegale",
+        "denominationUniteLegale",
+        "denominationUsuelle1UniteLegale",
+        "denominationUsuelle2UniteLegale",
+        "denominationUsuelle3UniteLegale",
+        "categorieJuridiqueUniteLegale",
+        "etatAdministratifUniteLegale" "nicSiegeUniteLegale",
+        "activitePrincipaleUniteLegale",
+        "caractereEmployeurUniteLegale",
+        "economieSocialeSolidaireUniteLegale",
+        "nomenclatureActivitePrincipaleUniteLegale",
+    ]
 
-    #list_siret_hist_variable = [
-    #    "denominationUsuelleEtablissement",
-    #    "enseigne1Etablissement",
-    #    "enseigne2Etablissement",
-    #    "enseigne3Etablissement",
-    #    "activitePrincipaleEtablissement",
-    #    "etatAdministratifEtablissement",
-    #    "nomenclatureActiviteEtablissement",
-    #    "caractereEmployeurEtablissement",
-    #]
+    list_siret_hist_variable = [
+        "denominationUsuelleEtablissement",
+        "enseigne1Etablissement",
+        "enseigne2Etablissement",
+        "enseigne3Etablissement",
+        "activitePrincipaleEtablissement",
+        "etatAdministratifEtablissement",
+        "nomenclatureActiviteEtablissement",
+        "caractereEmployeurEtablissement",
+    ]
 
-    #if kind == "siren":
-    #    list_hist_variable = list_siren_hist_variable
-    #else:
-    #    list_hist_variable = list_siret_hist_variable
+    if kind == "siren":
+        list_hist_variable = list_siren_hist_variable
+    else:
+        list_hist_variable = list_siret_hist_variable
 
     list_var_pattern = []
 
@@ -193,12 +193,12 @@ def search_sirene(
 
         list_var_patt = []
         for ptt in list_patt:
-            #if var in list_hist_variable:
-            list_var_patt.append(
-                "periode({}{}:{})".format(var, phntc_string, ptt)
-            )
-            #else:
-            #    list_var_patt.append("{}{}:{}".format(var, phntc_string, ptt))
+            if var in list_hist_variable:
+                list_var_patt.append(
+                    "periode({}{}:{})".format(var, phntc_string, ptt)
+                )
+            else:
+                list_var_patt.append("{}{}:{}".format(var, phntc_string, ptt))
 
         list_var_pattern.append(list_var_patt)
 
