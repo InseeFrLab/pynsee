@@ -8,7 +8,7 @@ import time
 
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
-from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
+from pynsee.utils.requests_params import _get_requests_session, _get_requests_headers, _get_requests_proxies
 
 import logging
 
@@ -45,13 +45,15 @@ def _request_insee(
     elif sdmx_url is not None:
         logger.debug(sdmx_url)
 
-    proxies = {}
-    for key in ["http", "https"]:
-        try:
-            proxies[key] = os.environ[f"{key}_proxy"]
-        except KeyError:
-            proxies[key] = ""
+    proxies = _get_requests_proxies()
 
+    try:
+        print_url = os.environ["pynsee_print_url"]
+        if print_url == "True":
+            print(api_url)
+    except:
+        pass
+        
     # force sdmx use with a system variable
     try:
         pynsee_use_sdmx = os.environ["pynsee_use_sdmx"]
@@ -77,17 +79,21 @@ def _request_insee(
             token = None
 
         if token is not None:
+            user_agent = _get_requests_headers()
+            
             headers = {
                 "Accept": file_format,
                 "Authorization": "Bearer " + token,
+                'User-Agent': user_agent['User-Agent']
             }
 
-            # avoid reaching the limit of 30 queries per minute from insee api
-            _wait_api_query_limit(api_url)
+            session = _get_requests_session()
 
-            results = requests.get(
+            results = session.get(
                 api_url, proxies=proxies, headers=headers, verify=False
             )
+
+            session.close()
 
             success = True
 

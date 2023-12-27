@@ -20,14 +20,19 @@ from pynsee.localdata.get_local_metadata import get_local_metadata
 from pynsee.localdata.get_population import get_population
 from pynsee.localdata.get_old_city import get_old_city
 from pynsee.localdata.get_new_city import get_new_city
+from pynsee.localdata.get_area_projection import get_area_projection
 from pynsee.localdata.get_ascending_area import get_ascending_area
 from pynsee.localdata.get_descending_area import get_descending_area
 
 
 class TestFunction(TestCase):
+<<<<<<< HEAD
     version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
+=======
+    version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
+>>>>>>> master
 
-    if version_3_7:
+    if version_3_8:
 
         def test_get_population(self):
             df = get_population()
@@ -54,13 +59,102 @@ class TestFunction(TestCase):
             test = test & isinstance(df, pd.DataFrame)
             df = get_new_city(code="24431")
             test = test & isinstance(df, pd.DataFrame)
-            self.assertTrue(isinstance(df, pd.DataFrame))
+            self.assertTrue(test)
+
+        def test_get_area_projection(self):
+            test = True
+            df = get_area_projection(
+                area="commune", code="01039", date="2020-01-01"
+            )
+            test = test & isinstance(df, pd.DataFrame)
+            test = test & (df.loc[0, "code"] == "01138")
+
+            df = get_area_projection(
+                area="commune",
+                code="01039",
+                date="2020-01-01",
+                dateProjection="1900-01-01",
+            )
+            test = test & (df is None)
+
+            df = get_area_projection(
+                area="commune",
+                code="01039",
+                date="2020-01-01",
+                dateProjection="2023-04-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+            test = test & (df.loc[0, "code"] == "01138")
+
+            df = get_area_projection(
+                area="commune",
+                code="01039",
+                date="2020-01-01",
+                dateProjection="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+            test = test & (df.loc[0, "code"] == "01039")
+
+            df = get_area_projection(
+                area="departement",
+                code="01",
+                date="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_projection(
+                area="arrondissement",
+                code="011",
+                date="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_projection(
+                area="arrondissementmunicipal",
+                code="75113",
+                date="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_projection(
+                area="arrondissementMunicipal",
+                code="75113",
+                date="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_projection(
+                area="region",
+                code="32",
+                date="2020-01-01",
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_area_projection(
+                area="intercommunalite",
+                code="200046977",
+                date="2020-01-01",
+            )
+            self.assertTrue(test)
+
+        def test_get_area_projection_dummy(self):
+            self.assertRaises(
+                ValueError,
+                get_area_projection,
+                "dummy",
+                "32",
+                "2020-01-01",
+            )
 
         def test_get_old_city(self):
             test = True
             df = get_old_city(code="24259")
             test = test & isinstance(df, pd.DataFrame)
+<<<<<<< HEAD
             self.assertTrue(isinstance(df, pd.DataFrame))
+=======
+            self.assertTrue(test)
+>>>>>>> master
 
         def test_get_geo_list_1(self):
             list_available_geo = [
@@ -215,6 +309,44 @@ class TestFunction(TestCase):
                 nivgeo="COM",
                 geocodes=["75056"],
             )
+<<<<<<< HEAD
+=======
+            test = test & isinstance(data, pd.DataFrame)
+
+            data = get_local_data(dataset_version='GEOlatestFILOlatest',
+                       variables =  'INDICS_FILO_DISP',
+                       nivgeo = 'COM',
+                       update=True,
+                       geocodes = '75056')
+            test = test & isinstance(data, pd.DataFrame)
+
+            data = get_local_data(dataset_version='POPLEGlatest',
+                       variables =  'IND_POPLEGALES',
+                       nivgeo = 'COM',
+                       update=True,
+                       geocodes = '75056')
+            test = test & isinstance(data, pd.DataFrame)
+
+            data = get_local_data(dataset_version='GEOlatestRFDlatest',
+                       variables =  'INDICS_ETATCIVIL',
+                       nivgeo = 'COM',
+                       update=True,
+                       geocodes = '75056')
+            test = test & isinstance(data, pd.DataFrame)
+
+            data = get_local_data(dataset_version='BDCOMlatest',
+                       variables =  'INDICS_BDCOM',
+                       nivgeo = 'COM',
+                       update=True,
+                       geocodes = '75056')
+            test = test & isinstance(data, pd.DataFrame)
+
+            data = get_local_data(dataset_version='GEOlatestREElatest',
+                       variables =  'NA10_HORS_AZ-ENTR_INDIVIDUELLE',
+                       nivgeo = 'COM',
+                       update=True,
+                       geocodes = '75056')
+>>>>>>> master
             test = test & isinstance(data, pd.DataFrame)
 
             for geo in ["DEP", "REG", "FE", "METRODOM"]:
@@ -242,9 +374,36 @@ class TestFunction(TestCase):
             df = get_descending_area("zoneDEmploi2020", code="1109")
             test = test & isinstance(df, pd.DataFrame)
 
+<<<<<<< HEAD
             df = get_ascending_area("commune", code="59350", date="2018-01-01")
             test = test & isinstance(df, pd.DataFrame)
 
+=======
+            df = get_descending_area(
+                "departement", code="59", type="arrondissement", update=True
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_descending_area(
+                "departement", code="59", type="arrondissement", update=False
+            )
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_ascending_area("commune", code="59350", date="2018-01-01")
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_ascending_area("departement", code="59")
+            test = test & isinstance(df, pd.DataFrame)
+
+            df = get_ascending_area(
+                "departement", code="59", type="region", update=True
+            )
+            test = test & isinstance(df, pd.DataFrame)
+              
+            df = get_ascending_area("commune", code="59350", date="2018-01-01")
+            test = test & isinstance(df, pd.DataFrame)
+
+>>>>>>> master
             df = get_ascending_area("departement", code="59")
             test = test & isinstance(df, pd.DataFrame)
 
@@ -288,10 +447,18 @@ class TestFunction(TestCase):
 
             self.assertRaises(ValueError, get_area_list_test)
 
+<<<<<<< HEAD
         def test_get_area_list_3(self):
             def get_area_list_test():
                 get_area_list(area="regions", date="1900-01-01", update=True)
 
+=======
+
+        def test_get_area_list_3(self):
+            def get_area_list_test():
+                get_area_list(area="regions", date="1900-01-01", update=True)
+
+>>>>>>> master
             self.assertRaises(RequestException, get_area_list_test)
 
         def test_get_included_area(self):

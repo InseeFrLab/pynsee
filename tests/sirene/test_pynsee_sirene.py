@@ -2,18 +2,16 @@
 
 from unittest import TestCase
 from pandas import pandas as pd
-import numpy as np
 import sys
 
-from shapely.geometry import Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint
+from shapely.geometry import (
+    Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint)
 
-from pynsee.sirene.get_sirene_data import get_sirene_data
-from pynsee.sirene.search_sirene import search_sirene
-from pynsee.sirene._request_sirene import _request_sirene
-from pynsee.sirene.get_dimension_list import get_dimension_list
-from pynsee.sirene.SireneDataFrame import SireneDataFrame
 from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
-from pynsee.sirene.get_sirene_relatives import get_sirene_relatives
+from pynsee.sirene import (
+    SireneDataFrame, get_dimension_list, get_sirene_data,
+    get_sirene_relatives, search_sirene)
+from pynsee.sirene._request_sirene import _request_sirene
 
 
 class TestFunction(TestCase):
@@ -21,28 +19,28 @@ class TestFunction(TestCase):
     version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
 
     if version_3_7:
-        
+
         def test_get_sirene_relatives(self):
             test = True
             df = get_sirene_relatives('00555008200027')
             test = test & isinstance(df, SireneDataFrame)
-            
+
             df = get_sirene_relatives(['39860733300059', '00555008200027'])
             test = test & isinstance(df, SireneDataFrame)
-            
+
             df = get_sirene_relatives(['39860733300059', '1'])
             test = test & isinstance(df, SireneDataFrame)
-            
+
             self.assertTrue(test)
-        
+
         def test_error_get_relatives1(self):
             with self.assertRaises(ValueError):
                 get_sirene_relatives(1)
-        
+
         def test_error_get_relatives2(self):
             with self.assertRaises(ValueError):
-                get_sirene_relatives('0')   
-            
+                get_sirene_relatives('0')
+
         def test_error_get_relatives(self):
             with self.assertRaises(ValueError):
                 get_sirene_relatives('0')
@@ -62,8 +60,8 @@ class TestFunction(TestCase):
             test = test & isinstance(df, pd.DataFrame)
 
             self.assertTrue(test)
-                
-     
+
+
 
         def test_error_get_dimension_list(self):
             with self.assertRaises(ValueError):
@@ -71,11 +69,11 @@ class TestFunction(TestCase):
 
         def test_get_location(self):
             df = search_sirene(variable=["activitePrincipaleEtablissement"],
-                               pattern=['29.10Z'], kind='siret')            
+                               pattern=['29.10Z'], kind='siret')
 
             test = True
             test = test & isinstance(df, SireneDataFrame)
-            
+
             df = search_sirene(variable="activitePrincipaleEtablissement",
                                pattern='29.10Z', kind='siret')
             df = df.loc[df['effectifsMinEtablissement'] > 100]
@@ -84,10 +82,10 @@ class TestFunction(TestCase):
             sirdf = df.get_location()
             test = test & isinstance(sirdf, GeoFrDataFrame)
 
-            geo = sirdf.get_geom()            
-            test = test & (type(geo) in [Point, Polygon, MultiPolygon, 
+            geo = sirdf.get_geom()
+            test = test & (type(geo) in [Point, Polygon, MultiPolygon,
                                 LineString, MultiLineString, MultiPoint])
-            
+
             self.assertTrue(test)
 
         def test_get_sirene_data(self):
@@ -96,7 +94,7 @@ class TestFunction(TestCase):
             test = isinstance(df1, pd.DataFrame) & isinstance(
                 df2, pd.DataFrame)
             self.assertTrue(test)
-            
+
         def test_error_get_sirene_data(self):
             with self.assertRaises(ValueError):
                 get_sirene_data('1')
@@ -147,7 +145,7 @@ class TestFunction(TestCase):
             df = search_sirene(variable='libelleCommuneEtablissement',
                                pattern="montrouge", kind="siret")
             test = test & isinstance(df, pd.DataFrame)
-            
+
             df = search_sirene(variable=["denominationUniteLegale", 'categorieEntreprise'],
                                pattern=["Pernod Ricard", 'GE'],
                                phonetic_search=[True, False],
