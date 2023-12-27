@@ -177,26 +177,27 @@ def _get_geodata(
 
             try:
                 with multiprocessing.Pool(
-                    initializer=func_settings, initargs=(args,), processes=Nprocesses
-                ) as pool:                    
+                    initializer=_set_global_var,
+                    initargs=(args,),
+                    processes=Nprocesses,
+                ) as pool:
                     list_output = list(
                         tqdm.tqdm(
-                            pool.imap(func, irange),
-                            total=length
+                            pool.imap(_get_data_with_bbox2, irange),
+                            total=len(list_bbox),
                         )
                     )
             except Exception:
-                func_settings(args)
+                msg = "Multiprocessing failed in the geodata collection, " \
+                      "using a traditional loop instead"
+
+                logger.warning(msg)
+
+                _set_global_var(args)
                 list_output = []
 
                 for p in tqdm.trange(length):
-                    list_output.append(func(p))
-                    
-                msg = """
-                Multiprocessing failed in the geodata collection,
-                a traditional loop was used instead
-                """   
-                logger.warning(msg)
+                    list_output.append(_get_data_with_bbox2(p))
 
             data_all = pd.concat(list_output).reset_index(drop=True)
         elif len(json) != 0:
