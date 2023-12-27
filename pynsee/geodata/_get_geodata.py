@@ -134,8 +134,9 @@ def _get_geodata(
         # split the query with the bouding box list
         if len(json) == 1000:
             list_bbox = _get_bbox_list(update=update)
-
-            list_data = asyncio.run(_get_data_from_bbox_list(id, list_bbox))
+            loop = asyncio.get_event_loop()
+            list_data = asyncio.ensure_future(_get_data_from_bbox_list(id, list_bbox))
+            #list_data = asyncio.run(_get_data_from_bbox_list(id, list_bbox))
             
             #try:
             #    list_data = asyncio.run(_get_data_from_bbox_list(id, list_bbox))
@@ -151,9 +152,9 @@ def _get_geodata(
                 
                 #list_data = await _get_data_from_bbox_list(id, list_bbox)
             
-            list_data = [_geojson_parser(json) for json in list_data]
+            #list_data = [_geojson_parser(json) for json in list_data]
             
-            data_all = pd.concat(list_data).reset_index(drop=True)
+            #data_all = pd.concat(list_data).reset_index(drop=True)
 
         elif len(json) != 0:
             data_all = _geojson_parser(json).reset_index(drop=True)
@@ -164,31 +165,33 @@ def _get_geodata(
             return pd.DataFrame({"status": 200, "comment": msg}, index=[0])
 
         # drop duplicates
-        data_col = data_all.columns
+        try:
+            data_col = data_all.columns
+            if "geometry" in data_col:
+                selected_col = [
+                    col for col in data_col if col not in ["geometry", "bbox"]
+                ]
+                data_all_clean = data_all[selected_col].drop_duplicates()
+    
+                row_selected = [int(i) for i in data_all_clean.index]
+                geom = data_all.loc[row_selected, "geometry"]
+                data_all_clean["geometry"] = geom
+    
+                if "bbox" in data_col:
+                    geom = data_all.loc[row_selected, "bbox"]
+                    data_all_clean["bbox"] = geom
+    
+                data_all_clean = data_all_clean.reset_index(drop=True)
 
-        if "geometry" in data_col:
-            selected_col = [
-                col for col in data_col if col not in ["geometry", "bbox"]
-            ]
-            data_all_clean = data_all[selected_col].drop_duplicates()
-
-            row_selected = [int(i) for i in data_all_clean.index]
-            geom = data_all.loc[row_selected, "geometry"]
-            data_all_clean["geometry"] = geom
-
-            if "bbox" in data_col:
-                geom = data_all.loc[row_selected, "bbox"]
-                data_all_clean["bbox"] = geom
-
+            else:
+                data_all_clean = data_all.drop_duplicates()
+                
             data_all_clean = data_all_clean.reset_index(drop=True)
-
-        else:
-            data_all_clean = data_all.drop_duplicates()
-
-        data_all_clean = data_all_clean.reset_index(drop=True)
-
-        data_all_clean.to_pickle(file_name)
-        logger.info("Data saved: {}".format(file_name))
+            data_all_clean.to_pickle(file_name)
+            logger.info("Data saved: {}".format(file_name))
+        except:
+            data_all_clean = list_data
+        
     else:
         try:
             data_all_clean = pd.read_pickle(file_name)
@@ -201,7 +204,9 @@ def _get_geodata(
             )
         else:
             _warning_cached_data(file_name)
-
-    data_all_clean["crsCoord"] = crs
+    try:
+        data_all_clean["crsCoord"] = crs
+    except:
+        pass
 
     return data_all_clean
