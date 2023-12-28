@@ -144,15 +144,11 @@ class TestFunction(TestCase):
             )
 
         def test_get_old_city(self):
-            test = True
+            
             df = get_old_city(code="24259")
-            test = test & isinstance(df, pd.DataFrame)
-<<<<<<< HEAD
-            self.assertTrue(isinstance(df, pd.DataFrame))
-=======
-            self.assertTrue(test)
->>>>>>> master
 
+            self.assertTrue(isinstance(df, pd.DataFrame))
+            
         def test_get_geo_list_1(self):
             list_available_geo = [
                 "communes",
@@ -306,8 +302,6 @@ class TestFunction(TestCase):
                 nivgeo="COM",
                 geocodes=["75056"],
             )
-<<<<<<< HEAD
-=======
             test = test & isinstance(data, pd.DataFrame)
 
             data = get_local_data(dataset_version='GEOlatestFILOlatest',
@@ -343,7 +337,6 @@ class TestFunction(TestCase):
                        nivgeo = 'COM',
                        update=True,
                        geocodes = '75056')
->>>>>>> master
             test = test & isinstance(data, pd.DataFrame)
 
             for geo in ["DEP", "REG", "FE", "METRODOM"]:
@@ -371,11 +364,9 @@ class TestFunction(TestCase):
             df = get_descending_area("zoneDEmploi2020", code="1109")
             test = test & isinstance(df, pd.DataFrame)
 
-<<<<<<< HEAD
             df = get_ascending_area("commune", code="59350", date="2018-01-01")
             test = test & isinstance(df, pd.DataFrame)
 
-=======
             df = get_descending_area(
                 "departement", code="59", type="arrondissement", update=True
             )
@@ -400,11 +391,6 @@ class TestFunction(TestCase):
             df = get_ascending_area("commune", code="59350", date="2018-01-01")
             test = test & isinstance(df, pd.DataFrame)
 
->>>>>>> master
-            df = get_ascending_area("departement", code="59")
-            test = test & isinstance(df, pd.DataFrame)
-
-            self.assertTrue(test)
 
         def test_get_local_data_latest_error(self):
             def getlocaldataTestError():
@@ -441,21 +427,11 @@ class TestFunction(TestCase):
         def test_get_area_list_2(self):
             def get_area_list_test():
                 get_area_list("a")
-
             self.assertRaises(ValueError, get_area_list_test)
 
-<<<<<<< HEAD
         def test_get_area_list_3(self):
             def get_area_list_test():
                 get_area_list(area="regions", date="1900-01-01", update=True)
-
-=======
-
-        def test_get_area_list_3(self):
-            def get_area_list_test():
-                get_area_list(area="regions", date="1900-01-01", update=True)
-
->>>>>>> master
             self.assertRaises(RequestException, get_area_list_test)
 
         def test_get_included_area(self):
