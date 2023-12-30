@@ -22,3 +22,5 @@ docs/examples/.jupyter_cache/*
 /.quarto/
 .spyproject/
 poetry.lock
+docs/examples/*.csv
+docs/examples/*.svg
