@@ -24,4 +24,4 @@ Examples
    examples/example_marie_firstname.ipynb
    examples/example_doctors_idf.ipynb
    examples/example_automotive_industry_sirene.ipynb
-    examples/example_commute_paris.ipynb
+   examples/example_commute_paris.ipynb
