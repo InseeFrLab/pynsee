@@ -214,8 +214,8 @@ class SireneDataFrame(pd.DataFrame):
 
                     list_location.append(df_location)
 
-                with warnings.catch_warnings(action="ignore"):
-                    df_location = pd.concat(list_location)
+                list_location = [loc for loc in list_location if not loc.empty]
+                df_location = pd.concat()
                     
                 df_location = df_location.reset_index(drop=True)
 
