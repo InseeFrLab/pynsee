@@ -31,3 +31,4 @@ py7zr
 jupyter-cache==0.5.0
 matplotlib
 pyvis
+plotly
