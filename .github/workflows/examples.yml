@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7"]
+        python-version: ["3.11"]
 
     steps:
     - uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
         # convert notebooks to py files
         jupytext --to py *.ipynb
         # run all py files
-        for f in *.py; do python "$f"; done
+        for f in *.py; do echo "$f"; python "$f"; done
         cd ../..
         
     - name: Test idbank list download
