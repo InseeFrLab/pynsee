@@ -1,6 +1,8 @@
 name: examples tests
 
 on:
+  push:
+      branches: [doc]
   schedule:
     - cron: '0 3 * * *'
 
