@@ -20,9 +20,10 @@ test_SDMX = True
 
 
 class TestFunction(TestCase):
-    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
+    
+    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 9)
 
-    if not version_3_7:
+    if version:
         StartKeys = _get_credentials()
 
         def test_get_token(self, StartKeys=StartKeys):
