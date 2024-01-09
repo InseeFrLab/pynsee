@@ -62,6 +62,7 @@ extensions = [
 # }
 
 nbsphinx_thumbnails = {
+     'examples/example_commute_paris': '_static/commute_paris.png',
     'examples/example_gdp_growth_rate_yoy': '_static/gdp_growth_rate_yoy.png',
     'examples/example_poverty_paris_urban_area': '_static/poverty_paris_urban_area.png',
     'examples/example_poverty_marseille': '_static/poverty_marseille.png',
