@@ -1,4 +1,12 @@
 
+# pynsee 0.1.6
+
+* fix to cope with the double zipping of macroeconomic metadata file containing time series identifiers
+* changes in geodata module to switch to the new IGN geoplatform
+* tests performed on python 3.8-3.11
+* new example in doc gallery on mobility in Paris region + example fixes
+* package catches error 429 (request limit on api.insee.fr) and then sleeps
+
 # pynsee 0.1.5
 
 * shapely>= 1.8.0 defined in both setup.py and requirements 
