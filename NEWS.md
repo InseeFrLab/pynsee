@@ -1,4 +1,9 @@
 
+# pynsee 0.1.7
+
+* README.rst deleted and README.md included in package distribution file
+* python version badge update in readme
+
 # pynsee 0.1.6
 
 * fix to cope with the double zipping of macroeconomic metadata file containing time series identifiers
