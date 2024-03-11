@@ -212,7 +212,9 @@ class SireneDataFrame(pd.DataFrame):
 
                     list_location.append(df_location)
 
+
                 df_location = pd.concat([df for df in list_location if (not df.empty) and (not _check_df_full_null(df))])
+
                 df_location = df_location.reset_index(drop=True)
 
                 sirene_df = pd.merge(

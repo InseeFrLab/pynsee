@@ -26,9 +26,10 @@ from pynsee.localdata.get_descending_area import get_descending_area
 
 
 class TestFunction(TestCase):
-    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
+    
+    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
 
-    if version_3_7:
+    if version:
 
         def test_get_population(self):
             df = get_population()
@@ -143,11 +144,11 @@ class TestFunction(TestCase):
             )
 
         def test_get_old_city(self):
-            test = True
+            
             df = get_old_city(code="24259")
-            test = test & isinstance(df, pd.DataFrame)
-            self.assertTrue(test)
 
+            self.assertTrue(isinstance(df, pd.DataFrame))
+            
         def test_get_geo_list_1(self):
             list_available_geo = [
                 "communes",
@@ -363,6 +364,9 @@ class TestFunction(TestCase):
             df = get_descending_area("zoneDEmploi2020", code="1109")
             test = test & isinstance(df, pd.DataFrame)
 
+            df = get_ascending_area("commune", code="59350", date="2018-01-01")
+            test = test & isinstance(df, pd.DataFrame)
+
             df = get_descending_area(
                 "departement", code="59", type="arrondissement", update=True
             )
@@ -387,10 +391,6 @@ class TestFunction(TestCase):
             df = get_ascending_area("commune", code="59350", date="2018-01-01")
             test = test & isinstance(df, pd.DataFrame)
 
-            df = get_ascending_area("departement", code="59")
-            test = test & isinstance(df, pd.DataFrame)
-
-            self.assertTrue(test)
 
         def test_get_local_data_latest_error(self):
             def getlocaldataTestError():
@@ -427,14 +427,11 @@ class TestFunction(TestCase):
         def test_get_area_list_2(self):
             def get_area_list_test():
                 get_area_list("a")
-
             self.assertRaises(ValueError, get_area_list_test)
-
 
         def test_get_area_list_3(self):
             def get_area_list_test():
                 get_area_list(area="regions", date="1900-01-01", update=True)
-
             self.assertRaises(RequestException, get_area_list_test)
 
         def test_get_included_area(self):

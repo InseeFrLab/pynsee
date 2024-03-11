@@ -1,6 +1,8 @@
 name: examples tests
 
 on:
+  push:
+      branches: [doc]
   schedule:
     - cron: '0 3 * * *'
 
@@ -9,10 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7"]
+        python-version: ["3.11"]
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: doc
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -34,9 +38,12 @@ jobs:
         pip install -r docs/requirements.txt            
         # test all notebooks        
         cd docs/examples 
+        # delete py existing files
+        for f in *.py; do rm "$f"; done
+        # convert notebooks to py files
         jupytext --to py *.ipynb
         # run all py files
-        for f in *.py; do python "$f"; done
+        for f in *.py; do echo "$f"; python "$f"; done
         cd ../..
         
     - name: Test idbank list download

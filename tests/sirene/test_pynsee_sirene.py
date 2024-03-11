@@ -16,9 +16,9 @@ from pynsee.sirene._request_sirene import _request_sirene
 
 class TestFunction(TestCase):
 
-    version_3_7 = (sys.version_info[0] == 3) & (sys.version_info[1] == 7)
+    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 11)
 
-    if version_3_7:
+    if version:
 
         def test_get_sirene_relatives(self):
             test = True

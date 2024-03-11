@@ -10,7 +10,11 @@ Pynsee python package contains tools to easily search and download French data f
 
 .. image:: https://badge.fury.io/py/pynsee.svg
    :target: https://pypi.org/project/pynsee/
-   :alt: Pypi version
+   :alt: Pypi Version
+
+.. image:: https://img.shields.io/conda/vn/conda-forge/pynsee.svg
+   :target: https://anaconda.org/conda-forge/pynsee
+   :alt: Conda Forge Version   
 
 .. image:: https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg
    :target: https://github.com/InseeFrLab/pynsee/actions
@@ -28,13 +32,21 @@ Pynsee python package contains tools to easily search and download French data f
    :target: https://pynsee.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/badgepython.svg?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
+.. image:: https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg
    :target: https://www.python.org/
    :alt: Python versions
    
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
    :target: https://pypi.org/project/black/
    :alt: Code formatting
+
+.. image:: https://anaconda.org/conda-forge/pynsee/badges/license.svg
+   :target: https://anaconda.org/conda-forge/pynsee
+   :alt: License
+
+.. image:: https://anaconda.org/conda-forge/pynsee/badges/latest_release_date.svg
+   :target: https://anaconda.org/conda-forge/pynsee
+   :alt: Latest Release Date
    
 .. image:: https://img.shields.io/pypi/dm/pynsee
    :target: https://pypistats.org/packages/pynsee

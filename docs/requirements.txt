@@ -3,7 +3,7 @@ jupyter==1.0.0
 nbconvert==6.5.0
 nbclient==0.5.13
 nbformat==5.3.0
-sphinx==4.4.0
+sphinx==5.0.2
 sphinx_rtd_theme==0.5.1
 readthedocs-sphinx-search==0.1.0rc3
 sphinx_copybutton==0.5.0
@@ -25,8 +25,10 @@ openpyxl
 shapely>=1.8.0
 seaborn
 markupsafe==2.0.1
-geopandas>=0.13.0
+geopandas
 descartes
 py7zr
 jupyter-cache==0.5.0
-matplotlib==3.7.2
+matplotlib
+pyvis
+plotly
