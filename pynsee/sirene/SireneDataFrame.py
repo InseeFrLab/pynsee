@@ -212,8 +212,13 @@ class SireneDataFrame(pd.DataFrame):
 
                     list_location.append(df_location)
 
+                #list_location = [loc for loc in list_location if not loc.empty]
+                list_location = [loc for loc in list_location if len(loc.index) > 0]
+                list_location = [df.dropna(axis=1, how='all') for df in list_location]
 
-                df_location = pd.concat([df for df in list_location if (not df.empty) and (not _check_df_full_null(df))])
+                df_location = pd.concat(list_location)
+                
+                #df_location = pd.concat([df for df in list_location if (not df.empty) and (not _check_df_full_null(df))])
 
                 df_location = df_location.reset_index(drop=True)
 
