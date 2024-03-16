@@ -139,29 +139,30 @@ def search_sirene(
         pattern = [pattern]
 
     list_siren_hist_variable = [
-        "nomUniteLegale",
-        "nomUsageUniteLegale",
-        "denominationUniteLegale",
-        "denominationUsuelle1UniteLegale",
-        "denominationUsuelle2UniteLegale",
+        "nomUniteLegale",#
+        "nomUsageUniteLegale",#
+        "denominationUniteLegale",#
+        "denominationUsuelle1UniteLegale",#
+        "denominationUsuelle2UniteLegale",#
         "denominationUsuelle3UniteLegale",
-        "categorieJuridiqueUniteLegale",
-        "etatAdministratifUniteLegale" "nicSiegeUniteLegale",
-        "activitePrincipaleUniteLegale",
-        "caractereEmployeurUniteLegale",
-        "economieSocialeSolidaireUniteLegale",
-        "nomenclatureActivitePrincipaleUniteLegale",
-    ]
+        "categorieJuridiqueUniteLegale",#
+        "etatAdministratifUniteLegale",#
+        "nicSiegeUniteLegale",#
+        "activitePrincipaleUniteLegale",#
+        "caractereEmployeurUniteLegale",#
+        "economieSocialeSolidaireUniteLegale",#
+        #"nomenclatureActivitePrincipaleUniteLegale",
+    ] + ['societeMissionUniteLegale']
 
     list_siret_hist_variable = [
-        "denominationUsuelleEtablissement",
-        "enseigne1Etablissement",
-        "enseigne2Etablissement",
-        "enseigne3Etablissement",
-        "activitePrincipaleEtablissement",
-        "etatAdministratifEtablissement",
-        "nomenclatureActiviteEtablissement",
-        "caractereEmployeurEtablissement",
+        "denominationUsuelleEtablissement",#
+        "enseigne1Etablissement",#
+        "enseigne2Etablissement",#
+        "enseigne3Etablissement",#
+        "activitePrincipaleEtablissement",#
+        "etatAdministratifEtablissement",#
+        "nomenclatureActiviteEtablissement",#
+        "caractereEmployeurEtablissement",#
     ]
 
     if kind == "siren":
