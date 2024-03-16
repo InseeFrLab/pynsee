@@ -177,7 +177,7 @@ class TestFunction(TestCase):
                         update=True,
                         phonetic_search  = [True, False],
                         number = 1000)
-             test = test & isinstance(df, pd.DataFrame)
+            test = test & isinstance(df, pd.DataFrame)
 
             self.assertTrue(test)
 
