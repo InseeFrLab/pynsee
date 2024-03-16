@@ -146,16 +146,9 @@ class TestFunction(TestCase):
                                pattern="montrouge", kind="siret")
             test = test & isinstance(df, pd.DataFrame)
 
-            df = search_sirene(variable=["denominationUniteLegale", 'categorieEntreprise'],
-                               pattern=["Pernod Ricard", 'GE'],
-                               phonetic_search=[True, False],
-                               kind="siren")
-            test = test & isinstance(df, pd.DataFrame)
-
             df = search_sirene(variable=["denominationUniteLegale",
-                                         'categorieEntreprise',
                                          'categorieJuridiqueUniteLegale'],
-                               pattern=["Pernod Ricard", 'GE', '5710'],
+                               pattern=["Pernod Ricard", '5710'],
                                kind="siren")
             test = test & isinstance(df, pd.DataFrame)
 
@@ -175,6 +168,16 @@ class TestFunction(TestCase):
                                pattern=['56.30Z', '83*'],
                                number=5000)
             test = test & isinstance(df, pd.DataFrame)
+
+            df = search_sirene(variable = ["denominationUniteLegale", 'categorieEntreprise'],
+                        pattern = ['Dassot Système', 'GE'],
+                        and_condition=False,
+                        upper_case = True,
+                        decode=True,
+                        update=True,
+                        phonetic_search  = [True, False],
+                        number = 1000)
+             test = test & isinstance(df, pd.DataFrame)
 
             self.assertTrue(test)
 
@@ -204,7 +207,7 @@ class TestFunction(TestCase):
             df = _request_sirene(q, kind='siret')
             test = test & isinstance(df, pd.DataFrame)
 
-            q = '?q=periode(denominationUniteLegale.phonetisation:Dassault) OR periode(denominationUniteLegale.phonetisation:Système) AND categorieEntreprise:GE'
+            q = '?q=periode(denominationUniteLegale.phonetisation:Dassault) OR periode(denominationUniteLegale.phonetisation:Système) OR categorieEntreprise:GE'
             df = _request_sirene(q, kind='siren')
             test = test & isinstance(df, pd.DataFrame)
 
