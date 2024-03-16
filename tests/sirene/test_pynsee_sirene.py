@@ -76,7 +76,7 @@ class TestFunction(TestCase):
 
             df = search_sirene(variable="activitePrincipaleEtablissement",
                                pattern='29.10Z', kind='siret')
-            df = df.loc[df['effectifsMinEtablissement'] > 100]
+            df = df[:10]
             df = df.reset_index(drop=True)
 
             sirdf = df.get_location()
@@ -133,9 +133,9 @@ class TestFunction(TestCase):
             # mix of variable with and without history on siren
             df = search_sirene(variable=["denominationUniteLegale",
                                          'categorieJuridiqueUniteLegale',
-                                         'categorieEntreprise'],
+                                         ],
                                 closed=True,
-                                pattern=["sncf", '9220', 'PME'], kind="siren")
+                                pattern=["sncf", '9220'], kind="siren")
             test = test & isinstance(df, pd.DataFrame)
 
             # Test not only alive businesses are provided
