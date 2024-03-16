@@ -15,10 +15,8 @@ from shapely.geometry import Point
 from shapely.errors import ShapelyDeprecationWarning
 
 from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
-from pynsee.sirene._get_location_openstreetmap import (
-    _get_location_openstreetmap,
-)
-
+from pynsee.sirene._get_location_openstreetmap import _get_location_openstreetmap
+from pynsee.utils._check_df_full_null import _check_df_full_null
 
 logger = logging.getLogger(__name__)
 
@@ -214,9 +212,14 @@ class SireneDataFrame(pd.DataFrame):
 
                     list_location.append(df_location)
 
-                list_location = [loc for loc in list_location if not loc.empty]
+                #list_location = [loc for loc in list_location if not loc.empty]
+                list_location = [loc for loc in list_location if len(loc.index) > 0]
+                list_location = [df.dropna(axis=1, how='all') for df in list_location]
+
                 df_location = pd.concat(list_location)
-                    
+                
+                #df_location = pd.concat([df for df in list_location if (not df.empty) and (not _check_df_full_null(df))])
+
                 df_location = df_location.reset_index(drop=True)
 
                 sirene_df = pd.merge(

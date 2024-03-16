@@ -6,6 +6,7 @@ from functools import lru_cache
 import itertools
 import pandas as pd
 import re
+from unidecode import unidecode
 
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
@@ -39,6 +40,9 @@ def search_sirene(
     pattern,
     kind="siret",
     phonetic_search=False,
+    and_condition=True,
+    upper_case=False,
+    decode=False,
     number=1000,
     activity=True,
     legal=False,
@@ -139,29 +143,30 @@ def search_sirene(
         pattern = [pattern]
 
     list_siren_hist_variable = [
-        "nomUniteLegale",
-        "nomUsageUniteLegale",
-        "denominationUniteLegale",
-        "denominationUsuelle1UniteLegale",
-        "denominationUsuelle2UniteLegale",
+        "nomUniteLegale",#
+        "nomUsageUniteLegale",#
+        "denominationUniteLegale",#
+        "denominationUsuelle1UniteLegale",#
+        "denominationUsuelle2UniteLegale",#
         "denominationUsuelle3UniteLegale",
-        "categorieJuridiqueUniteLegale",
-        "etatAdministratifUniteLegale" "nicSiegeUniteLegale",
-        "activitePrincipaleUniteLegale",
-        "caractereEmployeurUniteLegale",
-        "economieSocialeSolidaireUniteLegale",
-        "nomenclatureActivitePrincipaleUniteLegale",
-    ]
+        "categorieJuridiqueUniteLegale",#
+        "etatAdministratifUniteLegale",#
+        "nicSiegeUniteLegale",#
+        "activitePrincipaleUniteLegale",#
+        "caractereEmployeurUniteLegale",#
+        "economieSocialeSolidaireUniteLegale",#
+        #"nomenclatureActivitePrincipaleUniteLegale",
+    ] + ['societeMissionUniteLegale']
 
     list_siret_hist_variable = [
-        "denominationUsuelleEtablissement",
-        "enseigne1Etablissement",
-        "enseigne2Etablissement",
-        "enseigne3Etablissement",
-        "activitePrincipaleEtablissement",
-        "etatAdministratifEtablissement",
-        "nomenclatureActiviteEtablissement",
-        "caractereEmployeurEtablissement",
+        "denominationUsuelleEtablissement",#
+        "enseigne1Etablissement",#
+        "enseigne2Etablissement",#
+        "enseigne3Etablissement",#
+        "activitePrincipaleEtablissement",#
+        "etatAdministratifEtablissement",#
+        "nomenclatureActiviteEtablissement",#
+        "caractereEmployeurEtablissement",#
     ]
 
     if kind == "siren":
@@ -191,19 +196,34 @@ def search_sirene(
 
         list_patt = patt.split("|")
 
+        if upper_case:
+            list_var_patt_maj = [p.upper() for p in list_patt]
+            list_patt += list_var_patt_maj
+            
+        if decode:
+            list_var_decode = [unidecode(p) for p in list_patt]
+            list_patt += list_var_decode
+
+        list_patt = list(set(list_patt))
+        
         list_var_patt = []
         for ptt in list_patt:
             if var in list_hist_variable:
-                list_var_patt.append(
-                    "periode({}{}:{})".format(var, phntc_string, ptt)
-                )
+                ptt_h = "periode({}{}:{})".format(var, phntc_string, ptt)
             else:
-                list_var_patt.append("{}{}:{}".format(var, phntc_string, ptt))
+                ptt_h = "{}{}:{}".format(var, phntc_string, ptt)
+
+            list_var_patt += [ptt_h]                
 
         list_var_pattern.append(list_var_patt)
 
+    if and_condition:
+        condition = " AND "
+    else:
+        condition = " OR "
+
     permutation = list(itertools.product(*list_var_pattern))
-    permutation_and = [" AND ".join(list(x)) for x in permutation]
+    permutation_and = [condition.join(list(x)) for x in permutation]
     permutation_and_parenth = ["(" + x + ")" for x in permutation_and]
     string_query = " OR ".join(permutation_and_parenth)
 
