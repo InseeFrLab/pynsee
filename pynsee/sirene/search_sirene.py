@@ -60,7 +60,13 @@ def search_sirene(
 
         phonetic_search (bool, or list of bool, optional): If True phonetic search is triggered on the all variables of the list, if it is a list of True/False, phonetic search is used accordingly on the list of variables
 
+        and_condition (bool, optional): If True, only records meeting all conditions are kept (AND is inserted between the conditions). If False, all records meeting at least one condition are kept (OR is inserted between the conditions).
+
         number (int, optional): Number of companies searched. Defaults to 1000. If it is above 1000, multiple queries are triggered.
+
+        upper_case (bool, optional): If True, values of argument 'pattern' are converted to upper case and added to the list of searched patterns.
+
+        decode (bool, optional): If True, values of argument 'pattern' are decoded, especially accents are removed and added to the list of searched patterns.
 
         activity (bool, optional): If True, activty title is added based on NAF/NACE. Defaults to True.
 
@@ -111,6 +117,20 @@ def search_sirene(
         >>>            pattern = ['tabac'],
         >>>            number = 2500,
         >>>            kind = "siret")
+        >>> #
+        >>> # Find 1000 companies whose name sounds like Dassault Système or is a big company (GE), 
+        >>> # search is made as well on patterns whose accents have been removed
+        >>> import os
+        >>> # environment variable 'pynsee_print_url' force the package to print the request 
+        >>> os.environ["pynsee_print_url"] = 'True'
+        >>> df = search_sirene(variable = ["denominationUniteLegale", 'categorieEntreprise'],
+        >>>                 pattern = ['Dassot Système', 'GE'],
+        >>>                 and_condition = False,
+        >>>                 upper_case = True,
+        >>>                 decode = True,
+        >>>                 update = True,
+        >>>                 phonetic_search  = [True, False],
+        >>>                 number = 1000)
     """
     if (not kind == "siret") & (not kind == "siren"):
         raise ValueError("!!! kind should be among : siren, siret !!!")
