@@ -1,6 +1,5 @@
 import os
 
-import platformdirs
 import pandas as pd
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
