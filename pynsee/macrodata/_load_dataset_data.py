@@ -27,6 +27,5 @@ def _load_dataset_data():
 
     if len(list_dataset_files) > 0:
         data = pd.concat([pd.read_parquet(f) for f in list_dataset_files])
-        data.to_parquet(fname)
         return data
     return None
