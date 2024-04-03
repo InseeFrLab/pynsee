@@ -16,7 +16,7 @@ sphinxcontrib-svg2pdfconverter
 pandas>=0.24.2
 tqdm>=4.56.0
 requests>=2.25.1
-appdirs>=1.4.4
+platformdirs
 unidecode>=1.2.0
 datetime>=3.5.9
 pathlib2>=2.3.5

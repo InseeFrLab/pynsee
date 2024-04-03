@@ -19,14 +19,14 @@ def _download_idbank_list(update=False):
     file_to_dwn_default = "idbank_" + str(todays_date.year) + str(todays_date.month)
 
     insee_folder = _create_insee_folder()
-    file = insee_folder + "/" + _hash(file_to_dwn_default)
+    fname = os.path.join(insee_folder, f"{_hash(file_to_dwn_default)}.parquet")
 
     trigger_update = False
 
     # if the data is not saved locally, or if it is too old (>90 days)
     # then an update is triggered
 
-    if not os.path.exists(file):
+    if not os.path.exists(fname):
         trigger_update = True
     else:
         try:
@@ -39,7 +39,7 @@ def _download_idbank_list(update=False):
             insee_date_time_now = datetime.now()
 
         # file date creation
-        file_date_last_modif = datetime.fromtimestamp(os.path.getmtime(file))
+        file_date_last_modif = datetime.fromtimestamp(os.path.getmtime(fname))
         day_lapse = (insee_date_time_now - file_date_last_modif).days
 
         if day_lapse > 90:
@@ -49,7 +49,6 @@ def _download_idbank_list(update=False):
         trigger_update = True
 
     if trigger_update:
-
         # INSEE api credentials are not useful here, but proxy settings stored in pynsee_api_credentials are useful
         keys = _get_credentials()
 
@@ -59,17 +58,8 @@ def _download_idbank_list(update=False):
         data.columns = ["nomflow", "idbank", "cleFlow"]
         data = data.sort_values("nomflow").reset_index(drop=True)
 
-        data.to_pickle(file)
+        data.to_parquet(fname)
 
-    else:
-        # pickle format depends on python version
-        # then read_pickle can fail, if so
-        # the file is removed and the function is launched again
-        # testing requires multiple python versions
-        try:
-            data = pd.read_pickle(file)
-        except:
-            os.remove(file)
-            data = _download_idbank_list()
+        return data
 
-    return data
+    return pd.read_parquet(fname)
