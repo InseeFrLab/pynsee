@@ -32,6 +32,7 @@ setuptools.setup(
     license_files=('LICENSE.md',),
     install_requires=[
             "pandas>=0.24.2",
+            "pyarrow",
             "tqdm>=4.56.0",
             "requests>=2.23",
             "platformdirs",
