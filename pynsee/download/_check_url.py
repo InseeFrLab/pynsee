@@ -10,14 +10,14 @@ from requests.packages.urllib3.util.retry import Retry
 logger = logging.getLogger(__name__)
 
 def _check_url(url):
-    
+
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     try:
         proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
     except:
         proxies = {"http": "", "https": ""}
-        
+
     session = requests.Session()
     retry = Retry(connect=3, backoff_factor=1)
     adapter = HTTPAdapter(max_retries=retry)
@@ -33,35 +33,35 @@ def _check_url(url):
             f"File not found on insee.fr:\n{url} - please open an issue on:\n"
             "https://github.com/InseeFrLab/pynsee"
             )
-        
+
         try:
             list_string_split = url.split("/")
             filename = list_string_split[-1]
 
             list_potential_dates = []
 
-            def get_close_dates_list(start_year, timespan=10):   
+            def get_close_dates_list(start_year, timespan=10):
 
-                start_year = int(start_year)    
+                start_year = int(start_year)
                 start_year_short = int(str(start_year)[-2:])
 
                 list_close_year = list(range(start_year, start_year + timespan)) + \
                                     list(range(start_year, start_year - timespan, -1)) + \
                                     list(range(start_year_short, start_year_short + timespan)) + \
-                                    list(range(start_year_short, start_year_short - timespan, -1)) 
+                                    list(range(start_year_short, start_year_short - timespan, -1))
 
                 list_close_year = [str(y) for y in list_close_year]
 
                 return list_close_year
 
-            datefile = re.findall("2\d{3}|\d{2}", filename)[0]
+            datefile = re.findall(r"2\d{3}|\d{2}", filename)[0]
 
             list_potential_dates += get_close_dates_list(datefile)
 
             current_year = date.today().year
 
             list_potential_dates += get_close_dates_list(current_year)
-            list_potential_dates = list(dict.fromkeys(list_potential_dates))        
+            list_potential_dates = list(dict.fromkeys(list_potential_dates))
 
             for d in list_potential_dates:
 
@@ -81,7 +81,7 @@ def _check_url(url):
             logger.error(
                 "Error raised while trying to find another similar file"
                 )
-        
+
         if 'url2' in locals():
             if url != url2:
                 logger.warning(
@@ -89,10 +89,10 @@ def _check_url(url):
                     )
         else:
             url2 = url
-        
+
         return url2
-            
-        
-        
-        
+
+
+
+
 
