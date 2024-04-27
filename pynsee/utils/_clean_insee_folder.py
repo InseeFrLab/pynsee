@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import appdirs
 import os
+
+import platformdirs
 
 
 def _clean_insee_folder():
 
-    local_appdata_folder = appdirs.user_cache_dir()
-    insee_folder = local_appdata_folder + "/pynsee" + "/pynsee"
+    local_appdata_folder = platformdirs.user_cache_dir()
+    insee_folder = os.path.join(local_appdata_folder, "pynsee", "pynsee")
 
     # delete all files in the folder
     if os.path.exists(insee_folder):
