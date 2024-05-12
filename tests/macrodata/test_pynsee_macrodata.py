@@ -171,7 +171,8 @@ class TestFunction(TestCase):
                 "IPC-2015", filter="M......ENSEMBLE...CVS.2015.")
             data2 = get_dataset("IPC-2015", filter="M......ENSEMBLE...CVS.2015.",
                                 includeHistory=True,
-                                updatedAfter="2017-07-11T08:45:00")
+                                # updatedAfter="2017-07-11T08:45:00" disabled as API does not return anything
+                               )
             self.assertTrue(len(data1.index) < len(data2.index))
 
         def test_get_dataset_4(self):
