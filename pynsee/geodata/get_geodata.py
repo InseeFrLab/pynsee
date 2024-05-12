@@ -28,7 +28,10 @@ def get_geodata(id, update=False, crs="EPSG:3857"):
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        df = _get_geodata(id=id, update=update, crs=crs)
+        try:
+            df = _get_geodata(id=id, update=update, crs=crs)
+        except:
+            df = _get_geodata(id=id, update=update, crs=crs)            
 
         df = GeoFrDataFrame(df)
 
