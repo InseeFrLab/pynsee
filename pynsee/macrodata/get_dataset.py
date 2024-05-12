@@ -63,7 +63,7 @@ def get_dataset(
         >>> business_climate = get_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
     """
     
-    insee_dataset = get_dataset_list()    
+    insee_dataset = get_dataset_list(silent=True)    
     insee_dataset_list = insee_dataset["id"].to_list()
 
     # check if the dataset exists in INSEE's list
