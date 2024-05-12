@@ -157,6 +157,9 @@ def get_series(
                     metadata_df["IDBANK"].isin(list_idbank_data)
                 ].reset_index(drop=True)
 
+                list_col = ['IDBANK'] + [c for c in metadata_df.columns if c not in data]
+                metadata_df = metadata_df[list_col]
+
                 data = data.merge(metadata_df, on="IDBANK", how="left")
 
                 # remove all na columns

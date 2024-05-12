@@ -1,21 +1,20 @@
 import os
-
 import pandas as pd
+from tqdm import trange
 
 from pynsee.macrodata.get_dataset_list import get_dataset_list
 from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
+from pynsee.utils.save_df import save_df
 
-def _load_dataset_data():
+@save_df(day_lapse_max=90)
+def _load_dataset_data(update=False, silent=True):
     
     list_dataset = list(get_dataset_list().id.unique())
     list_metadata = []
 
-    if len(list_dataset) > 0:
-        for dt in list_dataset:    
-            metadata = _get_dataset_metadata(dt, silent=True)
-            list_metadata += [metadata]        
+    for dt in trange(len(list_dataset), desc='Metadata download'):    
+        dataset = list_dataset[dt]
+        metadata = _get_dataset_metadata(dt, silent=True)
+        list_metadata += [metadata]        
     
-    if len(list_metadata) > 0:
-        return pd.concat(list_metadata)
-    else:    
-        return None
+    return pd.concat(list_metadata)
