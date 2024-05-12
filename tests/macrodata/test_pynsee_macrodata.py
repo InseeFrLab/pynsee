@@ -160,8 +160,9 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(data, pd.DataFrame))
 
         def test_get_dataset_2(self):
-            data = get_dataset("CNA-2014-CPEB",
-                               filter="A.CNA_CPEB.A38-CB.VAL.D39.VALEUR_ABSOLUE.FE.EUROS_COURANTS.BRUT",
+            
+            data = get_dataset("CHOMAGE-TRIM-NATIONAL",
+                               filter="T.HALO.VALEUR_ABSOLUE.FR-D976.1.15-24.INDIVIDUS.CVS.FALSE",
                                lastNObservations=1)
             self.assertTrue(isinstance(data, pd.DataFrame))
 
