@@ -46,10 +46,7 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
                                     
             update = any((a == 'update') and (kwargs[a] is True) for a in kwargs)
 
-            if any([(a == 'silent') & (kwargs[a] == True) for a in kwargs.keys()]):
-                silent = True
-            else:
-                silent = False    
+            silent = any((a == 'silent') and (kwargs[a] is True) for a in kwargs)
             
             if os.path.exists(file_name):
                 file_date_last_modif = datetime.datetime.fromtimestamp(
