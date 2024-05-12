@@ -3,7 +3,6 @@
 
 import pandas as pd
 import os
-from datetime import datetime
 
 from pynsee.macrodata._get_dataset_metadata_core import (
     _get_dataset_metadata_core,
@@ -11,87 +10,19 @@ from pynsee.macrodata._get_dataset_metadata_core import (
 from pynsee.macrodata._get_idbank_internal_data import (
     _get_idbank_internal_data,
 )
-from pynsee.utils._hash import _hash
-from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.utils.save_df import save_df
 
 import logging
 
 logger = logging.getLogger(__name__)
 
-
+@save_df(day_lapse_max = 90)
 def _get_dataset_metadata(dataset, update=False, silent=False):
+
     try:
-        insee_folder = _create_insee_folder()
-        file_dataset_metadata = (
-            insee_folder + "/" + _hash("idbank_list" + dataset)
-        )
-
-        trigger_update = False
-
-        if not os.path.exists(file_dataset_metadata):
-            trigger_update = True
-            if not update:
-                if not silent:
-                    logger.info(
-                        "%s : metadata update triggered because it is not "
-                        "found locally" % dataset
-                    )
-        else:
-            try:
-                # only used for testing purposes
-                insee_date_time_now = os.environ["insee_date_test"]
-                insee_date_time_now = datetime.strptime(
-                    insee_date_time_now, "%Y-%m-%d %H:%M:%S.%f"
-                )
-            except:
-                insee_date_time_now = datetime.now()
-
-            # file date creation
-            file_date_last_modif = datetime.fromtimestamp(
-                os.path.getmtime(file_dataset_metadata)
-            )
-            day_lapse = (insee_date_time_now - file_date_last_modif).days
-
-            if day_lapse > 90:
-                trigger_update = True
-                if not update:
-                    if not silent:
-                        logger.info(
-                            "%s : metadata update triggered because the file is "
-                            "older than 3 months" % dataset
-                        )
-
-        if update:
-            trigger_update = True
-            logger.debug("%s : metadata update triggered manually" % dataset)
-
-        if trigger_update:
-            idbank_list_dataset = _get_dataset_metadata_core(
+        idbank_list_dataset = _get_dataset_metadata_core(
                 dataset=dataset, update=update
             )
-
-            # save data
-            idbank_list_dataset.to_pickle(file_dataset_metadata)
-            if not silent:
-                logger.info(f"Data saved: {file_dataset_metadata}")
-        else:
-            # pickle format depends on python version
-            # then read_pickle can fail, if so
-            # the file is removed and the function is launched again
-            # testing requires multiple python versions
-            try:
-                idbank_list_dataset = pd.read_pickle(file_dataset_metadata)
-                if not silent:
-                    logger.info(
-                        "Locally saved data has been used\n"
-                        "Set update=True to trigger an update"
-                    )
-            except:
-                os.remove(file_dataset_metadata)
-                idbank_list_dataset = _get_dataset_metadata(
-                    dataset=dataset, update=True
-                )
-
     except:
         # if the download of the idbank file and the build of the metadata fail
         # package's internal data is provided to the user, should be exceptional, used as a backup
@@ -116,3 +47,5 @@ def _get_dataset_metadata(dataset, update=False, silent=False):
         idbank_list_dataset = idbank_list_dataset.reset_index(drop=True)
 
     return idbank_list_dataset
+        
+    

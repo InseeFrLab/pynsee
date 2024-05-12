@@ -39,7 +39,12 @@ def save_df(obj=pd.DataFrame, print_cached_data=True, parquet=True, day_lapse_ma
             if any([(a == 'update') & (kwargs[a] == True) for a in kwargs.keys()]):
                 update = True
             else:
-                update = False                
+                update = False  
+
+            if any([(a == 'silent') & (kwargs[a] == True) for a in kwargs.keys()]):
+                print_cached_data = True
+            else:
+                print_cached_data = False    
             
             if os.path.exists(file_name):
                 file_date_last_modif = datetime.datetime.fromtimestamp(

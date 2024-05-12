@@ -2,30 +2,20 @@ import os
 
 import pandas as pd
 
-from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._hash import _hash
 from pynsee.macrodata.get_dataset_list import get_dataset_list
-
-
-def _del_dataset_files():
-    list_dataset_files = _get_dataset_files()
-    if len(list_dataset_files) > 0:
-        for f in list_dataset_files:
-            os.remove(f)
-
-
-def _get_dataset_files():
-    list_dataset = list(get_dataset_list().id.unique())
-    insee_folder = _create_insee_folder()
-    file_dataset_metadata_list = [insee_folder + "/" + _hash("idbank_list" + dt) for dt in list_dataset] 
-    file_dataset_metadata_list_exist = [f for f in file_dataset_metadata_list if os.path.exists(f)]
-    return file_dataset_metadata_list_exist
-
+from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
 
 def _load_dataset_data():
-    list_dataset_files = _get_dataset_files()
+    
+    list_dataset = list(get_dataset_list().id.unique())
+    list_metadata = []
 
-    if len(list_dataset_files) > 0:
-        data = pd.concat([pd.read_parquet(f) for f in list_dataset_files])
-        return data
-    return None
+    if len(list_dataset) > 0:
+        for dt in list_dataset:    
+            metadata = _get_dataset_metadata(dt)
+            list_metadata += [metadata]        
+    
+    if len(list_metadata) > 0:
+        return pd.concat(list_metadata)
+    else:    
+        return None

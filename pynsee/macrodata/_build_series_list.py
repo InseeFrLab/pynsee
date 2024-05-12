@@ -5,6 +5,7 @@ from pynsee.macrodata.get_dataset_list import get_dataset_list
 from pynsee.macrodata.get_series_list import get_series_list
 from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
+
 from tqdm import trange
 import os
 import pandas as pd
