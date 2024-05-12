@@ -44,10 +44,7 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
             else:
                 file_name += ".pkl"            
                                     
-            if any([(a == 'update') & (kwargs[a] == True) for a in kwargs.keys()]):
-                update = True
-            else:
-                update = False  
+            update = any((a == 'update') and (kwargs[a] is True) for a in kwargs)
 
             if any([(a == 'silent') & (kwargs[a] == True) for a in kwargs.keys()]):
                 silent = True
