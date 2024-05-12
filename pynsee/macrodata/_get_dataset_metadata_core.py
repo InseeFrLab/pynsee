@@ -6,9 +6,10 @@ import pandas as pd
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
+from pynsee.utils.save_df import save_df
 
-
-def _get_dataset_metadata_core(dataset, update=False):
+@save_df(day_lapse_max=90)
+def _get_dataset_metadata_core(dataset, update=False, silent=True):
 
     # from pynsee.macrodata._get_dataset_metadata_core import _get_dataset_metadata_core
     # test1 = _get_dataset_metadata_core('IPC-2015', update=True)

@@ -10,7 +10,7 @@ from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils.save_df import save_df
 
 @save_df(day_lapse_max=90)
-def _download_idbank_list(update=False):
+def _download_idbank_list(update=False, silent=True):
 
     keys = _get_credentials()
 

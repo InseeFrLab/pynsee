@@ -46,7 +46,7 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
                                     
             update = kwargs.get("update", False)
 
-            silent = kwargs.get("silence", False)
+            silent = kwargs.get("silent", False)
             
             if os.path.exists(file_name):
                 file_date_last_modif = datetime.datetime.fromtimestamp(

@@ -9,7 +9,7 @@ from pynsee.utils.save_df import save_df
 @save_df(day_lapse_max=90)
 def _load_dataset_data(update=False, silent=True):
     
-    list_dataset = list(get_dataset_list().id.unique())
+    list_dataset = list(get_dataset_list(silent=True).id.unique())
     list_metadata = []
 
     for dt in trange(len(list_dataset), desc='Metadata download'):    

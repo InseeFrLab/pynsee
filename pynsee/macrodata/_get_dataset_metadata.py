@@ -35,7 +35,7 @@ def _get_dataset_metadata(dataset, update=False, silent=True):
 
     try:
         idbank_list_dataset = _get_dataset_metadata_core(
-                dataset=dataset, update=update
+                dataset=dataset, update=update, silent=True
             )
     except:
         # if the download of the idbank file and the build of the metadata fail
