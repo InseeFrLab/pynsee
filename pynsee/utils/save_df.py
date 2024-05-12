@@ -16,7 +16,15 @@ from pynsee.utils._hash import _hash
 def _warning_cached_data(file, mdate=None, day_lapse=None):
     strg_print = f"Previously saved data has been used:\n{file}\n"
     if (mdate is not None) and (day_lapse is not None):
-        strg_print += f"Creation date: {mdate:%Y-%m-%d}, {day_lapse} days ago\n"
+        strg_print += f"Creation date: {mdate:%Y-%m-%d}"
+        
+        if day_lapse >= 2:
+            strg_print += ", {day_lapse} days ago\n"
+        if day_lapse == 1:
+            strg_print += ", yesterday\n"
+        if day_lapse == 0:
+            strg_print += ", today\n"
+            
     strg_print += "Set update=True to get the most up-to-date data"
 
     logger.info(strg_print)
