@@ -27,8 +27,8 @@ def save_df(obj=pd.DataFrame, print_cached_data=True, parquet=True, day_lapse_ma
         def wrapper(*args, **kwargs):
             
             data_folder = _create_insee_folder()
-            string_file_arg = [str(kwargs[a]) for a in kwargs.keys() if a != 'update'] + \
-                                [func.__name__] + [str(a) for a in args]            
+            string_file_arg = [str(kwargs[a]) for a in kwargs.keys() if a not in ['update', 'silent']]
+            string_file_arg += [func.__name__] + [str(a) for a in args]            
             file_name = data_folder + "/" + _hash(''.join(string_file_arg)) 
             
             if parquet:

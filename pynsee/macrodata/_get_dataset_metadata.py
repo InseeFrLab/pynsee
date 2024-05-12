@@ -19,7 +19,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def _get_dataset_metadata(dataset, update=False):
+def _get_dataset_metadata(dataset, update=False, silent=False):
     try:
         insee_folder = _create_insee_folder()
         file_dataset_metadata = (
@@ -31,10 +31,11 @@ def _get_dataset_metadata(dataset, update=False):
         if not os.path.exists(file_dataset_metadata):
             trigger_update = True
             if not update:
-                logger.info(
-                    "%s : metadata update triggered because it is not "
-                    "found locally" % dataset
-                )
+                if not silent:
+                    logger.info(
+                        "%s : metadata update triggered because it is not "
+                        "found locally" % dataset
+                    )
         else:
             try:
                 # only used for testing purposes
@@ -54,10 +55,11 @@ def _get_dataset_metadata(dataset, update=False):
             if day_lapse > 90:
                 trigger_update = True
                 if not update:
-                    logger.info(
-                        "%s : metadata update triggered because the file is "
-                        "older than 3 months" % dataset
-                    )
+                    if not silent:
+                        logger.info(
+                            "%s : metadata update triggered because the file is "
+                            "older than 3 months" % dataset
+                        )
 
         if update:
             trigger_update = True
@@ -70,7 +72,8 @@ def _get_dataset_metadata(dataset, update=False):
 
             # save data
             idbank_list_dataset.to_pickle(file_dataset_metadata)
-            logger.info(f"Data saved: {file_dataset_metadata}")
+            if not silent:
+                logger.info(f"Data saved: {file_dataset_metadata}")
         else:
             # pickle format depends on python version
             # then read_pickle can fail, if so
@@ -78,10 +81,11 @@ def _get_dataset_metadata(dataset, update=False):
             # testing requires multiple python versions
             try:
                 idbank_list_dataset = pd.read_pickle(file_dataset_metadata)
-                logger.info(
-                    "Locally saved data has been used\n"
-                    "Set update=True to trigger an update"
-                )
+                if not silent:
+                    logger.info(
+                        "Locally saved data has been used\n"
+                        "Set update=True to trigger an update"
+                    )
             except:
                 os.remove(file_dataset_metadata)
                 idbank_list_dataset = _get_dataset_metadata(

@@ -7,11 +7,14 @@ import math
 from pynsee.macrodata._get_insee import _get_insee
 from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata
 from pynsee.macrodata._load_dataset_data import _load_dataset_data
+
 from pynsee.utils._paste import _paste
+from pynsee.utils.save_df import save_df
 
-
+@save_df(day_lapse_max=30)
 def get_series(
     *idbanks,
+    update=False,
     metadata=True,
     startPeriod=None,
     endPeriod=None,
@@ -24,6 +27,9 @@ def get_series(
 
     Args:
         idbanks (str or list or pd.series) : some idbanks provided by get_idbank_list()
+
+        update (bool, optional): Set to True, to update manually the data
+        stored locally on the computer. Defaults to False.
 
         metadata (bool, optional): If True, some metadata is added to the data
 

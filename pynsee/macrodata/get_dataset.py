@@ -1,15 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from pynsee.utils._paste import _paste
 from pynsee.macrodata._get_insee import _get_insee
 from pynsee.macrodata.get_dataset_list import get_dataset_list
 from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata
 from pynsee.macrodata.get_series_list import get_series_list
 
+from pynsee.utils._paste import _paste
+from pynsee.utils.save_df import save_df
 
+@save_df(day_lapse_max=30)
 def get_dataset(
     dataset,
+    update=False,
     metadata=True,
     filter=None,
     startPeriod=None,
@@ -21,8 +24,10 @@ def get_dataset(
 ):
     """Get dataset's data from INSEE BDM database
 
-    Args:
+    Args:        
         dataset (str): an INSEE dataset included in the list provided by get_dataset_list()
+
+        update (bool, optional): Set to True, to update manually the data stored locally on the computer. Defaults to False.
 
         metadata (bool, optional): If True, some metadata is added to the data
 
@@ -56,7 +61,8 @@ def get_dataset(
         >>> #
         >>> business_climate = get_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
     """
-    insee_dataset = get_dataset_list()
+    
+    insee_dataset = get_dataset_list()    
     insee_dataset_list = insee_dataset["id"].to_list()
 
     # check if the dataset exists in INSEE's list
@@ -101,7 +107,8 @@ def get_dataset(
     # add metadata
     if metadata:
         try:
-            idbank_list = get_series_list(dataset)
+            
+            idbank_list = get_series_list(dataset, silent=True)            
 
             newcol = [col for col in idbank_list.columns if col not in data.columns] + [
                 "IDBANK"
@@ -115,7 +122,7 @@ def get_dataset(
             pass
 
         try:
-            data = _add_numeric_metadata(data)
+            data = _add_numeric_metadata(data)            
         except:
             pass
 
