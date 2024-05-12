@@ -7,7 +7,7 @@ import pandas as pd
 import os
 
 from pynsee.utils.save_df import save_df
-from pynsee._get_temp_dir import _get_temp_dir
+from pynsee.utils._get_temp_dir import _get_temp_dir
 
 import logging
 
@@ -20,7 +20,7 @@ def _get_idbank_internal_data(update=False, silent=True):
         __name__, "data/idbank_list_internal.zip"
     )
 
-    dirpath = _get_temp_dir()
+    temp_folder = _get_temp_dir()
     data_file = temp_folder + "/" + "idbank_list_internal.csv"
 
     with zipfile.ZipFile(zip_file, "r") as zip_ref:

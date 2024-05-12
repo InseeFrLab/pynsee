@@ -12,7 +12,7 @@ def _load_dataset_data():
 
     if len(list_dataset) > 0:
         for dt in list_dataset:    
-            metadata = _get_dataset_metadata(dt)
+            metadata = _get_dataset_metadata(dt, silent=True)
             list_metadata += [metadata]        
     
     if len(list_metadata) > 0:

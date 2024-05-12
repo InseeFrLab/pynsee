@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 @save_df(day_lapse_max=30)
-def get_dataset_list(update=False):
+def get_dataset_list(update=False, silent=False):
     """Download a full INSEE's datasets list from BDM macroeconomic database
 
     Returns:

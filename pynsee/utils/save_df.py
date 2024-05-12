@@ -21,7 +21,7 @@ def _warning_cached_data(file, mdate=None, day_lapse=None):
 
     logger.info(strg_print)
 
-def save_df(obj=pd.DataFrame, print_cached_data=True, parquet=True, day_lapse_max=None):
+def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -42,9 +42,9 @@ def save_df(obj=pd.DataFrame, print_cached_data=True, parquet=True, day_lapse_ma
                 update = False  
 
             if any([(a == 'silent') & (kwargs[a] == True) for a in kwargs.keys()]):
-                print_cached_data = True
+                silent = True
             else:
-                print_cached_data = False    
+                silent = False    
             
             if os.path.exists(file_name):
                 file_date_last_modif = datetime.datetime.fromtimestamp(
@@ -84,7 +84,7 @@ def save_df(obj=pd.DataFrame, print_cached_data=True, parquet=True, day_lapse_ma
                     
                     df = obj(df) 
                     
-                    if print_cached_data:
+                    if not silent:
                         logger.info(f"Data saved:\n{file_name}")
 
                 else:
@@ -108,7 +108,7 @@ def save_df(obj=pd.DataFrame, print_cached_data=True, parquet=True, day_lapse_ma
                         df = func(*args, **kwargs2)
                         df = obj(df)   
                     else:
-                        if print_cached_data:
+                        if not silent:
                             
                             mdate = insee_date_time_now - datetime.timedelta(days=day_lapse)
                             

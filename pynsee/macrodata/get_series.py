@@ -15,6 +15,7 @@ from pynsee.utils.save_df import save_df
 def get_series(
     *idbanks,
     update=False,
+    silent=False,
     metadata=True,
     startPeriod=None,
     endPeriod=None,
