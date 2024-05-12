@@ -5,13 +5,23 @@ import warnings
 import shapely
 from shapely.errors import ShapelyDeprecationWarning
 import warnings
+import datetime 
+import logging
+logger = logging.getLogger(__name__)
 
-from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
-from geopyx.utils._print import _print
 
-def save_df(obj=pd.DataFrame, print_cached_data=True, parquet=True):
+@functools.lru_cache(maxsize=None)
+def _warning_cached_data(file, mdate=None, day_lapse=None):
+    strg_print = f"Previously saved data has been used:\n{file}\n"
+    if (mdate is not None) and (day_lapse is not None):
+        strg_print += f"Creation date: {mdate:%Y-%m-%d}, {day_lapse} days ago\n"
+    strg_print += "Set update=True to get the most up-to-date data"
+
+    logger.info(strg_print)
+
+def save_df(obj=pd.DataFrame, print_cached_data=True, parquet=True, day_lapse_max=None):
     def decorator(func):
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
@@ -29,12 +39,31 @@ def save_df(obj=pd.DataFrame, print_cached_data=True, parquet=True):
             if any([(a == 'update') & (kwargs[a] == True) for a in kwargs.keys()]):
                 update = True
             else:
-                update = False
+                update = False                
+            
+            if os.path.exists(file_name):
+                file_date_last_modif = datetime.datetime.fromtimestamp(
+                    os.path.getmtime(file_name)
+                )
+                try:
+                    # only used for testing purposes
+                    insee_date_time_now = os.environ["insee_date_test"]
+                    insee_date_time_now = datetime.datetime.strptime(
+                        insee_date_time_now, "%Y-%m-%d %H:%M:%S.%f"
+                    )
+                except:
+                    insee_date_time_now = datetime.datetime.now()
+
+                day_lapse = (insee_date_time_now - file_date_last_modif).days
+
+                if day_lapse_max is not None:
+                    if day_lapse > day_lapse_max:
+                        update = True                    
             
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
 
-                if (not os.path.exists(file_name, data_folder)) | (update is True):   
+                if (not os.path.exists(file_name)) | (update is True):   
 
                     df = func(*args, **kwargs)                    
                     try:
@@ -45,14 +74,13 @@ def save_df(obj=pd.DataFrame, print_cached_data=True, parquet=True):
                             
                     except Exception as e:
                         warnings.warn(str(e))
-                        print(f'Error, file not saved:\n{file_name}\n{df}')
-                        print(type(df))
-                        print('\n')
+                        warnings.warn(f'Error, file not saved:\n{file_name}\n{df}')
+                        warnings.warn('\n')
                     
                     df = obj(df) 
                     
                     if print_cached_data:
-                        print(f"Data saved: {file_name}")
+                        logger.info(f"Data saved:\n{file_name}")
 
                 else:
                     try:                        
@@ -70,13 +98,18 @@ def save_df(obj=pd.DataFrame, print_cached_data=True, parquet=True):
                         kwargs2 = kwargs
                         kwargs2['update'] = True
                         
-                        print('!!! Unable to load data, function retriggered !!!')
+                        warnings.warn('!!! Unable to load data, function retriggered !!!')
                         
                         df = func(*args, **kwargs2)
                         df = obj(df)   
                     else:
                         if print_cached_data:
-                            _warning_cached_data(file_name)
+                            
+                            mdate = insee_date_time_now - datetime.timedelta(days=day_lapse)
+                            
+                            _warning_cached_data(file_name,
+                                                 mdate= mdate,
+                                                 day_lapse=day_lapse)
                         df = obj(df)            
             
             return df
