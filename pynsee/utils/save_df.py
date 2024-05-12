@@ -76,7 +76,7 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
 
-                if (not os.path.exists(file_name)) | (update is True):   
+                if (not os.path.exists(file_name)) or update:   
 
                     df = func(*args, **kwargs)                    
                     try:
