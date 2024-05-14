@@ -57,14 +57,6 @@ def get_geo_list(geo=None, date=None, update=False, silent=False):
         msg = "!!! Please choose geo among:\n{}".format(geo_string)
         raise ValueError(msg)
 
-    date_hash = ""
-    if date is not None:
-        date_hash = date
-
-    filename = _hash("get_geo_list" + geo + date_hash)
-    insee_folder = _create_insee_folder()
-    file_localdata = insee_folder + "/" + filename
-
     RENAME = {
         "Intitule": "TITLE",
         "Type": "TYPE",

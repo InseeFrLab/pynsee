@@ -92,10 +92,6 @@ def get_local_data(
             _warning_nivgeo(_warning_nivgeo)
         elif nivgeo != "METRODOM":
             logger.warning("Please provide a list with geocodes argument !")
-
-    filename = _hash("".join([variables] + [dataset_version] + [nivgeo] + geocodes))
-    insee_folder = _create_insee_folder()
-    file_localdata = insee_folder + "/" + filename
     
     #
     # LATEST AVAILABLE DATASET OPTION

@@ -56,10 +56,7 @@ def get_ascending_area(
 
     params_hash = ["get_ascending_area", area, code, date, type]
     params_hash = [x if x else "_" for x in params_hash]
-    filename = _hash("".join(params_hash))
-    insee_folder = _create_insee_folder()
-    file_data = insee_folder + "/" + filename
-
+    
     INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
 
     api_link = INSEE_localdata_api_link + area + f"/{code}/ascendants?"
