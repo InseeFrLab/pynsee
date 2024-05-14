@@ -51,6 +51,6 @@ def get_old_city(code, date=None):
 
     except:
         logger.error("No data found !")
-        data_final = None
+        data_final = pd.DataFrame()
 
     return data_final
