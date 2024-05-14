@@ -11,8 +11,7 @@ from unidecode import unidecode
 from pynsee.sirene._clean_data import _clean_data
 from pynsee.sirene._request_sirene import _request_sirene
 from pynsee.sirene.SireneDataFrame import SireneDataFrame
-from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._hash import _hash
+from pynsee.utils.save_df import save_df
 
 import logging
 
@@ -34,7 +33,7 @@ def _warning_data_save():
         "Set update=True to trigger an update"
     )
 
-
+@save_df(day_lapse_max=30, obj=SireneDataFrame)
 def search_sirene(
     variable,
     pattern,
@@ -231,36 +230,7 @@ def search_sirene(
     list_var_string = [str(b) for b in [kind, number]]
     string = "".join(list_var_string)
 
-    filename = _hash(query + string)
-    insee_folder = _create_insee_folder()
-    file_sirene = insee_folder + "/" + filename
-
-    if (not os.path.exists(file_sirene)) or update:
-        data_final = _request_sirene(query=query, kind=kind, number=number)
-
-        data_final.to_pickle(file_sirene)
-        logger.info(f"Data saved: {file_sirene}")
-
-    else:
-        try:
-            data_final = pd.read_pickle(file_sirene)
-        except:
-            os.remove(file_sirene)
-
-            data_final = search_sirene(
-                variable=variable,
-                pattern=pattern,
-                kind=kind,
-                phonetic_search=phonetic_search,
-                number=number,
-                activity=activity,
-                legal=legal,
-                closed=closed,
-                update=True,
-            )
-
-        else:
-            _warning_data_save()
+    data_final = _request_sirene(query=query, kind=kind, number=number)
 
     df = _clean_data(
         data_final.copy(),
@@ -275,7 +245,5 @@ def search_sirene(
         df = df.reset_index(drop=True)
 
     _warning_search_sirene()
-
-    SireneDF = SireneDataFrame(df)
 
     return SireneDF
