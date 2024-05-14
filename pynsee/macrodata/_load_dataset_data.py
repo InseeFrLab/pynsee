@@ -14,7 +14,7 @@ def _load_dataset_data(update=False, silent=True):
 
     for dt in trange(len(list_dataset), desc='Metadata download'):    
         dataset = list_dataset[dt]
-        metadata = _get_dataset_metadata(dt, silent=True)
+        metadata = _get_dataset_metadata(dataset, silent=True)
         list_metadata += [metadata]        
     
     return pd.concat(list_metadata)

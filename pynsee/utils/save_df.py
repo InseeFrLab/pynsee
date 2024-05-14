@@ -19,7 +19,7 @@ def _warning_cached_data(file, mdate=None, day_lapse=None):
         strg_print += f"Creation date: {mdate:%Y-%m-%d}"
         
         if day_lapse >= 2:
-            strg_print += ", {day_lapse} days ago\n"
+            strg_print += f", {day_lapse} days ago\n"
         if day_lapse == 1:
             strg_print += ", yesterday\n"
         if day_lapse == 0:
