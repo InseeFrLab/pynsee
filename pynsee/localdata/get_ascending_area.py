@@ -11,6 +11,10 @@ import os
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.save_df import save_df
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 @save_df(day_lapse_max=90)
 def get_ascending_area(
     area: str,
