@@ -246,4 +246,4 @@ def search_sirene(
 
     _warning_search_sirene()
 
-    return SireneDF
+    return df
