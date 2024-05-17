@@ -72,7 +72,7 @@ class TestFunction(TestCase):
                 date="2020-01-01",
                 dateProjection="1900-01-01",
             )
-            test = test & (df is None)
+            test = test & (df == pd.DataFrame())
 
             df = get_area_projection(
                 area="commune",
