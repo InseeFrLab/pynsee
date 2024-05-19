@@ -125,7 +125,7 @@ class TestFunction(TestCase):
             os.environ['pynsee_idbank_file'] = "test"
             os.environ['pynsee_idbank_loop_url'] = "False"
             df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
-            test3 = test3 & isinstance(df, pd.DataFrame)
+            test3 = isinstance(df, pd.DataFrame)
             os.environ['pynsee_idbank_loop_url'] = "True"     
             
             self.assertTrue(test1 & test2 & test3)
