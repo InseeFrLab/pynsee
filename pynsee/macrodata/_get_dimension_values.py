@@ -10,7 +10,7 @@ from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.save_df import save_df
 
 @save_df(day_lapse_max=90)
-def _get_dimension_values(cl_dimension, update=False, silent=True):
+def _get_dimension_values(cl_dimension, update=False, silent=True, insee_date_test=None):
 
     INSEE_sdmx_link_codelist = "https://www.bdm.insee.fr/series/sdmx/codelist/FR1"
     INSEE_api_link_codelist = "https://api.insee.fr/series/BDM/V1/codelist/FR1"

@@ -34,6 +34,8 @@ from pynsee.utils._clean_insee_folder import _clean_insee_folder
 
 test_SDMX = True
 
+future_date = str(datetime.now() + timedelta(days=91))
+
 
 class TestFunction(TestCase):
 
@@ -112,19 +114,12 @@ class TestFunction(TestCase):
 
             # test automatic update of metadata, when older than 3 months
             df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-            os.environ['insee_date_test'] = str(
-                datetime.now() + timedelta(days=91))
-            df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+            df = _get_dataset_metadata('CLIMAT-AFFAIRES', insee_date_test=future_date)
             test1 = isinstance(df, pd.DataFrame)
 
             # test manual update of metadata
             df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
             test2 = isinstance(df, pd.DataFrame)
-
-            # test date provided manually error and switch to today
-            os.environ['insee_date_test'] = "a"
-            df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-            test3 = isinstance(df, pd.DataFrame)      
 
             # test idbank file download crash and backup internal data
             os.environ['pynsee_idbank_file'] = "test"
@@ -200,13 +195,10 @@ class TestFunction(TestCase):
         def test_get_dataset_dimension(self):
 
             df = _get_dataset_dimension('CLIMAT-AFFAIRES')
-            os.environ['insee_date_test'] = str(
-                datetime.now() + timedelta(days=91))
-            df = _get_dataset_dimension('CLIMAT-AFFAIRES')
+            df = _get_dataset_dimension('CLIMAT-AFFAIRES', insee_date_test=future_date)
             test1 = isinstance(df, pd.DataFrame)
 
             _clean_insee_folder()
-            os.environ['insee_date_test'] = ''
             df = _get_dataset_dimension('CLIMAT-AFFAIRES')
             test2 = isinstance(df, pd.DataFrame)
 
@@ -215,9 +207,7 @@ class TestFunction(TestCase):
         def test_get_dimension_values(self):
 
             df = _get_dimension_values('CL_PERIODICITE')
-            os.environ['insee_date_test'] = str(
-                datetime.now() + timedelta(days=91))
-            df = _get_dimension_values('CL_PERIODICITE')
+            df = _get_dimension_values('CL_PERIODICITE', insee_date_test=future_date)
 
             test1 = isinstance(df, pd.DataFrame)
             self.assertTrue(test1)
@@ -226,9 +216,7 @@ class TestFunction(TestCase):
 
             try:
                 df = _download_idbank_list()
-                os.environ['insee_date_test'] = str(
-                    datetime.now() + timedelta(days=91))
-                df = _download_idbank_list()
+                df = _download_idbank_list(insee_date_test=future_date)
             except:
                 df = pd.DataFrame({'test_backup': ['test_backup']})
 

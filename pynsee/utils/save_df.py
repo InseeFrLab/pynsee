@@ -52,13 +52,15 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
                 file_date_last_modif = datetime.datetime.fromtimestamp(
                     os.path.getmtime(file_name)
                 )
-                try:
-                    # only used for testing purposes
-                    insee_date_time_now = os.environ["insee_date_test"]
+
+                insee_date_time_now = kwargs.get("insee_date_test", False)
+                
+                if insee_date_time_now is not False:                    
+                                        
                     insee_date_time_now = datetime.datetime.strptime(
                         insee_date_time_now, "%Y-%m-%d %H:%M:%S.%f"
                     )
-                except:
+                else:
                     insee_date_time_now = datetime.datetime.now()
 
                 day_lapse = (insee_date_time_now - file_date_last_modif).days
