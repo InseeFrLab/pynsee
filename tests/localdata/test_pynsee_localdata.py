@@ -5,6 +5,7 @@ import time
 from unittest import TestCase
 import pandas as pd
 import sys
+import unittest
 from requests.exceptions import RequestException
 
 from pynsee.localdata._get_geo_relation import _get_geo_relation
@@ -29,7 +30,7 @@ class TestFunction(TestCase):
     
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
 
-    if version:
+    if True:
 
         def test_get_population(self):
             df = get_population()
@@ -75,7 +76,7 @@ class TestFunction(TestCase):
                 date="2020-01-01",
                 dateProjection="1900-01-01",
             )
-            test = test & (df == pd.DataFrame())
+            test = test & isinstance(df, pd.DataFrame) & (len(df.index) == 0)
             self.assertTrue(test)
 
         def test_get_area_projection3(self, test=True):
@@ -482,3 +483,6 @@ class TestFunction(TestCase):
             test = isinstance(data_final, pd.DataFrame)
 
             self.assertTrue(test)
+
+if __name__ == '__main__':
+    unittest.main()
