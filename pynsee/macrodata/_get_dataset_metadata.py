@@ -31,7 +31,7 @@ def _warning_error():
         )
 
 @save_df(day_lapse_max = 90)
-def _get_dataset_metadata(dataset, update=False, silent=True):
+def _get_dataset_metadata(dataset, update=False, silent=True, insee_date_test=None):
 
     try:
         idbank_list_dataset = _get_dataset_metadata_core(
