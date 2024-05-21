@@ -30,7 +30,7 @@ class TestFunction(TestCase):
     
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
 
-    if True:
+    if version:
 
         def test_get_population(self):
             df = get_population()
