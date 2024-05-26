@@ -37,7 +37,7 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
             data_folder = _create_insee_folder()
             string_file_arg = [str(kwargs[a]) for a in kwargs.keys() if a not in ['update', 'silent']]
             string_file_arg += [func.__name__] + [str(a) for a in args]            
-            file_name = data_folder + "/" + _hash(''.join(string_file_arg)) 
+            file_name = os.path.join(data_folder, _hash(''.join(string_file_arg)))
             
             if parquet:
                 file_name += ".parquet"
