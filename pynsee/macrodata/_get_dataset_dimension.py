@@ -32,7 +32,7 @@ def _get_dataset_dimension(dataset, update=False, silent=True, insee_date_test=N
     # create temporary directory
     dirpath = _get_temp_dir()
 
-    dataset_dimension_file = dirpath + "\\dataset_dimension_file"
+    dataset_dimension_file = os.path.join(dirpath, "dataset_dimension_file")
 
     with open(dataset_dimension_file, "wb") as f:
         f.write(results.content)
