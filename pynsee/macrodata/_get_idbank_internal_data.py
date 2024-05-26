@@ -21,7 +21,7 @@ def _get_idbank_internal_data(update=False, silent=True):
     )
 
     temp_folder = _get_temp_dir()
-    data_file = temp_folder + "/" + "idbank_list_internal.csv"
+    data_file = os.path.join(temp_folder, "idbank_list_internal.csv")
 
     with zipfile.ZipFile(zip_file, "r") as zip_ref:
         zip_ref.extractall(temp_folder)
