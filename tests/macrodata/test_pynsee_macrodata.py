@@ -34,7 +34,7 @@ from pynsee.utils._clean_insee_folder import _clean_insee_folder
 
 test_SDMX = True
 
-future_date = str(datetime.now() + timedelta(days=91))
+future_date = datetime.now() + timedelta(days=91)
 
 
 class TestFunction(TestCase):
