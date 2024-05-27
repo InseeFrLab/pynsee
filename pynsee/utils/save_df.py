@@ -78,9 +78,7 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
                         warnings.warn(str(e))
                         warnings.warn(f'Error, file not saved:\n{file_name}\n{df}')
                         warnings.warn('\n')
-                    
-                    df = obj(df) 
-                    
+                                        
                     if not silent:
                         logger.info(f"Data saved:\n{file_name}")
 
@@ -102,8 +100,7 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
                         
                         warnings.warn('!!! Unable to load data, function retriggered !!!')
                         
-                        df = func(*args, **kwargs2)
-                        df = obj(df)   
+                        df = func(*args, **kwargs2)                         
                     else:
                         if not silent:
                             
@@ -112,8 +109,7 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
                             _warning_cached_data(file_name,
                                                  mdate= mdate,
                                                  day_lapse=day_lapse)
-                        df = obj(df)            
             
-            return df
+            return obj(df)  
         return wrapper
     return decorator
