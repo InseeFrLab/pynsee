@@ -1,21 +1,23 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from functools import lru_cache
 import os
 import xml.etree.ElementTree as ET
 import pandas as pd
 from tqdm import trange
 
 from pynsee.macrodata._get_dataset_list_internal import _get_dataset_list_internal
+
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._get_temp_dir import _get_temp_dir
+from pynsee.utils.save_df import save_df
 
 import logging
 logger = logging.getLogger(__name__)
 
-@lru_cache(maxsize=None)
-def get_dataset_list():
+
+@save_df(day_lapse_max=30)
+def get_dataset_list(update=False, silent=False):
     """Download a full INSEE's datasets list from BDM macroeconomic database
 
     Returns:

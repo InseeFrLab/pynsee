@@ -5,12 +5,11 @@ import datetime
 from functools import lru_cache
 
 from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.save_df import save_df
 
 import logging
 
 logger = logging.getLogger(__name__)
-
-
 @lru_cache(maxsize=None)
 def _warning_get_area_projection():
     logger.info(
@@ -19,7 +18,7 @@ def _warning_get_area_projection():
     )
 
 
-@lru_cache(maxsize=None)
+@save_df(day_lapse_max=90)
 def get_area_projection(
     area: str, code: str, date: str, dateProjection: str = None
 ):
@@ -89,6 +88,6 @@ def get_area_projection(
             f"No data found for projection of area {area} of code {code} "
             f"from date {date} to date {dateProjection}"
         )
-        data = None
+        data = pd.DataFrame()
 
     return data

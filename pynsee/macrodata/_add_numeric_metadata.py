@@ -18,7 +18,7 @@ def _add_numeric_metadata(data):
 
     for col in list_numeric_col_metadata:
         cl_col = "CL_" + col
-        df = _get_dimension_values(cl_col)
+        df = _get_dimension_values(cl_col, silent=True)
 
         df = df[df["id"] != cl_col]
 

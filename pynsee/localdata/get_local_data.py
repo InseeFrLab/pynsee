@@ -13,8 +13,7 @@ import datetime
 from pynsee.localdata._find_latest_local_dataset import _find_latest_local_dataset
 from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
 from pynsee.localdata.get_geo_list import get_geo_list
-from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._hash import _hash
+from pynsee.utils.save_df import save_df
 
 import logging
 logger = logging.getLogger(__name__)
@@ -30,9 +29,9 @@ def _warning_nivgeo(nivgeo):
     elif nivgeo == "FE":
         logger.info("By default, the query is on all France territory")
 
-
+@save_df(day_lapse_max=90)
 def get_local_data(
-    variables, dataset_version, nivgeo="FE", geocodes=["1"], update=False
+    variables, dataset_version, nivgeo="FE", geocodes=["1"], update=False, silent=False
 ):
     """Get INSEE local numeric data
 
@@ -93,10 +92,6 @@ def get_local_data(
             _warning_nivgeo(_warning_nivgeo)
         elif nivgeo != "METRODOM":
             logger.warning("Please provide a list with geocodes argument !")
-
-    filename = _hash("".join([variables] + [dataset_version] + [nivgeo] + geocodes))
-    insee_folder = _create_insee_folder()
-    file_localdata = insee_folder + "/" + filename
     
     #
     # LATEST AVAILABLE DATASET OPTION
@@ -108,50 +103,26 @@ def get_local_data(
         
         dataset_version = _find_latest_local_dataset(dataset_version, variables, nivgeo, geocodes[0], update)
        
-    if (not os.path.exists(file_localdata)) or update:
-
-        list_data_all = []       
+    list_data_all = []       
+    
+    for cdg in trange(len(geocodes), desc="Getting data"):
         
-        for cdg in trange(len(geocodes), desc="Getting data"):
-            
-            codegeo = geocodes[cdg]
-            df_default = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": np.nan}, index=[0])
-            
-            try:
-                df = _get_insee_local_onegeo(
-                    variables, dataset_version, nivgeo, codegeo
-                )
-                
-            except Exception as e:
-                #display(e)
-                df = df_default
-
-            list_data_all.append(df)
-
-        data_final = pd.concat(list_data_all).reset_index(drop=True)
+        codegeo = geocodes[cdg]
+        df_default = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": np.nan}, index=[0])
         
-        if data_final.equals(df_default):
-            logger.error("Error or no data found !")            
-        else:
-            data_final.to_pickle(file_localdata)
-            logger.info(f"Data saved: {file_localdata}")
-            
-    else:
         try:
-            data_final = pd.read_pickle(file_localdata)
-        except:
-            os.remove(file_localdata)
-            data_final = get_local_data(
-                variables=variables,
-                dataset_version=dataset_version,
-                nivgeo=nivgeo,
-                geocodes=geocodes,
-                update=True,
+            df = _get_insee_local_onegeo(
+                variables, dataset_version, nivgeo, codegeo
             )
-        else:
-            logger.info(
-                "Locally saved data has been used\n"
-                "Set update=True to trigger an update"
-            )
+            
+        except Exception as e:
+            df = df_default
 
+        list_data_all.append(df)
+
+    data_final = pd.concat(list_data_all).reset_index(drop=True)
+    
+    if data_final.equals(df_default):
+        logger.error("Error or no data found !")  
+           
     return data_final

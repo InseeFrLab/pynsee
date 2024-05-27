@@ -6,18 +6,19 @@ import pandas as pd
 from pynsee.macrodata._download_idbank_list import _download_idbank_list
 from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
+from pynsee.utils.save_df import save_df
 
-
-def _get_dataset_metadata_core(dataset, update=False):
+@save_df(day_lapse_max=90)
+def _get_dataset_metadata_core(dataset, update=False, silent=True):
 
     # from pynsee.macrodata._get_dataset_metadata_core import _get_dataset_metadata_core
     # test1 = _get_dataset_metadata_core('IPC-2015', update=True)
     # test2 = _get_dataset_metadata_core('IRL', update=True)
 
-    idbank_list = _download_idbank_list(update=update)
+    idbank_list = _download_idbank_list(update=update, silent=True)
 
     # get dataset's dimensions
-    dataset_dimension = _get_dataset_dimension(dataset, update=update).reset_index(
+    dataset_dimension = _get_dataset_dimension(dataset, update=update, silent=True).reset_index(
         drop=True
     )
 
@@ -48,7 +49,7 @@ def _get_dataset_metadata_core(dataset, update=False):
         dim_local_rep = dataset_dimension["local_representation"].iloc[irow]
 
         # get dimension values #
-        dim_values = _get_dimension_values(dim_local_rep, update=update)
+        dim_values = _get_dimension_values(dim_local_rep, update=update, silent=True)
 
         # drop dimension label
         dim_values = dim_values[dim_values["id"] != dim_local_rep]

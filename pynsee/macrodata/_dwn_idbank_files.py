@@ -10,6 +10,8 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import warnings
 
+import logging
+logger = logging.getLogger(__name__)
 
 def _dwn_idbank_files():
     # creating the date object of today's date
@@ -75,10 +77,11 @@ def _dwn_idbank_files():
             try:
                 data = _dwn_idbank_file(file_to_dwn=files[i], session=session)
             except Exception:
-                # print(f'!!! File not found:\n{files[i]}')
                 idbank_file_not_found = True
             else:
                 idbank_file_not_found = False
+                strg_print = f"Macrodata series update, file used:\n{files[i]}"
+                logger.info(strg_print)
             i += 1
 
     return data

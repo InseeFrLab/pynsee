@@ -7,11 +7,15 @@ import math
 from pynsee.macrodata._get_insee import _get_insee
 from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata
 from pynsee.macrodata._load_dataset_data import _load_dataset_data
+
 from pynsee.utils._paste import _paste
+from pynsee.utils.save_df import save_df
 
-
+@save_df(day_lapse_max=30)
 def get_series(
     *idbanks,
+    update=False,
+    silent=False,
     metadata=True,
     startPeriod=None,
     endPeriod=None,
@@ -24,6 +28,9 @@ def get_series(
 
     Args:
         idbanks (str or list or pd.series) : some idbanks provided by get_idbank_list()
+
+        update (bool, optional): Set to True, to update manually the data
+        stored locally on the computer. Defaults to False.
 
         metadata (bool, optional): If True, some metadata is added to the data
 
@@ -125,11 +132,10 @@ def get_series(
 
         if len(list_addded_param) > 0:
             sdmx_query = sdmx_query + added_param_string
-            # api_query = api_query + "/" + added_param_string
             api_query = api_query + added_param_string
 
         df = _get_insee(
-            api_query=api_query,  # api_query
+            api_query=api_query,  
             sdmx_query=sdmx_query,
             step=str("{0}/{1}").format(q + 1, max_seq_idbank),
         )
@@ -149,6 +155,9 @@ def get_series(
                 metadata_df = metadata_df[
                     metadata_df["IDBANK"].isin(list_idbank_data)
                 ].reset_index(drop=True)
+
+                list_col = ['IDBANK'] + [c for c in metadata_df.columns if c not in data]
+                metadata_df = metadata_df[list_col]
 
                 data = data.merge(metadata_df, on="IDBANK", how="left")
 

@@ -7,8 +7,10 @@ import re
 from pynsee.macrodata.get_dataset_list import get_dataset_list
 from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
 
+from pynsee.utils.save_df import save_df
 
-def get_series_list(*datasets, update=False):
+@save_df(day_lapse_max=30)
+def get_series_list(*datasets, update=False, silent=False):
     """Download an INSEE's series key list for one or several datasets from BDM macroeconomic database
 
     Args:
@@ -16,6 +18,8 @@ def get_series_list(*datasets, update=False):
 
         update (bool, optional): Set to True, to update manually the metadata
         stored locally on the computer. Defaults to False.
+
+        silent (bool, optional): Set to True, to disable messages printed in log info.
 
     Raises:
         ValueError: datasets should be among the datasets list provided by get_dataset_list()
@@ -31,7 +35,7 @@ def get_series_list(*datasets, update=False):
         >>> dataset_list = get_dataset_list()
         >>> idbank_ipc = get_series_list('IPC-2015', 'CLIMAT-AFFAIRES')
     """
-    insee_dataset = get_dataset_list()
+    insee_dataset = get_dataset_list(silent=True)
     insee_dataset_list = insee_dataset["id"].to_list()
 
     if len(datasets) == 1:
@@ -48,7 +52,7 @@ def get_series_list(*datasets, update=False):
     idbank_list_dataset = []
 
     for dt in datasets:
-        idbank_list_dt = _get_dataset_metadata(dt, update=update)
+        idbank_list_dt = _get_dataset_metadata(dt, update=update, silent=True)
 
         idbank_list_dataset.append(idbank_list_dt)
 
