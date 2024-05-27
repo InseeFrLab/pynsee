@@ -25,7 +25,7 @@ def get_dataset(
 ):
     """Get dataset's data from INSEE BDM database
 
-    Args:        
+    Args:
         dataset (str): an INSEE dataset included in the list provided by get_dataset_list()
 
         update (bool, optional): Set to True, to update manually the data stored locally on the computer. Defaults to False.

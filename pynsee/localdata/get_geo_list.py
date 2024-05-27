@@ -69,7 +69,7 @@ def get_geo_list(geo=None, date=None, update=False, silent=False):
     }
 
     reg = _get_geo_list_simple("regions", date=date, progress_bar=True)
-reg["DateSuppression"] = reg.get("DateSuppression", np.nan)
+    reg["DateSuppression"] = reg.get("DateSuppression", np.nan)
 
     reg = reg.rename(RENAME, axis=1)
 
