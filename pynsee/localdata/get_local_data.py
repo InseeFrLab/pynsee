@@ -116,7 +116,6 @@ def get_local_data(
             )
             
         except Exception as e:
-            #display(e)
             df = df_default
 
         list_data_all.append(df)

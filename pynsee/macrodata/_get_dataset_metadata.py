@@ -52,5 +52,3 @@ def _get_dataset_metadata(dataset, update=False, silent=True, insee_date_test=No
         idbank_list_dataset = idbank_list_dataset.reset_index(drop=True)
 
     return idbank_list_dataset
-        
-    

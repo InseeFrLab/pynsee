@@ -1,6 +1,7 @@
 import zipfile
 import pkg_resources
 import pandas as pd
+import os
 
 from pynsee.utils.save_df import save_df
 from pynsee.utils._get_temp_dir import _get_temp_dir
@@ -11,7 +12,7 @@ def _get_dataset_list_internal():
     zip_file = pkg_resources.resource_stream(__name__, "data/dataset_list_internal.zip")
 
     temp_folder = _get_temp_dir()
-    dataset_file = temp_folder + "/" + "dataset_list_internal.csv"
+    dataset_file = os.path.join(temp_folder, "dataset_list_internal.csv")
 
     with zipfile.ZipFile(zip_file, "r") as zip_ref:
         zip_ref.extractall(temp_folder)

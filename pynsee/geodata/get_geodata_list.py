@@ -51,7 +51,6 @@ def get_geodata_list(update=False, silent=False):
             data_list.rename(columns={"Name": "Identifier"}, inplace=True)
 
         data_list["DataFormat"] = format
-        #data_list["Topic"] = topic
         data_list["ApiVersion"] = version
 
     data_all = data_list.reset_index(drop=True)
