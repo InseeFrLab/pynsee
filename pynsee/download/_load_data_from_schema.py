@@ -136,4 +136,17 @@ def _load_data_from_schema(
             usecols=variables,
         )
 
+    list_files = [file_to_import]
+    try:
+        if telechargementFichier["result"]["zip"] is True:
+            list_files += [dataPathFile,
+                           f"{zipDirectory}/" + telechargementFichier["file_archive"],
+                           telechargementFichier["file_archive"]]
+        
+        for f in list_files:
+            if os.path.exists(f):
+                os.remove(f)
+    except:
+        pass
+
     return df_insee

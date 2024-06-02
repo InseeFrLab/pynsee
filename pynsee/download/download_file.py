@@ -1,8 +1,14 @@
+
+import warnings 
+import pandas as pd
+
 from pynsee.download._download_store_file import _download_store_file
 from pynsee.download._load_data_from_schema import _load_data_from_schema
 
+from pynsee.utils.save_df import save_df
 
-def download_file(id, variables=None, update=False):
+@save_df(day_lapse_max=90)
+def download_file(id, variables=None, update=False, silent=False):
     """User level function to download files from insee.fr
 
     Args:
@@ -27,6 +33,8 @@ def download_file(id, variables=None, update=False):
         dwn = _download_store_file(id, update=update)
         df = _load_data_from_schema(dwn, variables=variables)
 
-        return df
     except:
-        raise ValueError("Download failed")
+         warnings.warn("Download failed")
+         df = pd.DataFrame()
+
+    return df
