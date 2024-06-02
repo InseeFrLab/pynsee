@@ -140,7 +140,7 @@ def _load_data_from_schema(
     
     if telechargementFichier["result"]["zip"] is True:
         list_files += [dataPathFile,
-                       os.path.join(f"{zipDirectory}", telechargementFichier["file_archive"]0,
+                       os.path.join(f"{zipDirectory}", telechargementFichier["file_archive"]),
                        telechargementFichier["file_archive"]]
     
     for f in list_files:
