@@ -12,7 +12,7 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.utils._warning_cached_data import _warning_cached_data
-
+from pynsee.utils.requests_params import _get_requests_proxies
 
 def _get_location_openstreetmap(query, session=None, update=False):
 
@@ -37,10 +37,7 @@ def _get_location_openstreetmap(query, session=None, update=False):
 
     headers = {"User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")}
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except Exception:
-        proxies = {"http": "", "https": ""}
+    proxies = _get_requests_proxies()
 
     data = None
 

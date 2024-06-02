@@ -5,14 +5,12 @@ import requests
 import urllib3
 from functools import lru_cache
 
+from pynsee.utils.requests_params import _get_requests_proxies
 
 @lru_cache(maxsize=None)
 def _get_envir_token():
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = _get_requests_proxies()
 
     try:
         token = os.environ["insee_token"]

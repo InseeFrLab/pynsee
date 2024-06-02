@@ -5,6 +5,8 @@ import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+from pynsee.utils.requests_params import _get_requests_proxies
+
 def _download_pb(url: str, fname: str, total: int = None):
     """Useful function to get request with a progress bar
 
@@ -16,10 +18,7 @@ def _download_pb(url: str, fname: str, total: int = None):
         fname {str} -- Destination where data will be written
     """
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = _get_requests_proxies()
 
     resp = requests.get(url, proxies=proxies, stream=True, verify=False)
 

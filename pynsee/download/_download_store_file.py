@@ -46,7 +46,8 @@ def _download_store_file(id: str, update: bool):
 
         raise ValueError(error_message)
         
-    filename = tempfile.mkdtemp() + "tempfile"
+    filename = os.path.join(tempfile.mkdtemp(), "tempfile")
+    
     url_found = _check_url(caract["lien"])
 
     _download_pb(url=url_found, fname=filename, total=caract["size"])
