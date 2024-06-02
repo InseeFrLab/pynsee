@@ -30,7 +30,7 @@ class TestFunction(TestCase):
     if not version_3_8:
 
         def test_find_wfs_closest_match(self):            
-            self.asserTrue(isinstance(_find_wfs_closest_match(), str)
+            self.asserTrue(isinstance(_find_wfs_closest_match(), str))
 
         def test_get_geodata_with_backup(self):
             df = _get_geodata_with_backup("ADMINEXPRESS-COG.LATEST:departement")
