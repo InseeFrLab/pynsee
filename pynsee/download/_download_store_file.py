@@ -2,16 +2,12 @@ import hashlib
 import warnings
 import difflib
 import os
+import tempfile
 
 from pynsee.download._download_pb import _download_pb
 from pynsee.download._import_options import _import_options
 from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.download._check_url import _check_url
-
-from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._hash import _hash
-from pynsee.utils._warning_cached_data import _warning_cached_data
-
 
 def _download_store_file(id: str, update: bool):
     """Download requested file and return some metadata that will
@@ -49,18 +45,12 @@ def _download_store_file(id: str, update: bool):
                 potential values are: {suggestions}"
 
         raise ValueError(error_message)
+        
+    filename = os.path.join(tempfile.mkdtemp(), "tempfile")
+    
+    url_found = _check_url(caract["lien"])
 
-    insee_folder = _create_insee_folder()
-    filename = insee_folder + "/" + _hash("pynsee.download" + id)
-
-    if (not os.path.exists(filename)) or update:
-
-        url_found = _check_url(caract["lien"])
-
-        _download_pb(url=url_found, fname=filename, total=caract["size"])
-
-    else:
-        _warning_cached_data(filename)
+    _download_pb(url=url_found, fname=filename, total=caract["size"])
 
     # CHECKSUM MD5 ------------------------------------------
 

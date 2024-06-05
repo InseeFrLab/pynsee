@@ -26,7 +26,7 @@ def _get_dimension_values(cl_dimension, update=False, silent=True, insee_date_te
     # create temporary directory
     dirpath = _get_temp_dir()
 
-    dimension_file = dirpath + "\\dimension_file"
+    dimension_file = os.path.join(dirpath, "dimension_file")
 
     with open(dimension_file, "wb") as f:
         f.write(results.content)

@@ -23,7 +23,7 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
 
     results = _request_insee(api_url=api_query, sdmx_url=sdmx_query)
 
-    raw_data_file = dirpath + "\\" + "raw_data_file"
+    raw_data_file = os.path.join(dirpath, "raw_data_file")
 
     with open(raw_data_file, "wb") as f:
         f.write(results.content)

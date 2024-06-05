@@ -159,7 +159,10 @@ class TestFunction(TestCase):
             data = get_dataset("CHOMAGE-TRIM-NATIONAL",
                                filter="T.HALO.VALEUR_ABSOLUE.FR-D976.1.15-24.INDIVIDUS.CVS.FALSE",
                                lastNObservations=1)
-            self.assertTrue(isinstance(data, pd.DataFrame))
+            
+            data1 = get_dataset("CNA-2014-TEI", filter="A.CNA_CONSO_INTERMEDIAIRE.A38-PZ.A38-CJ.VALEUR_ABSOLUE.FE.EUROS_COURANTS.BRUT", update=True)
+
+            self.assertTrue(isinstance(data, pd.DataFrame) & isinstance(data1, pd.DataFrame))
 
         # def test_get_dataset_3(self):
         #     data1 = get_dataset(

@@ -28,14 +28,8 @@ def _create_insee_folder():
         if not os.path.exists(insee_folder):
             os.mkdir(insee_folder)
 
-        # create internal folder
-        # if folder is not None:
-        #     insee_folder = insee_folder + '/' + folder
-        #     if not os.path.exists(insee_folder):
-        #         os.mkdir(insee_folder)
-
         # test if saving a file is possible
-        test_file = insee_folder + "/" + _hash("test_file")
+        test_file = os.path.join(insee_folder, _hash("test_file"))
         with open(test_file, "w") as f:
             f.write("")
             f.close()

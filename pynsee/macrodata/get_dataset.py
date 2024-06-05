@@ -77,8 +77,8 @@ def get_dataset(
     api_query = INSEE_api_link_idbank + dataset
 
     if filter is not None:
-        sdmx_query = sdmx_query + "/" + str(filter)
-        api_query = api_query + "/" + str(filter)
+        sdmx_query = sdmx_query + "/" + str(filter) + "."
+        api_query = api_query + "/" + str(filter) + "."
 
     parameters = [
         "startPeriod",

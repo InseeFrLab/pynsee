@@ -51,8 +51,8 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
     """
     logger.debug("SHOULD GET LOGGING")
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    home = str(Path.home())
-    pynsee_credentials_file = home + "/" + "pynsee_credentials.csv"
+    home = Path.home()
+    pynsee_credentials_file = os.path.join(home, "pynsee_credentials.csv")
 
     d = pd.DataFrame(
         {
@@ -141,5 +141,5 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
             "Subscription to all INSEE's APIs has been successfull\n"
             "Unless the user wants to change key or secret, using this "
             "function is no longer needed as the credentials to get the token "
-            "have been saved locally here:\n" + pynsee_credentials_file
+            "have been saved locally here:\n" + str(pynsee_credentials_file)
         )
