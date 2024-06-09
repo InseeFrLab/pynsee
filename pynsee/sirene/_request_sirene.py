@@ -29,7 +29,7 @@ def _request_sirene(query, kind, number=1001):
     else:
         raise ValueError("!!! kind should be among : siren siret !!!")
 
-    INSEE_api_sirene_siren = "https://api.insee.fr/entreprises/sirene/V3"
+    INSEE_api_sirene_siren = "https://api.insee.fr/entreprises/sirene/V3.11"
     number_query_limit = 1000
 
     number_query = min(number_query_limit, number)
