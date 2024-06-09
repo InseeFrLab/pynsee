@@ -1,27 +1,20 @@
 import os
 import pandas as pd
+from tqdm import trange
 
-from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._hash import _hash
 from pynsee.macrodata.get_dataset_list import get_dataset_list
+from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
+from pynsee.utils.save_df import save_df
 
-def _del_dataset_files():
-    list_dataset_files = _get_dataset_files()
-    if len(list_dataset_files) > 0:
-        for f in list_dataset_files:
-            os.remove(f)
+@save_df(day_lapse_max=90)
+def _load_dataset_data(update=False, silent=True):
+    
+    list_dataset = list(get_dataset_list(silent=True).id.unique())
+    list_metadata = []
 
-def _get_dataset_files():
-    list_dataset = list(get_dataset_list().id.unique())
-    insee_folder = _create_insee_folder()
-    file_dataset_metadata_list = [insee_folder + "/" + _hash("idbank_list" + dt) for dt in list_dataset] 
-    file_dataset_metadata_list_exist = [f for f in file_dataset_metadata_list if os.path.exists(f)]
-    return file_dataset_metadata_list_exist
-
-def _load_dataset_data():
-    list_dataset_files = _get_dataset_files()
-    if len(list_dataset_files) > 0:
-        return pd.concat([pd.read_pickle(f) for f in list_dataset_files])
-    else:
-        return None
-
+    for dt in trange(len(list_dataset), desc='Metadata download'):    
+        dataset = list_dataset[dt]
+        metadata = _get_dataset_metadata(dataset, silent=True)
+        list_metadata += [metadata]        
+    
+    return pd.concat(list_metadata)

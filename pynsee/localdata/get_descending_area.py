@@ -6,18 +6,15 @@ Created on Wed Feb  1 13:52:54 2023
 """
 
 import pandas as pd
-from functools import lru_cache
 import os
 
 from pynsee.utils._request_insee import _request_insee
-from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._hash import _hash
+from pynsee.utils.save_df import save_df
 
 import logging
 logger = logging.getLogger(__name__)
 
-
-@lru_cache(maxsize=None)
+@save_df(day_lapse_max=90)
 def get_descending_area(
     area: str,
     code: str,
@@ -62,56 +59,36 @@ def get_descending_area(
 
     params_hash = ["get_descending_area", area, code, date, type]
     params_hash = [x if x else "_" for x in params_hash]
-    filename = _hash("".join(params_hash))
-    insee_folder = _create_insee_folder()
-    file_data = insee_folder + "/" + filename
+    
+    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
 
-    if (not os.path.exists(file_data)) or update:
-        INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
+    api_link = INSEE_localdata_api_link + area + f"/{code}/descendants?"
 
-        api_link = INSEE_localdata_api_link + area + f"/{code}/descendants?"
+    params = []
+    if date is not None:
+        params.append(f"date={date}")
+    if type is not None:
+        params.append(f"type={type}")
 
-        params = []
-        if date is not None:
-            params.append(f"date={date}")
-        if type is not None:
-            params.append(f"type={type}")
+    api_link = api_link + "&".join(params)
 
-        api_link = api_link + "&".join(params)
+    request = _request_insee(
+        api_url=api_link, file_format="application/json"
+    )
 
-        request = _request_insee(
-            api_url=api_link, file_format="application/json"
-        )
+    try:
+        data = request.json()
 
-        try:
-            data = request.json()
+        list_data = []
 
-            list_data = []
+        for i in range(len(data)):
+            df = pd.DataFrame(data[i], index=[0])
+            list_data.append(df)
 
-            for i in range(len(data)):
-                df = pd.DataFrame(data[i], index=[0])
-                list_data.append(df)
+        data_final = pd.concat(list_data).reset_index(drop=True)
 
-            data_final = pd.concat(list_data).reset_index(drop=True)
-
-            data_final.to_pickle(file_data)
-            print(f"Data saved: {file_data}")
-
-        except Exception:
-            logger.error("No data found !")
-            data_final = None
-    else:
-        try:
-            data_final = pd.read_pickle(file_data)
-        except Exception:
-            os.remove(file_data)
-            data_final = get_descending_area(
-                area=area, code=code, date=date, type=type, update=True
-            )
-        else:
-            logger.info(
-                "Locally saved data has been used\n"
-                "Set update=True to trigger an update"
-            )
+    except Exception:
+        logger.error("No data found !")
+        data_final = pd.DataFrame()    
 
     return data_final

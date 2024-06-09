@@ -25,9 +25,7 @@ def _get_requests_session():
 
 def _get_requests_proxies():
     
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = {"http": os.environ.get("http_proxy", ""),
+               "https": os.environ.get("https_proxy", "")}
         
     return proxies

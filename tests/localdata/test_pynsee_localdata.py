@@ -5,6 +5,7 @@ import time
 from unittest import TestCase
 import pandas as pd
 import sys
+import unittest
 from requests.exceptions import RequestException
 
 from pynsee.localdata._get_geo_relation import _get_geo_relation
@@ -58,13 +59,16 @@ class TestFunction(TestCase):
             test = test & isinstance(df, pd.DataFrame)
             self.assertTrue(test)
 
-        def test_get_area_projection(self):
+        def test_get_area_projection1(self):
             test = True
             df = get_area_projection(
                 area="commune", code="01039", date="2020-01-01"
             )
             test = test & isinstance(df, pd.DataFrame)
             test = test & (df.loc[0, "code"] == "01138")
+            self.assertTrue(test)
+
+        def test_get_area_projection2(self, test=True):
 
             df = get_area_projection(
                 area="commune",
@@ -72,7 +76,10 @@ class TestFunction(TestCase):
                 date="2020-01-01",
                 dateProjection="1900-01-01",
             )
-            test = test & (df is None)
+            test = test & isinstance(df, pd.DataFrame) & (len(df.index) == 0)
+            self.assertTrue(test)
+
+        def test_get_area_projection3(self, test=True):
 
             df = get_area_projection(
                 area="commune",
@@ -82,6 +89,9 @@ class TestFunction(TestCase):
             )
             test = test & isinstance(df, pd.DataFrame)
             test = test & (df.loc[0, "code"] == "01138")
+            self.assertTrue(test)
+
+        def test_get_area_projection4(self, test=True):
 
             df = get_area_projection(
                 area="commune",
@@ -91,6 +101,9 @@ class TestFunction(TestCase):
             )
             test = test & isinstance(df, pd.DataFrame)
             test = test & (df.loc[0, "code"] == "01039")
+            self.assertTrue(test)
+
+        def test_get_area_projection5(self, test=True):
 
             df = get_area_projection(
                 area="departement",
@@ -98,6 +111,9 @@ class TestFunction(TestCase):
                 date="2020-01-01",
             )
             test = test & isinstance(df, pd.DataFrame)
+            self.assertTrue(test)
+
+        def test_get_area_projection6(self, test=True):
 
             df = get_area_projection(
                 area="arrondissement",
@@ -105,6 +121,9 @@ class TestFunction(TestCase):
                 date="2020-01-01",
             )
             test = test & isinstance(df, pd.DataFrame)
+            self.assertTrue(test)
+
+        def test_get_area_projection7(self, test=True):
 
             df = get_area_projection(
                 area="arrondissementmunicipal",
@@ -112,6 +131,9 @@ class TestFunction(TestCase):
                 date="2020-01-01",
             )
             test = test & isinstance(df, pd.DataFrame)
+            self.assertTrue(test)
+
+        def test_get_area_projection8(self, test=True):
 
             df = get_area_projection(
                 area="arrondissementMunicipal",
@@ -119,6 +141,9 @@ class TestFunction(TestCase):
                 date="2020-01-01",
             )
             test = test & isinstance(df, pd.DataFrame)
+            self.assertTrue(test)
+
+        def test_get_area_projection9(self, test=True):
 
             df = get_area_projection(
                 area="region",
@@ -126,12 +151,16 @@ class TestFunction(TestCase):
                 date="2020-01-01",
             )
             test = test & isinstance(df, pd.DataFrame)
+            self.assertTrue(test)
+
+        def test_get_area_projection10(self, test=True):
 
             df = get_area_projection(
                 area="intercommunalite",
                 code="200046977",
                 date="2020-01-01",
             )
+            test = test & isinstance(df, pd.DataFrame)
             self.assertTrue(test)
 
         def test_get_area_projection_dummy(self):
@@ -454,3 +483,6 @@ class TestFunction(TestCase):
             test = isinstance(data_final, pd.DataFrame)
 
             self.assertTrue(test)
+
+if __name__ == '__main__':
+    unittest.main()

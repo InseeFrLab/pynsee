@@ -6,14 +6,10 @@ import os
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._paste import _paste
-from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._hash import _hash
+from pynsee.utils.save_df import save_df
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-def get_area_list(area=None, date=None, update=False):
+@save_df(day_lapse_max=90)
+def get_area_list(area=None, date=None, update=False, silent=False):
     """Get an exhaustive list of administrative areas : communes, departments, and urban, employment or functional areas
 
     Args:
@@ -79,60 +75,37 @@ def get_area_list(area=None, date=None, update=False):
         else:
             list_available_area = [area]
 
-    filename = _hash(
-        "".join(["get_area_list"] + list_available_area + [date or ""])
-    )
+    list_data = []
 
-    insee_folder = _create_insee_folder()
-    file_data = insee_folder + "/" + filename
+    for a in list_available_area:
+        api_url = "https://api.insee.fr/metadonnees/V1/geo/" + a
+        if date:
+            api_url += f"?date={date}"
 
-    if (not os.path.exists(file_data)) or update:
-        list_data = []
-
-        for a in list_available_area:
-            api_url = "https://api.insee.fr/metadonnees/V1/geo/" + a
-            if date:
-                api_url += f"?date={date}"
-
-            request = _request_insee(
-                api_url=api_url, file_format="application/json"
-            )
-
-            data = request.json()
-
-            for i in range(len(data)):
-                df = pd.DataFrame(data[i], index=[0])
-                list_data.append(df)
-
-        data_all = pd.concat(list_data).reset_index(drop=True)
-
-        data_all.rename(
-            columns={
-                "code": "CODE",
-                "uri": "URI",
-                "dateCreation": "DATE_CREATION",
-                "intituleSansArticle": "TITLE_SHORT",
-                "type": "AREA_TYPE",
-                "typeArticle": "DETERMINER_TYPE",
-                "intitule": "TITLE",
-                "dateSuppression": "DATE_DELETION",
-            },
-            inplace=True,
+        request = _request_insee(
+            api_url=api_url, file_format="application/json"
         )
-        data_all.to_pickle(file_data)
 
-        logger.info(f"Data saved: {file_data}")
+        data = request.json()
 
-    else:
-        try:
-            data_all = pd.read_pickle(file_data)
-        except Exception:
-            os.remove(file_data)
-            data_all = get_area_list(area=area, update=True)
-        else:
-            logger.info(
-                "Locally saved data has been used\n"
-                "Set update=True to trigger an update"
-            )
+        for i in range(len(data)):
+            df = pd.DataFrame(data[i], index=[0])
+            list_data.append(df)
+
+    data_all = pd.concat(list_data).reset_index(drop=True)
+
+    data_all.rename(
+        columns={
+            "code": "CODE",
+            "uri": "URI",
+            "dateCreation": "DATE_CREATION",
+            "intituleSansArticle": "TITLE_SHORT",
+            "type": "AREA_TYPE",
+            "typeArticle": "DETERMINER_TYPE",
+            "intitule": "TITLE",
+            "dateSuppression": "DATE_DELETION",
+        },
+        inplace=True,
+    )
 
     return data_all

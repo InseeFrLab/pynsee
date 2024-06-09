@@ -7,6 +7,7 @@ import base64
 import os
 
 from functools import lru_cache
+from pynsee.utils.requests_params import _get_requests_proxies
 
 import logging
 logger = logging.getLogger(__name__)
@@ -24,10 +25,7 @@ def _get_token_from_insee(insee_key, insee_secret):
 
     data = {"grant_type": "client_credentials"}
 
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
+    proxies = _get_requests_proxies()
 
     try:
         response = requests.post(

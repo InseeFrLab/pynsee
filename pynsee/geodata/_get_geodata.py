@@ -18,17 +18,16 @@ from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
 
-from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._hash import _hash
+from pynsee.utils.save_df import save_df
 from pynsee.utils.requests_params import _get_requests_headers, _get_requests_proxies
 
 import logging
 
 logger = logging.getLogger(__name__)
 
-
+@save_df(day_lapse_max=90)
 def _get_geodata(
-    id, polygon=None, update=False, crs="EPSG:3857", crsPolygon="EPSG:4326"
+    id, polygon=None, update=False, silent=False, crs="EPSG:3857", crsPolygon="EPSG:4326"
 ):
     """Get geographical data with identifier and from IGN API
 
@@ -107,139 +106,118 @@ def _get_geodata(
     else:
         link = link0
 
-    insee_folder = _create_insee_folder()
-    file_name = insee_folder + "/" + _hash(link)
+    with requests.Session() as session:
+        retry = Retry(connect=3, backoff_factor=1)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
 
-    if (not os.path.exists(file_name)) | (update is True):
-        with requests.Session() as session:
-            retry = Retry(connect=3, backoff_factor=1)
-            adapter = HTTPAdapter(max_retries=retry)
-            session.mount("http://", adapter)
-            session.mount("https://", adapter)
+        headers = _get_requests_headers()
+        proxies = _get_requests_proxies()
 
-            headers = _get_requests_headers()
-            proxies = _get_requests_proxies()
-
-            with warnings.catch_warnings():
-                warnings.simplefilter(
-                    "ignore", urllib3.exceptions.InsecureRequestWarning
-                )
-                data = session.get(
-                    link, proxies=proxies, headers=headers, verify=False
-                )
-
-                if data.status_code == 502:
-                    time.sleep(1)
-                    data = session.get(link, proxies=proxies, headers=headers)
-
-                if data.status_code != 200:
-                    logger.debug("Query:\n%s" % link)
-                    logger.debug(data)
-                    logger.debug(data.text)
-                    return pd.DataFrame(
-                        {"status": data.status_code, "comment": data.text},
-                        index=[0],
-                    )
-
-        data_json = data.json()
-
-        json = data_json["features"]
-
-        # if maximum reached
-        # split the query with the bouding box list
-        if len(json) == 1000:
-            list_bbox = _get_bbox_list(
-                polygon=polygon, update=update, crsPolygon=crsPolygon
+        with warnings.catch_warnings():
+            warnings.simplefilter(
+                "ignore", urllib3.exceptions.InsecureRequestWarning
+            )
+            data = session.get(
+                link, proxies=proxies, headers=headers, verify=False
             )
 
-            Nprocesses = min(6, multiprocessing.cpu_count())
+            if data.status_code == 502:
+                time.sleep(1)
+                data = session.get(link, proxies=proxies, headers=headers)
 
-            args = [link0, list_bbox, crsPolygon]
-            irange = range(len(list_bbox))
-
-            with multiprocessing.Pool(
-                initializer=_set_global_var,
-                initargs=(args,),
-                processes=Nprocesses,
-            ) as pool:
-                list_data = list(
-                    tqdm.tqdm(
-                        pool.imap(_get_data_with_bbox2, irange),
-                        total=len(list_bbox),
-                    )
+            if data.status_code != 200:
+                logger.debug("Query:\n%s" % link)
+                logger.debug(data)
+                logger.debug(data.text)
+                return pd.DataFrame(
+                    {"status": data.status_code, "comment": data.text},
+                    index=[0],
                 )
 
-            data_all = pd.concat(list_data).reset_index(drop=True)
+    data_json = data.json()
 
-        elif len(json) != 0:
-            data_all = _geojson_parser(json).reset_index(drop=True)
+    json = data_json["features"]
 
-        else:
-            msg = f"Query is correct but no data found : {link}"
-            logger.error(msg)
-            if polygon is not None:
-                logger.warning(
-                    "Check that crsPolygon argument corresponds "
-                    "to polygon data !"
+    # if maximum reached
+    # split the query with the bouding box list
+    if len(json) == 1000:
+        list_bbox = _get_bbox_list(
+            polygon=polygon, update=update, crsPolygon=crsPolygon
+        )
+
+        Nprocesses = min(6, multiprocessing.cpu_count())
+
+        args = [link0, list_bbox, crsPolygon]
+        irange = range(len(list_bbox))
+
+        with multiprocessing.Pool(
+            initializer=_set_global_var,
+            initargs=(args,),
+            processes=Nprocesses,
+        ) as pool:
+            list_data = list(
+                tqdm.tqdm(
+                    pool.imap(_get_data_with_bbox2, irange),
+                    total=len(list_bbox),
                 )
+            )
 
-            return pd.DataFrame({"status": 200, "comment": msg}, index=[0])
+        data_all = pd.concat(list_data).reset_index(drop=True)
 
-        # drop duplicates
-        data_col = data_all.columns
+    elif len(json) != 0:
+        data_all = _geojson_parser(json).reset_index(drop=True)
 
-        if "geometry" in data_col:
-            selected_col = [
-                col for col in data_col if col not in ["geometry", "bbox"]
-            ]
-            data_all_clean = data_all[selected_col].drop_duplicates()
-
-            row_selected = [int(i) for i in data_all_clean.index]
-            geom = data_all.loc[row_selected, "geometry"]
-            data_all_clean["geometry"] = geom
-
-            if "bbox" in data_col:
-                geom = data_all.loc[row_selected, "bbox"]
-                data_all_clean["bbox"] = geom
-
-            data_all_clean = data_all_clean.reset_index(drop=True)
-
-        else:
-            data_all_clean = data_all.drop_duplicates()
-
-        # drop data outside polygon
+    else:
+        msg = f"Query is correct but no data found : {link}"
+        logger.error(msg)
         if polygon is not None:
             logger.warning(
-                "Further checks from the user are needed as results obtained "
-                "using polygon argument can be imprecise"
+                "Check that crsPolygon argument corresponds "
+                "to polygon data !"
             )
 
-            row_selected = []
-            for i in range(len(data_all_clean)):
-                geom = data_all_clean.loc[i, "geometry"]
-                if geom.intersects(polygon):
-                    row_selected.append(i)
-            if len(row_selected) > 0:
-                data_all_clean = data_all_clean.loc[row_selected, :]
+        return pd.DataFrame({"status": 200, "comment": msg}, index=[0])
+
+    # drop duplicates
+    data_col = data_all.columns
+
+    if "geometry" in data_col:
+        selected_col = [
+            col for col in data_col if col not in ["geometry", "bbox"]
+        ]
+        data_all_clean = data_all[selected_col].drop_duplicates()
+
+        row_selected = [int(i) for i in data_all_clean.index]
+        geom = data_all.loc[row_selected, "geometry"]
+        data_all_clean["geometry"] = geom
+
+        if "bbox" in data_col:
+            geom = data_all.loc[row_selected, "bbox"]
+            data_all_clean["bbox"] = geom
 
         data_all_clean = data_all_clean.reset_index(drop=True)
 
-        data_all_clean.to_pickle(file_name)
-        logger.info("Data saved: {}".format(file_name))
     else:
-        try:
-            data_all_clean = pd.read_pickle(file_name)
-        except Exception:
-            os.remove(file_name)
-            data_all_clean = _get_geodata(
-                id=id,
-                polygon=polygon,
-                crsPolygon=crsPolygon,
-                crs=crs,
-                update=True,
-            )
-        else:
-            _warning_cached_data(file_name)
+        data_all_clean = data_all.drop_duplicates()
+
+    # drop data outside polygon
+    if polygon is not None:
+        logger.warning(
+            "Further checks from the user are needed as results obtained "
+            "using polygon argument can be imprecise"
+        )
+
+        row_selected = []
+        for i in range(len(data_all_clean)):
+            geom = data_all_clean.loc[i, "geometry"]
+            if geom.intersects(polygon):
+                row_selected.append(i)
+        if len(row_selected) > 0:
+            data_all_clean = data_all_clean.loc[row_selected, :]
+
+    data_all_clean = data_all_clean.reset_index(drop=True)
 
     data_all_clean["crsCoord"] = crs
 

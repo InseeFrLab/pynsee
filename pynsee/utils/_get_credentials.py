@@ -16,7 +16,7 @@ def _get_credentials():
     envir_var_used = False
     try:
         home = str(Path.home())
-        pynsee_credentials_file = home + "/" + "pynsee_credentials.csv"
+        pynsee_credentials_file = os.path.join(home, "pynsee_credentials.csv")
         cred = pd.read_csv(pynsee_credentials_file)
         os.environ["insee_key"] = str(cred.loc[0, "insee_key"])
         os.environ["insee_secret"] = str(cred.loc[0, "insee_secret"])

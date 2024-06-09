@@ -34,6 +34,8 @@ from pynsee.utils._clean_insee_folder import _clean_insee_folder
 
 test_SDMX = True
 
+future_date = datetime.now() + timedelta(days=91)
+
 
 class TestFunction(TestCase):
 
@@ -112,25 +114,18 @@ class TestFunction(TestCase):
 
             # test automatic update of metadata, when older than 3 months
             df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-            os.environ['insee_date_test'] = str(
-                datetime.now() + timedelta(days=91))
-            df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+            df = _get_dataset_metadata('CLIMAT-AFFAIRES', insee_date_test=future_date)
             test1 = isinstance(df, pd.DataFrame)
 
             # test manual update of metadata
             df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
             test2 = isinstance(df, pd.DataFrame)
 
-            # test date provided manually error and switch to today
-            os.environ['insee_date_test'] = "a"
-            df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-            test3 = isinstance(df, pd.DataFrame)      
-
             # test idbank file download crash and backup internal data
             os.environ['pynsee_idbank_file'] = "test"
             os.environ['pynsee_idbank_loop_url'] = "False"
             df = _get_dataset_metadata('CLIMAT-AFFAIRES', update=True)
-            test3 = test3 & isinstance(df, pd.DataFrame)
+            test3 = isinstance(df, pd.DataFrame)
             os.environ['pynsee_idbank_loop_url'] = "True"     
             
             self.assertTrue(test1 & test2 & test3)
@@ -160,18 +155,24 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(data, pd.DataFrame))
 
         def test_get_dataset_2(self):
-            data = get_dataset("CNA-2014-CPEB",
-                               filter="A.CNA_CPEB.A38-CB.VAL.D39.VALEUR_ABSOLUE.FE.EUROS_COURANTS.BRUT",
+            
+            data = get_dataset("CHOMAGE-TRIM-NATIONAL",
+                               filter="T.HALO.VALEUR_ABSOLUE.FR-D976.1.15-24.INDIVIDUS.CVS.FALSE",
                                lastNObservations=1)
-            self.assertTrue(isinstance(data, pd.DataFrame))
+            
+            data1 = get_dataset("CNA-2014-TEI", filter="A.CNA_CONSO_INTERMEDIAIRE.A38-PZ.A38-CJ.VALEUR_ABSOLUE.FE.EUROS_COURANTS.BRUT", update=True)
 
-        def test_get_dataset_3(self):
-            data1 = get_dataset(
-                "IPC-2015", filter="M......ENSEMBLE...CVS.2015.")
-            data2 = get_dataset("IPC-2015", filter="M......ENSEMBLE...CVS.2015.",
-                                includeHistory=True,
-                                updatedAfter="2017-07-11T08:45:00")
-            self.assertTrue(len(data1.index) < len(data2.index))
+            self.assertTrue(isinstance(data, pd.DataFrame) & isinstance(data1, pd.DataFrame))
+
+        # def test_get_dataset_3(self):
+        #     data1 = get_dataset(
+        #         "IPC-2015", filter="M......ENSEMBLE...CVS.2015.")
+            
+        #     data2 = get_dataset("IPC-2015", filter="M......ENSEMBLE...CVS.2015.",
+        #                         includeHistory=True,
+        #                         # updatedAfter="2017-07-11T08:45:00" disabled as API does not return anything
+        #                        )
+        #     self.assertTrue(len(data1.index) < len(data2.index))
 
         def test_get_dataset_4(self):
             self.assertRaises(ValueError, get_dataset, 'a')
@@ -198,13 +199,10 @@ class TestFunction(TestCase):
         def test_get_dataset_dimension(self):
 
             df = _get_dataset_dimension('CLIMAT-AFFAIRES')
-            os.environ['insee_date_test'] = str(
-                datetime.now() + timedelta(days=91))
-            df = _get_dataset_dimension('CLIMAT-AFFAIRES')
+            df = _get_dataset_dimension('CLIMAT-AFFAIRES', insee_date_test=future_date)
             test1 = isinstance(df, pd.DataFrame)
 
             _clean_insee_folder()
-            os.environ['insee_date_test'] = ''
             df = _get_dataset_dimension('CLIMAT-AFFAIRES')
             test2 = isinstance(df, pd.DataFrame)
 
@@ -213,9 +211,7 @@ class TestFunction(TestCase):
         def test_get_dimension_values(self):
 
             df = _get_dimension_values('CL_PERIODICITE')
-            os.environ['insee_date_test'] = str(
-                datetime.now() + timedelta(days=91))
-            df = _get_dimension_values('CL_PERIODICITE')
+            df = _get_dimension_values('CL_PERIODICITE', insee_date_test=future_date)
 
             test1 = isinstance(df, pd.DataFrame)
             self.assertTrue(test1)
@@ -224,9 +220,7 @@ class TestFunction(TestCase):
 
             try:
                 df = _download_idbank_list()
-                os.environ['insee_date_test'] = str(
-                    datetime.now() + timedelta(days=91))
-                df = _download_idbank_list()
+                df = _download_idbank_list(insee_date_test=future_date)
             except:
                 df = pd.DataFrame({'test_backup': ['test_backup']})
 

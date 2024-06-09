@@ -6,59 +6,28 @@ import pkg_resources
 import pandas as pd
 import os
 
-from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.utils._hash import _hash
+from pynsee.utils.save_df import save_df
+from pynsee.utils._get_temp_dir import _get_temp_dir
 
 import logging
 
 logger = logging.getLogger(__name__)
 
-# from functools import lru_cache
-
-# @lru_cache(maxsize=None)
-
-
-def _get_idbank_internal_data(update=False):
-    insee_folder = _create_insee_folder()
-
-    data_file = insee_folder + "/" + "idbank_list_internal.csv"
-    data_final_file = insee_folder + "/" + _hash("idbank_list_internal_final")
+@save_df(day_lapse_max=90)
+def _get_idbank_internal_data(update=False, silent=True):
+    
     zip_file = pkg_resources.resource_stream(
         __name__, "data/idbank_list_internal.zip"
     )
 
-    if (not os.path.exists(data_final_file)) | update:
-        with zipfile.ZipFile(zip_file, "r") as zip_ref:
-            zip_ref.extractall(insee_folder)
+    temp_folder = _get_temp_dir()
+    data_file = os.path.join(temp_folder, "idbank_list_internal.csv")
 
-        # idbank_list = pd.read_csv(data_file, encoding = 'latin-1',
-        #                           quotechar='"', sep=',', dtype=str, usecols = [0,1,2,538,539])
+    with zipfile.ZipFile(zip_file, "r") as zip_ref:
+        zip_ref.extractall(temp_folder)
 
-        idbank_list = pd.read_csv(
-            data_file, encoding="utf-8", quotechar='"', sep=",", dtype=str
-        )
-
-        col = "Unnamed: 0"
-        if col in idbank_list.columns:
-            idbank_list = idbank_list.drop(columns={col})
-
-        os.remove(data_file)
-        idbank_list.to_pickle(data_final_file)
-        logger.info(f"Data saved: {data_final_file}")
-    else:
-        # pickle format depends on python version
-        # then read_pickle can fail, if so
-        # the file is removed and the function is launched again
-        # testing requires multiple python versions
-        try:
-            idbank_list = pd.read_pickle(data_final_file)
-        except:
-            os.remove(data_final_file)
-            idbank_list = _get_idbank_internal_data(update=True)
-        else:
-            logger.info(
-                "Locally saved data has been used\n"
-                "Set update=True to trigger an update"
-            )
+    idbank_list = pd.read_csv(
+        data_file, encoding="utf-8", quotechar='"', sep=",", dtype=str
+    )
 
     return idbank_list

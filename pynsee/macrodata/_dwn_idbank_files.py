@@ -10,6 +10,10 @@ from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 import warnings
 
+import logging
+logger = logging.getLogger(__name__)
+
+from pynsee.utils.requests_params import _get_requests_session
 
 def _dwn_idbank_files():
     # creating the date object of today's date
@@ -64,21 +68,18 @@ def _dwn_idbank_files():
         except Exception:
             pass
 
-    session = requests.Session()
-    retry = Retry(connect=3, backoff_factor=1, status_forcelist=[502])
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
+    session = _get_requests_session()
 
     if pynsee_idbank_loop_url:
         while idbank_file_not_found & (i <= len(files) - 1):
             try:
                 data = _dwn_idbank_file(file_to_dwn=files[i], session=session)
             except Exception:
-                # print(f'!!! File not found:\n{files[i]}')
                 idbank_file_not_found = True
             else:
                 idbank_file_not_found = False
+                strg_print = f"Macrodata series update, file used:\n{files[i]}"
+                logger.info(strg_print)
             i += 1
 
     return data
@@ -107,7 +108,7 @@ def _dwn_idbank_file(file_to_dwn, session):
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)
 
-    idbank_zip_file = dirpath + "\\idbank_list.zip"
+    idbank_zip_file = os.path.join(dirpath, "idbank_list.zip")
 
     with open(idbank_zip_file, "wb") as f:
         f.write(results.content)

@@ -4,26 +4,13 @@
 import pandas as pd
 from functools import lru_cache
 from tqdm import trange
-from pynsee.utils._hash import _hash
-from pynsee.utils._create_insee_folder import _create_insee_folder
 import os
 
 from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.save_df import save_df
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-
-@lru_cache(maxsize=None)
-def _warning_legaldata_save():
-    logger.info(
-        "Locally saved legal data has been used\n"
-        "Set update=True to trigger an update"
-    )
-
-
-def get_legal_entity(codes, print_err_msg=True, update=False):
+@save_df(day_lapse_max=30)
+def get_legal_entity(codes, print_err_msg=True, update=False, silent=False):
     """Get legal entities labels
 
     Args:
@@ -34,41 +21,21 @@ def get_legal_entity(codes, print_err_msg=True, update=False):
         >>> legal_entity = get_legal_entity(codes = ['5599', '83'])
     """
 
-    filename = _hash("get_legal_entity" + "".join(codes))
-    insee_folder = _create_insee_folder()
-    file_legal_entity = insee_folder + "/" + filename
+    list_data = []
 
-    if (not os.path.exists(file_legal_entity)) or update:
-        list_data = []
-
-        for c in trange(len(codes), desc="Getting legal entities"):
-            # c = '5599'
-            code = codes[c]
-            try:
-                data = _get_one_legal_entity(code, print_err_msg=print_err_msg)
-                list_data.append(data)
-            except:
-                pass
-
-        data_final = pd.concat(list_data).reset_index(drop=True)
-
-        data_final = data_final.rename(columns={"intitule": "title"})
-        data_final.to_pickle(file_legal_entity)
-        logger.info(f"Data saved: {file_legal_entity}")
-
-    else:
+    for c in trange(len(codes), desc="Getting legal entities"):
+        # c = '5599'
+        code = codes[c]
         try:
-            data_final = pd.read_pickle(file_legal_entity)
+            data = _get_one_legal_entity(code, print_err_msg=print_err_msg)
+            list_data.append(data)
         except:
-            os.remove(file_legal_entity)
+            pass
 
-            data_final = get_legal_entity(
-                codes=codes, print_err_msg=print_err_msg, update=True
-            )
+    data_final = pd.concat(list_data).reset_index(drop=True)
 
-        else:
-            _warning_legaldata_save()
-
+    data_final = data_final.rename(columns={"intitule": "title"})
+    
     return data_final
 
 
