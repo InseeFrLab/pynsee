@@ -32,6 +32,8 @@ def get_series(
         update (bool, optional): Set to True, to update manually the data
         stored locally on the computer. Defaults to False.
 
+        silent (bool, optional): Set to True, to disable messages printed in log info
+
         metadata (bool, optional): If True, some metadata is added to the data
 
         startPeriod (str, optional): start date of the data.

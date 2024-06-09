@@ -47,6 +47,7 @@ def search_sirene(
     legal=False,
     closed=False,
     update=False,
+    silent=False
 ):
     """Get data about companies from criteria on variables
 
@@ -71,7 +72,9 @@ def search_sirene(
 
         legal (bool, optional): If True, legal entities title are added
 
-        closed (bool, optional): If False, closed entities are removed from the data and for each legal entity only the last period for which the data is stable is displayed.
+        closed (bool, optional): If False, closed entities are removed from the data and for each legal entity only the last period for which the data is stable is displayed
+
+        silent (bool, optional): Set to True, to disable messages printed in log info
 
     Notes:
         This function may return personal data, please check and

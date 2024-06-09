@@ -24,6 +24,7 @@ def get_geo_list(geo=None, date=None, update=False, silent=False):
 
         update (bool): locally saved data is used by default. Trigger an update with update=True.
 
+        silent (bool, optional): Set to True, to disable messages printed in log info
     Raises:
         ValueError: geo should be among the geographic area list
 
