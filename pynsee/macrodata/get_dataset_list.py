@@ -20,6 +20,12 @@ logger = logging.getLogger(__name__)
 def get_dataset_list(update=False, silent=False):
     """Download a full INSEE's datasets list from BDM macroeconomic database
 
+    Args:
+        update (bool, optional): Set to True, to update manually the metadata
+        stored locally on the computer. Defaults to False.
+
+        silent (bool, optional): Set to True, to disable messages printed in log info
+
     Returns:
         DataFrame: a dataframe containing the list of datasets available
 

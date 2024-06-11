@@ -46,6 +46,8 @@ def get_local_data(
 
         update (bool): data is saved locally, set update=True to trigger an update
 
+        silent (bool, optional): Set to True, to disable messages printed in log info
+        
     Raises:
         ValueError: Error if geocodes is not a list
 

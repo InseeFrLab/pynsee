@@ -18,6 +18,7 @@ def download_file(id, variables=None, update=False, silent=False):
 
         update (bool, optional): Trigger an update, otherwise locally saved data is used. Defaults to False.
 
+        silent (bool, optional): Set to True, to disable messages printed in log info
 
     Returns:
         Returns the request dataframe as a pandas object

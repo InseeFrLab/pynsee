@@ -14,6 +14,8 @@ def get_geodata_list(update=False, silent=False):
     Args:
         update (bool, optional): Trigger an update, otherwise locally saved data is used. Defaults to False.
 
+        silent (bool, optional): Set to True, to disable messages printed in log info
+
     Examples:
         >>> from pynsee.geodata import get_geodata_list
         >>> # Get a list of geographical limits of French administrative areas from IGN API

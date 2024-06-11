@@ -19,6 +19,8 @@ def get_area_list(area=None, date=None, update=False, silent=False):
 
         update (bool): locally saved data is used by default. Trigger an update with update=True.
 
+        silent (bool, optional): Set to True, to disable messages printed in log info
+
     Raises:
         ValueError: Error if area is not available
 

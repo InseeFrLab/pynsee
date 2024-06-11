@@ -19,7 +19,7 @@ def get_series_list(*datasets, update=False, silent=False):
         update (bool, optional): Set to True, to update manually the metadata
         stored locally on the computer. Defaults to False.
 
-        silent (bool, optional): Set to True, to disable messages printed in log info.
+        silent (bool, optional): Set to True, to disable messages printed in log info
 
     Raises:
         ValueError: datasets should be among the datasets list provided by get_dataset_list()

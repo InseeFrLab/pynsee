@@ -16,6 +16,10 @@ def get_legal_entity(codes, print_err_msg=True, update=False, silent=False):
     Args:
         codes (list): list of legal entities code of 2 or 4 characters
 
+        update (bool, optional): Trigger an update, otherwise locally saved data is used. Defaults to False
+
+        silent (bool, optional): Set to True, to disable messages printed in log info
+
     Examples:
         >>> from pynsee.metadata import get_legal_entity
         >>> legal_entity = get_legal_entity(codes = ['5599', '83'])
