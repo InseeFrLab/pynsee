@@ -5,6 +5,7 @@ import pandas as pd
 import requests
 import os
 import multiprocessing
+import pebble
 import tqdm
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -19,15 +20,24 @@ from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
 
 from pynsee.utils.save_df import save_df
-from pynsee.utils.requests_params import _get_requests_headers, _get_requests_proxies
+from pynsee.utils.requests_params import (
+    _get_requests_headers,
+    _get_requests_proxies,
+)
 
 import logging
 
 logger = logging.getLogger(__name__)
 
+
 @save_df(day_lapse_max=90)
 def _get_geodata(
-    id, polygon=None, update=False, silent=False, crs="EPSG:3857", crsPolygon="EPSG:4326"
+    id,
+    polygon=None,
+    update=False,
+    silent=False,
+    crs="EPSG:3857",
+    crsPolygon="EPSG:4326",
 ):
     """Get geographical data with identifier and from IGN API
 
@@ -60,7 +70,7 @@ def _get_geodata(
     Version = "2.0.0"
 
     # make the query link for ign
-    #geoportail = "https://wxs.ign.fr/{}/geoportail".format(topic)
+    # geoportail = "https://wxs.ign.fr/{}/geoportail".format(topic)
     geoportail = f"https://data.geopf.fr/{service.lower()}/ows?"
     Service = "SERVICE=" + service + "&"
     version = "VERSION=" + Version + "&"
@@ -70,7 +80,7 @@ def _get_geodata(
 
     link0 = (
         geoportail
-        #+ "/wfs?"
+        # + "/wfs?"
         + Service
         + version
         + request
@@ -152,14 +162,12 @@ def _get_geodata(
         args = [link0, list_bbox, crsPolygon]
         irange = range(len(list_bbox))
 
-        with multiprocessing.Pool(
-            initializer=_set_global_var,
-            initargs=(args,),
-            processes=Nprocesses,
+        with pebble.ThreadPool(
+            Nprocesses, initializer=_set_global_var, initargs=(args,)
         ) as pool:
             list_data = list(
                 tqdm.tqdm(
-                    pool.imap(_get_data_with_bbox2, irange),
+                    pool.map(_get_data_with_bbox2, irange).result(),
                     total=len(list_bbox),
                 )
             )
