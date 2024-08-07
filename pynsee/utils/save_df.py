@@ -2,9 +2,7 @@ import functools
 import os
 import pandas as pd
 import warnings
-import shapely
 from shapely.errors import ShapelyDeprecationWarning
-import warnings
 import datetime
 import logging
 from pyarrow.lib import ArrowInvalid
@@ -87,7 +85,7 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
                             try:
                                 df.to_parquet(file_name)
                             except ArrowInvalid:
-                                df = gpd.GeoDataFrame(df).to_parquet(file_name)
+                                gpd.GeoDataFrame(df).to_parquet(file_name)
                         else:
                             df.to_csv(file_name, index=False)
 
