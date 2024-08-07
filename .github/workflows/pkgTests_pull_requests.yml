@@ -48,12 +48,13 @@ jobs:
         # run all py files
         # for f in *.py; do python "$f"; done
         cd ../..
+    - name: Add requests-cache
+      run: pip install requests-cache  # Used to monkeypatch requests
     - name: Test with pytest
       env:      
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
       run: |
-        pip install requests-cache  # Used to monkeypatch requests
         pytest -v --cov
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
