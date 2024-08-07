@@ -1,5 +1,6 @@
 from datetime import date
 import tempfile
+import shutil
 import os
 import requests
 import zipfile
@@ -11,9 +12,11 @@ from requests.packages.urllib3.util.retry import Retry
 import warnings
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 from pynsee.utils.requests_params import _get_requests_session
+
 
 def _dwn_idbank_files():
     # creating the date object of today's date
@@ -120,14 +123,22 @@ def _dwn_idbank_file(file_to_dwn, session):
     file_to_read = [
         f for f in os.listdir(dirpath) if not re.match(".*.zip$", f)
     ]
-    
+
     if len(file_to_read) == 0:
-        zip_file = [dirpath + "/" + f for f in os.listdir(dirpath) if re.match(".*.zip$", f)][0]
+        zip_file = [
+            dirpath + "/" + f
+            for f in os.listdir(dirpath)
+            if re.match(".*.zip$", f)
+        ][0]
         with zipfile.ZipFile(zip_file, "r") as zip_ref:
             zip_ref.extractall(dirpath)
-        file_to_read = [f for f in os.listdir(dirpath) if not re.match(".*.zip$", f)]
-        
+        file_to_read = [
+            f for f in os.listdir(dirpath) if not re.match(".*.zip$", f)
+        ]
+
     file2load = dirpath + "/" + file_to_read[0]
     data = pd.read_csv(file2load, dtype="str", sep=separator)
+
+    shutil.rmtree(dirpath)
 
     return data
