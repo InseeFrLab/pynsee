@@ -27,8 +27,11 @@ def _get_geo_list_simple(geo, date=None, progress_bar=False):
 
     root = ET.parse(raw_data_file).getroot()
 
-    if os.path.exists(raw_data_file):
+    # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
+    try:
         os.remove(raw_data_file)
+    except FileNotFoundError:
+        pass
 
     n_variable = len(root)
 

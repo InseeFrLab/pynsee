@@ -9,8 +9,11 @@ from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.save_df import save_df
 
+
 @save_df(day_lapse_max=90)
-def _get_dataset_dimension(dataset, update=False, silent=True, insee_date_test=None):
+def _get_dataset_dimension(
+    dataset, update=False, silent=True, insee_date_test=None
+):
 
     INSEE_sdmx_link_datastructure = (
         "https://www.bdm.insee.fr/series/sdmx/datastructure/FR1"
@@ -22,7 +25,9 @@ def _get_dataset_dimension(dataset, update=False, silent=True, insee_date_test=N
     INSEE_sdmx_link_datastructure_dataset = (
         INSEE_sdmx_link_datastructure + "/" + dataset
     )
-    INSEE_api_link_datastructure_dataset = INSEE_api_link_datastructure + "/" + dataset
+    INSEE_api_link_datastructure_dataset = (
+        INSEE_api_link_datastructure + "/" + dataset
+    )
 
     results = _request_insee(
         sdmx_url=INSEE_sdmx_link_datastructure_dataset,
@@ -38,6 +43,12 @@ def _get_dataset_dimension(dataset, update=False, silent=True, insee_date_test=N
         f.write(results.content)
 
     root = ET.parse(dataset_dimension_file).getroot()
+
+    # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
+    try:
+        os.remove(dataset_dimension_file)
+    except FileNotFoundError:
+        pass
 
     data = root[1][0][0][2][0]
 
@@ -73,7 +84,8 @@ def _get_dataset_dimension(dataset, update=False, silent=True, insee_date_test=N
         }
 
         dimension_df = pd.DataFrame(
-            dimension_df, columns=["dataset", "dimension", "local_representation"]
+            dimension_df,
+            columns=["dataset", "dimension", "local_representation"],
         )
 
         list_dimension.append(dimension_df)

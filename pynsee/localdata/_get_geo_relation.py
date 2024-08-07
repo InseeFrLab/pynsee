@@ -25,7 +25,12 @@ def _get_geo_relation(geo, code, relation, date=None, type=None):
     # essonne = _get_geo_relation('region', "11", 'ascendants')
 
     api_url = (
-        "https://api.insee.fr/metadonnees/V1/geo/" + geo + "/" + code + "/" + relation
+        "https://api.insee.fr/metadonnees/V1/geo/"
+        + geo
+        + "/"
+        + code
+        + "/"
+        + relation
     )
 
     parameters = ["date", "type"]
@@ -51,8 +56,11 @@ def _get_geo_relation(geo, code, relation, date=None, type=None):
 
     root = ET.parse(raw_data_file).getroot()
 
-    if os.path.exists(raw_data_file):
+    # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
+    try:
         os.remove(raw_data_file)
+    except FileNotFoundError:
+        pass
 
     n_geo = len(root)
 

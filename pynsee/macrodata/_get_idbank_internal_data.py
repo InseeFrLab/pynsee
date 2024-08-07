@@ -13,9 +13,10 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @save_df(day_lapse_max=90)
 def _get_idbank_internal_data(update=False, silent=True):
-    
+
     zip_file = pkg_resources.resource_stream(
         __name__, "data/idbank_list_internal.zip"
     )
@@ -29,5 +30,10 @@ def _get_idbank_internal_data(update=False, silent=True):
     idbank_list = pd.read_csv(
         data_file, encoding="utf-8", quotechar='"', sep=",", dtype=str
     )
+    # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
+    try:
+        os.remove(data_file)
+    except FileNotFoundError:
+        pass
 
     return idbank_list

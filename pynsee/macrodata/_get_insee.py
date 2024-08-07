@@ -31,9 +31,11 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
     # parse the xml file
     root = xml.dom.minidom.parse(raw_data_file)
 
-    # delete the file
-    if os.path.exists(raw_data_file):
+    # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
+    try:
         os.remove(raw_data_file)
+    except FileNotFoundError:
+        pass
 
     n_series = len(root.getElementsByTagName("Series"))
 

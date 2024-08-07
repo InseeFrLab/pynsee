@@ -6,10 +6,13 @@ import os
 from pynsee.utils.save_df import save_df
 from pynsee.utils._get_temp_dir import _get_temp_dir
 
+
 @save_df(day_lapse_max=90)
 def _get_dataset_list_internal():
 
-    zip_file = pkg_resources.resource_stream(__name__, "data/dataset_list_internal.zip")
+    zip_file = pkg_resources.resource_stream(
+        __name__, "data/dataset_list_internal.zip"
+    )
 
     temp_folder = _get_temp_dir()
     dataset_file = os.path.join(temp_folder, "dataset_list_internal.csv")
@@ -24,5 +27,11 @@ def _get_dataset_list_internal():
     col = "Unnamed: 0"
     if col in dataset_list.columns:
         dataset_list = dataset_list.drop(columns={col})
+
+    # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
+    try:
+        os.remove(dataset_file)
+    except FileNotFoundError:
+        pass
 
     return dataset_list

@@ -9,19 +9,28 @@ from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.save_df import save_df
 
-@save_df(day_lapse_max=90)
-def _get_dimension_values(cl_dimension, update=False, silent=True, insee_date_test=None):
 
-    INSEE_sdmx_link_codelist = "https://www.bdm.insee.fr/series/sdmx/codelist/FR1"
+@save_df(day_lapse_max=90)
+def _get_dimension_values(
+    cl_dimension, update=False, silent=True, insee_date_test=None
+):
+
+    INSEE_sdmx_link_codelist = (
+        "https://www.bdm.insee.fr/series/sdmx/codelist/FR1"
+    )
     INSEE_api_link_codelist = "https://api.insee.fr/series/BDM/V1/codelist/FR1"
 
-    INSEE_sdmx_link_codelist_dimension = INSEE_sdmx_link_codelist + "/" + cl_dimension
-    INSEE_api_link_codelist_dimension = INSEE_api_link_codelist + "/" + cl_dimension
+    INSEE_sdmx_link_codelist_dimension = (
+        INSEE_sdmx_link_codelist + "/" + cl_dimension
+    )
+    INSEE_api_link_codelist_dimension = (
+        INSEE_api_link_codelist + "/" + cl_dimension
+    )
 
     results = _request_insee(
-            sdmx_url=INSEE_sdmx_link_codelist_dimension,
-            api_url=INSEE_api_link_codelist_dimension,
-        )
+        sdmx_url=INSEE_sdmx_link_codelist_dimension,
+        api_url=INSEE_api_link_codelist_dimension,
+    )
 
     # create temporary directory
     dirpath = _get_temp_dir()
@@ -33,8 +42,11 @@ def _get_dimension_values(cl_dimension, update=False, silent=True, insee_date_te
 
     root = ET.parse(dimension_file).getroot()
 
-    if os.path.exists(dimension_file):
+    # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
+    try:
         os.remove(dimension_file)
+    except FileNotFoundError:
+        pass
 
     list_values = []
 
