@@ -25,6 +25,9 @@ jobs:
         pip install flake8 pytest pytest-cov geopandas nbconvert matplotlib descartes 
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements-extra.txt ]; then pip install -r requirements-extra.txt; fi
+    - name: Add requests-cache for patching the tests
+      run: |
+        pip install requests-cache
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
