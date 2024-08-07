@@ -3,17 +3,15 @@
 import time
 import pandas as pd
 import requests
-import os
 import multiprocessing
 import pebble
 import tqdm
+import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-from pathlib import Path
 import urllib3
 import warnings
 
-from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
@@ -65,7 +63,6 @@ def _get_geodata(
             "crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'"
         )
 
-    topic = "administratif"
     service = "WFS"
     Version = "2.0.0"
 
@@ -162,15 +159,24 @@ def _get_geodata(
         args = [link0, list_bbox, crsPolygon]
         irange = range(len(list_bbox))
 
-        with pebble.ThreadPool(
-            Nprocesses, initializer=_set_global_var, initargs=(args,)
-        ) as pool:
-            list_data = list(
-                tqdm.tqdm(
-                    pool.map(_get_data_with_bbox2, irange).result(),
-                    total=len(list_bbox),
+        with requests.Session() as session:
+            retry = Retry(connect=3, backoff_factor=1, status_forcelist=[502])
+            adapter = HTTPAdapter(max_retries=retry)
+            session.mount("http://", adapter)
+            session.mount("https://", adapter)
+
+            def _get_data_with_bbox3(i):
+                return _get_data_with_bbox2(session, i)
+
+            with pebble.ThreadPool(
+                Nprocesses, initializer=_set_global_var, initargs=(args,)
+            ) as pool:
+                list_data = list(
+                    tqdm.tqdm(
+                        pool.map(_get_data_with_bbox3, irange).result(),
+                        total=len(list_bbox),
+                    )
                 )
-            )
 
         data_all = pd.concat(list_data).reset_index(drop=True)
 
