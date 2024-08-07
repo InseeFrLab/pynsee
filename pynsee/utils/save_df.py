@@ -6,7 +6,11 @@ from shapely.errors import ShapelyDeprecationWarning
 import datetime
 import logging
 from pyarrow.lib import ArrowInvalid
-import geopandas as gpd
+
+try:
+    import geopandas as gpd
+except ModuleNotFoundError:
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +53,7 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
             )
 
             if parquet:
+                alternative_pickle_name = file_name + ".pkl"
                 file_name += ".parquet"
             else:
                 file_name += ".pkl"
@@ -56,6 +61,12 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
             update = kwargs.get("update", False)
 
             silent = kwargs.get("silent", False)
+
+            if os.path.exists(file_name):
+                pass
+            elif os.path.exists(alternative_pickle_name):
+                # This is the pkl backup with no geopandas available
+                file_name = alternative_pickle_name
 
             if os.path.exists(file_name):
                 file_date_last_modif = datetime.datetime.fromtimestamp(
@@ -85,9 +96,24 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
                             try:
                                 df.to_parquet(file_name)
                             except ArrowInvalid:
-                                gpd.GeoDataFrame(df).to_parquet(file_name)
+                                try:
+                                    gpd.GeoDataFrame(df).to_parquet(file_name)
+                                except NameError:
+                                    msg = (
+                                        "pynsee is trying to cache a "
+                                        "geodataframe as geoparquet file, but "
+                                        "geopandas is not installed. Storage "
+                                        "will revert to pickle file, which is "
+                                        "slower. For increased speed, please "
+                                        "install pynsee with it's optional "
+                                        "dependencies using "
+                                        "`pip install pynsee[full]`"
+                                    )
+                                    logger.warning(msg)
+                                    df.to_pickle(file_name)
+
                         else:
-                            df.to_csv(file_name, index=False)
+                            df.to_pickle(file_name)
 
                     except Exception as e:
                         warnings.warn(str(e))
@@ -101,11 +127,13 @@ def save_df(obj=pd.DataFrame, parquet=True, day_lapse_max=None):
 
                 else:
                     try:
-                        if parquet:
+                        if parquet and ".parquet" in file_name:
                             df = pd.read_parquet(file_name)
-                        if "geometry" in df.columns:
-                            df = gpd.read_parquet(file_name)
+                            if "geometry" in df.columns:
+                                df = gpd.read_parquet(file_name)
                         else:
+                            # either not parquet or downgraded to pickle
+                            # because geopandas is not available
                             df = pd.read_pickle(file_name)
 
                         if "Unnamed: 0" in df.columns:
