@@ -46,8 +46,6 @@ jobs:
         # run all py files
         # for f in *.py; do python "$f"; done
         cd ../..
-    - name: Add requests-cache
-      run: pip install requests-cache  # Used to monkeypatch requests
     - name: Test with pytest
       env:      
         insee_key: ${{ secrets.INSEE_KEY }}
