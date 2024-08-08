@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import io
 import os
 import xml.etree.ElementTree as ET
 import pandas as pd
@@ -48,21 +49,8 @@ def get_dataset_list(update=False, silent=False):
             api_url=INSEE_api_link_dataflow, sdmx_url=INSEE_sdmx_link_dataflow
         )
 
-        # create temporary directory
-        dirpath = _get_temp_dir()
-
-        dataflow_file = dirpath + "\\dataflow_file"
-
-        with open(dataflow_file, "wb") as f:
-            f.write(results.content)
-
+        dataflow_file = io.BytesIO(results.content)
         root = ET.parse(dataflow_file).getroot()
-
-        # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
-        try:
-            os.remove(dataflow_file)
-        except FileNotFoundError:
-            pass
 
         data = root[1][0]
 
