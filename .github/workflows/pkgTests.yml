@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.12"]
 
     steps:
     - uses: actions/checkout@v2
@@ -46,6 +46,8 @@ jobs:
         # run all py files
         # for f in *.py; do python "$f"; done
         cd ../..
+    - name: Add requests-cache
+      run: pip install requests-cache  # Used to monkeypatch requests
     - name: Test with pytest
       env:      
         insee_key: ${{ secrets.INSEE_KEY }}
