@@ -139,6 +139,6 @@ def _dwn_idbank_file(file_to_dwn, session):
     file2load = dirpath + "/" + file_to_read[0]
     data = pd.read_csv(file2load, dtype="str", sep=separator)
 
-    shutil.rmtree(dirpath)
+    shutil.rmtree(dirpath, ignore_errors=True)
 
     return data

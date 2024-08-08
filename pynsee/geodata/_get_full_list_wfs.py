@@ -21,7 +21,9 @@ def _get_full_list_wfs(topic="", version="2.0.0"):
 
     root = ET.parse(raw_data_file).getroot()
 
-    shutil.rmtree(os.path.realpath(os.path.join(raw_data_file, "..")))
+    shutil.rmtree(
+        os.path.realpath(os.path.join(raw_data_file, "..")), ignore_errors=True
+    )
 
     list_var = ["FeatureTypeList"]
 
