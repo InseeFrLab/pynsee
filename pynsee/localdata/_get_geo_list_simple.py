@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import io
 from functools import lru_cache
 import pandas as pd
 import xml.etree.ElementTree as ET
 from tqdm import trange
-import os
 
 from pynsee.utils._request_insee import _request_insee
-from pynsee.utils._get_temp_dir import _get_temp_dir
 
 
 @lru_cache(maxsize=None)
@@ -18,20 +17,9 @@ def _get_geo_list_simple(geo, date=None, progress_bar=False):
         api_url += f"?date={date}"
     results = _request_insee(api_url=api_url, sdmx_url=None)
 
-    dirpath = _get_temp_dir()
-
-    raw_data_file = dirpath + "\\" + "raw_data_file"
-
-    with open(raw_data_file, "wb") as f:
-        f.write(results.content)
+    raw_data_file = io.BytesIO(results.content)
 
     root = ET.parse(raw_data_file).getroot()
-
-    # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
-    try:
-        os.remove(raw_data_file)
-    except FileNotFoundError:
-        pass
 
     n_variable = len(root)
 
