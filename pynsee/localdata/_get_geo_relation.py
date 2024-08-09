@@ -2,13 +2,12 @@
 # Copyright : INSEE, 2021
 
 from functools import lru_cache
-import os
+import io
 import pandas as pd
 import xml.etree.ElementTree as ET
 
 from pynsee.utils._paste import _paste
 from pynsee.utils._request_insee import _request_insee
-from pynsee.utils._get_temp_dir import _get_temp_dir
 
 
 @lru_cache(maxsize=None)
@@ -47,20 +46,9 @@ def _get_geo_relation(geo, code, relation, date=None, type=None):
 
     results = _request_insee(api_url=api_url)
 
-    dirpath = _get_temp_dir()
-
-    raw_data_file = dirpath + "\\" + "raw_data_file"
-
-    with open(raw_data_file, "wb") as f:
-        f.write(results.content)
+    raw_data_file = io.BytesIO(results.content)
 
     root = ET.parse(raw_data_file).getroot()
-
-    # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
-    try:
-        os.remove(raw_data_file)
-    except FileNotFoundError:
-        pass
 
     n_geo = len(root)
 
