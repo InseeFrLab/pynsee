@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import io
 import xml.etree.ElementTree as ET
 import pandas as pd
-import os
 
-from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.save_df import save_df
 
@@ -34,21 +33,9 @@ def _get_dataset_dimension(
         api_url=INSEE_api_link_datastructure_dataset,
     )
 
-    # create temporary directory
-    dirpath = _get_temp_dir()
-
-    dataset_dimension_file = os.path.join(dirpath, "dataset_dimension_file")
-
-    with open(dataset_dimension_file, "wb") as f:
-        f.write(results.content)
+    dataset_dimension_file = io.BytesIO(results.content)
 
     root = ET.parse(dataset_dimension_file).getroot()
-
-    # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
-    try:
-        os.remove(dataset_dimension_file)
-    except FileNotFoundError:
-        pass
 
     data = root[1][0][0][2][0]
 
