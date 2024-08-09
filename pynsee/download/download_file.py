@@ -1,5 +1,5 @@
-
-import warnings 
+import warnings
+import tempfile
 import pandas as pd
 
 from pynsee.download._download_store_file import _download_store_file
@@ -7,7 +7,8 @@ from pynsee.download._load_data_from_schema import _load_data_from_schema
 
 from pynsee.utils.save_df import save_df
 
-@save_df(day_lapse_max=90)
+
+# @save_df(day_lapse_max=90)
 def download_file(id, variables=None, update=False, silent=False):
     """User level function to download files from insee.fr
 
@@ -29,13 +30,18 @@ def download_file(id, variables=None, update=False, silent=False):
 
     """
 
-    try:
+    with tempfile.TemporaryDirectory() as tmpdir:
+        try:
 
-        dwn = _download_store_file(id, update=update)
-        df = _load_data_from_schema(dwn, variables=variables)
+            dwn = _download_store_file(tmpdir, id, update=update)
+            df = _load_data_from_schema(dwn, variables=variables)
 
-    except:
-         warnings.warn("Download failed")
-         df = pd.DataFrame()
+        except:
+            warnings.warn("Download failed")
+            df = pd.DataFrame()
 
     return df
+
+
+if __name__ == "__main__":
+    df = download_file("RP_MOBPRO_2017")

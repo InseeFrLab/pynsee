@@ -9,17 +9,16 @@ from pynsee.download._import_options import _import_options
 from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.download._check_url import _check_url
 
-def _download_store_file(id: str, update: bool):
+
+def _download_store_file(
+    tempdir: tempfile.TemporaryDirectory, id: str, update: bool
+):
     """Download requested file and return some metadata that will
     be used
 
     Arguments:
-        data {str} -- The name of the dataset desired
-
-    Keyword Arguments:
-        date -- Optional argument to specify desired year (default: {None})
-        teldir -- Desired location where data
-            should be stored (default: {None})
+        tempdir {tempfile.TemporaryDirectory} -- The temporary folder where the dataset should be written
+        id {str} -- The name of the dataset desired
 
     Raises:
         ValueError: When the desired dataset
@@ -45,17 +44,21 @@ def _download_store_file(id: str, update: bool):
                 potential values are: {suggestions}"
 
         raise ValueError(error_message)
-        
-    filename = os.path.join(tempfile.mkdtemp(), "tempfile")
-    
+
+    filename = os.path.join(tempdir, "tempfile")
+
     url_found = _check_url(caract["lien"])
 
+    # TODO: update is NOT used
     _download_pb(url=url_found, fname=filename, total=caract["size"])
 
     # CHECKSUM MD5 ------------------------------------------
 
-    if hashlib.md5(open(filename, "rb").read()).hexdigest() != caract["md5"]:
-        warnings.warn("File in insee.fr modified or corrupted during download")
+    with open(filename, "rb") as f:
+        if hashlib.md5(f.read()).hexdigest() != caract["md5"]:
+            warnings.warn(
+                "File in insee.fr modified or corrupted during download"
+            )
 
     # PREPARE PANDAS IMPORT ARGUMENTS -----------------------
 
