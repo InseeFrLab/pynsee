@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import io
 from functools import lru_cache
 import pandas as pd
-import os
 import xml.dom.minidom
 from tqdm import trange
 
 from pynsee.macrodata._get_date import _get_date
 from pynsee.utils._request_insee import _request_insee
-from pynsee.utils._get_temp_dir import _get_temp_dir
 
 import logging
 
@@ -18,24 +17,12 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _get_insee(api_query, sdmx_query, step="1/1"):
-    # create temporary directory
-    dirpath = _get_temp_dir()
 
     results = _request_insee(api_url=api_query, sdmx_url=sdmx_query)
-
-    raw_data_file = os.path.join(dirpath, "raw_data_file")
-
-    with open(raw_data_file, "wb") as f:
-        f.write(results.content)
+    raw_data_file = io.BytesIO(results.content)
 
     # parse the xml file
     root = xml.dom.minidom.parse(raw_data_file)
-
-    # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
-    try:
-        os.remove(raw_data_file)
-    except FileNotFoundError:
-        pass
 
     n_series = len(root.getElementsByTagName("Series"))
 
