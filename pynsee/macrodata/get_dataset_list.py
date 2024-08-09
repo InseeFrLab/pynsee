@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import os
+import io
 import xml.etree.ElementTree as ET
 import pandas as pd
 from tqdm import trange
 
-from pynsee.macrodata._get_dataset_list_internal import _get_dataset_list_internal
+from pynsee.macrodata._get_dataset_list_internal import (
+    _get_dataset_list_internal,
+)
 
 from pynsee.utils._request_insee import _request_insee
-from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils.save_df import save_df
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -37,24 +39,16 @@ def get_dataset_list(update=False, silent=False):
     try:
 
         INSEE_sdmx_link_dataflow = "https://bdm.insee.fr/series/sdmx/dataflow"
-        INSEE_api_link_dataflow = "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all"
+        INSEE_api_link_dataflow = (
+            "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all"
+        )
 
         results = _request_insee(
             api_url=INSEE_api_link_dataflow, sdmx_url=INSEE_sdmx_link_dataflow
         )
 
-        # create temporary directory
-        dirpath = _get_temp_dir()
-
-        dataflow_file = dirpath + "\\dataflow_file"
-
-        with open(dataflow_file, "wb") as f:
-            f.write(results.content)
-
+        dataflow_file = io.BytesIO(results.content)
         root = ET.parse(dataflow_file).getroot()
-
-        if os.path.exists(dataflow_file):
-            os.remove(dataflow_file)
 
         data = root[1][0]
 
@@ -73,7 +67,8 @@ def get_dataset_list(update=False, silent=False):
             }
 
             dt = pd.DataFrame(
-                dataset, columns=["id", "Name.fr", "Name.en", "url", "n_series"]
+                dataset,
+                columns=["id", "Name.fr", "Name.en", "url", "n_series"],
             )
             list_df.append(dt)
 
@@ -88,8 +83,12 @@ def get_dataset_list(update=False, silent=False):
 
         df = df[df["id"] != "SERIES_BDM"]
 
-        df["Name.en"] = df["Name.en"].str.replace("^\\n\\s{0,}", "", regex=True)
-        df["Name.fr"] = df["Name.fr"].str.replace("^\\n\\s{0,}", "", regex=True)
+        df["Name.en"] = df["Name.en"].str.replace(
+            "^\\n\\s{0,}", "", regex=True
+        )
+        df["Name.fr"] = df["Name.fr"].str.replace(
+            "^\\n\\s{0,}", "", regex=True
+        )
         df = df[df["Name.en"] != ""]
         df = df[df["Name.fr"] != ""]
 
@@ -100,7 +99,7 @@ def get_dataset_list(update=False, silent=False):
             "Package's internal data has been used !\n"
             "Dataset list download failed !"
             "Please contact the package maintainer if this error persists !"
-            )
+        )
 
     df = df.reset_index(drop=True)
 

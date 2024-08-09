@@ -3,7 +3,7 @@
 from functools import lru_cache
 import pandas as pd
 import xml.etree.ElementTree as ET
-import difflib 
+import difflib
 import numpy as np
 
 from pynsee.geodata._get_capabilities import _get_capabilities
@@ -11,9 +11,11 @@ from pynsee.utils._clean_str import _clean_str
 
 
 @lru_cache(maxsize=None)
-def _get_full_list_wfs(topic='', version="2.0.0"):
+def _get_full_list_wfs(topic="", version="2.0.0"):
 
-    raw_data_file = _get_capabilities(key=topic, version=version, service="wfs")
+    raw_data_file = _get_capabilities(
+        key=topic, version=version, service="wfs"
+    )
 
     root = ET.parse(raw_data_file).getroot()
 
@@ -59,21 +61,29 @@ def _get_full_list_wfs(topic='', version="2.0.0"):
         list_df.append(df2)
 
     if len(list_df) > 0:
-        data_all = pd.concat(list_df).reset_index(drop=True).dropna(axis=0, how="all")
+        data_all = (
+            pd.concat(list_df).reset_index(drop=True).dropna(axis=0, how="all")
+        )
     else:
         data_all = list_df
 
-    if 'Keyword' in data_all.columns:
-        list_keyword = [k for k in list(data_all['Keyword'].unique()) if k is not np.nan]
-        
-        string_match_list = difflib.get_close_matches('unites administratives', list_keyword, n=1)
-    
-        if len(string_match_list) > 0 :
-    
+    if "Keyword" in data_all.columns:
+        list_keyword = [
+            k for k in list(data_all["Keyword"].unique()) if k is not np.nan
+        ]
+
+        string_match_list = difflib.get_close_matches(
+            "unites administratives", list_keyword, n=1
+        )
+
+        if len(string_match_list) > 0:
+
             string_match = string_match_list[0]
-    
-            data_all = (data_all
-                       .query("Keyword == @string_match")
-                       .reset_index(drop=True))
+
+            data_all = data_all.query("Keyword == @string_match").reset_index(
+                drop=True
+            )
 
     return data_all
+
+

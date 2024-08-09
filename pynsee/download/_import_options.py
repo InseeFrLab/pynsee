@@ -1,11 +1,14 @@
 import tempfile
 
 
-def _import_options(caract: dict, filename: str):
+def _import_options(
+    tempdir: tempfile.TemporaryDirectory, caract: dict, filename: str
+):
     """Internal to generate a dictionary of options
     required to import files
 
     Arguments:
+        tempdir {tempfile.TemporaryDirectory} -- Temporary folder to use for unpacking
         caract {dict} -- Dictionary returned by `download_store_file`
         filename {str} -- Filename of the object that is going to be imported
 
@@ -16,7 +19,7 @@ def _import_options(caract: dict, filename: str):
 
     if caract["zip"] is True:
         file_archive = filename
-        file_to_import = f"{tempfile.gettempdir()}/{caract['fichier_donnees']}"
+        file_to_import = f"{tempdir}/{caract['fichier_donnees']}"
     else:
         file_archive = None
         file_to_import = filename

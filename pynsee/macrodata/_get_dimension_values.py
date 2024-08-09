@@ -1,40 +1,38 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import io
 import xml.etree.ElementTree as ET
 import pandas as pd
-import os
 
-from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.save_df import save_df
 
-@save_df(day_lapse_max=90)
-def _get_dimension_values(cl_dimension, update=False, silent=True, insee_date_test=None):
 
-    INSEE_sdmx_link_codelist = "https://www.bdm.insee.fr/series/sdmx/codelist/FR1"
+@save_df(day_lapse_max=90)
+def _get_dimension_values(
+    cl_dimension, update=False, silent=True, insee_date_test=None
+):
+
+    INSEE_sdmx_link_codelist = (
+        "https://www.bdm.insee.fr/series/sdmx/codelist/FR1"
+    )
     INSEE_api_link_codelist = "https://api.insee.fr/series/BDM/V1/codelist/FR1"
 
-    INSEE_sdmx_link_codelist_dimension = INSEE_sdmx_link_codelist + "/" + cl_dimension
-    INSEE_api_link_codelist_dimension = INSEE_api_link_codelist + "/" + cl_dimension
+    INSEE_sdmx_link_codelist_dimension = (
+        INSEE_sdmx_link_codelist + "/" + cl_dimension
+    )
+    INSEE_api_link_codelist_dimension = (
+        INSEE_api_link_codelist + "/" + cl_dimension
+    )
 
     results = _request_insee(
-            sdmx_url=INSEE_sdmx_link_codelist_dimension,
-            api_url=INSEE_api_link_codelist_dimension,
-        )
-
-    # create temporary directory
-    dirpath = _get_temp_dir()
-
-    dimension_file = os.path.join(dirpath, "dimension_file")
-
-    with open(dimension_file, "wb") as f:
-        f.write(results.content)
+        sdmx_url=INSEE_sdmx_link_codelist_dimension,
+        api_url=INSEE_api_link_codelist_dimension,
+    )
+    dimension_file = io.BytesIO(results.content)
 
     root = ET.parse(dimension_file).getroot()
-
-    if os.path.exists(dimension_file):
-        os.remove(dimension_file)
 
     list_values = []
 
