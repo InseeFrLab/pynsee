@@ -5,8 +5,6 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 import difflib
 import numpy as np
-import os
-import shutil
 
 from pynsee.geodata._get_capabilities import _get_capabilities
 from pynsee.utils._clean_str import _clean_str
@@ -20,10 +18,6 @@ def _get_full_list_wfs(topic="", version="2.0.0"):
     )
 
     root = ET.parse(raw_data_file).getroot()
-
-    shutil.rmtree(
-        os.path.realpath(os.path.join(raw_data_file, "..")), ignore_errors=True
-    )
 
     list_var = ["FeatureTypeList"]
 
@@ -91,3 +85,5 @@ def _get_full_list_wfs(topic="", version="2.0.0"):
             )
 
     return data_all
+
+
