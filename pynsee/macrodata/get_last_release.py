@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import io
 from functools import lru_cache
 import xml.etree.ElementTree as ET
 import pandas as pd
-import os
 import re
 import datetime
 import warnings
 
 from pynsee.utils._request_insee import _request_insee
-from pynsee.utils._get_temp_dir import _get_temp_dir
 
 
 @lru_cache(maxsize=None)
@@ -25,19 +24,9 @@ def get_last_release():
     try:
         request = _request_insee(sdmx_url=link)
 
-        dirpath = _get_temp_dir()
-        file = dirpath + "\\last_release"
-
-        with open(file, "wb") as f:
-            f.write(request.content)
+        file = io.BytesIO(request.content)
 
         root = ET.parse(file).getroot()
-
-        # Nota: do not remove dirpath, _get_temp_dir is managed through lru_cache
-        try:
-            os.remove(file)
-        except FileNotFoundError:
-            pass
 
         list_data = []
 
@@ -76,3 +65,4 @@ def get_last_release():
         data = pd.DataFrame()
 
     return data
+
