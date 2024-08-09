@@ -62,6 +62,6 @@ def _download_store_file(
 
     # PREPARE PANDAS IMPORT ARGUMENTS -----------------------
 
-    pandas_read_options = _import_options(caract, filename)
+    pandas_read_options = _import_options(tempdir, caract, filename)
 
     return {"result": caract, **pandas_read_options}
