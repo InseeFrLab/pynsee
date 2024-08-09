@@ -2,7 +2,6 @@
 # Copyright : INSEE, 2021
 
 import io
-import os
 import xml.etree.ElementTree as ET
 import pandas as pd
 from tqdm import trange
@@ -12,7 +11,6 @@ from pynsee.macrodata._get_dataset_list_internal import (
 )
 
 from pynsee.utils._request_insee import _request_insee
-from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils.save_df import save_df
 
 import logging
