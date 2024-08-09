@@ -8,7 +8,7 @@ from pynsee.download._load_data_from_schema import _load_data_from_schema
 from pynsee.utils.save_df import save_df
 
 
-# @save_df(day_lapse_max=90)
+@save_df(day_lapse_max=90)
 def download_file(id, variables=None, update=False, silent=False):
     """User level function to download files from insee.fr
 
@@ -41,7 +41,3 @@ def download_file(id, variables=None, update=False, silent=False):
             df = pd.DataFrame()
 
     return df
-
-
-if __name__ == "__main__":
-    df = download_file("RP_MOBPRO_2017")
