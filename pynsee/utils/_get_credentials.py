@@ -1,71 +1,69 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from pathlib import Path
-import os
-import pandas as pd
-from functools import lru_cache
-import numpy as np
-
+import json
 import logging
+import os
+
+from platformdirs import user_config_dir
+
 
 logger = logging.getLogger(__name__)
 
 
-def _get_credentials():
-    envir_var_used = False
+def _get_credentials() -> dict[str, str]:
+    '''
+    Try to load credentials.
+
+    If the environment variables `insee_key` and `insee_secret` are set, use
+    these.
+    Otherwise try to load them from the config file.
+
+    Returns a dict containing at least an "insee_key" and an "insee_secret"
+    entry.
+    '''
+    key_dict: dict[str, str] = {}
+
     try:
-        home = str(Path.home())
-        pynsee_credentials_file = os.path.join(home, "pynsee_credentials.csv")
-        cred = pd.read_csv(pynsee_credentials_file)
-        os.environ["insee_key"] = str(cred.loc[0, "insee_key"])
-        os.environ["insee_secret"] = str(cred.loc[0, "insee_secret"])
-        http_proxy = cred.loc[0, "http_proxy"]
-        https_proxy = cred.loc[0, "https_proxy"]
-        if (http_proxy is None) or (not isinstance(http_proxy, str)):
-            http_proxy = ""
-        if (https_proxy is None) or (not isinstance(https_proxy, str)):
-            https_proxy = ""
-        os.environ["http_proxy"] = str(http_proxy)
-        os.environ["https_proxy"] = str(https_proxy)
-    except:
+        key_dict["insee_key"] = os.environ["insee_key"]
+        key_dict["insee_secret"] = os.environ["insee_secret"]
+
         envir_var_used = True
+    except KeyError:
+        envir_var_used = False
 
-    try:
-        key_dict = {
-            "insee_key": os.environ["insee_key"],
-            "insee_secret": os.environ["insee_secret"],
-        }
-    except:
+        config_file = os.path.join(
+            user_config_dir("pynsee", ensure_exists=True), "config.json")
+
         try:
-            key_dict = {
-                "insee_key": os.environ["INSEE_KEY"],
-                "insee_secret": os.environ["INSEE_SECRET"],
-            }
-        except:
-            key_dict = None
+            with open(config_file, "r") as f:
+                key_dict = json.load(f)
 
-    if (envir_var_used is True) & (key_dict is not None):
-        _warning_credentials("envir_var_used")
-    elif key_dict is None:
-        _warning_credentials("key_dict_none")
+            http_proxy = key_dict["http_proxy"]
+            https_proxy = key_dict["https_proxy"]
 
-    return key_dict
+            if (http_proxy is None) or (not isinstance(http_proxy, str)):
+                http_proxy = ""
+            if (https_proxy is None) or (not isinstance(https_proxy, str)):
+                https_proxy = ""
 
+            os.environ["http_proxy"] = http_proxy
+            os.environ["https_proxy"] = https_proxy
+        except Exception:
+            logger.critical(
+                "INSEE API credentials have not been found: please try to "
+                "reuse pynsee.utils.init_conn to save them locally.\n"
+                "Otherwise, you can still use environment variables as "
+                "follow:\n"
+                "import os\n"
+                "os.environ['insee_key'] = 'my_insee_key'\n"
+                "os.environ['insee_secret'] = 'my_insee_secret'"
+            )
 
-@lru_cache(maxsize=None)
-def _warning_credentials(string):
-    if string == "envir_var_used":
+    if envir_var_used:
         logger.warning(
             "Existing environment variables used, instead of locally "
             "saved credentials"
         )
-    if string == "key_dict_none":
-        logger.critical(
-            "INSEE API credentials have not been found: please try to reuse "
-            "pynsee.utils.init_conn to save them locally.\n"
-            "Otherwise, you can still use environment variables as follow:\n"
-            "import os\n"
-            "os.environ['insee_key'] = 'my_insee_key'\n"
-            "os.environ['insee_secret'] = 'my_insee_secret'"
-        )
+
+    return key_dict
