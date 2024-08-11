@@ -146,7 +146,7 @@ def init_conn(
         logger.info(
             "Subscription to all INSEE's APIs has been successfull\n"
             "Unless the user wants to change the key or secret, using this "
-            "function is no longer needed as the credentials will been saved "
+            "function is no longer needed as the credentials will be saved "
             f"locally here:\n{config_file}"
         )
     else:
