@@ -152,7 +152,8 @@ def init_conn(
     else:
         raise ValueError(
             "Invalid credentials, please make sure you subscribed to all the "
-            "APIs!")
+            "APIs!"
+        )
 
     # save config
     config = {

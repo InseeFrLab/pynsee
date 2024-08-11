@@ -5,13 +5,15 @@ import json
 import logging
 import os
 
+from typing import Dict
+
 from platformdirs import user_config_dir
 
 
 logger = logging.getLogger(__name__)
 
 
-def _get_credentials() -> dict[str, str]:
+def _get_credentials() -> Dict[str, str]:
     '''
     Try to load credentials.
 
