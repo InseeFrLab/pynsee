@@ -145,9 +145,9 @@ def init_conn(
     if all([sts == 200 for sts in list_requests_status]):
         logger.info(
             "Subscription to all INSEE's APIs has been successfull\n"
-            "Unless the user wants to change the insee_token, using this function "
-            "is no longer needed as the insee_token will been saved locally here:\n"
-            f"{config_file}"
+            "Unless the user wants to change the key or secret, using this "
+            "function is no longer needed as the credentials will been saved "
+            f"locally here:\n{config_file}"
         )
     else:
         raise ValueError(
