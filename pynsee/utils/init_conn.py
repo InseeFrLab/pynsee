@@ -88,7 +88,7 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
     queries = [
         "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",
         "https://api.insee.fr/metadonnees/V1/codes/cj/n3/5599",
-        "https://api.insee.fr/entreprises/sirene/V3/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
+        "https://api.insee.fr/entreprises/sirene/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
         "https://api.insee.fr/donnees-locales/V0.1/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
     ]
     apis = ["BDM", "Metadata", "Sirene", "Local Data"]
