@@ -5,6 +5,7 @@ import json
 import logging
 import os
 
+from functools import lru_cache
 from typing import Dict
 
 from platformdirs import user_config_dir
@@ -24,7 +25,7 @@ def _get_credentials() -> Dict[str, str]:
     Returns a dict containing at least an "insee_key" and an "insee_secret"
     entry.
     '''
-    key_dict: dict[str, str] = {}
+    key_dict: Dict[str, str] = {}
 
     try:
         key_dict["insee_key"] = os.environ["insee_key"]
@@ -52,20 +53,29 @@ def _get_credentials() -> Dict[str, str]:
             os.environ["http_proxy"] = http_proxy
             os.environ["https_proxy"] = https_proxy
         except Exception:
-            logger.critical(
-                "INSEE API credentials have not been found: please try to "
-                "reuse pynsee.utils.init_conn to save them locally.\n"
-                "Otherwise, you can still use environment variables as "
-                "follow:\n"
-                "import os\n"
-                "os.environ['insee_key'] = 'my_insee_key'\n"
-                "os.environ['insee_secret'] = 'my_insee_secret'"
-            )
+            _missing_credentials()
 
     if envir_var_used:
-        logger.warning(
-            "Existing environment variables used, instead of locally "
-            "saved credentials"
-        )
+        _warn_env_credentials()
 
     return key_dict
+
+
+@lru_cache(maxsize=None)
+def _missing_credentials() -> None:
+    logger.critical(
+        "INSEE API credentials have not been found: please try to reuse "
+        "pynsee.utils.init_conn to save them locally.\n"
+        "Otherwise, you can still use environment variables as follow:\n\n"
+        "import os\n"
+        "os.environ['insee_key'] = 'my_insee_key'\n"
+        "os.environ['insee_secret'] = 'my_insee_secret'"
+    )
+
+
+@lru_cache(maxsize=None)
+def _warn_env_credentials() -> None:
+    logger.warning(
+        "Existing environment variables used, instead of locally "
+        "saved credentials"
+    )
