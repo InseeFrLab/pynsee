@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
