@@ -62,7 +62,7 @@ class TestFunction(TestCase):
             test = results.status_code == 200
             self.assertTrue(test)
 
-    def test_request_insee_3(self):
+    def test_request_insee_3(self, StartKeys=StartKeys):
         # token is none and sdmx query fails
         def init_conn_foo():
             init_conn(insee_key="test", insee_secret="test")
@@ -82,6 +82,13 @@ class TestFunction(TestCase):
             _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
         self.assertRaises(ValueError, request_insee_test)
+
+        # Finally reset credentials : if test are run on any machine except
+        # github's workflows', you will want to keep the valid ceredentials
+        # in the csv storage (for next run of tests, for instance)
+        insee_key = StartKeys["insee_key"]
+        insee_secret = StartKeys["insee_secret"]
+        init_conn(insee_key=insee_key, insee_secret=insee_secret)
 
     def test_request_insee_4(self):
         # token is none and sdmx query is None
