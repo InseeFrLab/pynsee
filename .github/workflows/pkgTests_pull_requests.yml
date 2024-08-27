@@ -48,12 +48,15 @@ jobs:
         # run all py files
         # for f in *.py; do python "$f"; done
         cd ../..
-    - name: Add requests-cache
-      run: pip install requests-cache  # Used to monkeypatch requests
+    - name: Add requests-cache and s3fs
+      run: pip install requests-cache s3fs  # Used to monkeypatch requests and store artifacts
     - name: Test with pytest
       env:      
         insee_key: ${{ secrets.INSEE_KEY }}
         insee_secret: ${{ secrets.INSEE_SECRET }}
+        s3_token: ${{ secrets.S3_TOKEN }}
+        s3_secret: ${{ secrets.S3_SECRET }}
+        s3_key: ${{ secrets.S3_KEY }}
       run: |
         pytest -v --cov
     - name: "Upload coverage to Codecov"

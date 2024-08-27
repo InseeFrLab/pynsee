@@ -3,13 +3,18 @@
 
 from datetime import timedelta
 import os
+import warnings
 
 try:
     import requests_cache
 except ModuleNotFoundError:
     pass
 import platformdirs
-import warnings
+
+try:
+    import s3fs
+except ModuleNotFoundError:
+    pass
 
 
 def pytest_addoption(parser):
@@ -26,27 +31,77 @@ def pytest_addoption(parser):
     )
 
 
+APPNAME = "pynsee-test-http-cache"
+CACHE_DIR = platformdirs.user_cache_dir(APPNAME, ensure_exists=True)
+BASE_NAME = "requests-cache.sqlite"
+CACHE_NAME = os.path.join(CACHE_DIR, BASE_NAME)
+
+BUCKET = "projet-pynsee"
+PATH_WITHIN_BUCKET = "artifacts"
+ENDPOINT_URL = "https://minio.lab.sspcloud.fr"
+
+kwargs = {}
+for ci_key, key in {
+    "s3_token": "token",
+    "s3_secret": "secret",
+    "s3_key": "key",
+}.items():
+    try:
+        kwargs[key] = os.environ[ci_key]
+    except KeyError:
+        continue
+
+
 def pytest_sessionstart(session):
-    "Add cache to reduce test duration over multiple python version"
+    """
+    Add cache to reduce test duration over multiple python version and restore
+    artifact from SSP Cloud
+    """
 
-    appname = "pynsee-test-http-cache"
-    cache_dir = platformdirs.user_cache_dir(appname, ensure_exists=True)
-
-    cache_name = os.path.join(cache_dir, "requests-cache.sqlite")
     clean_cache = session.config.getoption("--clean-cache")
     if clean_cache:
-        os.unlink(cache_name)
+        # Clean on local machine
+        os.unlink(CACHE_NAME)
 
     no_cache = session.config.getoption("--no-cache")
     if no_cache:
         return
 
+    if not clean_cache:
+        try:
+            fs = s3fs.S3FileSystem(
+                client_kwargs={"endpoint_url": ENDPOINT_URL}, **kwargs
+            )
+            artifact = f"{BUCKET}/{PATH_WITHIN_BUCKET}/{BASE_NAME}"
+            fs.download(artifact, CACHE_NAME)
+        except NameError:
+            warnings.warn(
+                "s3fs not present, cannot restore artifacts from SSP Cloud "
+                "for current test"
+            )
+
     try:
         requests_cache.install_cache(
-            cache_name=cache_name, expire_after=timedelta(days=30)
+            cache_name=CACHE_NAME, expire_after=timedelta(days=30)
         )
     except NameError:
         warnings.warn(
-            "requests-cache not preset, http caching will be deactivated "
+            "requests-cache not present, http caching will be deactivated "
             "during tests"
+        )
+
+
+def pytest_sessionfinish(session, exitstatus):
+    "Store cached artifact on SSP Cloud's S3 File System"
+
+    try:
+        fs = s3fs.S3FileSystem(
+            client_kwargs={"endpoint_url": ENDPOINT_URL}, **kwargs
+        )
+        fs.put(CACHE_NAME, f"{BUCKET}/{PATH_WITHIN_BUCKET}/{BASE_NAME}")
+
+    except NameError:
+        warnings.warn(
+            "s3fs not present, cannot save artifacts to SSP Cloud "
+            "from current test"
         )
