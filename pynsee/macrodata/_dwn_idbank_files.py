@@ -38,7 +38,6 @@ def _dwn_idbank_files():
     try:
         file_to_dwn = os.environ["pynsee_idbank_file"]
     except Exception:
-        # file_to_dwn = "https://www.insee.fr/en/statistiques/fichier/2868055/202201_correspondance_idbank_dimension.zip"
         file_to_dwn = "https://www.insee.fr/fr/statistiques/fichier/2862759/202407_correspondance_idbank_dimension.zip"
 
     try:
