@@ -40,15 +40,14 @@ BUCKET = "projet-pynsee"
 PATH_WITHIN_BUCKET = "artifacts"
 ENDPOINT_URL = "https://minio.lab.sspcloud.fr"
 
-kwargs = {}
+KWARGS_S3 = {}
 for ci_key, key in {
-    "s3_token": "token",
-    "s3_secret": "secret",
-    "s3_key": "key",
+    "S3_SECRET": "secret",
+    "S3_KEY": "key",
 }.items():
     try:
-        kwargs[key] = os.environ[ci_key]
-    except KeyError:
+        KWARGS_S3[key] = os.environ[ci_key]
+    except KeyError as e:
         continue
 
 
@@ -70,7 +69,7 @@ def pytest_sessionstart(session):
     if not clean_cache:
         try:
             fs = s3fs.S3FileSystem(
-                client_kwargs={"endpoint_url": ENDPOINT_URL}, **kwargs
+                client_kwargs={"endpoint_url": ENDPOINT_URL}, **KWARGS_S3
             )
             artifact = f"{BUCKET}/{PATH_WITHIN_BUCKET}/{BASE_NAME}"
             fs.download(artifact, CACHE_NAME)
@@ -96,7 +95,7 @@ def pytest_sessionfinish(session, exitstatus):
 
     try:
         fs = s3fs.S3FileSystem(
-            client_kwargs={"endpoint_url": ENDPOINT_URL}, **kwargs
+            client_kwargs={"endpoint_url": ENDPOINT_URL}, **KWARGS_S3
         )
         fs.put(CACHE_NAME, f"{BUCKET}/{PATH_WITHIN_BUCKET}/{BASE_NAME}")
 
@@ -105,3 +104,12 @@ def pytest_sessionfinish(session, exitstatus):
             "s3fs not present, cannot save artifacts to SSP Cloud "
             "from current test"
         )
+
+
+# if __name__ == "__main__":
+
+#     fs = s3fs.S3FileSystem(
+#         client_kwargs={"endpoint_url": ENDPOINT_URL}, **KWARGS_S3
+#     )
+#     path = f"{BUCKET}/{PATH_WITHIN_BUCKET}/**/*"
+#     print(fs.glob(path))
