@@ -52,7 +52,7 @@ for ci_key, key in {
 }.items():
     try:
         KWARGS_S3[key] = os.environ[ci_key]
-    except KeyError as e:
+    except KeyError:
         continue
 
 
