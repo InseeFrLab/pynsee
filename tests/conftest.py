@@ -103,7 +103,10 @@ def pytest_sessionstart(session):
     # Clean cache if needed, on local machine and on S3
     if clean_cache:
         # Clean on local machine
-        os.unlink(CACHE_NAME)
+        try:
+            os.unlink(CACHE_NAME)
+        except FileNotFoundError:
+            pass
 
         # Clean S3 file system
         try:
