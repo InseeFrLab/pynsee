@@ -37,7 +37,6 @@ class TestFunction(TestCase):
         token = _get_token(insee_key, insee_secret)
         self.assertTrue((token is not None))
 
-
     def test_request_insee_1(self):
         # test both api and sdmx queries fail but token is not none
         sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
@@ -127,9 +126,7 @@ class TestFunction(TestCase):
         def request_insee_test(sdmx_url=None, api_url=api_url):
             _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-        self.assertRaises(
-            requests.exceptions.RequestException, request_insee_test
-        )
+        self.assertRaises(ValueError, request_insee_test)
 
     def test_request_insee_5(self):
         # api query is none and sdmx query fails
