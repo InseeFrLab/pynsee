@@ -130,6 +130,7 @@ def pytest_sessionstart(session):
 
     if s3fs and py7zr and requests_cache:
         try:
+            print("trying to restore artifact from SSP Cloud...")
             archive_path = os.path.join(CACHE_DIR, ARCHIVE_NAME)
             FS.download(ARTIFACT, archive_path)
             with py7zr.SevenZipFile(archive_path, "r") as archive:
@@ -138,6 +139,7 @@ def pytest_sessionstart(session):
             hashed_cache = hash_file(CACHE_NAME)
         except FileNotFoundError:
             # No cache found on S3
+            warnings.warn("No artifact found")
             pass
 
     if requests_cache:
@@ -148,6 +150,10 @@ def pytest_sessionstart(session):
 
 def pytest_sessionfinish(session, exitstatus):
     "Store cached artifact on SSP Cloud's S3 File System"
+
+    no_cache = session.config.getoption("--no-cache")
+    if no_cache:
+        return
 
     upload = False
     try:
@@ -171,8 +177,9 @@ def pytest_sessionfinish(session, exitstatus):
                 "py7zr not present, cannot save artifacts to SSP Cloud "
                 "from current test"
             )
-        if s3fs and py7zr:
 
+        if s3fs and py7zr:
+            print("Trying to save current artifact...")
             archive_path = os.path.join(CACHE_DIR, ARCHIVE_NAME)
             with py7zr.SevenZipFile(archive_path, "w") as archive:
                 archive.writeall(CACHE_NAME, BASE_NAME)

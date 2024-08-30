@@ -8,7 +8,11 @@ import time
 
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
-from pynsee.utils.requests_params import _get_requests_session, _get_requests_headers, _get_requests_proxies
+from pynsee.utils.requests_params import (
+    _get_requests_session,
+    _get_requests_headers,
+    _get_requests_proxies,
+)
 
 import logging
 
@@ -53,7 +57,7 @@ def _request_insee(
             print(api_url)
     except:
         pass
-        
+
     # force sdmx use with a system variable
     try:
         pynsee_use_sdmx = os.environ["pynsee_use_sdmx"]
@@ -80,11 +84,11 @@ def _request_insee(
 
         if token is not None:
             user_agent = _get_requests_headers()
-            
+
             headers = {
                 "Accept": file_format,
                 "Authorization": "Bearer " + token,
-                'User-Agent': user_agent['User-Agent']
+                "User-Agent": user_agent["User-Agent"],
             }
 
             session = _get_requests_session()
@@ -155,7 +159,9 @@ def _request_insee(
                 if results.status_code == 200:
                     return results
                 else:
-                    raise ValueError(results.text + "\n" + sdmx_url)
+                    raise requests.exceptions.RequestException(
+                        results.text + "\n" + sdmx_url
+                    )
 
             else:
                 raise ValueError(msg)
@@ -167,7 +173,9 @@ def _request_insee(
             if results.status_code == 200:
                 return results
             else:
-                raise ValueError(results.text + "\n" + sdmx_url)
+                raise requests.exceptions.RequestException(
+                    results.text + "\n" + sdmx_url
+                )
 
         else:
             raise ValueError("!!! Error : urls are missing")
