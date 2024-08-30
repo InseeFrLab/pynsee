@@ -71,8 +71,8 @@ try:
 except AttributeError:
     pass
 
-CREDENTIALS_PATH = os.path.join(str(Path.home()), "pynsee_credentials.csv")
-credentials_content = ""
+# CREDENTIALS_PATH = os.path.join(str(Path.home()), "pynsee_credentials.csv")
+# credentials_content = ""
 
 
 def hash_file(file_path):
@@ -100,13 +100,13 @@ def pytest_sessionstart(session):
     clean_cache = session.config.getoption("--clean-cache")
     no_cache = session.config.getoption("--no-cache")
 
-    # Capture initial credentials at session start (if there)
-    global credentials_content
-    try:
-        with open(CREDENTIALS_PATH, "rb") as f:
-            credentials_content = f.read()
-    except FileNotFoundError:
-        pass
+    # # Capture initial credentials at session start (if there)
+    # global credentials_content
+    # try:
+    #     with open(CREDENTIALS_PATH, "rb") as f:
+    #         credentials_content = f.read()
+    # except FileNotFoundError:
+    #     pass
 
     # Clear pynsee appdata if there (only on local machine)
     local_appdata_folder = platformdirs.user_cache_dir()
@@ -169,11 +169,11 @@ def pytest_sessionstart(session):
 def pytest_sessionfinish(session, exitstatus):
     "Store cached artifact on SSP Cloud's S3 File System"
 
-    global credentials_content
-    if credentials_content:
-        # Restore credentials
-        with open(CREDENTIALS_PATH, "wb") as f:
-            f.write(credentials_content)
+    # global credentials_content
+    # if credentials_content:
+    #     # Restore credentials
+    #     with open(CREDENTIALS_PATH, "wb") as f:
+    #         f.write(credentials_content)
 
     no_cache = session.config.getoption("--no-cache")
     if no_cache:
