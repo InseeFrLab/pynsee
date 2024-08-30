@@ -35,12 +35,16 @@ def _get_credentials():
         key_dict = {
             "insee_key": os.environ["insee_key"],
             "insee_secret": os.environ["insee_secret"],
+            "http_proxy": os.environ["http_proxy"],
+            "https_proxy": os.environ["https_proxy"],
         }
     except:
         try:
             key_dict = {
                 "insee_key": os.environ["INSEE_KEY"],
                 "insee_secret": os.environ["INSEE_SECRET"],
+                "http_proxy": os.environ["HTTP_PROXY"],
+                "https_proxy": os.environ["HTTPS_PROXY"],
             }
         except:
             key_dict = None
