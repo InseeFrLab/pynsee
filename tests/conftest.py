@@ -14,6 +14,11 @@ except ModuleNotFoundError:
 import platformdirs
 
 try:
+    import py7zr
+except ModuleNotFoundError:
+    py7zr = None
+
+try:
     import s3fs
 except ModuleNotFoundError:
     s3fs = None
@@ -37,13 +42,15 @@ def pytest_addoption(parser):
 APPNAME = "pynsee-test-http-cache"
 CACHE_DIR = platformdirs.user_cache_dir(APPNAME, ensure_exists=True)
 BASE_NAME = "requests-cache.sqlite"
+ARCHIVE_NAME = "requests-cache.7z"
 CACHE_NAME = os.path.join(CACHE_DIR, BASE_NAME)
-
-hashed_cache = ""
 
 BUCKET = "projet-pynsee"
 PATH_WITHIN_BUCKET = "artifacts"
 ENDPOINT_URL = "https://minio.lab.sspcloud.fr"
+ARTIFACT = f"{BUCKET}/{PATH_WITHIN_BUCKET}/{ARCHIVE_NAME}"
+
+hashed_cache = ""
 
 KWARGS_S3 = {}
 for ci_key, key in {
@@ -54,6 +61,13 @@ for ci_key, key in {
         KWARGS_S3[key] = os.environ[ci_key]
     except KeyError:
         continue
+
+try:
+    FS = s3fs.S3FileSystem(
+        client_kwargs={"endpoint_url": ENDPOINT_URL}, **KWARGS_S3
+    )
+except AttributeError:
+    pass
 
 
 def hash_file(file_path):
@@ -86,37 +100,40 @@ def pytest_sessionstart(session):
             "s3fs not present, cannot restore artifacts from SSP Cloud "
             "for current test"
         )
+    if not py7zr and not no_cache:
+        warnings.warn(
+            "py7zr not present, cannot restore artifacts from SSP Cloud "
+            "for current test"
+        )
     if not requests_cache and not no_cache:
         warnings.warn(
             "requests-cache not present, http caching will be deactivated "
             "during tests"
         )
 
-    try:
-        fs = s3fs.S3FileSystem(
-            client_kwargs={"endpoint_url": ENDPOINT_URL}, **KWARGS_S3
-        )
-        artifact = f"{BUCKET}/{PATH_WITHIN_BUCKET}/{BASE_NAME}"
-    except AttributeError:
-        pass
-
     # Clean cache if needed, on local machine and on S3
     if clean_cache:
         # Clean on local machine
-        os.unlink(CACHE_NAME)
+        try:
+            os.unlink(CACHE_NAME)
+        except FileNotFoundError:
+            pass
 
         # Clean S3 file system
         try:
-            fs.rm(artifact)
-        except NameError:
+            FS.rm(ARTIFACT)
+        except (NameError, FileNotFoundError):
             pass
 
     if no_cache:
         return
 
-    if s3fs and requests_cache:
+    if s3fs and py7zr and requests_cache:
         try:
-            fs.download(artifact, CACHE_NAME)
+            archive_path = os.path.join(CACHE_DIR, ARCHIVE_NAME)
+            FS.download(ARTIFACT, archive_path)
+            with py7zr.SevenZipFile(archive_path, "r") as archive:
+                archive.extractall(path=CACHE_DIR)
             global hashed_cache
             hashed_cache = hash_file(CACHE_NAME)
         except FileNotFoundError:
@@ -144,23 +161,22 @@ def pytest_sessionfinish(session, exitstatus):
         pass
 
     if upload:
-        if s3fs:
-            fs = s3fs.S3FileSystem(
-                client_kwargs={"endpoint_url": ENDPOINT_URL}, **KWARGS_S3
-            )
-            fs.put(CACHE_NAME, f"{BUCKET}/{PATH_WITHIN_BUCKET}/{BASE_NAME}")
-
-        else:
+        if not s3fs:
             warnings.warn(
                 "s3fs not present, cannot save artifacts to SSP Cloud "
                 "from current test"
             )
+        if not py7zr:
+            warnings.warn(
+                "py7zr not present, cannot save artifacts to SSP Cloud "
+                "from current test"
+            )
+        if s3fs and py7zr:
 
+            archive_path = os.path.join(CACHE_DIR, ARCHIVE_NAME)
+            with py7zr.SevenZipFile(archive_path, "w") as archive:
+                archive.writeall(CACHE_NAME, BASE_NAME)
 
-# if __name__ == "__main__":
-
-#     fs = s3fs.S3FileSystem(
-#         client_kwargs={"endpoint_url": ENDPOINT_URL}, **KWARGS_S3
-#     )
-#     path = f"{BUCKET}/{PATH_WITHIN_BUCKET}/**/*"
-#     print(fs.glob(path))
+            FS.put(archive_path, ARTIFACT)
+            os.unlink(archive_path)
+            os.unlink(CACHE_NAME)

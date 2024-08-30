@@ -48,8 +48,8 @@ jobs:
         # run all py files
         # for f in *.py; do python "$f"; done
         cd ../..
-    - name: Add requests-cache and s3fs
-      run: pip install requests-cache s3fs  # Used to monkeypatch requests and store artifacts
+    - name: Add requests-cache - s3fs - py7zr
+      run: pip install requests-cache s3fs py7zr # Used to monkeypatch requests and store artifacts
     - name: Test with pytest
       env:      
         insee_key: ${{ secrets.INSEE_KEY }}
