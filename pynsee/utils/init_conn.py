@@ -1,24 +1,33 @@
+
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import json
+import logging
 import os
-from pathlib import Path
-import pandas as pd
 import requests
-import urllib3
 import time
+import urllib3
+import warnings
+
+from platformdirs import user_config_dir
 
 from pynsee.utils._get_token_from_insee import _get_token_from_insee
-from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils.requests_params import _get_requests_session, _get_requests_headers, _get_requests_proxies
 
-
-import logging
 
 logger = logging.getLogger(__name__)
 
 
-def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
+def opener(path, flags):
+    return os.open(path, flags, 0o600)
+
+
+def init_conn(
+    insee_key: str, insee_secret: str,
+    http_proxy: str = "",
+    https_proxy: str = ""
+) -> None:
     """Save your credentials to connect to INSEE APIs, subscribe to api.insee.fr
 
     Args:
@@ -50,96 +59,106 @@ def init_conn(insee_key, insee_secret, http_proxy="", https_proxy=""):
         >>> os.environ['https_proxy'] = "http://my_proxy_server:port"
     """
     logger.debug("SHOULD GET LOGGING")
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    home = Path.home()
-    pynsee_credentials_file = os.path.join(home, "pynsee_credentials.csv")
 
-    d = pd.DataFrame(
-        {
-            "insee_key": insee_key,
-            "insee_secret": insee_secret,
-            "http_proxy": http_proxy,
-            "https_proxy": https_proxy,
-        },
-        index=[0],
-    )
-    d.to_csv(pynsee_credentials_file)
-
-    keys = _get_credentials()
-
-    insee_key = keys["insee_key"]
-    insee_secret = keys["insee_secret"]
-
-    token = None
     try:
         token = _get_token_from_insee(insee_key, insee_secret)
-    except:
-        pass
+    except Exception:
+        token = None
 
     if token is None:
         raise ValueError(
-            "!!! Token is missing, please check insee_key and insee_secret are correct !!!"
+            "!!! Could not generate token, please check that `insee_key` and "
+            "`insee_secret` are correct !!!"
         )
     else:
         logger.info("Token has been created")
 
     proxies = _get_requests_proxies()
 
-    queries = [
-        "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",
-        "https://api.insee.fr/metadonnees/V1/codes/cj/n3/5599",
-        "https://api.insee.fr/entreprises/sirene/V3/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
-        "https://api.insee.fr/donnees-locales/V0.1/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
-    ]
-    apis = ["BDM", "Metadata", "Sirene", "Local Data"]
+    queries = {
+        "BDM": "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",
+        "Metadata": "https://api.insee.fr/metadonnees/V1/codes/cj/n3/5599",
+        "Sirene": "https://api.insee.fr/entreprises/sirene/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
+        "Local Data": "https://api.insee.fr/donnees-locales/V0.1/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
+    }
 
-    file_format = [
-        "application/xml",
-        "application/xml",
-        "application/json;charset=utf-8",
-        "application/xml",
-    ]
+    file_format = {
+        "BDM": "application/xml",
+        "Metadata": "application/xml",
+        "Sirene": "application/json;charset=utf-8",
+        "Local Data": "application/xml",
+    }
 
-    list_requests_status = []
+    invalid_requests = {}
 
     user_agent = _get_requests_headers()
 
     session = _get_requests_session()
 
-    for q in range(len(queries)):
+    for api, api_url in queries.items():
         headers = {
-            "Accept": file_format[q],
+            "Accept": file_format[api],
             "Authorization": "Bearer " + token,
             'User-Agent': user_agent['User-Agent']
         }
-        api_url = queries[q]
-        
-        results = session.get(
-            api_url, proxies=proxies, headers=headers, verify=False
-        )
+
+        with warnings.catch_warnings():
+            urllib3.disable_warnings(
+                urllib3.exceptions.InsecureRequestWarning)
+
+            results = session.get(
+                api_url, proxies=proxies, headers=headers, verify=False)
         
         code = results.status_code
         
         if code == 429:
             time.sleep(10)
     
-            results = requests.get(api_url,
-                                  proxies=proxies,
-                                  headers=headers,
-                                  verify=False)
+            results = requests.get(
+                api_url, proxies=proxies, headers=headers, verify=False)
 
-        if results.status_code != 200:
+        if results.status_code == 404:
+            RuntimeError(
+                f"Could not reach {api} at {api_url}, please get in touch if "
+                "the issue persists.")
+        elif results.status_code != 200:
             logger.critical(
-                f"Please subscribe to {apis[q]} API on api.insee.fr !"
+                f"Please subscribe to {api} API on api.insee.fr !\n"
+                f"Received error {results.status_code}: "
             )
-        list_requests_status += [results.status_code]
+
+            invalid_requests[api] = results.status_code
 
     session.close()
-    
-    if all([sts == 200 for sts in list_requests_status]):
+
+    config_file = os.path.join(
+        user_config_dir("pynsee", ensure_exists=True),
+        "config.json"
+    )
+
+    if invalid_requests:
+        raise ValueError(
+            "Invalid credentials, the following APIs returned error codes, "
+            "please make sure you subscribed to them:\n"
+            f"{invalid_requests}"
+        )
+    else:
         logger.info(
             "Subscription to all INSEE's APIs has been successfull\n"
-            "Unless the user wants to change key or secret, using this "
-            "function is no longer needed as the credentials to get the token "
-            "have been saved locally here:\n" + str(pynsee_credentials_file)
+            "Unless the user wants to change the key or secret, using this "
+            "function is no longer needed as the credentials will be saved "
+            f"locally here:\n{config_file}"
         )
+
+    # save config
+    config = {
+        "insee_key": insee_key,
+        "insee_secret": insee_secret,
+        "http_proxy": http_proxy,
+        "https_proxy": https_proxy
+    }
+
+    with open(config_file, 'w', opener=opener) as f:
+        json.dump(config, f)
+
+    logger.info("Credentials have been saved.")

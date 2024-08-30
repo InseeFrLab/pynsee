@@ -14,6 +14,7 @@ from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.clear_all_cache import clear_all_cache
 from pynsee.utils.init_conn import init_conn
 
+
 test_SDMX = True
 
 
@@ -35,6 +36,7 @@ class TestFunction(TestCase):
 
         token = _get_token(insee_key, insee_secret)
         self.assertTrue((token is not None))
+
 
     def test_request_insee_1(self):
         # test both api and sdmx queries fail but token is not none
