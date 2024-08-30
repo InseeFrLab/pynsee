@@ -24,3 +24,4 @@ docs/examples/.jupyter_cache/*
 poetry.lock
 docs/examples/*.csv
 docs/examples/*.svg
+.env
