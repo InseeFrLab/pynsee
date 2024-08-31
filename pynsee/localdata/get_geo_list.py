@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import os
 import pandas as pd
 from tqdm import trange
 import numpy as np
-from requests.exceptions import RequestException
 
 from pynsee.utils._paste import _paste
 from pynsee.localdata._get_geo_relation import _get_geo_relation
 from pynsee.localdata._get_geo_list_simple import _get_geo_list_simple
 
 from pynsee.utils.save_df import save_df
+
 
 @save_df(day_lapse_max=90)
 def get_geo_list(geo=None, date=None, update=False, silent=False):
@@ -94,7 +93,7 @@ def get_geo_list(geo=None, date=None, update=False, silent=False):
                     date=date,
                     type=type_geo,
                 )
-            except RequestException:
+            except ValueError:
                 df = _get_geo_relation(
                     geo="region",
                     code=list_reg[r],
@@ -179,16 +178,12 @@ def get_geo_list(geo=None, date=None, update=False, silent=False):
 
             for i in range(len(data_all.index)):
                 if pd.isna(data_all.loc[i, "TITLE_DEP1"]):
-                    data_all.loc[i, "CODE_DEP"] = data_all.loc[
-                        i, "code_dep2"
-                    ]
+                    data_all.loc[i, "CODE_DEP"] = data_all.loc[i, "code_dep2"]
                     data_all.loc[i, "TITLE_DEP"] = data_all.loc[
                         i, "TITLE_DEP2"
                     ]
                 else:
-                    data_all.loc[i, "CODE_DEP"] = data_all.loc[
-                        i, "code_dep1"
-                    ]
+                    data_all.loc[i, "CODE_DEP"] = data_all.loc[i, "code_dep1"]
                     data_all.loc[i, "TITLE_DEP"] = data_all.loc[
                         i, "TITLE_DEP1"
                     ]
