@@ -3,7 +3,6 @@
 
 import unittest
 from unittest import TestCase
-import requests
 
 import os
 import sys
@@ -20,7 +19,7 @@ test_SDMX = True
 
 
 class TestFunction(TestCase):
-    
+
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 9)
 
     if version:
@@ -43,9 +42,7 @@ class TestFunction(TestCase):
             def request_insee_test(sdmx_url=sdmx_url, api_url=api_url):
                 _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-            self.assertRaises(
-                requests.exceptions.RequestException, request_insee_test
-            )
+            self.assertRaises(ValueError, request_insee_test)
 
         if test_SDMX:
 
