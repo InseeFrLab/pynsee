@@ -94,6 +94,7 @@ def get_geo_list(geo=None, date=None, update=False, silent=False):
                     type=type_geo,
                 )
             except ValueError:
+                # might be triggered by _request_insee while querying the API
                 df = _get_geo_relation(
                     geo="region",
                     code=list_reg[r],
