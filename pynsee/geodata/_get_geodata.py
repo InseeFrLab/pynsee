@@ -4,6 +4,7 @@ import time
 import pandas as pd
 import requests
 import multiprocessing
+import pebble
 import tqdm
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -157,17 +158,24 @@ def _get_geodata(
         args = [link0, list_bbox, crsPolygon]
         irange = range(len(list_bbox))
 
-        with multiprocessing.Pool(
-            initializer=_set_global_var,
-            initargs=(args,),
-            processes=Nprocesses,
-        ) as pool:
-            list_data = list(
-                tqdm.tqdm(
-                    pool.imap(_get_data_with_bbox2, irange),
-                    total=len(list_bbox),
+        with requests.Session() as session:
+            retry = Retry(connect=3, backoff_factor=1, status_forcelist=[502])
+            adapter = HTTPAdapter(max_retries=retry)
+            session.mount("http://", adapter)
+            session.mount("https://", adapter)
+
+            def _get_data_with_bbox3(i):
+                return _get_data_with_bbox2(session, i)
+
+            with pebble.ThreadPool(
+                Nprocesses, initializer=_set_global_var, initargs=(args,)
+            ) as pool:
+                list_data = list(
+                    tqdm.tqdm(
+                        pool.map(_get_data_with_bbox3, irange).result(),
+                        total=len(list_bbox),
+                    )
                 )
-            )
 
         data_all = pd.concat(list_data).reset_index(drop=True)
 
