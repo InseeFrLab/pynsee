@@ -13,19 +13,55 @@ from pynsee.utils._get_temp_dir import _get_temp_dir
 
 @lru_cache(maxsize=None)
 def _get_geo_relation(geo, code, relation, date=None, type=None):
+    """
+    Get a relations to a territory, given a relation type using INSEE's API.
 
-    # relation_list = ['ascendants', 'descendants', 'suivants', 'precedents', 'projetes']
-    # list_available_geo = ['communes', 'regions', 'departements',
-    #                       'arrondissements', 'arrondissementsMunicipaux']
-    # code = '11'
-    # geo = 'region'
-    # relation = 'descendants'
+    As this function uses _request_insee under the hood, might trigger a
+    ValueError when the credentials are valid or if the query is not valid in
+    the first place.
 
-    # idf = _get_geo_relation('region', "11", 'descendants')
-    # essonne = _get_geo_relation('region', "11", 'ascendants')
+    Parameters
+    ----------
+    geo : str
+        The territory's type we're searching a georelation from.
+        Any of ['communes', 'regions', 'departements', 'arrondissements',
+        'arrondissementsMunicipaux']
+    code : str
+        The territory's code we're searching a georelation from.
+    relation : str
+        Type of desired relation.
+        Any of ['ascendants', 'descendants', 'suivants', 'precedents',
+        'projetes']
+    date : str, optional
+        Date of the relation. The default is None.
+    type : str, optional
+        Desired type of territories we're trying to find. The default is None.
+
+    Returns
+    -------
+    df_relation_all : pd.DataFrame
+        All territories matching the desired relation
+
+    Examples
+    -------
+    >>> from pynsee.localdata._get_geo_relation import _get_geo_relation
+    >>> idf_descendants = _get_geo_relation('region', "11", 'descendants')
+    >>> idf = _get_geo_relation("departement", "91", "ascendants")
+    >>> idf_deps = _get_geo_relation(
+            'region',
+            "11",
+            'descendants',
+            type="departement"
+            )
+    """
 
     api_url = (
-        "https://api.insee.fr/metadonnees/V1/geo/" + geo + "/" + code + "/" + relation
+        "https://api.insee.fr/metadonnees/V1/geo/"
+        + geo
+        + "/"
+        + code
+        + "/"
+        + relation
     )
 
     parameters = ["date", "type"]
