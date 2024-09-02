@@ -25,7 +25,12 @@ def _get_geo_relation(geo, code, relation, date=None, type=None):
     # essonne = _get_geo_relation('region', "11", 'ascendants')
 
     api_url = (
-        "https://api.insee.fr/metadonnees/V1/geo/" + geo + "/" + code + "/" + relation
+        "https://api.insee.fr/metadonnees/V1/geo/"
+        + geo
+        + "/"
+        + code
+        + "/"
+        + relation
     )
 
     parameters = ["date", "type"]
@@ -40,7 +45,7 @@ def _get_geo_relation(geo, code, relation, date=None, type=None):
         added_param_string = "?" + _paste(list_addded_param, collapse="&")
         api_url = api_url + added_param_string
 
-    results = _request_insee(api_url=api_url)
+    results = _request_insee(api_url=api_url, file_format="application/json")
 
     dirpath = _get_temp_dir()
 

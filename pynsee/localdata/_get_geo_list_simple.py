@@ -16,7 +16,9 @@ def _get_geo_list_simple(geo, date=None, progress_bar=False):
     api_url = "https://api.insee.fr/metadonnees/V1/geo/" + geo
     if date:
         api_url += f"?date={date}"
-    results = _request_insee(api_url=api_url, sdmx_url=None)
+    results = _request_insee(
+        api_url=api_url, sdmx_url=None, file_format="application/json"
+    )
 
     dirpath = _get_temp_dir()
 
