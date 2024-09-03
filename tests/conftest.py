@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from datetime import timedelta
+from datetime import timedelta, datetime
 from glob import glob
 import hashlib
 import os
-from pathlib import Path
 import warnings
 import shutil
 
@@ -150,13 +149,22 @@ def pytest_sessionstart(session):
 
     if s3fs and py7zr and requests_cache:
         try:
-            print("trying to restore artifact from SSP Cloud...")
+            print("trying to restore artifact from SSP Cloud")
             archive_path = os.path.join(CACHE_DIR, ARCHIVE_NAME)
+            print("downloading ...")
+            now = datetime.now()
             FS.download(ARTIFACT, archive_path)
+            print(f"took {int((datetime.now() - now).total_seconds())}sec")
+
+            print("extracting archive...")
+            now = datetime.now()
             with py7zr.SevenZipFile(archive_path, "r") as archive:
                 archive.extractall(path=CACHE_DIR)
+            print(f"took {int((datetime.now() - now).total_seconds())}sec")
+
             global hashed_cache
             hashed_cache = hash_file(CACHE_NAME)
+
         except FileNotFoundError:
             # No cache found on S3
             warnings.warn("No artifact found")
@@ -210,11 +218,15 @@ def pytest_sessionfinish(session, exitstatus):
             print("Trying to save current artifact:")
 
             print("Compressing cache...")
+            now = datetime.now()
             archive_path = os.path.join(CACHE_DIR, ARCHIVE_NAME)
             with py7zr.SevenZipFile(archive_path, "w") as archive:
                 archive.writeall(CACHE_NAME, BASE_NAME)
+            print(f"took {int((datetime.now() - now).total_seconds())}sec")
 
             print("Uploading artifact...")
+            now = datetime.now()
             FS.put(archive_path, ARTIFACT)
+            print(f"took {int((datetime.now() - now).total_seconds())}sec")
             os.unlink(archive_path)
             os.unlink(CACHE_NAME)
