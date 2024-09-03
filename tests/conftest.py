@@ -41,9 +41,10 @@ def pytest_addoption(parser):
     )
 
 
+BACKEND = "filesystem"  # "sqlite"
 APPNAME = "pynsee-test-http-cache"
 CACHE_DIR = platformdirs.user_cache_dir(APPNAME, ensure_exists=True)
-BASE_NAME = "requests-cache.sqlite"
+BASE_NAME = "requests-cache"
 ARCHIVE_NAME = "requests-cache.7z"
 CACHE_NAME = os.path.join(CACHE_DIR, BASE_NAME)
 
@@ -75,19 +76,30 @@ except AttributeError:
 # credentials_content = ""
 
 
-def hash_file(file_path):
+def hash_file_or_dir(file_path):
     """
     https://gist.github.com/mjohnsullivan/9322154
     Get the MD5 hash value of a file
     :param file_path: path to the file for hash validation
     """
     m = hashlib.md5()
-    with open(file_path, "rb") as f:
-        while True:
-            chunk = f.read(1000 * 1000)  # 1MB
-            if not chunk:
-                break
-            m.update(chunk)
+    try:
+        with open(file_path, "rb") as f:
+            while True:
+                chunk = f.read(1000 * 1000)  # 1MB
+                if not chunk:
+                    break
+                m.update(chunk)
+    except PermissionError:
+        # file_path is a directory! (-> filesystem backend)
+        for file in glob(os.path.join(file_path, "**/*"), recursive=True):
+            with open(file, "rb") as f:
+                while True:
+                    chunk = f.read(1000 * 1000)  # 1MB
+                    if not chunk:
+                        break
+                    m.update(chunk)
+
     return m.hexdigest()
 
 
@@ -160,10 +172,11 @@ def pytest_sessionstart(session):
             now = datetime.now()
             with py7zr.SevenZipFile(archive_path, "r") as archive:
                 archive.extractall(path=CACHE_DIR)
+                os.unlink(archive_path)
             print(f"took {int((datetime.now() - now).total_seconds())}sec")
 
             global hashed_cache
-            hashed_cache = hash_file(CACHE_NAME)
+            hashed_cache = hash_file_or_dir(CACHE_NAME)
 
         except FileNotFoundError:
             # No cache found on S3
@@ -173,6 +186,7 @@ def pytest_sessionstart(session):
     if requests_cache:
         requests_cache.install_cache(
             cache_name=CACHE_NAME,
+            backend=BACKEND,
             expire_after=timedelta(days=30),
             match_headers=["Accept"],
         )
@@ -187,14 +201,18 @@ def pytest_sessionfinish(session, exitstatus):
     #     with open(CREDENTIALS_PATH, "wb") as f:
     #         f.write(credentials_content)
 
+    requests_cache.patcher.uninstall_cache()
+
     no_cache = session.config.getoption("--no-cache")
     if no_cache:
         return
 
     upload = False
     try:
-        if hashed_cache != hash_file(CACHE_NAME):
+
+        if hashed_cache != hash_file_or_dir(CACHE_NAME):
             # Upload SQLite only if the current cache has been updated
+            print("Hash matched, artifact upload cancelled")
             upload = True
     except FileNotFoundError:
         # No local cache: either by design using flag (which cleaned local
@@ -228,5 +246,6 @@ def pytest_sessionfinish(session, exitstatus):
             now = datetime.now()
             FS.put(archive_path, ARTIFACT)
             print(f"took {int((datetime.now() - now).total_seconds())}sec")
-            os.unlink(archive_path)
-            os.unlink(CACHE_NAME)
+
+    for file in glob(f"{CACHE_DIR}/**/*", recursive=True):
+        os.unlink(file)
