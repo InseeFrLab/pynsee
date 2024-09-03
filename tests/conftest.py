@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import timedelta
+from glob import glob
 import hashlib
 import os
 from pathlib import Path
@@ -133,7 +134,8 @@ def pytest_sessionstart(session):
     if clean_cache:
         # Clean on local machine
         try:
-            os.unlink(CACHE_NAME)
+            for file in glob(f"{CACHE_DIR}/**/*", recursive=True):
+                os.unlink(file)
         except FileNotFoundError:
             pass
 
@@ -162,7 +164,9 @@ def pytest_sessionstart(session):
 
     if requests_cache:
         requests_cache.install_cache(
-            cache_name=CACHE_NAME, expire_after=timedelta(days=30)
+            cache_name=CACHE_NAME,
+            expire_after=timedelta(days=30),
+            match_headers=["Accept"],
         )
 
 
