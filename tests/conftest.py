@@ -41,10 +41,10 @@ def pytest_addoption(parser):
     )
 
 
-BACKEND = "filesystem"  # "sqlite"
+BACKEND = "sqlite"
 APPNAME = "pynsee-test-http-cache"
 CACHE_DIR = platformdirs.user_cache_dir(APPNAME, ensure_exists=True)
-BASE_NAME = "requests-cache"
+BASE_NAME = "requests-cache" + ".sqlite"
 ARCHIVE_NAME = "requests-cache.7z"
 CACHE_NAME = os.path.join(CACHE_DIR, BASE_NAME)
 
@@ -90,7 +90,7 @@ def hash_file_or_dir(file_path):
                 if not chunk:
                     break
                 m.update(chunk)
-    except PermissionError:
+    except (PermissionError, IsADirectoryError):
         # file_path is a directory! (-> filesystem backend)
         for file in glob(os.path.join(file_path, "**/*"), recursive=True):
             with open(file, "rb") as f:
@@ -147,7 +147,7 @@ def pytest_sessionstart(session):
         try:
             try:
                 os.unlink(CACHE_NAME)
-            except PermissionError:
+            except (IsADirectoryError, PermissionError):
                 shutil.rmtree(CACHE_NAME)
         except FileNotFoundError:
             pass
@@ -214,12 +214,15 @@ def pytest_sessionfinish(session, exitstatus):
 
         if hashed_cache != hash_file_or_dir(CACHE_NAME):
             # Upload SQLite only if the current cache has been updated
-            print("Hash matched, artifact upload cancelled")
+            print("Hash NOT matched, upload artifact")
             upload = True
+        else:
+            print("Hash matched, upload cancelled")
     except FileNotFoundError:
         # No local cache: either by design using flag (which cleaned local
         # machine on session start) or due to a missing dependency preventing
         # the cache to be created
+        print("cache not found at {CACHE_NAME}")
         pass
 
     if upload:
@@ -251,8 +254,10 @@ def pytest_sessionfinish(session, exitstatus):
 
     try:
         os.unlink(CACHE_NAME)
-    except PermissionError:
+    except IsADirectoryError:
         shutil.rmtree(CACHE_NAME)
+    except (FileNotFoundError, UnboundLocalError):
+        pass
     try:
         os.unlink(archive_path)
     except (FileNotFoundError, UnboundLocalError):
