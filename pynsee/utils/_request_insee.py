@@ -159,9 +159,7 @@ def _request_insee(
                 if results.status_code == 200:
                     return results
                 else:
-                    raise requests.exceptions.RequestException(
-                        results.text + "\n" + sdmx_url
-                    )
+                    raise ValueError(results.text + "\n" + sdmx_url)
 
             else:
                 raise ValueError(msg)
@@ -173,9 +171,7 @@ def _request_insee(
             if results.status_code == 200:
                 return results
             else:
-                raise requests.exceptions.RequestException(
-                    results.text + "\n" + sdmx_url
-                )
+                raise ValueError(results.text + "\n" + sdmx_url)
 
         else:
             raise ValueError("!!! Error : urls are missing")
