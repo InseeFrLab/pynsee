@@ -145,8 +145,10 @@ def pytest_sessionstart(session):
     if clean_cache:
         # Clean on local machine
         try:
-            for file in glob(f"{CACHE_DIR}/**/*", recursive=True):
-                os.unlink(file)
+            try:
+                os.unlink(CACHE_NAME)
+            except PermissionError:
+                shutil.rmtree(CACHE_NAME)
         except FileNotFoundError:
             pass
 
@@ -172,7 +174,7 @@ def pytest_sessionstart(session):
             now = datetime.now()
             with py7zr.SevenZipFile(archive_path, "r") as archive:
                 archive.extractall(path=CACHE_DIR)
-                os.unlink(archive_path)
+            os.unlink(archive_path)
             print(f"took {int((datetime.now() - now).total_seconds())}sec")
 
             global hashed_cache
@@ -247,5 +249,11 @@ def pytest_sessionfinish(session, exitstatus):
             FS.put(archive_path, ARTIFACT)
             print(f"took {int((datetime.now() - now).total_seconds())}sec")
 
-    for file in glob(f"{CACHE_DIR}/**/*", recursive=True):
-        os.unlink(file)
+    try:
+        os.unlink(CACHE_NAME)
+    except PermissionError:
+        shutil.rmtree(CACHE_NAME)
+    try:
+        os.unlink(archive_path)
+    except FileNotFoundError:
+        pass
