@@ -255,5 +255,5 @@ def pytest_sessionfinish(session, exitstatus):
         shutil.rmtree(CACHE_NAME)
     try:
         os.unlink(archive_path)
-    except FileNotFoundError:
+    except (FileNotFoundError, UnboundLocalError):
         pass
