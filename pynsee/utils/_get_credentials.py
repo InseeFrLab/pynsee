@@ -30,8 +30,6 @@ def _get_credentials() -> Dict[str, str]:
     try:
         key_dict["insee_key"] = os.environ["insee_key"]
         key_dict["insee_secret"] = os.environ["insee_secret"]
-        key_dict["http_proxy"] = os.environ.get("http_proxy", "")
-        key_dict["http_proxy"] = os.environ.get("http_proxy", "")
 
         envir_var_used = True
     except KeyError:
