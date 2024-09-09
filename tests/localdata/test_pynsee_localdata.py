@@ -6,7 +6,6 @@ from unittest import TestCase
 import pandas as pd
 import sys
 import unittest
-from requests.exceptions import RequestException
 
 from pynsee.localdata._get_geo_relation import _get_geo_relation
 from pynsee.localdata._get_insee_one_area import _get_insee_one_area
@@ -27,7 +26,7 @@ from pynsee.localdata.get_descending_area import get_descending_area
 
 
 class TestFunction(TestCase):
-    
+
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
 
     if version:
@@ -173,11 +172,11 @@ class TestFunction(TestCase):
             )
 
         def test_get_old_city(self):
-            
+
             df = get_old_city(code="24259")
 
             self.assertTrue(isinstance(df, pd.DataFrame))
-            
+
         def test_get_geo_list_1(self):
             list_available_geo = [
                 "communes",
@@ -333,39 +332,49 @@ class TestFunction(TestCase):
             )
             test = test & isinstance(data, pd.DataFrame)
 
-            data = get_local_data(dataset_version='GEOlatestFILOlatest',
-                       variables =  'INDICS_FILO_DISP',
-                       nivgeo = 'COM',
-                       update=True,
-                       geocodes = '75056')
+            data = get_local_data(
+                dataset_version="GEOlatestFILOlatest",
+                variables="INDICS_FILO_DISP",
+                nivgeo="COM",
+                update=True,
+                geocodes="75056",
+            )
             test = test & isinstance(data, pd.DataFrame)
 
-            data = get_local_data(dataset_version='POPLEGlatest',
-                       variables =  'IND_POPLEGALES',
-                       nivgeo = 'COM',
-                       update=True,
-                       geocodes = '75056')
+            data = get_local_data(
+                dataset_version="POPLEGlatest",
+                variables="IND_POPLEGALES",
+                nivgeo="COM",
+                update=True,
+                geocodes="75056",
+            )
             test = test & isinstance(data, pd.DataFrame)
 
-            data = get_local_data(dataset_version='GEOlatestRFDlatest',
-                       variables =  'INDICS_ETATCIVIL',
-                       nivgeo = 'COM',
-                       update=True,
-                       geocodes = '75056')
+            data = get_local_data(
+                dataset_version="GEOlatestRFDlatest",
+                variables="INDICS_ETATCIVIL",
+                nivgeo="COM",
+                update=True,
+                geocodes="75056",
+            )
             test = test & isinstance(data, pd.DataFrame)
 
-            data = get_local_data(dataset_version='BDCOMlatest',
-                       variables =  'INDICS_BDCOM',
-                       nivgeo = 'COM',
-                       update=True,
-                       geocodes = '75056')
+            data = get_local_data(
+                dataset_version="BDCOMlatest",
+                variables="INDICS_BDCOM",
+                nivgeo="COM",
+                update=True,
+                geocodes="75056",
+            )
             test = test & isinstance(data, pd.DataFrame)
 
-            data = get_local_data(dataset_version='GEOlatestREElatest',
-                       variables =  'NA10_HORS_AZ-ENTR_INDIVIDUELLE',
-                       nivgeo = 'COM',
-                       update=True,
-                       geocodes = '75056')
+            data = get_local_data(
+                dataset_version="GEOlatestREElatest",
+                variables="NA10_HORS_AZ-ENTR_INDIVIDUELLE",
+                nivgeo="COM",
+                update=True,
+                geocodes="75056",
+            )
             test = test & isinstance(data, pd.DataFrame)
 
             for geo in ["DEP", "REG", "FE", "METRODOM"]:
@@ -416,10 +425,9 @@ class TestFunction(TestCase):
                 "departement", code="59", type="region", update=True
             )
             test = test & isinstance(df, pd.DataFrame)
-              
+
             df = get_ascending_area("commune", code="59350", date="2018-01-01")
             test = test & isinstance(df, pd.DataFrame)
-
 
         def test_get_local_data_latest_error(self):
             def getlocaldataTestError():
@@ -456,12 +464,14 @@ class TestFunction(TestCase):
         def test_get_area_list_2(self):
             def get_area_list_test():
                 get_area_list("a")
+
             self.assertRaises(ValueError, get_area_list_test)
 
         def test_get_area_list_3(self):
             def get_area_list_test():
                 get_area_list(area="regions", date="1900-01-01", update=True)
-            self.assertRaises(RequestException, get_area_list_test)
+
+            self.assertRaises(ValueError, get_area_list_test)
 
         def test_get_included_area(self):
             list_available_area = [
@@ -484,5 +494,6 @@ class TestFunction(TestCase):
 
             self.assertTrue(test)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
