@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import io
 import xml.etree.ElementTree as ET
 import pandas as pd
-import os
 
-from pynsee.utils._get_temp_dir import _get_temp_dir
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.save_df import save_df
 
+
 @save_df(day_lapse_max=90)
-def _get_dataset_dimension(dataset, update=False, silent=True, insee_date_test=None):
+def _get_dataset_dimension(
+    dataset, update=False, silent=True, insee_date_test=None
+):
 
     INSEE_sdmx_link_datastructure = (
         "https://www.bdm.insee.fr/series/sdmx/datastructure/FR1"
@@ -22,20 +24,16 @@ def _get_dataset_dimension(dataset, update=False, silent=True, insee_date_test=N
     INSEE_sdmx_link_datastructure_dataset = (
         INSEE_sdmx_link_datastructure + "/" + dataset
     )
-    INSEE_api_link_datastructure_dataset = INSEE_api_link_datastructure + "/" + dataset
+    INSEE_api_link_datastructure_dataset = (
+        INSEE_api_link_datastructure + "/" + dataset
+    )
 
     results = _request_insee(
         sdmx_url=INSEE_sdmx_link_datastructure_dataset,
         api_url=INSEE_api_link_datastructure_dataset,
     )
 
-    # create temporary directory
-    dirpath = _get_temp_dir()
-
-    dataset_dimension_file = os.path.join(dirpath, "dataset_dimension_file")
-
-    with open(dataset_dimension_file, "wb") as f:
-        f.write(results.content)
+    dataset_dimension_file = io.BytesIO(results.content)
 
     root = ET.parse(dataset_dimension_file).getroot()
 
@@ -73,7 +71,8 @@ def _get_dataset_dimension(dataset, update=False, silent=True, insee_date_test=N
         }
 
         dimension_df = pd.DataFrame(
-            dimension_df, columns=["dataset", "dimension", "local_representation"]
+            dimension_df,
+            columns=["dataset", "dimension", "local_representation"],
         )
 
         list_dimension.append(dimension_df)

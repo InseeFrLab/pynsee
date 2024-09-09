@@ -1,19 +1,18 @@
 from datetime import date
-import tempfile
+import io
 import os
-import requests
 import zipfile
 import re
 import pandas as pd
 import urllib3
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 import warnings
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 from pynsee.utils.requests_params import _get_requests_session
+
 
 def _dwn_idbank_files():
     # creating the date object of today's date
@@ -39,7 +38,7 @@ def _dwn_idbank_files():
     try:
         file_to_dwn = os.environ["pynsee_idbank_file"]
     except Exception:
-        file_to_dwn = "https://www.insee.fr/en/statistiques/fichier/2868055/202201_correspondance_idbank_dimension.zip"
+        file_to_dwn = "https://www.insee.fr/fr/statistiques/fichier/2862759/202407_correspondance_idbank_dimension.zip"
 
     try:
         data = _dwn_idbank_file(file_to_dwn=file_to_dwn)
@@ -103,31 +102,34 @@ def _dwn_idbank_file(file_to_dwn, session):
         )
         results = session.get(file_to_dwn, proxies=proxies, verify=False)
 
-    dirpath = tempfile.mkdtemp()
+    idbank_zip_file = io.BytesIO(results.content)
 
-    if not os.path.exists(dirpath):
-        os.makedirs(dirpath)
+    with zipfile.ZipFile(idbank_zip_file) as zip_ref:
+        file_to_read = [
+            f for f in zip_ref.namelist() if not re.match(".*.zip$", f)
+        ]
+        if len(file_to_read) == 0:
+            # nested zipfile
+            new_zip_file = [
+                f for f in zip_ref.namelist() if re.match(".*.zip$", f)
+            ][0]
 
-    idbank_zip_file = os.path.join(dirpath, "idbank_list.zip")
+            with zip_ref.open(new_zip_file) as nested_file:
+                read = nested_file.read()
 
-    with open(idbank_zip_file, "wb") as f:
-        f.write(results.content)
-        f.close()
+            with zipfile.ZipFile(io.BytesIO(read)) as new_zip_ref:
+                file_to_read = [
+                    f
+                    for f in new_zip_ref.namelist()
+                    if not re.match(".*.zip$", f)
+                ][0]
+                with new_zip_ref.open(file_to_read) as f:
+                    content = f.read()
+        else:
+            with zip_ref.open(file_to_read[0]) as f:
+                content = f.read()
 
-    with zipfile.ZipFile(idbank_zip_file, "r") as zip_ref:
-        zip_ref.extractall(dirpath)
-
-    file_to_read = [
-        f for f in os.listdir(dirpath) if not re.match(".*.zip$", f)
-    ]
-    
-    if len(file_to_read) == 0:
-        zip_file = [dirpath + "/" + f for f in os.listdir(dirpath) if re.match(".*.zip$", f)][0]
-        with zipfile.ZipFile(zip_file, "r") as zip_ref:
-            zip_ref.extractall(dirpath)
-        file_to_read = [f for f in os.listdir(dirpath) if not re.match(".*.zip$", f)]
-        
-    file2load = dirpath + "/" + file_to_read[0]
+    file2load = io.BytesIO(content)
     data = pd.read_csv(file2load, dtype="str", sep=separator)
 
     return data
