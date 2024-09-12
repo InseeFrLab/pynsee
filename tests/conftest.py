@@ -5,8 +5,9 @@ from datetime import timedelta, datetime
 from glob import glob
 import hashlib
 import os
-import warnings
 import shutil
+import tempfile
+import warnings
 
 try:
     import requests_cache
@@ -172,13 +173,18 @@ def pytest_sessionstart(session):
 
             print("extracting archive...")
             now = datetime.now()
-            with py7zr.SevenZipFile(archive_path, "r") as archive:
-                archive.extractall(path=CACHE_DIR)
-            os.unlink(archive_path)
-            print(f"took {int((datetime.now() - now).total_seconds())}sec")
+            try:
+                with py7zr.SevenZipFile(archive_path, "r") as archive:
+                    archive.extractall(path=CACHE_DIR)
+            except py7zr.exceptions.Bad7zFile as e:
+                print(f"{e}, cache is corrupted!")
+            else:
+                print(f"took {int((datetime.now() - now).total_seconds())}sec")
 
-            global hashed_cache
-            hashed_cache = hash_file_or_dir(CACHE_NAME)
+                global hashed_cache
+                hashed_cache = hash_file_or_dir(CACHE_NAME)
+            finally:
+                os.unlink(archive_path)
 
         except FileNotFoundError:
             # No cache found on S3
@@ -247,10 +253,21 @@ def pytest_sessionfinish(session, exitstatus):
                 archive.writeall(CACHE_NAME, BASE_NAME)
             print(f"took {int((datetime.now() - now).total_seconds())}sec")
 
-            print("Uploading artifact...")
-            now = datetime.now()
-            FS.put(archive_path, ARTIFACT)
-            print(f"took {int((datetime.now() - now).total_seconds())}sec")
+            print("checking 7z's integrity...")
+            with tempfile.TemporaryDirectory() as temp:
+                try:
+                    with py7zr.SevenZipFile(archive_path, "r") as archive:
+                        archive.extractall(path=temp)
+                except py7zr.exceptions.Bad7zFile as e:
+                    print(f"{e}, cache is corrupted: upload is cancelled!")
+                else:
+                    print("Uploading artifact...")
+                    now = datetime.now()
+                    FS.put(archive_path, ARTIFACT)
+                    print(
+                        f"took {int((datetime.now() - now).total_seconds())}"
+                        "sec"
+                    )
 
     try:
         os.unlink(CACHE_NAME)
