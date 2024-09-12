@@ -96,9 +96,7 @@ class TestFunction(TestCase):
         def request_insee_test(sdmx_url=sdmx_url, api_url=api_url):
             _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-        self.assertRaises(
-            requests.exceptions.RequestException, request_insee_test
-        )
+        self.assertRaises(ValueError, request_insee_test)
 
         # Finally reset credentials : if test are run on any machine except
         # github's workflows', you will want to keep the valid ceredentials
@@ -135,9 +133,7 @@ class TestFunction(TestCase):
         def request_insee_test(sdmx_url=sdmx_url, api_url=None):
             _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
-        self.assertRaises(
-            requests.exceptions.RequestException, request_insee_test
-        )
+        self.assertRaises(ValueError, request_insee_test)
 
     def test_get_envir_token(self):
         _get_envir_token.cache_clear()
