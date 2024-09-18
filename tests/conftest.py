@@ -61,7 +61,7 @@ hashed_cache = ""
 KWARGS_S3 = {}
 for ci_key, key in {
     "S3_SECRET": "secret",
-    # "S3_KEY": "key",
+    "S3_KEY": "key",
 }.items():
     try:
         KWARGS_S3[key] = os.environ[ci_key]
