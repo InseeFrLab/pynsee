@@ -22,8 +22,10 @@ except ModuleNotFoundError:
     py7zr = None
 
 try:
+    from botocore.exceptions import BotoCoreError
     import s3fs
 except ModuleNotFoundError:
+    BotoCoreError = None
     s3fs = None
 
 
@@ -59,7 +61,7 @@ hashed_cache = ""
 KWARGS_S3 = {}
 for ci_key, key in {
     "S3_SECRET": "secret",
-    "S3_KEY": "key",
+    # "S3_KEY": "key",
 }.items():
     try:
         KWARGS_S3[key] = os.environ[ci_key]
@@ -71,7 +73,18 @@ try:
         client_kwargs={"endpoint_url": ENDPOINT_URL}, **KWARGS_S3
     )
 except AttributeError:
-    pass
+    authenticated = False
+else:
+    # test FS credentials
+    try:
+        FS.exists(ARTIFACT)
+    except BotoCoreError as exc:
+        warnings.warn(
+            f"Authentication to SSP Cloud to retrieve artifacts failed : {exc}"
+        )
+        authenticated = False
+    else:
+        authenticated = True
 
 # CREDENTIALS_PATH = os.path.join(str(Path.home()), "pynsee_credentials.csv")
 # credentials_content = ""
@@ -112,14 +125,6 @@ def pytest_sessionstart(session):
 
     clean_cache = session.config.getoption("--clean-cache")
     no_cache = session.config.getoption("--no-cache")
-
-    # # Capture initial credentials at session start (if there)
-    # global credentials_content
-    # try:
-    #     with open(CREDENTIALS_PATH, "rb") as f:
-    #         credentials_content = f.read()
-    # except FileNotFoundError:
-    #     pass
 
     # Clear pynsee appdata if there (only on local machine)
     local_appdata_folder = platformdirs.user_cache_dir()
@@ -162,7 +167,7 @@ def pytest_sessionstart(session):
     if no_cache:
         return
 
-    if s3fs and py7zr and requests_cache:
+    if s3fs and py7zr and requests_cache and authenticated:
         try:
             print("trying to restore artifact from SSP Cloud")
             archive_path = os.path.join(CACHE_DIR, ARCHIVE_NAME)
@@ -192,6 +197,7 @@ def pytest_sessionstart(session):
             pass
 
     if requests_cache:
+        # Note : even if not authenticated, might be usefull
         requests_cache.install_cache(
             cache_name=CACHE_NAME,
             backend=BACKEND,
@@ -203,16 +209,12 @@ def pytest_sessionstart(session):
 def pytest_sessionfinish(session, exitstatus):
     "Store cached artifact on SSP Cloud's S3 File System"
 
-    # global credentials_content
-    # if credentials_content:
-    #     # Restore credentials
-    #     with open(CREDENTIALS_PATH, "wb") as f:
-    #         f.write(credentials_content)
-
     requests_cache.patcher.uninstall_cache()
 
     no_cache = session.config.getoption("--no-cache")
-    if no_cache:
+    if no_cache or not authenticated:
+        # exit but let cache on local machine (user can still run tests with
+        # the no-cache flag if he wants it)
         return
 
     upload = False
