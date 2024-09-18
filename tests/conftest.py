@@ -1,0 +1,283 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from datetime import timedelta, datetime
+from glob import glob
+import hashlib
+import os
+import shutil
+import tempfile
+import warnings
+
+try:
+    import requests_cache
+except ModuleNotFoundError:
+    requests_cache = None
+
+import platformdirs
+
+try:
+    import py7zr
+except ModuleNotFoundError:
+    py7zr = None
+
+try:
+    from botocore.exceptions import BotoCoreError
+    import s3fs
+except ModuleNotFoundError:
+    BotoCoreError = None
+    s3fs = None
+
+
+def pytest_addoption(parser):
+    "Add 2 flags for pytest : --clean-cache and --no-cache"
+    parser.addoption(
+        "--clean-cache",
+        action="store_true",
+        help="remove previous tests' cache",
+    )
+
+    parser.addoption(
+        "--no-cache",
+        action="store_true",
+        help="disable cache during tests",
+    )
+
+
+BACKEND = "sqlite"
+APPNAME = "pynsee-test-http-cache"
+CACHE_DIR = platformdirs.user_cache_dir(APPNAME, ensure_exists=True)
+BASE_NAME = "requests-cache" + ".sqlite"
+ARCHIVE_NAME = "requests-cache.7z"
+CACHE_NAME = os.path.join(CACHE_DIR, BASE_NAME)
+
+BUCKET = "projet-pynsee"
+PATH_WITHIN_BUCKET = "artifacts"
+ENDPOINT_URL = "https://minio.lab.sspcloud.fr"
+ARTIFACT = f"{BUCKET}/{PATH_WITHIN_BUCKET}/{ARCHIVE_NAME}"
+
+hashed_cache = ""
+
+KWARGS_S3 = {}
+for ci_key, key in {
+    "S3_SECRET": "secret",
+    "S3_KEY": "key",
+}.items():
+    try:
+        KWARGS_S3[key] = os.environ[ci_key]
+    except KeyError:
+        continue
+
+try:
+    FS = s3fs.S3FileSystem(
+        client_kwargs={"endpoint_url": ENDPOINT_URL}, **KWARGS_S3
+    )
+except AttributeError:
+    authenticated = False
+else:
+    # test FS credentials
+    try:
+        FS.exists(ARTIFACT)
+    except BotoCoreError as exc:
+        warnings.warn(
+            f"Authentication to SSP Cloud to retrieve artifacts failed : {exc}"
+        )
+        authenticated = False
+    else:
+        authenticated = True
+
+# CREDENTIALS_PATH = os.path.join(str(Path.home()), "pynsee_credentials.csv")
+# credentials_content = ""
+
+
+def hash_file_or_dir(file_path):
+    """
+    https://gist.github.com/mjohnsullivan/9322154
+    Get the MD5 hash value of a file
+    :param file_path: path to the file for hash validation
+    """
+    m = hashlib.md5()
+    try:
+        with open(file_path, "rb") as f:
+            while True:
+                chunk = f.read(1000 * 1000)  # 1MB
+                if not chunk:
+                    break
+                m.update(chunk)
+    except (PermissionError, IsADirectoryError):
+        # file_path is a directory! (-> filesystem backend)
+        for file in glob(os.path.join(file_path, "**/*"), recursive=True):
+            with open(file, "rb") as f:
+                while True:
+                    chunk = f.read(1000 * 1000)  # 1MB
+                    if not chunk:
+                        break
+                    m.update(chunk)
+
+    return m.hexdigest()
+
+
+def pytest_sessionstart(session):
+    """
+    Add cache to reduce test duration over multiple python version and restore
+    artifact from SSP Cloud
+    """
+
+    clean_cache = session.config.getoption("--clean-cache")
+    no_cache = session.config.getoption("--no-cache")
+
+    # Clear pynsee appdata if there (only on local machine)
+    local_appdata_folder = platformdirs.user_cache_dir()
+    insee_folder = os.path.join(local_appdata_folder, "pynsee", "pynsee")
+    shutil.rmtree(insee_folder, ignore_errors=True)
+
+    if not s3fs and not no_cache:
+        warnings.warn(
+            "s3fs not present, cannot restore artifacts from SSP Cloud "
+            "for current test"
+        )
+    if not py7zr and not no_cache:
+        warnings.warn(
+            "py7zr not present, cannot restore artifacts from SSP Cloud "
+            "for current test"
+        )
+    if not requests_cache and not no_cache:
+        warnings.warn(
+            "requests-cache not present, http caching will be deactivated "
+            "during tests"
+        )
+
+    # Clean cache if needed, on local machine and on S3
+    if clean_cache:
+        # Clean on local machine
+        try:
+            try:
+                os.unlink(CACHE_NAME)
+            except (IsADirectoryError, PermissionError):
+                shutil.rmtree(CACHE_NAME)
+        except FileNotFoundError:
+            pass
+
+        # Clean S3 file system
+        try:
+            FS.rm(ARTIFACT)
+        except (NameError, FileNotFoundError):
+            pass
+
+    if no_cache:
+        return
+
+    if s3fs and py7zr and requests_cache and authenticated:
+        try:
+            print("trying to restore artifact from SSP Cloud")
+            archive_path = os.path.join(CACHE_DIR, ARCHIVE_NAME)
+            print("downloading ...")
+            now = datetime.now()
+            FS.download(ARTIFACT, archive_path)
+            print(f"took {int((datetime.now() - now).total_seconds())}sec")
+
+            print("extracting archive...")
+            now = datetime.now()
+            try:
+                with py7zr.SevenZipFile(archive_path, "r") as archive:
+                    archive.extractall(path=CACHE_DIR)
+            except py7zr.exceptions.Bad7zFile as e:
+                print(f"{e}, cache is corrupted!")
+            else:
+                print(f"took {int((datetime.now() - now).total_seconds())}sec")
+
+                global hashed_cache
+                hashed_cache = hash_file_or_dir(CACHE_NAME)
+            finally:
+                os.unlink(archive_path)
+
+        except FileNotFoundError:
+            # No cache found on S3
+            warnings.warn("No artifact found")
+            pass
+
+    if requests_cache:
+        # Note : even if not authenticated, might be usefull
+        requests_cache.install_cache(
+            cache_name=CACHE_NAME,
+            backend=BACKEND,
+            expire_after=timedelta(days=30),
+            match_headers=["Accept"],
+        )
+
+
+def pytest_sessionfinish(session, exitstatus):
+    "Store cached artifact on SSP Cloud's S3 File System"
+
+    requests_cache.patcher.uninstall_cache()
+
+    no_cache = session.config.getoption("--no-cache")
+    if no_cache or not authenticated:
+        # exit but let cache on local machine (user can still run tests with
+        # the no-cache flag if he wants it)
+        return
+
+    upload = False
+    try:
+
+        if hashed_cache != hash_file_or_dir(CACHE_NAME):
+            # Upload SQLite only if the current cache has been updated
+            print("Hash NOT matched, upload artifact")
+            upload = True
+        else:
+            print("Hash matched, upload cancelled")
+    except FileNotFoundError:
+        # No local cache: either by design using flag (which cleaned local
+        # machine on session start) or due to a missing dependency preventing
+        # the cache to be created
+        print("cache not found at {CACHE_NAME}")
+        pass
+
+    if upload:
+        if not s3fs:
+            warnings.warn(
+                "s3fs not present, cannot save artifacts to SSP Cloud "
+                "from current test"
+            )
+        if not py7zr:
+            warnings.warn(
+                "py7zr not present, cannot save artifacts to SSP Cloud "
+                "from current test"
+            )
+
+        if s3fs and py7zr:
+            print("Trying to save current artifact:")
+
+            print("Compressing cache...")
+            now = datetime.now()
+            archive_path = os.path.join(CACHE_DIR, ARCHIVE_NAME)
+            with py7zr.SevenZipFile(archive_path, "w") as archive:
+                archive.writeall(CACHE_NAME, BASE_NAME)
+            print(f"took {int((datetime.now() - now).total_seconds())}sec")
+
+            print("checking 7z's integrity...")
+            with tempfile.TemporaryDirectory() as temp:
+                try:
+                    with py7zr.SevenZipFile(archive_path, "r") as archive:
+                        archive.extractall(path=temp)
+                except py7zr.exceptions.Bad7zFile as e:
+                    print(f"{e}, cache is corrupted: upload is cancelled!")
+                else:
+                    print("Uploading artifact...")
+                    now = datetime.now()
+                    FS.put(archive_path, ARTIFACT)
+                    print(
+                        f"took {int((datetime.now() - now).total_seconds())}"
+                        "sec"
+                    )
+
+    try:
+        os.unlink(CACHE_NAME)
+    except IsADirectoryError:
+        shutil.rmtree(CACHE_NAME)
+    except (FileNotFoundError, UnboundLocalError):
+        pass
+    try:
+        os.unlink(archive_path)
+    except (FileNotFoundError, UnboundLocalError):
+        pass
