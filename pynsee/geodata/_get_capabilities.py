@@ -17,9 +17,6 @@ def _get_capabilities(
 
     service_upper = service.upper()
 
-    # link = "https://wxs.ign.fr/{}/geoportail/{}{}?SERVICE={}&VERSION={}&REQUEST=GetCapabilities".format(
-    #    key, tweak, service, service_upper, version
-    # )
     link = f"https://data.geopf.fr/{service}?SERVICE={service_upper}&VERSION={version}&REQUEST=GetCapabilities"
 
     session = _get_requests_session()

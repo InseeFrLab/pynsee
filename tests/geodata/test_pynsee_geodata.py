@@ -42,7 +42,7 @@ class TestFunction(TestCase):
             session = requests.Session()
             list_bbox = (-2, 43.0, 6.0, 44.5)
             for crs in ["EPSG:4326"]:
-                link= f"https://wxs.ign.fr/administratif/geoportail/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAME=ADMINEXPRESS-COG-CARTO.LATEST:commune&srsName={crs}&OUTPUTFORMAT=application/json&COUNT=1000"
+                link= f"https://data.geopf.fr/wfs/wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAME=ADMINEXPRESS-COG-CARTO.LATEST:commune&srsName={crs}&OUTPUTFORMAT=application/json&COUNT=1000"
                 data = _get_data_with_bbox(link, list_bbox, crsPolygon=crs)
                 self.assertTrue(isinstance(data, pd.DataFrame))
 
