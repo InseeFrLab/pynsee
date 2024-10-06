@@ -60,7 +60,6 @@ def _get_geodata(
     Version = "2.0.0"
 
     # make the query link for ign
-    #geoportail = "https://wxs.ign.fr/{}/geoportail".format(topic)
     geoportail = f"https://data.geopf.fr/{service.lower()}/ows?"
     Service = "SERVICE=" + service + "&"
     version = "VERSION=" + Version + "&"
