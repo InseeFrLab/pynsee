@@ -9,8 +9,9 @@ import os
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.save_df import save_df
 
+
 @save_df(day_lapse_max=30)
-def get_legal_entity(codes, print_err_msg=True, update=False, silent=False):
+def get_legal_entity(codes, print_err_msg=True, update=False, silent=True):
     """Get legal entities labels
 
     Args:
@@ -39,7 +40,7 @@ def get_legal_entity(codes, print_err_msg=True, update=False, silent=False):
     data_final = pd.concat(list_data).reset_index(drop=True)
 
     data_final = data_final.rename(columns={"intitule": "title"})
-    
+
     return data_final
 
 

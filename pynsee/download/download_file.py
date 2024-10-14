@@ -9,7 +9,7 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=90)
-def download_file(id, variables=None, update=False, silent=False):
+def download_file(id, variables=None, update=False, silent=True):
     """User level function to download files from insee.fr
 
     Args:
