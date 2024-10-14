@@ -7,7 +7,10 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=90)
-def _get_dataset_list_internal():
+def _get_dataset_list_internal(silent=True):
+    """
+    silent (bool, optional): Set to True, to disable messages printed in log info
+    """
 
     zip_file = pkg_resources.resource_stream(
         __name__, "data/dataset_list_internal.zip"
