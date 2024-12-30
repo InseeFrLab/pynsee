@@ -44,7 +44,7 @@ def get_sirene_relatives(*siret):
         for i in range(len(types)):
 
             criteria = types[i] + ":" + re.sub(r"\s+", "", list_siret[s])
-            query = f"https://api.insee.fr/entreprises/sirene/siret/liensSuccession?q={criteria}"
+            query = f"https://api.insee.fr/api-sirene/3.11/siret/liensSuccession?q={criteria}"
             try:
                 sys.stdout = open(os.devnull, "w")
                 result = _request_insee(

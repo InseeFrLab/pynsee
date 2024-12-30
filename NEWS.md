@@ -1,4 +1,10 @@
 
+# pynsee 0.1.9
+* new API portal: portail-api.insee.fr
+* no token generation is needed anymore, only a key is needed to use SIRENE API
+* backend function update in the utils module + sirene functions update
+* subsequent doc and test update
+
 # pynsee 0.1.8
 
 * sirene module compatible with SIRENE API v3.11

@@ -5,8 +5,8 @@ import os
 import requests
 import urllib3
 import time
+import re
 
-from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils.requests_params import (
     _get_requests_session,
@@ -77,23 +77,23 @@ def _request_insee(
 
     if api_url is not None:
         if keys is not None:
-            insee_key = keys["insee_key"]
-            insee_secret = keys["insee_secret"]
-
-            token = _get_token(insee_key, insee_secret)
+            sirene_key = keys["sirene_key"]
         else:
-            token = None
+            sirene_key = None
 
-        if token is not None:
-            user_agent = _get_requests_headers()
+        user_agent = _get_requests_headers()
 
-            headers = {
-                "Accept": file_format,
-                "Authorization": "Bearer " + token,
-                "User-Agent": user_agent["User-Agent"],
-            }
+        headers = {
+            "Accept": file_format,
+            "User-Agent": user_agent["User-Agent"],
+        }
 
-            session = _get_requests_session()
+        session = _get_requests_session()
+
+        if (re.match(".*api-sirene.*", api_url) and (sirene_key is not None)) or \
+            (not re.match(".*api-sirene.*", api_url)):
+            
+            headers["X-INSEE-Api-Key-Integration"] = sirene_key           
 
             # avoid reaching the limit of 30 queries per minute from insee api
             _wait_api_query_limit(api_url)
@@ -143,10 +143,10 @@ def _request_insee(
 
         else:
             # token is None
-            commands = "\n\ninit_conn(insee_key='my_insee_key', insee_secret='my_insee_secret')\n"
+            commands = "\n\ninit_conn(sirene_key='my_sirene_key')\n"
             msg = (
-                "Token missing, please check your credentials "
-                "on api.insee.fr !\n"
+                "Sirene key is missing, please check your credentials "
+                "on portail-api.insee.fr !\n"
                 "Please do the following to use your "
                 f"credentials: {commands}\n\n"
                 "If your token still does not work, please try to clear "
