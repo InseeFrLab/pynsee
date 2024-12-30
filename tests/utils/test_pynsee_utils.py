@@ -57,7 +57,7 @@ class TestFunction(TestCase):
 
             self.assertRaises(ValueError, init_conn_foo)
 
-            os.environ["sirene_key"] = "key
+            os.environ["sirene_key"] = "key"
             sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
             api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
 
