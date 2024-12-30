@@ -75,11 +75,6 @@ def _request_insee(
 
     # if api url is missing sdmx url is used
 
-    #
-    # curl --location 'https://api.insee.fr/api-sirene/3.11/siren/309634954' 
-    # --header 'X-INSEE-Api-Key-Integration: xxxxxxx'
-    #
-
     if api_url is not None:
         if keys is not None:
             sirene_key = keys["sirene_key"]

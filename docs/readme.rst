@@ -57,7 +57,7 @@ Pynsee python package contains tools to easily search and download French data f
 `pynsee` gives a quick access to more than 150 000 macroeconomic series,
 a dozen datasets of local data, numerous sources available on `insee.fr <https://www.insee.fr>`_
 as well as key metadata and SIRENE database containing data on all French companies.
-Have a look at the detailed API page `api.insee.fr <https://api.insee.fr/catalogue/>`_.
+Have a look at the detailed API page `api.insee.fr <https://portail-api.insee.fr/>`_.
 
 This package is a contribution to reproducible research and public data transparency. 
 It benefits from the developments made by teams working on APIs at INSEE and IGN.
@@ -67,7 +67,7 @@ Installation & API subscription
 
 The files available on `insee.fr <https://www.insee.fr>`_ and IGN data, i.e. the use of `download` and `geodata` modules, do not require authentication.
 Credentials are necessary to access some of the INSEE APIs available through `pynsee` by the modules `macrodata`, `localdata`, `metadata` and `sirene`. 
-API credentials can be created here : `api.insee.fr <https://api.insee.fr/catalogue/>`_
+API credentials can be created here : `portail-api.insee.fr <https://portail-api.insee.fr/>`_
 
 .. code-block:: python
 
@@ -83,7 +83,7 @@ API credentials can be created here : `api.insee.fr <https://api.insee.fr/catalo
    # Save once and for all your credentials with init_conn function.
    # Then, functions requiring authentication will use the credentials saved locally on your machine by innit_conn
    from pynsee.utils.init_conn import init_conn
-   init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+   init_conn(sirene_key="my_sirene_key")
 
    # Beware : any change to the keys should be tested after having cleared the cache
    # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
@@ -187,16 +187,14 @@ How to avoid proxy issues ?
 
    # Use the proxy_server argument of the init_conn function to change the proxy server address   
    from pynsee.utils.init_conn import init_conn
-   init_conn(insee_key="my_insee_key",
-             insee_secret="my_insee_secret",
+   init_conn(sirene_key="my_sirene_key",
              http_proxy="http://my_proxy_server:port",
              https_proxy="http://my_proxy_server:port")
              
    # Alternativety you can use directly environment variables as follows. 
    # Beware not to commit your credentials!
    import os
-   os.environ['insee_key'] = 'my_insee_key'
-   os.environ['insee_secret'] = 'my_insee_secret'
+   os.environ['sirene_key'] = 'my_sirene_key'
    os.environ['http_proxy'] = "http://my_proxy_server:port"
    os.environ['https_proxy'] = "http://my_proxy_server:port"
 
