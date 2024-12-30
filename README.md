@@ -61,7 +61,7 @@ For further advice, have a look at the documentation and gallery of the [example
 ## Example - Population Map
 
 <h1 align="center">
-<img src="https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK">
+<img src="https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png">
 </h1>
 
 ```python

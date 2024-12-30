@@ -106,7 +106,7 @@ For further advice, have a look at the documentation and gallery of the `example
 Example - Population Map
 ------------------------
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK
+.. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png
 
 
 .. code-block:: python
