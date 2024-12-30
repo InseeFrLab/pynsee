@@ -8,7 +8,7 @@ from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 
 import zipfile
 import os
-import pkg_resources
+import importlib
 import pandas as pd
 
 import logging
@@ -49,7 +49,7 @@ def get_definition_list():
     # unzipping raw files
     if any(list_available_file):
 
-        zip_file = pkg_resources.resource_stream(__name__, "data/definition.zip")
+        zip_file = str(importlib.resources.files(__name__)) + "/data/definition.zip"
 
         with zipfile.ZipFile(zip_file, "r") as zip_ref:
             zip_ref.extractall(insee_folder)

@@ -5,7 +5,7 @@ from functools import lru_cache
 import os
 import re
 import zipfile
-import pkg_resources
+import importlib
 import pandas as pd
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
@@ -101,7 +101,7 @@ def get_activity_list(level, version="NAFRev2"):
     # any(list_available_file)
     if True:
 
-        zip_file = pkg_resources.resource_stream(__name__, "data/naf.zip")
+        zip_file = str(importlib.resources.files(__name__)) + "/data/naf.zip"
 
         with zipfile.ZipFile(zip_file, "r") as zip_ref:
             zip_ref.extractall(insee_folder)
