@@ -28,8 +28,7 @@ def _get_credentials() -> Dict[str, str]:
     key_dict: Dict[str, str] = {}
 
     try:
-        key_dict["insee_key"] = os.environ["insee_key"]
-        key_dict["insee_secret"] = os.environ["insee_secret"]
+        key_dict["sirene_key"] = os.environ["sirene_key"]
 
         envir_var_used = True
     except KeyError:
@@ -68,8 +67,7 @@ def _missing_credentials() -> None:
         "pynsee.utils.init_conn to save them locally.\n"
         "Otherwise, you can still use environment variables as follow:\n\n"
         "import os\n"
-        "os.environ['insee_key'] = 'my_insee_key'\n"
-        "os.environ['insee_secret'] = 'my_insee_secret'"
+        "os.environ['sirene_key'] = 'my_sirene_key'"
     )
 
 

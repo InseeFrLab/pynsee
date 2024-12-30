@@ -58,7 +58,7 @@ def get_sirene_data(*id):
                 main_key = "etablissement"
 
             INSEE_api_sirene = (
-                "https://api.insee.fr/entreprises/sirene/" + kind
+                "https://api.insee.fr/api-sirene/3.11/" + kind
             )
             link = (
                 INSEE_api_sirene + "/" + re.sub(r"\s+", "", str(list_ids[i]))
