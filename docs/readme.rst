@@ -57,7 +57,7 @@ Pynsee python package contains tools to easily search and download French data f
 `pynsee` gives a quick access to more than 150 000 macroeconomic series,
 a dozen datasets of local data, numerous sources available on `insee.fr <https://www.insee.fr>`_
 as well as key metadata and SIRENE database containing data on all French companies.
-Have a look at the detailed API page `api.insee.fr <https://portail-api.insee.fr/>`_.
+Have a look at the detailed API page `portail-api.insee.fr <https://portail-api.insee.fr/>`_.
 
 This package is a contribution to reproducible research and public data transparency. 
 It benefits from the developments made by teams working on APIs at INSEE and IGN.
@@ -79,7 +79,7 @@ API credentials can be created here : `portail-api.insee.fr <https://portail-api
    # cd pynsee
    # pip install .[full]
 
-   # Subscribe to api.insee.fr and get your credentials!
+   # Subscribe to portail-api.insee.fr and get your credentials!
    # Save once and for all your credentials with init_conn function.
    # Then, functions requiring authentication will use the credentials saved locally on your machine by innit_conn
    from pynsee.utils.init_conn import init_conn
