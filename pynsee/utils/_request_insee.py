@@ -8,7 +8,12 @@ import time
 
 from pynsee.utils._get_token import _get_token
 from pynsee.utils._get_credentials import _get_credentials
-from pynsee.utils.requests_params import _get_requests_session, _get_requests_headers, _get_requests_proxies
+from pynsee.utils.requests_params import (
+    _get_requests_session,
+    _get_requests_headers,
+    _get_requests_proxies,
+)
+from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 import logging
 
@@ -24,7 +29,8 @@ CODES = {
     406: "Not acceptable : incorrect 'Accept' header",
     413: "Too many results, query must be splitted",
     414: "Request-URI Too Long",
-    429: "Too Many Requests : allocated quota overloaded",
+    # Unused (managed through a specific if/else), kept for memory purpose
+    # 429: "Too Many Requests : allocated quota overloaded",
     500: "Internal Server Error ",
     503: "Service Unavailable",
 }
@@ -53,7 +59,7 @@ def _request_insee(
             print(api_url)
     except:
         pass
-        
+
     # force sdmx use with a system variable
     try:
         pynsee_use_sdmx = os.environ["pynsee_use_sdmx"]
@@ -80,14 +86,17 @@ def _request_insee(
 
         if token is not None:
             user_agent = _get_requests_headers()
-            
+
             headers = {
                 "Accept": file_format,
                 "Authorization": "Bearer " + token,
-                'User-Agent': user_agent['User-Agent']
+                "User-Agent": user_agent["User-Agent"],
             }
 
             session = _get_requests_session()
+
+            # avoid reaching the limit of 30 queries per minute from insee api
+            _wait_api_query_limit(api_url)
 
             results = session.get(
                 api_url, proxies=proxies, headers=headers, verify=False

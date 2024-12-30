@@ -1,4 +1,15 @@
 
+# pynsee 0.1.8
+
+* sirene module compatible with SIRENE API v3.11
+* geodata module compatible with the new IGN's geoplatform 
+* data cached in parquet files thanks to a new decorator used across modules
+* fixes in the docs/examples
+* macroeconomic series list can be retrieved even if it is zipped twice
+* macroeconomic series can be used even if INSEE adds .TRUE or .FALSE at the end of the identifier
+* if RSS feed is failing, the get_last_release returns a warning and not an error
+* conda forge releases streamlined
+
 # pynsee 0.1.7
 
 * README.rst deleted and README.md included in package distribution file
