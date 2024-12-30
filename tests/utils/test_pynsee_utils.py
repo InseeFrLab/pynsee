@@ -8,8 +8,6 @@ import requests
 import os
 import sys
 
-from pynsee.utils._get_token import _get_token
-from pynsee.utils._get_envir_token import _get_envir_token
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.clear_all_cache import clear_all_cache
@@ -25,15 +23,6 @@ class TestFunction(TestCase):
 
     if version:
         StartKeys = _get_credentials()
-
-        def test_get_token(self, StartKeys=StartKeys):
-            insee_key = StartKeys["insee_key"]
-            insee_secret = StartKeys["insee_secret"]
-
-            init_conn(insee_key=insee_key, insee_secret=insee_secret)
-
-            token = _get_token(insee_key, insee_secret)
-            self.assertTrue((token is not None))
 
         def test_request_insee_1(self):
             # test both api and sdmx queries fail but token is not none
@@ -53,9 +42,7 @@ class TestFunction(TestCase):
                 # if credentials are not well provided but sdmx url works
                 clear_all_cache()
 
-                os.environ["insee_token"] = "test"
-                os.environ["insee_key"] = "key"
-                os.environ["insee_secret"] = "secret"
+                os.environ["sirene_key"] = "key"
                 sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
                 api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
 
@@ -66,16 +53,11 @@ class TestFunction(TestCase):
         def test_request_insee_3(self):
             # token is none and sdmx query fails
             def init_conn_foo():
-                init_conn(insee_key="test", insee_secret="test")
+                init_conn(sirene_key="test")
 
             self.assertRaises(ValueError, init_conn_foo)
 
-            _get_token.cache_clear()
-            _get_envir_token.cache_clear()
-
-            os.environ["insee_token"] = "test"
-            os.environ["insee_key"] = "key"
-            os.environ["insee_secret"] = "secret"
+            os.environ["sirene_key"] = "key
             sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
             api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
 
@@ -90,9 +72,7 @@ class TestFunction(TestCase):
             # _get_envir_token.cache_clear()
             clear_all_cache()
 
-            os.environ["insee_token"] = "test"
-            os.environ["insee_key"] = "key"
-            os.environ["insee_secret"] = "secret"
+            os.environ["sirene_key"] = "key"
             api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
 
             def request_insee_test(sdmx_url=None, api_url=api_url):
@@ -108,13 +88,6 @@ class TestFunction(TestCase):
                 _request_insee(sdmx_url=sdmx_url, api_url=api_url)
 
             self.assertRaises(ValueError, request_insee_test)
-
-        def test_get_envir_token(self):
-            _get_envir_token.cache_clear()
-            os.environ["insee_token"] = "a"
-            token = _get_envir_token()
-            test = token is None
-            self.assertTrue(test)
 
         def test_clear_all_cache(self):
             test = True
