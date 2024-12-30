@@ -13,7 +13,7 @@
 a dozen datasets of local data, numerous sources available on [insee.fr](https://www.insee.fr), 
 geographical limits of administrative areas taken from IGN
 as well as key metadata and SIRENE database containing data on all French companies.
-Have a look at the detailed API page [api.insee.fr](https://api.insee.fr/catalogue/).
+Have a look at the detailed API page [portail-api.insee.fr](https://portail-api.insee.fr/).
 
 This package is a contribution to reproducible research and public data transparency. 
 It benefits from the developments made by teams working on APIs at INSEE and IGN.
@@ -22,7 +22,7 @@ It benefits from the developments made by teams working on APIs at INSEE and IGN
 
 The files available on [insee.fr](https://www.insee.fr) and IGN data, i.e. the use of `download` and `geodata` modules, do not require authentication.
 Credentials are necessary to access some of the INSEE APIs available through `pynsee` by the modules `macrodata`, `localdata`, `metadata` and `sirene`. 
-API credentials can be created here : [api.insee.fr](https://api.insee.fr/catalogue/)
+API credentials can be created here : [portail-api.insee.fr](https://portail-api.insee.fr/)
 
 ```python
 
@@ -34,10 +34,10 @@ pip install pynsee[full]
 # cd pynsee
 # pip install .[full]
 
-# Subscribe to api.insee.fr and get your credentials!
+# Subscribe to portail-api.insee.fr and get your credentials!
 # Save your credentials with init_conn function :      
 from pynsee.utils.init_conn import init_conn
-init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+init_conn(sirene_key="my_sirene_key")
 
 # Beware : any change to the keys should be tested after having cleared the cache
 # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
@@ -61,7 +61,7 @@ For further advice, have a look at the documentation and gallery of the [example
 ## Example - Population Map
 
 <h1 align="center">
-<img src="https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK">
+<img src="https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png">
 </h1>
 
 ```python
@@ -145,8 +145,7 @@ fig.savefig('pop_france.svg',
 
 # Use the proxy_server argument of the init_conn function to change the proxy server address   
 from pynsee.utils.init_conn import init_conn
-init_conn(insee_key="my_insee_key",
-         insee_secret="my_insee_secret",
+init_conn(sirene_key="my_sirene_key",
          http_proxy="http://my_proxy_server:port",
          https_proxy="http://my_proxy_server:port")
 
@@ -156,8 +155,7 @@ init_conn(insee_key="my_insee_key",
 # Alternativety you can use directly environment variables as follows. 
 # Beware not to commit your credentials!
 import os
-os.environ['insee_key'] = 'my_insee_key'
-os.environ['insee_secret'] = 'my_insee_secret'
+os.environ['sirene_key'] = 'my_sirene_key'
 os.environ['http_proxy'] = "http://my_proxy_server:port"
 os.environ['https_proxy'] = "http://my_proxy_server:port"
 
