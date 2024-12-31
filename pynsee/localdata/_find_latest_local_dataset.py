@@ -72,8 +72,8 @@ def _find_latest_local_dataset(dataset_version, variables, nivgeo, codegeo, upda
                 dataset_version = dv
                 break
                 
-        f = open(file_localdata, "rb")
-        pickle.dump(dataset_version, f)
+        f = open(file_localdata, "wb")
+        pickle.dump(str(dataset_version), f)
         f.close()
     else:
         try:
