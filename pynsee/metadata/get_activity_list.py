@@ -98,13 +98,15 @@ def get_activity_list(level, version="NAFRev2"):
     list_available_file = [not os.path.exists(f) for f in list_expected_files]
 
     # unzipping raw files
-    # any(list_available_file)
-    if True:
+    try:
+        pkg_path = importlib.resources.files(__name__)
+        zip_file = str(pkg_path) + "/data/naf.zip"
+    except:
+        import pkg_resources
+        zip_file = pkg_resources.resource_stream(__name__, "data/naf.zip")
 
-        zip_file = str(importlib.resources.files(__name__)) + "/data/naf.zip"
-
-        with zipfile.ZipFile(zip_file, "r") as zip_ref:
-            zip_ref.extractall(insee_folder)
+    with zipfile.ZipFile(zip_file, "r") as zip_ref:
+        zip_ref.extractall(insee_folder)
 
     def drop_space(string):
         if pd.isna(string):
