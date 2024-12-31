@@ -21,7 +21,7 @@ class TestFunction(TestCase):
     
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 9)
 
-    if True:
+    if version:
         StartKeys = _get_credentials()
 
         def test_request_insee_1(self):

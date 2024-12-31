@@ -25,9 +25,9 @@ from pynsee.geodata._find_wfs_closest_match import _find_wfs_closest_match
 
 class TestFunction(TestCase):
 
-    version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 12)
+    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 11)
 
-    if True:
+    if version:
 
         def test_find_wfs_closest_match(self):            
             self.assertTrue(isinstance(_find_wfs_closest_match(), str))

@@ -17,9 +17,9 @@ from pynsee.metadata.get_legal_entity import get_legal_entity
 
 class TestFunction(TestCase):
 
-    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 12)
+    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 11)
 
-    if True:
+    if version:
         
         def test_get_legal_entity(self):
             data = get_legal_entity(codes = ['5599', '83'])

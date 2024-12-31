@@ -42,9 +42,9 @@ future_date = datetime.now() + timedelta(days=91)
 
 class TestFunction(TestCase):
 
-    version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
+    version_3_12 = (sys.version_info[0] == 3) & (sys.version_info[1] == 12)
 
-    if True:
+    if version_3_12:
 
         def test_get_dataset_list_internal(self):
             df = _get_dataset_list_internal()

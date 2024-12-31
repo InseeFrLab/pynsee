@@ -19,7 +19,7 @@ class MyTests(unittest.TestCase):
 
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 10)
 
-    if True:
+    if version:
     
         def test_check_url(self):
             url = 'https://www.insee.fr/fr/statistiques/fichier/2540004/nat2020_csv.zip'
