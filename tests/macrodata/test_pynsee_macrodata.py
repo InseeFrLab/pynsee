@@ -43,12 +43,12 @@ future_date = datetime.now() + timedelta(days=91)
 
 class TestFunction(TestCase):
 
-    version_3_12 = (sys.version_info[0] == 3) & (sys.version_info[1] == 12)
+    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 12)
 
     test_onyxia = re.match(".*onyxia.*", os.getcwd())
     version = version or test_onyxia
 
-    if version_3_12:
+    if version:
 
         def test_get_dataset_list_internal(self):
             df = _get_dataset_list_internal()
