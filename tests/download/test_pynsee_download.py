@@ -10,12 +10,16 @@ from pynsee.download import get_file_list
 from pynsee.download import get_column_metadata
 from pynsee.utils.clear_all_cache import clear_all_cache
 
+# manual commands for testing only on geodata module
+# coverage run -m unittest tests/geodata/test_pynsee_geodata.py
+# coverage report --omit=*/utils/*,*/macrodata/*,*/localdata/*,*/download/*,*/sirene/*,*/metadata/* -m
+
 
 class MyTests(unittest.TestCase):
 
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 10)
 
-    if version:
+    if True:
     
         def test_check_url(self):
             url = 'https://www.insee.fr/fr/statistiques/fichier/2540004/nat2020_csv.zip'

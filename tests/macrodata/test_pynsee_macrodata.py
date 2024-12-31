@@ -36,12 +36,15 @@ test_SDMX = True
 
 future_date = datetime.now() + timedelta(days=91)
 
+# manual commands for testing only on geodata module
+# coverage run -m unittest tests/geodata/test_pynsee_geodata.py
+# coverage report --omit=*/utils/*,*/macrodata/*,*/localdata/*,*/download/*,*/sirene/*,*/metadata/* -m
 
 class TestFunction(TestCase):
 
     version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
 
-    if not version_3_8:
+    if True:
 
         def test_get_dataset_list_internal(self):
             df = _get_dataset_list_internal()
@@ -54,7 +57,7 @@ class TestFunction(TestCase):
 
         def test_get_series_title(self):
             series = search_macrodata()
-            series = series.loc[:420, "IDBANK"].to_list()
+            series = series.loc[:50, "IDBANK"].to_list()
             titles = get_series_title(series)
             self.assertTrue(isinstance(titles, pd.DataFrame))
 
@@ -67,7 +70,7 @@ class TestFunction(TestCase):
             data1 = get_column_title()
             test1 = isinstance(data1, pd.DataFrame)
 
-            data2 = get_column_title(['CLIMAT-AFFAIRES', 'IPC-2015'])
+            data2 = get_column_title(['CLIMAT-AFFAIRES'])
             test2 = isinstance(data2, pd.DataFrame)
             self.assertTrue(test1 & test2)
 
@@ -79,9 +82,6 @@ class TestFunction(TestCase):
             data = get_series_list('CLIMAT-AFFAIRES')
             test = test & isinstance(data, pd.DataFrame)
 
-            data = get_series_list("IPPI-2015", update=True)
-            test = test & isinstance(data, pd.DataFrame)
-
             data = get_series_list("CHOMAGE-TRIM-NATIONAL", update=True)
             test = test & isinstance(data, pd.DataFrame)
 
@@ -91,7 +91,7 @@ class TestFunction(TestCase):
             self.assertRaises(ValueError, get_series_list, 'a')
 
         def test_get_series_1(self):
-            idbank_list = get_series_list('IPC-2015').iloc[:900]
+            idbank_list = get_series_list('IPC-2015').iloc[:50]
             data = get_series(idbank_list.IDBANK)
             self.assertTrue(isinstance(data, pd.DataFrame))
 

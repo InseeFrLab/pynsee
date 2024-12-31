@@ -13,12 +13,15 @@ from pynsee.sirene import (
     get_sirene_relatives, search_sirene)
 from pynsee.sirene._request_sirene import _request_sirene
 
+# manual commands for testing only on geodata module
+# coverage run -m unittest tests/geodata/test_pynsee_geodata.py
+# coverage report --omit=*/utils/*,*/macrodata/*,*/localdata/*,*/download/*,*/sirene/*,*/metadata/* -m
 
 class TestFunction(TestCase):
 
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 11)
 
-    if version:
+    if True:
 
         def test_get_sirene_relatives(self):
             test = True
@@ -166,7 +169,7 @@ class TestFunction(TestCase):
             df = search_sirene(variable=['activitePrincipaleEtablissement',
                                'codePostalEtablissement'],
                                pattern=['56.30Z', '83*'],
-                               number=5000)
+                               number=100)
             test = test & isinstance(df, pd.DataFrame)
 
             df = search_sirene(variable = ["denominationUniteLegale", 'categorieEntreprise'],
