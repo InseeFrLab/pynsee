@@ -2,6 +2,7 @@ import unittest
 import os
 import pandas as pd
 import sys
+import re
 
 from pynsee.download import *
 from pynsee.download._check_url import _check_url
@@ -18,6 +19,9 @@ from pynsee.utils.clear_all_cache import clear_all_cache
 class MyTests(unittest.TestCase):
 
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 10)
+    
+    test_onyxia = re.match(".*onyxia.*", os.getcwd())
+    version = version or test_onyxia
 
     if version:
     

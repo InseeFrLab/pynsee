@@ -4,9 +4,11 @@
 import unittest
 from unittest import TestCase
 import requests
-
+import re
 import os
 import sys
+
+from requests.exceptions import RequestException
 
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._request_insee import _request_insee
@@ -20,7 +22,10 @@ class TestFunction(TestCase):
     
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 9)
 
-    if True:
+    test_onyxia = re.match(".*onyxia.*", os.getcwd())
+    version = version or test_onyxia
+
+    if version:
         StartKeys = _get_credentials()
 
         def test_request_insee_1(self):
