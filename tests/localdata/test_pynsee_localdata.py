@@ -30,7 +30,7 @@ from pynsee.localdata.get_descending_area import get_descending_area
 
 class TestFunction(TestCase):
     
-    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 10)
+    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 9)
 
     if version:
 
