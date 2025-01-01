@@ -70,32 +70,6 @@ class MyTests(unittest.TestCase):
             self.assertTrue(checkLabel)
             self.assertTrue(isinstance(df, pd.DataFrame))
             self.assertTrue((len(df.columns) > 2))
-        
-        # def test_download_file_all(self):
             
-        #     list_file_check = ["COG_COMMUNE_2018", "AIRE_URBAINE", "FILOSOFI_COM_2015", "DECES_2020",
-        #                "PRENOM_NAT", "ESTEL_T201_ENS_T", "FILOSOFI_DISP_IRIS_2017",
-        #                "BPE_ENS", "RP_MOBSCO_2016"]
-            
-        #     for i, f in enumerate(list_file_check):
-        #         print(f"{i} : {f}")
-    
-        #         df = download_file(f)
-        #         label = get_column_metadata(id=f)
-                
-        #         if label is None:
-        #             checkLabel = True
-        #         elif isinstance(label, pd.DataFrame):
-        #             checkLabel = True
-        #         else: 
-        #             checkLabel = False
-                    
-        #         self.assertTrue(checkLabel)
-        #         self.assertTrue(isinstance(df, pd.DataFrame))
-        #         self.assertTrue((len(df.columns) > 2))
-                
-        #         df = download_file(list_file_check[0])
-        #         self.assertTrue(isinstance(df, pd.DataFrame))
-                        
 if __name__ == '__main__':
     unittest.main()
