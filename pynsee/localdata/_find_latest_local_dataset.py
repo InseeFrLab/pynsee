@@ -1,5 +1,4 @@
 
-import sys
 import os
 import re
 from tqdm import trange
@@ -11,18 +10,10 @@ import numpy as np
 from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
+from pynsee.utils.HiddenPrints import HiddenPrints
 
 import logging
 logger = logging.getLogger(__name__)
-
-class HiddenPrints:
-    def __enter__(self):
-        self._original_stdout = sys.stdout
-        sys.stdout = open(os.devnull, 'w')
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        sys.stdout.close()
-        sys.stdout = self._original_stdout
 
 def _find_latest_local_dataset(dataset_version, variables, nivgeo, codegeo, update, backwardperiod = 6):
     

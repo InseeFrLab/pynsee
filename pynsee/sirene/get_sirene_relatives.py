@@ -1,11 +1,10 @@
-import os
-import sys
+
 import pandas as pd
 import re
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
-
+from pynsee.utils.HiddenPrints import HiddenPrints
 
 def get_sirene_relatives(*siret):
     """Find parent or child entities for one siret entity (etablissement)
@@ -46,12 +45,11 @@ def get_sirene_relatives(*siret):
             criteria = types[i] + ":" + re.sub(r"\s+", "", list_siret[s])
             query = f"https://api.insee.fr/api-sirene/3.11/siret/liensSuccession?q={criteria}"
             try:
-                sys.stdout = open(os.devnull, "w")
-                result = _request_insee(
-                    api_url=query, file_format="application/json;charset=utf-8"
-                )
-                json = result.json()
-                sys.stdout = sys.__stdout__
+                with HiddenPrints():
+                    result = _request_insee(
+                        api_url=query, file_format="application/json;charset=utf-8"
+                    )
+                    json = result.json()
             except:
                 pass
             else:
