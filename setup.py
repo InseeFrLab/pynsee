@@ -34,7 +34,7 @@ setuptools.setup(
             "pandas>=0.24.2",
             "pyarrow",
             "tqdm>=4.56.0",
-            "requests>=2.23",
+            "requests[security]>=2.23",
             "platformdirs",
             "unidecode>=1.1.0",
             "shapely>=1.8.0",
