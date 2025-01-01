@@ -27,32 +27,35 @@ def _get_credentials() -> Dict[str, str]:
     '''
     key_dict: Dict[str, str] = {}
 
-    try:
-        key_dict["sirene_key"] = os.environ["sirene_key"]
+    sirene_key = os.environ.get("sirene_key")
+    
+    if sirene_key is None:
+        sirene_key = os.environ.get("SIRENE_KEY")
 
-        envir_var_used = True
-    except KeyError:
+    if sirene_key is None:
         envir_var_used = False
-
-        config_file = os.path.join(
-            user_config_dir("pynsee", ensure_exists=True), "config.json")
-
         try:
+            config_file = os.path.join(
+                user_config_dir("pynsee", ensure_exists=True), "config.json")
+            
             with open(config_file, "r") as f:
                 key_dict = json.load(f)
-
+    
             http_proxy = key_dict["http_proxy"]
             https_proxy = key_dict["https_proxy"]
-
+    
             if (http_proxy is None) or (not isinstance(http_proxy, str)):
                 http_proxy = ""
             if (https_proxy is None) or (not isinstance(https_proxy, str)):
                 https_proxy = ""
-
+    
             os.environ["http_proxy"] = http_proxy
             os.environ["https_proxy"] = https_proxy
         except Exception:
             _missing_credentials()
+    else:
+        envir_var_used = True
+        key_dict["sirene_key"] = sirene_key
 
     if envir_var_used:
         _warn_env_credentials()
