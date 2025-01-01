@@ -35,8 +35,7 @@ jobs:
         flake8 . --count --ignore=E722,C901 --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test examples
       env:
-        insee_key: ${{ secrets.INSEE_KEY }}
-        insee_secret: ${{ secrets.INSEE_SECRET }}
+        sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
         pip install jupytext
         pip install -r requirements.txt
@@ -50,8 +49,7 @@ jobs:
         cd ../..
     - name: Test with pytest
       env:      
-        insee_key: ${{ secrets.INSEE_KEY }}
-        insee_secret: ${{ secrets.INSEE_SECRET }}
+        sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
         pytest -v --cov
     - name: "Upload coverage to Codecov"
