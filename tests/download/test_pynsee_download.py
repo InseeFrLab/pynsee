@@ -24,6 +24,8 @@ class MyTests(unittest.TestCase):
     test_onyxia = re.match(".*onyxia.*", os.getcwd())
     version = version or test_onyxia
 
+    version=True
+
     if version:
     
         def test_check_url(self):

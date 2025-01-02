@@ -3,28 +3,58 @@ name: pynsee package tests
 on:
   push:
       branches:
-        - 'master'
+        - 'parallel_tests'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        group: [1, 2, 3, 4, 5, 6, 7]
+        python-version: [3.10, 3.11, 3.12] # Python versions
+        exclude:        
+          - group: 1
+            python-version: 3.11
+          - group: 1
+            python-version: 3.12
+          - group: 2
+            python-version: 3.11
+          - group: 2
+            python-version: 3.12
+          - group: 3
+            python-version: 3.10
+          - group: 3
+            python-version: 3.12
+          - group: 4
+            python-version: 3.10
+          - group: 4
+            python-version: 3.12
+          - group: 5
+            python-version: 3.10
+          - group: 5
+            python-version: 3.11
+          - group: 6
+            python-version: 3.10
+          - group: 6
+            python-version: 3.11
+          - group: 7
+            python-version: 3.10
+          - group: 7
+            python-version: 3.11
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python 3.10
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        #sudo apt-get install libgeos-dev
         python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-cov geopandas nbconvert matplotlib descartes parameterized 
+        pip install flake8 pytest pytest-cov pytest-xdist geopandas nbconvert matplotlib descartes parameterized 
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements-extra.txt ]; then pip install -r requirements-extra.txt; fi
+        pip install .[full] 
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -36,9 +66,6 @@ jobs:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
         pip install jupytext
-        pip install -r requirements.txt
-        pip install .[full]     
-        pip install -r requirements-extra.txt
         # test all notebooks        
         cd docs/examples 
         jupytext --to py *.md
@@ -48,13 +75,9 @@ jobs:
     - name: Test with pytest
       env:      
         sirene_key: ${{ secrets.SIRENE_KEY }}
+        TEST_GROUP: ${{ matrix.group }}
       run: |
-        pytest -v --cov
-    - name: "Upload coverage to Codecov"
-      uses: codecov/codecov-action@v1
-      if: github.ref == 'refs/heads/master'
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        fail_ci_if_error: true
+          python split_tests.py --group $TEST_GROUP --total-groups 7
+          pytest -v --cov $(cat test_files.txt) -n auto
         
    

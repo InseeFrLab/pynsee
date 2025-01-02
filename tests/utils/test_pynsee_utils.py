@@ -24,6 +24,7 @@ class TestFunction(TestCase):
 
     test_onyxia = re.match(".*onyxia.*", os.getcwd())
     version = version or test_onyxia
+    version=True
 
     if version:
         StartKeys = _get_credentials()
