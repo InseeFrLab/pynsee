@@ -20,9 +20,7 @@ It benefits from the developments made by teams working on APIs at INSEE and IGN
 
 ## Installation & API subscription
 
-The files available on [insee.fr](https://www.insee.fr) and IGN data, i.e. the use of `download` and `geodata` modules, do not require authentication.
-Credentials are necessary to access some of the INSEE APIs available through `pynsee` by the modules `macrodata`, `localdata`, `metadata` and `sirene`. 
-API credentials can be created here : [portail-api.insee.fr](https://portail-api.insee.fr/)
+Credentials are necessary to access SIRENE API available through `pynsee` by the module `sirene`. API credentials can be created here : [portail-api.insee.fr](https://portail-api.insee.fr/). All other modules are freely accessible.
 
 ```python
 

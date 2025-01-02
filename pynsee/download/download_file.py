@@ -31,13 +31,13 @@ def download_file(id, variables=None, update=False, silent=False):
     """
 
     with tempfile.TemporaryDirectory() as tmpdir:
-        try:
+        # try:
 
-            dwn = _download_store_file(tmpdir, id, update=update)
-            df = _load_data_from_schema(dwn, variables=variables)
+        dwn = _download_store_file(tmpdir, id, update=update)
+        df = _load_data_from_schema(dwn, variables=variables)
 
-        except:
-            warnings.warn("Download failed")
-            df = pd.DataFrame()
+        # except:
+        #     warnings.warn("Download failed")
+        #     df = pd.DataFrame()
 
     return df

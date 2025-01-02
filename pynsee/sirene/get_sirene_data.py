@@ -3,12 +3,12 @@
 
 import pandas as pd
 from functools import lru_cache
-import sys
-import os
 import re
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
+from pynsee.utils.HiddenPrints import HiddenPrints
+
 from pynsee.sirene.SireneDataFrame import SireneDataFrame
 
 import logging
@@ -65,14 +65,12 @@ def get_sirene_data(*id):
             )
 
             try:
-                sys.stdout = open(os.devnull, "w")
-                request = _request_insee(
-                    api_url=link, file_format="application/json;charset=utf-8"
-                )
-
-                data_request = request.json()
-                sys.stdout = sys.__stdout__
-
+                with HiddenPrints():
+                    request = _request_insee(
+                        api_url=link, file_format="application/json;charset=utf-8"
+                    )
+    
+                    data_request = request.json()
                 try:
                     data = data_request[main_key]
                 except:

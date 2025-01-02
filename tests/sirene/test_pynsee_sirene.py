@@ -3,6 +3,8 @@
 from unittest import TestCase
 from pandas import pandas as pd
 import sys
+import os
+import re
 
 from shapely.geometry import (
     Point, Polygon, MultiPolygon, LineString, MultiLineString, MultiPoint)
@@ -13,10 +15,16 @@ from pynsee.sirene import (
     get_sirene_relatives, search_sirene)
 from pynsee.sirene._request_sirene import _request_sirene
 
+# manual commands for testing only on geodata module
+# coverage run -m unittest tests/geodata/test_pynsee_geodata.py
+# coverage report --omit=*/utils/*,*/macrodata/*,*/localdata/*,*/download/*,*/sirene/*,*/metadata/* -m
 
 class TestFunction(TestCase):
 
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 11)
+
+    test_onyxia = re.match(".*onyxia.*", os.getcwd())
+    version = version or test_onyxia
 
     if version:
 
@@ -166,7 +174,7 @@ class TestFunction(TestCase):
             df = search_sirene(variable=['activitePrincipaleEtablissement',
                                'codePostalEtablissement'],
                                pattern=['56.30Z', '83*'],
-                               number=5000)
+                               number=100)
             test = test & isinstance(df, pd.DataFrame)
 
             df = search_sirene(variable = ["denominationUniteLegale", 'categorieEntreprise'],

@@ -2,6 +2,8 @@ import unittest
 import os
 import pandas as pd
 import sys
+import re
+from parameterized import parameterized
 
 from pynsee.download import *
 from pynsee.download._check_url import _check_url
@@ -10,10 +12,17 @@ from pynsee.download import get_file_list
 from pynsee.download import get_column_metadata
 from pynsee.utils.clear_all_cache import clear_all_cache
 
+# manual commands for testing only on geodata module
+# coverage run -m unittest tests/geodata/test_pynsee_geodata.py
+# coverage report --omit=*/utils/*,*/macrodata/*,*/localdata/*,*/download/*,*/sirene/*,*/metadata/* -m
+
 
 class MyTests(unittest.TestCase):
 
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 10)
+    
+    test_onyxia = re.match(".*onyxia.*", os.getcwd())
+    version = version or test_onyxia
 
     if version:
     
@@ -37,38 +46,30 @@ class MyTests(unittest.TestCase):
             df = download_file("RP_LOGEMENT_2017", variables = ["COMMUNE", "IRIS", "ACHL", "IPONDL"])
             self.assertTrue(isinstance(df, pd.DataFrame))
             
-        def test_download_file_all(self):
+        def test_get_file_list(self):
             meta = get_file_list()
             self.assertTrue(isinstance(meta, pd.DataFrame))
+
+        list_file_check = ["COG_COMMUNE_2018", "AIRE_URBAINE", "FILOSOFI_COM_2015", "DECES_2020",
+                   "PRENOM_NAT", "ESTEL_T201_ENS_T", "FILOSOFI_DISP_IRIS_2017",
+                   "BPE_ENS", "RP_MOBSCO_2016"]
+
+        @parameterized.expand([[f] for f in list_file_check])
+        def test_download(self, f):
             
-            meta['size'] = pd.to_numeric(meta['size'])
-            meta = meta[meta['size'] < 300000000].reset_index(drop=True)        
+            df = download_file(f, update=True)
+            label = get_column_metadata(id=f)
             
-            list_file = list(meta.id)        
-            list_file_check = list_file[:20] + list_file[-20:]
-            list_file_check = ["COG_COMMUNE_2018", "AIRE_URBAINE", "FILOSOFI_COM_2015", "DECES_2020",
-                       "PRENOM_NAT", "ESTEL_T201_ENS_T", "FILOSOFI_DISP_IRIS_2017",
-                       "BPE_ENS", "RP_MOBSCO_2016"]
-            
-            for i, f in enumerate(list_file_check):
-                print(f"{i} : {f}")
-    
-                df = download_file(f)
-                label = get_column_metadata(id=f)
+            if label is None:
+                checkLabel = True
+            elif isinstance(label, pd.DataFrame):
+                checkLabel = True
+            else: 
+                checkLabel = False
                 
-                if label is None:
-                    checkLabel = True
-                elif isinstance(label, pd.DataFrame):
-                    checkLabel = True
-                else: 
-                    checkLabel = False
-                    
-                self.assertTrue(checkLabel)
-                self.assertTrue(isinstance(df, pd.DataFrame))
-                self.assertTrue((len(df.columns) > 2))
-                
-                df = download_file(list_file_check[0])
-                self.assertTrue(isinstance(df, pd.DataFrame))
-                        
+            self.assertTrue(checkLabel)
+            self.assertTrue(isinstance(df, pd.DataFrame))
+            self.assertTrue((len(df.columns) > 2))
+            
 if __name__ == '__main__':
     unittest.main()

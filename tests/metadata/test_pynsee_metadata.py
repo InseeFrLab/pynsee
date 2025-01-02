@@ -4,15 +4,25 @@
 from unittest import TestCase
 from pandas import pandas as pd
 import sys
+import os
+import re
 
 from pynsee.metadata.get_definition_list import get_definition_list
 from pynsee.metadata.get_definition import get_definition
 from pynsee.metadata.get_activity_list import get_activity_list
 from pynsee.metadata.get_legal_entity import get_legal_entity
 
+# manual commands for testing only on geodata module
+# coverage run -m unittest tests/geodata/test_pynsee_geodata.py
+# coverage report --omit=*/utils/*,*/macrodata/*,*/localdata/*,*/download/*,*/sirene/*,*/metadata/* -m
+
+
 class TestFunction(TestCase):
 
-    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
+    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 11)
+
+    test_onyxia = re.match(".*onyxia.*", os.getcwd())
+    version = version or test_onyxia
 
     if version:
         

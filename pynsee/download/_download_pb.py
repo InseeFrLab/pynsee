@@ -4,7 +4,7 @@ import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-from pynsee.utils.requests_params import _get_requests_proxies
+from pynsee.utils.requests_params import _get_requests_proxies, _get_requests_session
 
 
 def _download_pb(url: str, fname: str, total: int = None):
@@ -19,8 +19,10 @@ def _download_pb(url: str, fname: str, total: int = None):
     """
 
     proxies = _get_requests_proxies()
+    session = _get_requests_session()
 
-    resp = requests.get(url, proxies=proxies, stream=True, verify=False)
+    with session as s:
+        resp = s.get(url, proxies=proxies, stream=True, verify=False)
 
     if total is None:
         total = int(resp.headers.get("content-length", 0))
