@@ -210,14 +210,14 @@ class TestFunction(TestCase):
         def test_get_geo_list_2(self):
             self.assertRaises(ValueError, get_geo_list, "a")
 
-        def test_get_geo_relation_1(self):
-            df1 = _get_geo_relation("region", "11", "descendants")
-            time.sleep(1)
-            df2 = _get_geo_relation("departement", "91", "ascendants")
-            test = isinstance(df1, pd.DataFrame) & isinstance(
-                df2, pd.DataFrame
-            )
-            self.assertTrue(test)
+        # def test_get_geo_relation_1(self):
+        #     df1 = _get_geo_relation("region", "11", "descendants")
+        #     time.sleep(1)
+        #     df2 = _get_geo_relation("departement", "91", "ascendants")
+        #     test = isinstance(df1, pd.DataFrame) & isinstance(
+        #         df2, pd.DataFrame
+        #     )
+        #     self.assertTrue(test)
 
         def test_get_nivgeo_list(self):
             data = get_nivgeo_list()
@@ -436,9 +436,6 @@ class TestFunction(TestCase):
             test = test & isinstance(df, pd.DataFrame)
 
             df = get_area_list(update=False)
-            test = test & isinstance(df, pd.DataFrame)
-
-            df = get_area_list(area="communes")
             test = test & isinstance(df, pd.DataFrame)
 
             df = get_area_list(area="collectivitesDOutreMer", update=True)

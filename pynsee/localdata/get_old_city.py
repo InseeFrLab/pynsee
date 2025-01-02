@@ -27,7 +27,7 @@ def get_old_city(code, date=None):
         >>> from pynsee.localdata import get_old_city
         >>> df = get_old_city(code = '24259')
     """
-    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
+    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/geo/"
 
     api_link = INSEE_localdata_api_link + "commune/" + str(code) + "/precedents"
 

@@ -58,7 +58,7 @@ def get_definition_list():
         with zipfile.ZipFile(zip_file, "r") as zip_ref:
             zip_ref.extractall(insee_folder)
 
-    link = "https://api.insee.fr/metadonnees/V1/concepts/definitions"
+    link = "https://api.insee.fr/metadonnees/concepts/definitions"
 
     request = _request_insee(api_url=link, file_format="application/json")
 

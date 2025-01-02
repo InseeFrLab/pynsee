@@ -55,7 +55,7 @@ def _get_one_legal_entity(c, print_err_msg=True):
         )
 
     INSEE_legal_entity_n3 = (
-        "https://api.insee.fr/metadonnees/V1/codes/cj/" + n + "/"
+        "https://api.insee.fr/metadonnees/codes/cj/" + n + "/"
     )
 
     request = _request_insee(

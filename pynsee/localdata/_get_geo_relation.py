@@ -23,8 +23,16 @@ def _get_geo_relation(geo, code, relation, date=None, type=None):
     # idf = _get_geo_relation('region', "11", 'descendants')
     # essonne = _get_geo_relation('region', "11", 'ascendants')
 
+    # api_url = (
+    #     "https://api.insee.fr/metadonnees/V1/geo/"
+    #     + geo
+    #     + "/"
+    #     + code
+    #     + "/"
+    #     + relation
+    # )
     api_url = (
-        "https://api.insee.fr/metadonnees/V1/geo/"
+        "https://api.insee.fr/metadonnees/geo/"
         + geo
         + "/"
         + code

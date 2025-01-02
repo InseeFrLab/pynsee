@@ -80,7 +80,7 @@ def get_area_list(area=None, date=None, update=False, silent=False):
     list_data = []
 
     for a in list_available_area:
-        api_url = "https://api.insee.fr/metadonnees/V1/geo/" + a
+        api_url = "https://api.insee.fr/metadonnees/geo/" + a
         print(api_url)
         if date:
             api_url += f"?date={date}"
