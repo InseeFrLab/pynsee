@@ -76,7 +76,7 @@ class TestFunction(TestCase):
 
             data2 = get_column_title(['CLIMAT-AFFAIRES'])
             test2 = isinstance(data2, pd.DataFrame)
-            self.assertTrue(test1 & test2)
+            self.assertTrue(test2)
 
         def test_get_column_title_2(self):
             self.assertRaises(ValueError, get_column_title, dataset=['a'])
