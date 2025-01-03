@@ -31,15 +31,17 @@ def _warning_nivgeo(nivgeo):
 
 @save_df(day_lapse_max=90)
 def get_local_data(
-    variables, dataset_version, nivgeo="FE", geocodes=["1"], update=False, silent=False
+    variables, dataset_version, nivgeo="FE",
+    geocodes=["1"], update=False, silent=False, 
+    backwardperiod = 6
 ):
     """Get INSEE local numeric data
 
     Args:
         variables (str): one or several variables separated by an hyphen (see get_local_metadata)
 
-        dataset_version (str): code of a dataset version (see get_local_metadata), if dates are replaced by 'latest' the function triggers a loop to find the latest data available (examples: 'GEOlatestRPlatest', 'GEOlatestFLORESlatest')
-
+        dataset_version (str): code of a dataset version (see get_local_metadata), if dates are replaced by 'latest' the function triggers a loop to find the latest data available (examples: 'GEOlatestRPlatest', 'GEOlatestFLORESlatest').
+        
         nivgeo (str): code of kind of French administrative area (see get_nivgeo_list), by default it is 'FE' ie all France
 
         geocodes (list): code one specific area (see get_geo_list), by default it is ['1'] ie all France
@@ -47,6 +49,8 @@ def get_local_data(
         update (bool): data is saved locally, set update=True to trigger an update
 
         silent (bool, optional): Set to True, to disable messages printed in log info
+
+        backwardperiod (int, optional): this arg is used only whenever the latest data is searched, it specifies the number of past years the loop should run through. 
         
     Raises:
         ValueError: Error if geocodes is not a list
@@ -103,7 +107,8 @@ def get_local_data(
 
     if pattern.match(dataset_version):
         
-        dataset_version = _find_latest_local_dataset(dataset_version, variables, nivgeo, geocodes[0], update)
+        dataset_version = _find_latest_local_dataset(dataset_version, variables,
+                                                     nivgeo, geocodes[0], update, backwardperiod)
        
     list_data_all = []       
     

@@ -8,7 +8,7 @@ from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 
 import zipfile
 import os
-import pkg_resources
+import importlib
 import pandas as pd
 
 import logging
@@ -48,13 +48,17 @@ def get_definition_list():
 
     # unzipping raw files
     if any(list_available_file):
-
-        zip_file = pkg_resources.resource_stream(__name__, "data/definition.zip")
+        try:
+            pkg_path = importlib.resources.files(__name__)
+            zip_file = str(pkg_path) + "/data/definition.zip"
+        except:
+            import pkg_resources
+            zip_file = pkg_resources.resource_stream(__name__, "data/definition.zip")
 
         with zipfile.ZipFile(zip_file, "r") as zip_ref:
             zip_ref.extractall(insee_folder)
 
-    link = "https://api.insee.fr/metadonnees/V1/concepts/definitions"
+    link = "https://api.insee.fr/metadonnees/concepts/definitions"
 
     request = _request_insee(api_url=link, file_format="application/json")
 

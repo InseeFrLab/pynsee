@@ -67,7 +67,7 @@ def get_area_projection(
     else:
         area = areas[area.lower()]
 
-    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
+    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/geo/"
 
     api_link = f"{INSEE_localdata_api_link}{area}/{code}/projetes?date={date}"
 

@@ -129,7 +129,7 @@ def _save_dataframe(
             if parquet:
                 df.to_parquet(file_name)
             else:
-                df.to_csv(file_name, index=False)
+                df.to_pickle(file_name, index=False)
     except Exception as e:
         warnings.warn(str(e))
         warnings.warn(f"Error, file not saved:\n{file_name}\n{df}\n")

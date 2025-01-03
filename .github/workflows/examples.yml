@@ -30,8 +30,7 @@ jobs:
       
     - name: Test all examples
       env:
-        insee_key: ${{ secrets.INSEE_KEY }}
-        insee_secret: ${{ secrets.INSEE_SECRET }}
+        sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
         pip install jupytext
         pip install .[full] 
@@ -48,8 +47,7 @@ jobs:
         
     - name: Test idbank list download
       env:      
-        insee_key: ${{ secrets.INSEE_KEY }}
-        insee_secret: ${{ secrets.INSEE_SECRET }}
+        sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |     
         pip install . 
         python -c "from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files;_dwn_idbank_files()"

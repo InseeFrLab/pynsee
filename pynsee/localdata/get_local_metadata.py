@@ -5,8 +5,8 @@ from functools import lru_cache
 import os
 import re
 import zipfile
-import pkg_resources
 import pandas as pd
+import importlib
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 
@@ -64,12 +64,16 @@ def get_local_metadata():
     list_files = [f for f in list_files if re.search("^doc_.*csv$", f)]
 
     test_file_available = [f not in list_files for f in all_files]
-    # any(test_file_available)
-    if True:
+
+    try:
+        pkg_path = importlib.resources.files(__name__)
+        zip_file = str(pkg_path) + "/data/local_metadata.zip"
+    except:
+        import pkg_resources
         zip_file = pkg_resources.resource_stream(__name__, "data/local_metadata.zip")
 
-        with zipfile.ZipFile(zip_file, "r") as zip_ref:
-            zip_ref.extractall(insee_folder)
+    with zipfile.ZipFile(zip_file, "r") as zip_ref:
+        zip_ref.extractall(insee_folder)
 
     def extract_data_from_excel_sheet(
         var,

@@ -40,9 +40,7 @@ def get_new_city(code, date=None):
         >>> from pynsee.localdata import get_next_city
         >>> df = get_next_city(code = '24431', date = '2018-01-01')
     """
-    # api_link = 'https://api.insee.fr/metadonnees/V1/geo/commune/24431/suivants?date=2018-01-01'
-
-    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
+    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/geo/"
 
     api_link = INSEE_localdata_api_link + "commune/" + str(code) + "/suivants"
 

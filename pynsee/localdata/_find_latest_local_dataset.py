@@ -1,5 +1,4 @@
 
-import sys
 import os
 import re
 from tqdm import trange
@@ -11,11 +10,12 @@ import numpy as np
 from pynsee.localdata._get_insee_local_onegeo import _get_insee_local_onegeo
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
+from pynsee.utils.HiddenPrints import HiddenPrints
 
 import logging
 logger = logging.getLogger(__name__)
 
-def _find_latest_local_dataset(dataset_version, variables, nivgeo, codegeo, update):
+def _find_latest_local_dataset(dataset_version, variables, nivgeo, codegeo, update, backwardperiod = 6):
     
     filename = _hash("".join([dataset_version] + ['_find_latest_local_dataset']))
     insee_folder = _create_insee_folder()
@@ -26,7 +26,7 @@ def _find_latest_local_dataset(dataset_version, variables, nivgeo, codegeo, upda
         datasetname = dataset_version.replace('latest', '').replace('GEO', '')
 
         current_year = int(datetime.datetime.today().strftime('%Y'))   
-        backwardperiod = 10
+        
         list_geo_dates = range(current_year, current_year-backwardperiod, -1)        
         list_data_dates = range(current_year, current_year-backwardperiod, -1)
 
@@ -44,11 +44,10 @@ def _find_latest_local_dataset(dataset_version, variables, nivgeo, codegeo, upda
             dv = list_dataset_version[dvindex]
 
             try:
-                sys.stdout = open(os.devnull, 'w')
-                df = _get_insee_local_onegeo(
-                            variables, dv, nivgeo=nivgeo, codegeo=codegeo
-                        ) 
-                sys.stdout = sys.__stdout__
+                with HiddenPrints():
+                    df = _get_insee_local_onegeo(
+                                variables, dv, nivgeo=nivgeo, codegeo=codegeo
+                            )
                 
                 if type(df) == pd.core.frame.DataFrame:
                     if len(df.index) == 1:
@@ -63,11 +62,15 @@ def _find_latest_local_dataset(dataset_version, variables, nivgeo, codegeo, upda
             else:
                 dataset_version = dv
                 break
-            
-        pickle.dump(dataset_version, open(file_localdata, "wb"))
+                
+        f = open(file_localdata, "wb")
+        pickle.dump(str(dataset_version), f)
+        f.close()
     else:
         try:
-            dataset_version = pickle.load(open(file_localdata, "rb"))
+            f = open(file_localdata, "rb")
+            dataset_version = pickle.load(f)
+            f.close()
         except:
             os.remove(file_localdata)
             dataset_version = _find_latest_local_dataset(

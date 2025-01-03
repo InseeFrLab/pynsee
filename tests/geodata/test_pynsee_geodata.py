@@ -6,6 +6,8 @@ import pandas as pd
 import sys
 import requests
 import unittest
+import re
+import os
 
 from shapely.geometry import Polygon, MultiPolygon, MultiPoint, Point
 
@@ -25,9 +27,12 @@ from pynsee.geodata._find_wfs_closest_match import _find_wfs_closest_match
 
 class TestFunction(TestCase):
 
-    version_3_8 = (sys.version_info[0] == 3) & (sys.version_info[1] == 8)
+    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 11)
 
-    if not version_3_8:
+    test_onyxia = re.match(".*onyxia.*", os.getcwd())
+    version = version or test_onyxia
+
+    if version:
 
         def test_find_wfs_closest_match(self):            
             self.assertTrue(isinstance(_find_wfs_closest_match(), str))
@@ -60,6 +65,8 @@ class TestFunction(TestCase):
             df = get_geodata_list(update=True)
             self.assertTrue(isinstance(df, pd.DataFrame))
 
+        def test_get_geodata_short2(self):
+
             chflieu = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune', update=True)
             self.assertTrue(isinstance(chflieu, GeoFrDataFrame))
             geo = chflieu.get_geom()
@@ -67,10 +74,14 @@ class TestFunction(TestCase):
             geo_chflieut = chflieu.translate().zoom().get_geom()
             self.assertTrue(isinstance(geo_chflieut, MultiPoint))
 
+        def test_get_geodata_short3(self):
+
             com = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True)
             self.assertTrue(isinstance(com, GeoFrDataFrame))
             geo = com.get_geom()
             self.assertTrue(isinstance(geo, MultiPolygon))
+
+        def test_get_geodata_short4(self):
 
             # query with polygon and crs 4326
             dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True, crs="EPSG:4326")
@@ -79,8 +90,11 @@ class TestFunction(TestCase):
             geo29 = dep29.get_geom()
             self.assertTrue(isinstance(geo29, MultiPolygon))
 
-            com29 = _get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29, crsPolygon="EPSG:4326")
+            com29 = _get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', 
+                                 update=True, polygon=geo29, crsPolygon="EPSG:4326")
             self.assertTrue(isinstance(com29, pd.DataFrame))
+
+        def test_get_geodata_short5(self):
 
             # query with polygon and crs 3857
             dep29 = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', update=True, crs="EPSG:3857")
@@ -89,14 +103,19 @@ class TestFunction(TestCase):
 
             geo29 = dep29.get_geom()
             self.assertTrue(isinstance(geo29, MultiPolygon))
-            com29 = _get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune', update=True, polygon=geo29, crsPolygon="EPSG:3857")
+            com29 = _get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune',
+                                 update=True, polygon=geo29, crsPolygon="EPSG:3857")
             self.assertTrue(isinstance(com29, pd.DataFrame))
 
+        def test_get_geodata_short5b(self):
+            
+            com = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:commune')
             ovdep = com.translate().zoom()
             self.assertTrue(isinstance(ovdep, GeoFrDataFrame))
             geo_ovdep = ovdep.get_geom()
             self.assertTrue(isinstance(geo_ovdep, MultiPolygon))
 
+        def test_get_geodata_short6(self):
             #test _add_insee_dep_from_geodata
             epci = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:epci', update=True)
             self.assertTrue(isinstance(epci, GeoFrDataFrame))
@@ -105,6 +124,7 @@ class TestFunction(TestCase):
             geo_epcit = epcit.get_geom()
             self.assertTrue(isinstance(geo_epcit, MultiPolygon))
 
+        def test_get_geodata_short7(self):
             # test _add_insee_dep_region
             reg = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:region', update=True)
             self.assertTrue(isinstance(reg, GeoFrDataFrame))
@@ -113,6 +133,7 @@ class TestFunction(TestCase):
             geo_regt = regt.get_geom()
             self.assertTrue(isinstance(geo_regt, MultiPolygon))
 
+        def test_get_geodata_short8(self):
             dep = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', crs="EPSG:4326")
             dep13 = dep[dep["insee_dep"] == "13"]
             geo13 = dep13.get_geom()
@@ -121,6 +142,8 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(bbox, list))
             bbox = _get_bbox_list(polygon=geo13)
             self.assertTrue(isinstance(bbox, list))
+
+        def test_get_geodata_short9(self):
 
             dep = get_geodata(id='ADMINEXPRESS-COG-CARTO.LATEST:departement', crs="EPSG:3857")
             dep13 = dep[dep["insee_dep"] == "13"]

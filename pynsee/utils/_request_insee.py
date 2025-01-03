@@ -77,7 +77,10 @@ def _request_insee(
 
     if api_url is not None:
         if keys is not None:
-            sirene_key = keys["sirene_key"]
+            try:
+                sirene_key = keys["sirene_key"]
+            except:
+                sirene_key = None                
         else:
             sirene_key = None
 
@@ -90,10 +93,12 @@ def _request_insee(
 
         session = _get_requests_session()
 
-        if (re.match(".*api-sirene.*", api_url) and (sirene_key is not None)) or \
-            (not re.match(".*api-sirene.*", api_url)):
-            
-            headers["X-INSEE-Api-Key-Integration"] = sirene_key           
+        sirene_request = (re.match(".*api-sirene.*", api_url) and (sirene_key is not None))
+
+        if sirene_request:
+            headers["X-INSEE-Api-Key-Integration"] = sirene_key   
+
+        if  sirene_request or (not re.match(".*api-sirene.*", api_url)):
 
             # avoid reaching the limit of 30 queries per minute from insee api
             _wait_api_query_limit(api_url)
