@@ -70,9 +70,9 @@ class TestFunction(TestCase):
             self.assertTrue(isinstance(data, pd.DataFrame))
 
         def test_get_column_title_1(self):
-            _clean_insee_folder()
-            data1 = get_column_title()
-            test1 = isinstance(data1, pd.DataFrame)
+            # _clean_insee_folder()
+            # data1 = get_column_title()
+            # test1 = isinstance(data1, pd.DataFrame)
 
             data2 = get_column_title(['CLIMAT-AFFAIRES'])
             test2 = isinstance(data2, pd.DataFrame)

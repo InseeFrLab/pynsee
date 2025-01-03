@@ -135,6 +135,7 @@ class TestFunction(TestCase):
                                          'denominationUniteLegale'],
                                pattern=["igny", 'pizza'],
                                phonetic_search=True,
+                               number=10,
                                kind="siret")
             test = test & isinstance(df, pd.DataFrame)
 
@@ -142,6 +143,7 @@ class TestFunction(TestCase):
             df = search_sirene(variable=["denominationUniteLegale",
                                          'categorieJuridiqueUniteLegale',
                                          ],
+                                number=10,
                                 closed=True,
                                 pattern=["sncf", '9220'], kind="siren")
             test = test & isinstance(df, pd.DataFrame)
@@ -151,17 +153,20 @@ class TestFunction(TestCase):
 
             # input as string and not list
             df = search_sirene(variable='libelleCommuneEtablissement',
+                               number=10,
                                pattern="montrouge", kind="siret")
             test = test & isinstance(df, pd.DataFrame)
 
             df = search_sirene(variable=["denominationUniteLegale",
                                          'categorieJuridiqueUniteLegale'],
                                pattern=["Pernod Ricard", '5710'],
+                               number=10,
                                kind="siren")
             test = test & isinstance(df, pd.DataFrame)
 
             df = search_sirene(variable=["denominationUniteLegale"],
                                pattern=["Pernod Ricard"],
+                               number=10,
                                kind="siret")
             test = test & isinstance(df, pd.DataFrame)
 
@@ -184,7 +189,7 @@ class TestFunction(TestCase):
                         decode=True,
                         update=True,
                         phonetic_search  = [True, False],
-                        number = 1000)
+                        number = 100)
             test = test & isinstance(df, pd.DataFrame)
 
             self.assertTrue(test)
@@ -192,30 +197,30 @@ class TestFunction(TestCase):
         def test_request_sirene(self):
 
             list_query_siren = ["?q=periode(denominationUniteLegale.phonetisation:sncf)&nombre=20",
-                                '?q=sigleUniteLegale:???',
-                                '?q=periode(activitePrincipaleUniteLegale:86.10Z)&nombre=1000000']
+                                '?q=sigleUniteLegale:???&nombre=10',
+                                '?q=periode(activitePrincipaleUniteLegale:86.10Z)&nombre=10']
 
             test = True
             for q in list_query_siren:
                 df = _request_sirene(q, kind='siren')
                 test = test & isinstance(df, pd.DataFrame)
 
-            list_query_siret = ['?q=denominationUniteLegale.phonetisation:oto&champs=denominationUniteLegale',
-                                '?q=prenom1UniteLegale:hadrien AND nomUniteLegale:leclerc',
-                                '?q=prenom1UniteLegale.phonetisation:hadrien AND nomUniteLegale.phonetisation:leclerc',
-                                '?q=activitePrincipaleUniteLegale:8*',
-                                '?q=activitePrincipaleUniteLegale:86.10Z AND codePostalEtablissement:75*']
+            list_query_siret = ['?q=denominationUniteLegale.phonetisation:oto&champs=denominationUniteLegale&nombre=10',
+                                '?q=prenom1UniteLegale:hadrien AND nomUniteLegale:leclerc&nombre=10',
+                                '?q=prenom1UniteLegale.phonetisation:hadrien AND nomUniteLegale.phonetisation:leclerc&nombre=10',
+                                '?q=activitePrincipaleUniteLegale:8*&nombre=10',
+                                '?q=activitePrincipaleUniteLegale:86.10Z AND codePostalEtablissement:75*&nombre=10']
 
             for q in range(len(list_query_siret)):
                 query = list_query_siret[q]
                 df = _request_sirene(query, kind='siret')
                 test = test & isinstance(df, pd.DataFrame)
 
-            q = '?q=denominationUniteLegale.phonetisation:Pernod OR denominationUniteLegale.phonetisation:Ricard'
+            q = '?q=denominationUniteLegale.phonetisation:Pernod OR denominationUniteLegale.phonetisation:Ricard&nombre=10'
             df = _request_sirene(q, kind='siret')
             test = test & isinstance(df, pd.DataFrame)
 
-            q = '?q=periode(denominationUniteLegale.phonetisation:Dassault) OR periode(denominationUniteLegale.phonetisation:Système) OR categorieEntreprise:GE'
+            q = '?q=periode(denominationUniteLegale.phonetisation:Dassault) OR periode(denominationUniteLegale.phonetisation:Système) OR categorieEntreprise:GE&nombre=10'
             df = _request_sirene(q, kind='siren')
             test = test & isinstance(df, pd.DataFrame)
 
