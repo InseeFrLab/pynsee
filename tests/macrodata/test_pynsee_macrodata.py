@@ -167,7 +167,7 @@ class TestFunction(TestCase):
             
             # data1 = get_dataset("CNA-2014-TEI", filter="A.CNA_CONSO_INTERMEDIAIRE.A38-PZ.A38-CJ.VALEUR_ABSOLUE.FE.EUROS_COURANTS.BRUT", update=True)
 
-            self.assertTrue(isinstance(data, pd.DataFrame) 
+            self.assertTrue(isinstance(data, pd.DataFrame))
                             # & isinstance(data1, pd.DataFrame))
 
         # def test_get_dataset_3(self):
