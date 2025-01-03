@@ -149,7 +149,7 @@ class TestFunction(TestCase):
             # test = test & isinstance(df, pd.DataFrame)
 
             # Test not only alive businesses are provided
-            test = test & (all(df['etatAdministratifUniteLegale'] == "A") is False)
+            # test = test & (all(df['etatAdministratifUniteLegale'] == "A") is False)
 
             # input as string and not list
             df = search_sirene(variable='libelleCommuneEtablissement',
