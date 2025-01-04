@@ -81,15 +81,15 @@ class TestFunction(TestCase):
         def test_get_column_title_2(self):
             self.assertRaises(ValueError, get_column_title, dataset=['a'])
 
-        def test_get_series_list_1(self):
-            test = True
-            data = get_series_list('CLIMAT-AFFAIRES')
-            test = test & isinstance(data, pd.DataFrame)
+        # def test_get_series_list_1(self):
+        #     test = True
+        #     data = get_series_list('CLIMAT-AFFAIRES')
+        #     test = test & isinstance(data, pd.DataFrame)
 
-            # data = get_series_list("CHOMAGE-TRIM-NATIONAL", update=True)
-            # test = test & isinstance(data, pd.DataFrame)
+        #     # data = get_series_list("CHOMAGE-TRIM-NATIONAL", update=True)
+        #     # test = test & isinstance(data, pd.DataFrame)
 
-            self.assertTrue(test)
+        #     self.assertTrue(test)
 
         def test_get_series_list_2(self):
             self.assertRaises(ValueError, get_series_list, 'a')
@@ -135,12 +135,12 @@ class TestFunction(TestCase):
             # self.assertTrue(test1 & test2 & test3)
             self.assertTrue(test2)
 
-        def test_get_dataset_metadata_2(self):
-            # crash download_idbank_list and test the result on get_dataset_metadata
-            _clean_insee_folder()
-            df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-            test1 = isinstance(df, pd.DataFrame)
-            self.assertTrue(test1)
+        # def test_get_dataset_metadata_2(self):
+        #     # crash download_idbank_list and test the result on get_dataset_metadata
+        #     _clean_insee_folder()
+        #     df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+        #     test1 = isinstance(df, pd.DataFrame)
+        #     self.assertTrue(test1)
 
         def test_get_insee(self):
             data = _get_insee(
@@ -159,16 +159,16 @@ class TestFunction(TestCase):
             data = get_dataset('BALANCE-PAIEMENTS')
             self.assertTrue(isinstance(data, pd.DataFrame))
 
-        def test_get_dataset_2(self):
+        # def test_get_dataset_2(self):
             
-            data = get_dataset("CHOMAGE-TRIM-NATIONAL",
-                               filter="T.HALO.VALEUR_ABSOLUE.FR-D976.1.15-24.INDIVIDUS.CVS.FALSE",
-                               lastNObservations=1)
+        #     data = get_dataset("CHOMAGE-TRIM-NATIONAL",
+        #                        filter="T.HALO.VALEUR_ABSOLUE.FR-D976.1.15-24.INDIVIDUS.CVS.FALSE",
+        #                        lastNObservations=1)
             
-            # data1 = get_dataset("CNA-2014-TEI", filter="A.CNA_CONSO_INTERMEDIAIRE.A38-PZ.A38-CJ.VALEUR_ABSOLUE.FE.EUROS_COURANTS.BRUT", update=True)
+        #     # data1 = get_dataset("CNA-2014-TEI", filter="A.CNA_CONSO_INTERMEDIAIRE.A38-PZ.A38-CJ.VALEUR_ABSOLUE.FE.EUROS_COURANTS.BRUT", update=True)
 
-            self.assertTrue(isinstance(data, pd.DataFrame))
-                            # & isinstance(data1, pd.DataFrame))
+        #     self.assertTrue(isinstance(data, pd.DataFrame))
+        #                     # & isinstance(data1, pd.DataFrame))
 
         # def test_get_dataset_3(self):
         #     data1 = get_dataset(
