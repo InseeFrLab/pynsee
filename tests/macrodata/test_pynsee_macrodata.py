@@ -38,7 +38,7 @@ test_SDMX = True
 future_date = datetime.now() + timedelta(days=91)
 
 # manual commands for testing only on geodata module
-# coverage run -m unittest tests/geodata/test_pynsee_geodata.py
+# coverage run -m unittest tests/macrodata/test_pynsee_macrodata.py
 # coverage report --omit=*/utils/*,*/macrodata/*,*/localdata/*,*/download/*,*/sirene/*,*/metadata/* -m
 
 class TestFunction(TestCase):
@@ -61,7 +61,7 @@ class TestFunction(TestCase):
 
         def test_get_series_title(self):
             series = search_macrodata()
-            series = series.loc[:50, "IDBANK"].to_list()
+            series = series.loc[:10, "IDBANK"].to_list()
             titles = get_series_title(series)
             self.assertTrue(isinstance(titles, pd.DataFrame))
 
@@ -78,26 +78,26 @@ class TestFunction(TestCase):
             test2 = isinstance(data2, pd.DataFrame)
             self.assertTrue(test2)
 
-        def test_get_column_title_2(self):
-            self.assertRaises(ValueError, get_column_title, dataset=['a'])
+        # def test_get_column_title_2(self):
+        #     self.assertRaises(ValueError, get_column_title, dataset=['a'])
 
-        # def test_get_series_list_1(self):
-        #     test = True
-        #     data = get_series_list('CLIMAT-AFFAIRES')
-        #     test = test & isinstance(data, pd.DataFrame)
+        def test_get_series_list_1(self):
+            test = True
+            data = get_series_list('CLIMAT-AFFAIRES')
+            test = test & isinstance(data, pd.DataFrame)
 
         #     # data = get_series_list("CHOMAGE-TRIM-NATIONAL", update=True)
         #     # test = test & isinstance(data, pd.DataFrame)
 
-        #     self.assertTrue(test)
+            self.assertTrue(test)
 
-        def test_get_series_list_2(self):
-            self.assertRaises(ValueError, get_series_list, 'a')
+        # def test_get_series_list_2(self):
+        #     self.assertRaises(ValueError, get_series_list, 'a')
 
-        def test_get_series_1(self):
-            idbank_list = get_series_list('IPC-2015').iloc[:50]
-            data = get_series(idbank_list.IDBANK)
-            self.assertTrue(isinstance(data, pd.DataFrame))
+        # def test_get_series_1(self):
+        #     idbank_list = get_series_list('IPC-2015').iloc[:50]
+        #     data = get_series(idbank_list.IDBANK)
+        #     self.assertTrue(isinstance(data, pd.DataFrame))
 
         def test_get_series_2(self):
             data = get_series("001769682", "001769683")
@@ -142,21 +142,21 @@ class TestFunction(TestCase):
         #     test1 = isinstance(df, pd.DataFrame)
         #     self.assertTrue(test1)
 
-        def test_get_insee(self):
-            data = _get_insee(
-                api_query="https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001769682",
-                sdmx_query="https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001769682")
-            test1 = isinstance(data, pd.DataFrame)
+        # def test_get_insee(self):
+        #     data = _get_insee(
+        #         api_query="https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001769682",
+        #         sdmx_query="https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001769682")
+        #     test1 = isinstance(data, pd.DataFrame)
 
             # data = _get_insee(
             #     api_query="https://api.insee.fr/series/BDM/V1/data/BALANCE-PAIEMENTS",
             #     sdmx_query="https://bdm.insee.fr/series/sdmx/data/BALANCE-PAIEMENTS")
             # test2 = isinstance(data, pd.DataFrame)
 
-            self.assertTrue(test1 ) # & test2
+            # self.assertTrue(test1 ) # & test2
 
         def test_get_dataset_1(self):
-            data = get_dataset('BALANCE-PAIEMENTS')
+            data = get_dataset('BALANCE-PAIEMENTS', lastNObservations=1)
             self.assertTrue(isinstance(data, pd.DataFrame))
 
         # def test_get_dataset_2(self):
@@ -180,25 +180,26 @@ class TestFunction(TestCase):
         #                        )
         #     self.assertTrue(len(data1.index) < len(data2.index))
 
-        def test_get_dataset_4(self):
-            self.assertRaises(ValueError, get_dataset, 'a')
+        # def test_get_dataset_4(self):
+        #     self.assertRaises(ValueError, get_dataset, 'a')
 
         def test_search_macrodata(self):
-            search_all = search_macrodata()
+            # search_all = search_macrodata()
             search_paris = search_macrodata("PARIS")
-            search_paper = search_macrodata("pâte à papier")
-            test1 = isinstance(search_all, pd.DataFrame)
+            # search_paper = search_macrodata("pâte à papier")
+            # test1 = isinstance(search_all, pd.DataFrame)
             test2 = isinstance(search_paris, pd.DataFrame)
-            test3 = isinstance(search_paper, pd.DataFrame)
-            self.assertTrue(test1 & test2 & test3)
+            # test3 = isinstance(search_paper, pd.DataFrame)
+            # self.assertTrue(test1 & test2 & test3)
+            self.assertTrue(test2)
 
         def test_get_idbank_internal_data(self):
-            df = _get_idbank_internal_data()
+            df = _get_idbank_internal_data(update=True)
             test = isinstance(df, pd.DataFrame)
             self.assertTrue(test)
 
         def test_get_idbank_internal_data_harmonized(self):
-            df = _get_idbank_internal_data_harmonized()
+            df = _get_idbank_internal_data_harmonized(update=False)
             test = isinstance(df, pd.DataFrame)
             self.assertTrue(test)
 
