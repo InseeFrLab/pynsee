@@ -34,7 +34,7 @@ def get_definition(ids):
 
     # ids = ['c1020', 'c1601']
 
-    link = "https://api.insee.fr/metadonnees/V1/concepts/definition"
+    link = "https://api.insee.fr/metadonnees/concepts/definition"
 
     list_data = []
 

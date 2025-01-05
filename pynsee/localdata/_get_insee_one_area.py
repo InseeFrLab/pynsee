@@ -44,7 +44,7 @@ def _get_insee_one_area(area_type, codearea):
         raise ValueError(msg)
 
     if codearea in list_available_codeareas:
-        api_url = "https://api.insee.fr/metadonnees/V1/geo/"
+        api_url = "https://api.insee.fr/metadonnees/geo/"
         api_url = api_url + type2 + "/" + codearea + "/descendants"
         request = _request_insee(api_url=api_url, file_format="application/json")
 
