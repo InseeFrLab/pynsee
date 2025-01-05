@@ -1,7 +1,7 @@
 
 [![](https://badge.fury.io/py/pynsee.svg)](https://pypi.org/project/pynsee/)
 [![Tests Status](https://github.com/InseeFrLab/pynsee/reports/tests-badge.svg?dummy=8484744)](https://github.com/InseeFrLab/pynsee/reports/junit/report.html)
-[![Coverage Status](https://github.com/InseeFrLab/pynsee/reports/coverage-badge.svg?dummy=8484744)](https://github.com/InseeFrLab/pynsee/htmlcov/index.html)
+[![Coverage Status](https://raw.githubusercontent.com/InseeFrLab/pynsee/refs/heads/master/reports/coverage-badge.svg)](https://github.com/InseeFrLab/pynsee/htmlcov/index.html)
 
 <!-- [![](https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
 [![](https://github.com/InseeFrLab/pynsee/actions/workflows/examples.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions) -->
