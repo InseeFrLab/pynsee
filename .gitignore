@@ -6,8 +6,6 @@ settings.json
 .coverage
 .venv/
 *.html
-!/reports/junit/report.html
-!/htmlcov/index.html
 *.pyc
 *.rtc
 *.doctree
