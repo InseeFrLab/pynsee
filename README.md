@@ -1,8 +1,11 @@
 
 [![](https://badge.fury.io/py/pynsee.svg)](https://pypi.org/project/pynsee/)
-[![](https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
-[![](https://github.com/InseeFrLab/pynsee/actions/workflows/examples.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
-[![](https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK)](https://codecov.io/gh/InseeFrLab/pynsee?branch=master)
+[![Tests Status](https://github.com/InseeFrLab/pynsee/reports/tests-badge.svg?dummy=8484744)](https://github.com/InseeFrLab/pynsee/reports/junit/report.html)
+[![Coverage Status](https://github.com/InseeFrLab/pynsee/reports/coverage-badge.svg?dummy=8484744)](https://github.com/InseeFrLab/pynsee/htmlcov/index.html)
+
+<!-- [![](https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
+[![](https://github.com/InseeFrLab/pynsee/actions/workflows/examples.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions) -->
+<!-- [![](https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK)](https://codecov.io/gh/InseeFrLab/pynsee?branch=master) -->
 [![](https://readthedocs.org/projects/pynsee/badge/?version=latest)](https://pynsee.readthedocs.io/en/latest/?badge=latest)
 [![](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
 [![](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)

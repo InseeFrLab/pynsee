@@ -199,7 +199,7 @@ class TestFunction(TestCase):
             self.assertTrue(test)
 
         def test_get_idbank_internal_data_harmonized(self):
-            df = _get_idbank_internal_data_harmonized(update=False)
+            df = _get_idbank_internal_data_harmonized()
             test = isinstance(df, pd.DataFrame)
             self.assertTrue(test)
 
