@@ -1,9 +1,7 @@
 import tempfile
 
 
-def _import_options(
-    tempdir: tempfile.TemporaryDirectory, caract: dict, filename: str
-):
+def _import_options(tempdir: tempfile.TemporaryDirectory, caract: dict, filename: str):
     """Internal to generate a dictionary of options
     required to import files
 

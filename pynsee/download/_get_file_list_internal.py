@@ -5,11 +5,11 @@ import json
 
 
 def _get_file_list_internal():
-
     try:
         zip_file = str(importlib.resources.files(__name__)) + "/data/liste_donnees.zip"
     except:
         import pkg_resources
+
         zip_file = pkg_resources.resource_stream(__name__, "data/liste_donnees.zip")
 
     with zipfile.ZipFile(zip_file, "r") as zip_ref:

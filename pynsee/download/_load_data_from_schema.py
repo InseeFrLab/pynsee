@@ -13,9 +13,7 @@ logger = logging.getLogger(__name__)
 def warning_file(missingFile, foundFile):
     msgs = [("error", f"Data file missing in the zip file: {missingFile}")]
     if not foundFile == "":
-        msgs.append(
-            ("error", f"Following file has been used instead: {foundFile}")
-        )
+        msgs.append(("error", f"Following file has been used instead: {foundFile}"))
     else:
         msgs.append(("warning", "No replacement file has been found"))
     msgs.append(("error", "Please report this issue !"))
@@ -53,9 +51,7 @@ def _load_data_from_schema(
         if not os.path.exists(dataPathFile):
             list_file_dir = os.listdir(zipDirectory)
 
-            suggestions = difflib.get_close_matches(
-                dataFile, list_file_dir, n=1
-            )
+            suggestions = difflib.get_close_matches(dataFile, list_file_dir, n=1)
 
             if not len(suggestions) == 0:
                 foundFile = suggestions[0]
@@ -106,9 +102,7 @@ def _load_data_from_schema(
                 if not useEncoding:
                     df_insee = pd.read_csv(
                         file_to_import,
-                        delimiter=telechargementFichier["import_args"][
-                            "delim"
-                        ],
+                        delimiter=telechargementFichier["import_args"]["delim"],
                         dtype="str",
                         usecols=variables,
                         engine="python",
@@ -116,9 +110,7 @@ def _load_data_from_schema(
                 else:
                     df_insee = pd.read_csv(
                         file_to_import,
-                        delimiter=telechargementFichier["import_args"][
-                            "delim"
-                        ],
+                        delimiter=telechargementFichier["import_args"]["delim"],
                         dtype="str",
                         usecols=variables,
                         engine="python",
@@ -137,18 +129,19 @@ def _load_data_from_schema(
         )
 
     list_files = [file_to_import]
-    
+
     if telechargementFichier["result"]["zip"] is True:
-        list_files += [dataPathFile,
-                       os.path.join(f"{zipDirectory}", telechargementFichier["file_archive"]),
-                       telechargementFichier["file_archive"]]
-    
+        list_files += [
+            dataPathFile,
+            os.path.join(f"{zipDirectory}", telechargementFichier["file_archive"]),
+            telechargementFichier["file_archive"],
+        ]
+
     for f in list_files:
         if os.path.exists(f):
             try:
                 os.remove(f)
             except:
                 pass
-    
 
     return df_insee

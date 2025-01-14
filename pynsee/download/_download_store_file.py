@@ -10,9 +10,7 @@ from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.download._check_url import _check_url
 
 
-def _download_store_file(
-    tempdir: tempfile.TemporaryDirectory, id: str, update: bool
-):
+def _download_store_file(tempdir: tempfile.TemporaryDirectory, id: str, update: bool):
     """Download requested file and return some metadata that will
     be used
 
@@ -56,9 +54,7 @@ def _download_store_file(
 
     with open(filename, "rb") as f:
         if hashlib.md5(f.read()).hexdigest() != caract["md5"]:
-            warnings.warn(
-                "File in insee.fr modified or corrupted during download"
-            )
+            warnings.warn("File in insee.fr modified or corrupted during download")
 
     # PREPARE PANDAS IMPORT ARGUMENTS -----------------------
 
