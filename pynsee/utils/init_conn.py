@@ -1,17 +1,14 @@
-
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
 import json
 import logging
 import os
-import requests
 import time
-import urllib3
 
 from platformdirs import user_config_dir
 
-from pynsee.utils.requests_params import _get_requests_session, _get_requests_headers, _get_requests_proxies
+from pynsee.utils.requests_params import PynseeAPISession
 
 
 logger = logging.getLogger(__name__)
@@ -22,9 +19,7 @@ def opener(path, flags):
 
 
 def init_conn(
-    sirene_key: str, 
-    http_proxy: str = "",
-    https_proxy: str = ""
+    sirene_key: str, http_proxy: str = "", https_proxy: str = ""
 ) -> None:
     """Save your credentials to connect to INSEE APIs, subscribe to api.insee.fr
 
@@ -55,8 +50,6 @@ def init_conn(
     """
     logger.debug("SHOULD GET LOGGING")
 
-    proxies = _get_requests_proxies()
-
     queries = {
         "BDM": "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",
         "Metadata": "https://api.insee.fr/metadonnees/V1/codes/cj/n3/5599",
@@ -73,46 +66,37 @@ def init_conn(
 
     invalid_requests = {}
 
-    user_agent = _get_requests_headers()
+    with PynseeAPISession() as session:
 
-    session = _get_requests_session()
+        for api, api_url in queries.items():
+            headers = {"Accept": file_format[api]}
+            if api == "Sirene":
+                headers["X-INSEE-Api-Key-Integration"] = sirene_key
 
-    for api, api_url in queries.items():
-        headers = {
-            "Accept": file_format[api],
-            'User-Agent': user_agent['User-Agent']
-        }
-        if api == "Sirene":
-            headers["X-INSEE-Api-Key-Integration"] = sirene_key        
+            results = session.get(api_url, headers=headers, verify=False)
 
-        results = session.get(
-            api_url, proxies=proxies, headers=headers, verify=False)
-        
-        code = results.status_code
-        
-        if code == 429:
-            time.sleep(10)
-    
-            results = requests.get(
-                api_url, proxies=proxies, headers=headers, verify=False)
+            code = results.status_code
 
-        if results.status_code == 404:
-            RuntimeError(
-                f"Could not reach {api} at {api_url}, please get in touch if "
-                "the issue persists.")
-        elif results.status_code != 200:
-            logger.critical(
-                f"Please subscribe to {api} API on api.insee.fr !\n"
-                f"Received error {results.status_code}: "
-            )
+            if code == 429:
+                time.sleep(10)
 
-            invalid_requests[api] = results.status_code
+                results = session.get(api_url, headers=headers, verify=False)
 
-    session.close()
+            if results.status_code == 404:
+                RuntimeError(
+                    f"Could not reach {api} at {api_url}, please get in touch"
+                    " if the issue persists."
+                )
+            elif results.status_code != 200:
+                logger.critical(
+                    f"Please subscribe to {api} API on api.insee.fr !\n"
+                    f"Received error {results.status_code}: "
+                )
+
+                invalid_requests[api] = results.status_code
 
     config_file = os.path.join(
-        user_config_dir("pynsee", ensure_exists=True),
-        "config.json"
+        user_config_dir("pynsee", ensure_exists=True), "config.json"
     )
 
     if invalid_requests:
@@ -133,10 +117,10 @@ def init_conn(
     config = {
         "sirene_key": sirene_key,
         "http_proxy": http_proxy,
-        "https_proxy": https_proxy
+        "https_proxy": https_proxy,
     }
 
-    with open(config_file, 'w', opener=opener) as f:
+    with open(config_file, "w", opener=opener) as f:
         json.dump(config, f)
 
     logger.info("Credentials have been saved.")

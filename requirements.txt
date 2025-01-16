@@ -6,3 +6,4 @@ platformdirs
 unidecode>=1.1.0
 urllib3
 shapely>=1.8.0
+tenacity

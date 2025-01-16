@@ -9,8 +9,7 @@ import re
 
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils.requests_params import (
-    _get_requests_session,
-    _get_requests_headers,
+    PynseeAPISession,
     _get_requests_proxies,
 )
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
@@ -25,7 +24,7 @@ CODES = {
     400: "Bad Request",
     401: "Unauthorized : token missing",
     403: "Forbidden : missing subscription to API",  #
-    404: "Not Found : no results available",
+    # 404: "Not Found : no results available",
     406: "Not acceptable : incorrect 'Accept' header",
     413: "Too many results, query must be splitted",
     414: "Request-URI Too Long",
@@ -37,7 +36,10 @@ CODES = {
 
 
 def _request_insee(
-    api_url=None, sdmx_url=None, file_format="application/xml", print_msg=True
+    api_url=None,
+    sdmx_url=None,
+    file_format="application/xml",
+    print_msg=True,
 ):
     # sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
     # api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
@@ -50,8 +52,6 @@ def _request_insee(
         logger.debug(api_url)
     elif sdmx_url is not None:
         logger.debug(sdmx_url)
-
-    proxies = _get_requests_proxies()
 
     try:
         print_url = os.environ["pynsee_print_url"]
@@ -75,39 +75,33 @@ def _request_insee(
 
     # if api url is missing sdmx url is used
 
+    proxies = _get_requests_proxies()
+
     if api_url is not None:
         if keys is not None:
             try:
                 sirene_key = keys["sirene_key"]
             except:
-                sirene_key = None                
+                sirene_key = None
         else:
             sirene_key = None
 
-        user_agent = _get_requests_headers()
+        headers = {"Accept": file_format}
 
-        headers = {
-            "Accept": file_format,
-            "User-Agent": user_agent["User-Agent"],
-        }
-
-        session = _get_requests_session()
-
-        sirene_request = (re.match(".*api-sirene.*", api_url) and (sirene_key is not None))
+        sirene_request = re.match(".*api-sirene.*", api_url) and (
+            sirene_key is not None
+        )
 
         if sirene_request:
-            headers["X-INSEE-Api-Key-Integration"] = sirene_key   
+            headers["X-INSEE-Api-Key-Integration"] = sirene_key
 
-        if  sirene_request or (not re.match(".*api-sirene.*", api_url)):
+        if sirene_request or (not re.match(".*api-sirene.*", api_url)):
 
             # avoid reaching the limit of 30 queries per minute from insee api
             _wait_api_query_limit(api_url)
 
-            results = session.get(
-                api_url, proxies=proxies, headers=headers, verify=False
-            )
-
-            session.close()
+            with PynseeAPISession() as session:
+                results = session.get(api_url, headers=headers, verify=False)
 
             success = True
 
@@ -130,7 +124,9 @@ def _request_insee(
             elif code in CODES:
                 msg = f"Error {code} - {CODES[code]}\nQuery:\n{api_url}"
                 raise requests.exceptions.RequestException(msg)
-            elif code != 200:
+            elif code not in (200, 404):
+                # Note : 404 means no results from API, this should not trigger
+                # any exception
                 success = False
 
             if success is True:

@@ -11,7 +11,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from pynsee.utils.requests_params import _get_requests_session
+from pynsee.utils.requests_params import PynseeAPISession
 
 
 def _dwn_idbank_files():
@@ -40,6 +40,7 @@ def _dwn_idbank_files():
     except Exception:
         file_to_dwn = "https://www.insee.fr/fr/statistiques/fichier/2862759/202407_correspondance_idbank_dimension.zip"
 
+    # TODO : won't work !
     try:
         data = _dwn_idbank_file(file_to_dwn=file_to_dwn)
     except Exception:
@@ -67,19 +68,23 @@ def _dwn_idbank_files():
         except Exception:
             pass
 
-    session = _get_requests_session()
+    with PynseeAPISession() as session:
 
-    if pynsee_idbank_loop_url:
-        while idbank_file_not_found & (i <= len(files) - 1):
-            try:
-                data = _dwn_idbank_file(file_to_dwn=files[i], session=session)
-            except Exception:
-                idbank_file_not_found = True
-            else:
-                idbank_file_not_found = False
-                strg_print = f"Macrodata series update, file used:\n{files[i]}"
-                logger.info(strg_print)
-            i += 1
+        if pynsee_idbank_loop_url:
+            while idbank_file_not_found & (i <= len(files) - 1):
+                try:
+                    data = _dwn_idbank_file(
+                        file_to_dwn=files[i], session=session
+                    )
+                except Exception:
+                    idbank_file_not_found = True
+                else:
+                    idbank_file_not_found = False
+                    strg_print = (
+                        f"Macrodata series update, file used:\n{files[i]}"
+                    )
+                    logger.info(strg_print)
+                i += 1
 
     return data
 
