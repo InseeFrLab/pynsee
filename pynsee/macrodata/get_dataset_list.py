@@ -10,7 +10,7 @@ from pynsee.macrodata._get_dataset_list_internal import (
     _get_dataset_list_internal,
 )
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.save_df import save_df
 
 import logging
@@ -43,9 +43,11 @@ def get_dataset_list(update=False, silent=False):
             "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all"
         )
 
-        results = _request_insee(
-            api_url=INSEE_api_link_dataflow, sdmx_url=INSEE_sdmx_link_dataflow
-        )
+        with PynseeAPISession() as session:
+            results = session.request_insee(
+                sdmx_url=INSEE_sdmx_link_dataflow,
+                api_url=INSEE_api_link_dataflow,
+            )
 
         dataflow_file = io.BytesIO(results.content)
         root = ET.parse(dataflow_file).getroot()

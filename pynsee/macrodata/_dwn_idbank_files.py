@@ -1,5 +1,6 @@
 from datetime import date
 import io
+import logging
 import os
 import zipfile
 import re
@@ -7,11 +8,9 @@ import pandas as pd
 import urllib3
 import warnings
 
-import logging
+from pynsee.utils.requests_session import PynseeAPISession
 
 logger = logging.getLogger(__name__)
-
-from pynsee.utils.requests_params import PynseeAPISession
 
 
 def _dwn_idbank_files():

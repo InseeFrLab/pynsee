@@ -7,7 +7,7 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 from tqdm import trange
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 
 
 @lru_cache(maxsize=None)
@@ -15,7 +15,9 @@ def _get_geo_list_simple(geo, date=None, progress_bar=False):
     api_url = "https://api.insee.fr/metadonnees/V1/geo/" + geo
     if date:
         api_url += f"?date={date}"
-    results = _request_insee(api_url=api_url, sdmx_url=None)
+
+    with PynseeAPISession() as session:
+        results = session.request_insee(api_url=api_url)
 
     raw_data_file = io.BytesIO(results.content)
 

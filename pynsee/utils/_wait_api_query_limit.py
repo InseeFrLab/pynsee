@@ -15,12 +15,12 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+MSG_WARNING = "API query number limit reached - function might be slowed down"
+
 
 @lru_cache(maxsize=None)
 def _warning_query_limit():
-    logger.warning(
-        "API query number limit reached - function might be slowed down"
-    )
+    logger.warning(MSG_WARNING)
 
 
 def _wait_api_query_limit(query):
@@ -68,7 +68,14 @@ def _wait_api_query_limit(query):
                 timespan_insee_api - oldest_query_time_gap + 1
             )
 
-            _warning_query_limit()
+            # Hack to allow full display on github while debugging CI
+            if (
+                os.environ.get("PYNSEE_DISPLAY_ALL_WARNINGS", "false").lower()
+                == "true"
+            ):
+                logger.warning(MSG_WARNING)
+            else:
+                _warning_query_limit()
             time.sleep(waiting_time)
 
         new_query_time = pd.DataFrame(

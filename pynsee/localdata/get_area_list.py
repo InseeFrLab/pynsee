@@ -2,11 +2,11 @@
 # Copyright : INSEE, 2021
 
 import pandas as pd
-import os
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils._paste import _paste
 from pynsee.utils.save_df import save_df
+
 
 @save_df(day_lapse_max=90)
 def get_area_list(area=None, date=None, update=False, silent=False):
@@ -81,13 +81,13 @@ def get_area_list(area=None, date=None, update=False, silent=False):
 
     for a in list_available_area:
         api_url = "https://api.insee.fr/metadonnees/geo/" + a
-        print(api_url)
         if date:
             api_url += f"?date={date}"
 
-        request = _request_insee(
-            api_url=api_url, file_format="application/json"
-        )
+        with PynseeAPISession() as session:
+            request = session.request_insee(
+                api_url=api_url, file_format="application/json"
+            )
 
         data = request.json()
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from tqdm import trange
 
 import re
@@ -63,7 +63,10 @@ def get_definition(ids):
         id = ids[i]
         query = link + "/" + id
 
-        request = _request_insee(api_url=query, file_format="application/json")
+        with PynseeAPISession() as session:
+            request = session.request_insee(
+                api_url=query, file_format="application/json"
+            )
 
         try:
             data = request.json()
@@ -72,15 +75,23 @@ def get_definition(ids):
             title_en = None
 
             if data["intitule"][0]["langue"] == "fr":
-                title_fr = extract_data(data, item1="intitule", i=0, item2="contenu")
-                title_en = extract_data(data, item1="intitule", i=1, item2="contenu")
+                title_fr = extract_data(
+                    data, item1="intitule", i=0, item2="contenu"
+                )
+                title_en = extract_data(
+                    data, item1="intitule", i=1, item2="contenu"
+                )
 
             def_fr = None
             def_en = None
 
             if data["definition"][0]["langue"] == "fr":
-                def_fr = extract_data(data, item1="definition", i=0, item2="contenu")
-                def_en = extract_data(data, item1="definition", i=1, item2="contenu")
+                def_fr = extract_data(
+                    data, item1="definition", i=0, item2="contenu"
+                )
+                def_en = extract_data(
+                    data, item1="definition", i=1, item2="contenu"
+                )
                 def_fr = clean_definition(def_fr)
                 def_en = clean_definition(def_en)
 

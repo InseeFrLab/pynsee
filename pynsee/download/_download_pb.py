@@ -1,7 +1,7 @@
 from tqdm import tqdm
 
 
-from pynsee.utils.requests_params import PynseeAPISession
+from pynsee.utils.requests_session import PynseeAPISession
 
 
 def _download_pb(url: str, fname: str, total: int = None):

@@ -5,7 +5,7 @@ import io
 import xml.etree.ElementTree as ET
 import pandas as pd
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.save_df import save_df
 
 
@@ -26,10 +26,12 @@ def _get_dimension_values(
         INSEE_api_link_codelist + "/" + cl_dimension
     )
 
-    results = _request_insee(
-        sdmx_url=INSEE_sdmx_link_codelist_dimension,
-        api_url=INSEE_api_link_codelist_dimension,
-    )
+    with PynseeAPISession() as session:
+        results = session.request_insee(
+            sdmx_url=INSEE_sdmx_link_codelist_dimension,
+            api_url=INSEE_api_link_codelist_dimension,
+        )
+
     dimension_file = io.BytesIO(results.content)
 
     root = ET.parse(dimension_file).getroot()

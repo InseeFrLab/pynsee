@@ -4,8 +4,9 @@
 import pandas as pd
 from functools import lru_cache
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -29,14 +30,19 @@ def get_old_city(code, date=None):
     """
     INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/geo/"
 
-    api_link = INSEE_localdata_api_link + "commune/" + str(code) + "/precedents"
+    api_link = (
+        INSEE_localdata_api_link + "commune/" + str(code) + "/precedents"
+    )
 
     if date is not None:
         api_link = api_link + "?date=" + date
 
     # api_link = 'https://api.insee.fr/metadonnees/V1/geo/commune/24259/precedents'
 
-    request = _request_insee(api_url=api_link, file_format="application/json")
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=api_link, file_format="application/json"
+        )
 
     try:
         data = request.json()

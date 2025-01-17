@@ -8,7 +8,7 @@ import xml.dom.minidom
 from tqdm import trange
 
 from pynsee.macrodata._get_date import _get_date
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 
 import logging
 
@@ -18,7 +18,9 @@ logger = logging.getLogger(__name__)
 @lru_cache(maxsize=None)
 def _get_insee(api_query, sdmx_query, step="1/1"):
 
-    results = _request_insee(api_url=api_query, sdmx_url=sdmx_query)
+    with PynseeAPISession() as session:
+        results = session.request_insee(sdmx_url=sdmx_query, api_url=api_query)
+
     raw_data_file = io.BytesIO(results.content)
 
     # parse the xml file

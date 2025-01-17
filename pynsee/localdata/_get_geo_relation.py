@@ -7,7 +7,7 @@ import pandas as pd
 import xml.etree.ElementTree as ET
 
 from pynsee.utils._paste import _paste
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 
 
 @lru_cache(maxsize=None)
@@ -52,7 +52,8 @@ def _get_geo_relation(geo, code, relation, date=None, type=None):
         added_param_string = "?" + _paste(list_addded_param, collapse="&")
         api_url = api_url + added_param_string
 
-    results = _request_insee(api_url=api_url)
+    with PynseeAPISession() as session:
+        results = session.request_insee(api_url=api_url)
 
     raw_data_file = io.BytesIO(results.content)
 

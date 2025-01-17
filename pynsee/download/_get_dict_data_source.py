@@ -1,13 +1,14 @@
-import requests
 import re
 import os
 from functools import lru_cache
-import urllib3
 
 from pynsee.download._get_file_list_internal import _get_file_list_internal
+from pynsee.utils.requests_session import PynseeAPISession
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _get_dict_data_source():
@@ -19,15 +20,10 @@ def _get_dict_data_source():
             "https://raw.githubusercontent.com/"
             + "InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"
         )
-    try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
-        proxies = {"http": "", "https": ""}
-    
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     try:
-        jsonfile = requests.get(URL_DATA_LIST, proxies=proxies, verify=False).json()
+        with PynseeAPISession() as session:
+            jsonfile = session.get(URL_DATA_LIST).json()
     except:
         jsonfile = _get_file_list_internal()
 
@@ -35,7 +31,7 @@ def _get_dict_data_source():
             "Package's internal data has been used !\n"
             "File list download failed !\n"
             "Please contact the package maintainer if this error persists !"
-            )
+        )
 
     # HACK BECAUSE OF DUPLICATED ENTRIES -------------------------------
 

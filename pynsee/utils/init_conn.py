@@ -8,7 +8,7 @@ import time
 
 from platformdirs import user_config_dir
 
-from pynsee.utils.requests_params import PynseeAPISession
+from pynsee.utils.requests_session import PynseeAPISession
 
 
 logger = logging.getLogger(__name__)

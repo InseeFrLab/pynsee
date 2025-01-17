@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import io
-import urllib3
 from functools import lru_cache
-import warnings
-
-from pynsee.utils.requests_params import PynseeAPISession
+from pynsee.utils.requests_session import PynseeAPISession
 
 
 @lru_cache(maxsize=None)
