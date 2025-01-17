@@ -6,6 +6,4 @@ from pynsee.metadata import *
 from pynsee.utils import *
 from pynsee.download import *
 
-from importlib_metadata import version
-
-__version__ = version(__package__)
+__version__ = "0.2.0"
