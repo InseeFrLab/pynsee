@@ -3,10 +3,7 @@
 
 from unittest import TestCase
 import pandas as pd
-import sys
 import unittest
-import re
-import os
 
 from shapely.geometry import Polygon, MultiPolygon, MultiPoint, Point
 
@@ -29,13 +26,6 @@ from pynsee.geodata._find_wfs_closest_match import _find_wfs_closest_match
 
 
 class TestFunction(TestCase):
-
-    # version = (sys.version_info[0] == 3) & (sys.version_info[1] == 11)
-
-    # test_onyxia = re.match(".*onyxia.*", os.getcwd())
-    # version = version or test_onyxia
-
-    # if version:
 
     def test_find_wfs_closest_match(self):
         self.assertTrue(isinstance(_find_wfs_closest_match(), str))

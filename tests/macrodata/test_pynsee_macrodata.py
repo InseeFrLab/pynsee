@@ -4,11 +4,8 @@
 import unittest
 from unittest import TestCase
 from pandas import pandas as pd
-import os
-import sys
 from datetime import datetime
 from datetime import timedelta
-import re
 
 from pynsee.macrodata._get_insee import _get_insee
 from pynsee.macrodata._get_date import _get_date
@@ -49,13 +46,6 @@ future_date = datetime.now() + timedelta(days=91)
 
 
 class TestFunction(TestCase):
-
-    # version = (sys.version_info[0] == 3) & (sys.version_info[1] == 12)
-
-    # test_onyxia = re.match(".*onyxia.*", os.getcwd())
-    # version = version or test_onyxia
-
-    # if version:
 
     def test_get_dataset_list_internal(self):
         df = _get_dataset_list_internal()

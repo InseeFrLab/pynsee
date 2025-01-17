@@ -1,8 +1,6 @@
 import unittest
 import os
 import pandas as pd
-import sys
-import re
 from parameterized import parameterized
 
 from pynsee.download import *
@@ -18,13 +16,6 @@ from pynsee.utils.clear_all_cache import clear_all_cache
 
 
 class MyTests(unittest.TestCase):
-
-    # version = (sys.version_info[0] == 3) & (sys.version_info[1] == 10)
-
-    # # test_onyxia = re.match(".*onyxia.*", os.getcwd())
-    # # version = version or test_onyxia
-
-    # # if version:
 
     def test_check_url(self):
         url = "https://www.insee.fr/fr/statistiques/fichier/2540004/nat2020_csv.zip"

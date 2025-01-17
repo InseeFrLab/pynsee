@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import time
 from unittest import TestCase
 import pandas as pd
-import sys
 import unittest
-import re
-import os
 
 from pynsee.localdata._get_geo_relation import _get_geo_relation
 from pynsee.localdata._get_insee_one_area import _get_insee_one_area
@@ -31,13 +27,6 @@ from pynsee.localdata.get_descending_area import get_descending_area
 
 
 class TestFunction(TestCase):
-
-    # version = (sys.version_info[0] == 3) & (sys.version_info[1] == 9)
-
-    # test_onyxia = re.match(".*onyxia.*", os.getcwd())
-    # version = version or test_onyxia
-
-    # if version:
 
     def test_get_population(self):
         df = get_population()

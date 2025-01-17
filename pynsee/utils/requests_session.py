@@ -9,48 +9,11 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
-
-# from tenacity import (
-#     retry,
-#     stop_after_attempt,
-#     wait_exponential,
-#     retry_if_not_exception_type,
-# )
-import tenacity._utils
-
 import pynsee
 from pynsee.utils._get_credentials import _get_credentials
 from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
 
 logger = logging.getLogger(__name__)
-
-
-def after_log(
-    logger: "logging.Logger",
-    log_level: int,
-    sec_format: str = "%0.3f",
-):
-    "Log every retry."
-
-    def log_it(retry_state):
-        try:
-            retry_state.outcome.result()
-        except Exception:
-            logger.log(
-                log_level,
-                f"{tenacity._utils.to_ordinal(retry_state.attempt_number)}"
-                f" request call to with args={retry_state.args[1:]} "
-                f"after {sec_format % retry_state.seconds_since_start}s.",
-            )
-
-    return log_it
-
-
-def traceback_after_retries(retry_state):
-    logger.error(
-        "An error happened to request call with" f"args={retry_state.args[1:]}"
-    )
-    return retry_state.outcome.result()
 
 
 class PynseeAPISession(requests.Session):
@@ -100,13 +63,6 @@ class PynseeAPISession(requests.Session):
         self.sirene_key = _get_credentials().get("sirene_key", None)
         self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
 
-    # @retry(
-    #     reraise=True,
-    #     stop=stop_after_attempt(5),
-    #     wait=wait_exponential(multiplier=1, min=4, max=10),
-    #     after=after_log(logger, logging.WARNING),
-    #     retry_error_callback=traceback_after_retries,
-    # )
     def request(
         self, method, url, timeout=(5, 10), raise_if_not_ok=True, **kwargs
     ):
