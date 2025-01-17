@@ -4,7 +4,6 @@ on:
   push:
       branches:
         - 'master'
-        - 'inspect-github-timeouts'
 
 jobs:
   build:
