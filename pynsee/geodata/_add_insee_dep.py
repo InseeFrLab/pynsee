@@ -33,8 +33,7 @@ def _add_insee_dep_region(df):
                     )
                     df = df.merge(dep, on="insee_reg", how="left")
 
-    except Exception as e:
-        # print(e)
+    except Exception:
         pass
 
     return df

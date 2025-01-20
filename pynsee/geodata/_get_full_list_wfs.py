@@ -78,12 +78,10 @@ def _get_full_list_wfs(topic="", version="2.0.0"):
 
         if len(string_match_list) > 0:
 
-            string_match = string_match_list[0]
+            string_match = string_match_list[0]  # NOQA
 
             data_all = data_all.query("Keyword == @string_match").reset_index(
                 drop=True
             )
 
     return data_all
-
-

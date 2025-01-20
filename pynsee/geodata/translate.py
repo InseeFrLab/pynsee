@@ -10,7 +10,9 @@ from pynsee.geodata._get_center import _get_center
 from pynsee.geodata._add_insee_dep import _add_insee_dep
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 def translate(
     self,
@@ -64,7 +66,9 @@ def translate(
         crs = df.crsCoord.unique()
 
         if crs != "EPSG:3857":
-            msg = "!!! Translation is performed only if the crs is EPSG:3857 !!!"
+            msg = (
+                "!!! Translation is performed only if the crs is EPSG:3857 !!!"
+            )
             msg += "\nSet column crsCoord to 'EPSG:3857'"
             raise ValueError(msg)
 
@@ -97,7 +101,9 @@ def translate(
                         geocol = "geometry"
 
                     if factor[d] is not None:
-                        ovdep = _rescale_geom(ovdep, factor=factor[d], col=geocol)
+                        ovdep = _rescale_geom(
+                            ovdep, factor=factor[d], col=geocol
+                        )
 
                     center_x, center_y = _get_center(ovdep, col=geocol)
 
@@ -113,13 +119,15 @@ def translate(
                 else:
                     logger.warning(
                         f"{departement[d]} is missing from insee_dep column !"
-                        )
+                    )
 
             if len(list_new_dep) > 0:
 
                 ovdepGeo = pd.concat(list_new_dep)
 
-                mainGeo = df[~df["insee_dep"].isin(departement)].reset_index(drop=True)
+                mainGeo = df[~df["insee_dep"].isin(departement)].reset_index(
+                    drop=True
+                )
 
                 finalDF = pd.concat([ovdepGeo, mainGeo]).reset_index(drop=True)
 

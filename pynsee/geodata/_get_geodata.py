@@ -3,31 +3,37 @@
 import time
 import pandas as pd
 import requests
-import os
 import multiprocessing
 import tqdm
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-from pathlib import Path
 import urllib3
 import warnings
 
-from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
 
 from pynsee.utils.save_df import save_df
-from pynsee.utils.requests_params import _get_requests_headers, _get_requests_proxies
+from pynsee.utils.requests_params import (
+    _get_requests_headers,
+    _get_requests_proxies,
+)
 
 import logging
 
 logger = logging.getLogger(__name__)
 
+
 @save_df(day_lapse_max=90)
 def _get_geodata(
-    id, polygon=None, update=False, silent=False, crs="EPSG:3857", crsPolygon="EPSG:4326"
+    id,
+    polygon=None,
+    update=False,
+    silent=False,
+    crs="EPSG:3857",
+    crsPolygon="EPSG:4326",
 ):
     """Get geographical data with identifier and from IGN API
 
@@ -55,7 +61,6 @@ def _get_geodata(
             "crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'"
         )
 
-    topic = "administratif"
     service = "WFS"
     Version = "2.0.0"
 
@@ -69,7 +74,6 @@ def _get_geodata(
 
     link0 = (
         geoportail
-        #+ "/wfs?"
         + Service
         + version
         + request

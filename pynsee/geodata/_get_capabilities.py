@@ -17,7 +17,10 @@ def _get_capabilities(
 
     service_upper = service.upper()
 
-    link = f"https://data.geopf.fr/{service}?SERVICE={service_upper}&VERSION={version}&REQUEST=GetCapabilities"
+    link = (
+        f"https://data.geopf.fr/{service}?SERVICE={service_upper}"
+        f"&VERSION={version}&REQUEST=GetCapabilities"
+    )
 
     session = _get_requests_session()
     headers = _get_requests_headers()
