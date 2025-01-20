@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import time
 from unittest import TestCase
 import pandas as pd
 import sys
@@ -30,8 +29,9 @@ from pynsee.localdata.get_descending_area import get_descending_area
 # coverage run -m unittest tests/geodata/test_pynsee_geodata.py
 # coverage report --omit=*/utils/*,*/macrodata/*,*/localdata/*,*/download/*,*/sirene/*,*/metadata/* -m
 
+
 class TestFunction(TestCase):
-    
+
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 9)
 
     test_onyxia = re.match(".*onyxia.*", os.getcwd())
@@ -180,11 +180,11 @@ class TestFunction(TestCase):
         #     )
 
         def test_get_old_city(self):
-            
+
             df = get_old_city(code="24259")
 
             self.assertTrue(isinstance(df, pd.DataFrame))
-            
+
         def test_get_geo_list_1(self):
             list_available_geo = [
                 "communes",
@@ -198,12 +198,10 @@ class TestFunction(TestCase):
 
             list_geo_data = []
             for geo in list_available_geo:
-                # time.sleep(1)
                 self.assertTrue(isinstance(get_geo_list(geo), pd.DataFrame))
                 # list_geo_data.append()
 
             # df = pd.concat(list_geo_data)
-                
 
             # repeat test to check locally saved data use
             # self.assertTrue(isinstance(get_geo_list("regions"), pd.DataFrame))
@@ -254,7 +252,7 @@ class TestFunction(TestCase):
                 variables="SEXE-DIPL_19",
                 nivgeo="DEP",
                 geocodes=["91", "976"],
-                update=True
+                update=True,
             )
             test = test & isinstance(data, pd.DataFrame)
 
@@ -319,8 +317,8 @@ class TestFunction(TestCase):
             #         nivgeo=geo,
             #         update=True
             #     )
-                # test = test & isinstance(data, pd.DataFrame)
-                
+            # test = test & isinstance(data, pd.DataFrame)
+
             self.assertTrue(test)
 
         def test_get_local_data_latest(self):
@@ -414,12 +412,11 @@ class TestFunction(TestCase):
             #     "departement", code="59", type="region", update=True
             # )
             # test = test & isinstance(df, pd.DataFrame)
-              
+
             # df = get_ascending_area("commune", code="59350", date="2018-01-01")
             # test = test & isinstance(df, pd.DataFrame)
 
             self.assertTrue(test)
-
 
         def test_get_local_data_latest_error(self):
             def getlocaldataTestError():
@@ -460,5 +457,6 @@ class TestFunction(TestCase):
         #         get_area_list(area="regions", date="1900-01-01", update=True)
         #     self.assertRaises(RequestException, get_area_list_test)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
