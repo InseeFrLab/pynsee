@@ -9,9 +9,9 @@ import warnings
 
 import logging
 
-logger = logging.getLogger(__name__)
-
 from pynsee.utils.requests_params import _get_requests_session
+
+logger = logging.getLogger(__name__)
 
 
 def _dwn_idbank_files():
@@ -38,7 +38,10 @@ def _dwn_idbank_files():
     try:
         file_to_dwn = os.environ["pynsee_idbank_file"]
     except Exception:
-        file_to_dwn = "https://www.insee.fr/fr/statistiques/fichier/2862759/202407_correspondance_idbank_dimension.zip"
+        file_to_dwn = (
+            "https://www.insee.fr/fr/statistiques/fichier/2862759/"
+            "202407_correspondance_idbank_dimension.zip"
+        )
 
     try:
         data = _dwn_idbank_file(file_to_dwn=file_to_dwn)

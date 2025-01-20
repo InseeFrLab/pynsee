@@ -65,4 +65,3 @@ def get_last_release():
         data = pd.DataFrame()
 
     return data
-

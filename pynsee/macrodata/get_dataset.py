@@ -9,6 +9,7 @@ from pynsee.macrodata.get_series_list import get_series_list
 from pynsee.utils._paste import _paste
 from pynsee.utils.save_df import save_df
 
+
 @save_df(day_lapse_max=30)
 def get_dataset(
     dataset,
@@ -62,8 +63,8 @@ def get_dataset(
         >>> #
         >>> business_climate = get_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
     """
-    
-    insee_dataset = get_dataset_list(silent=True)    
+
+    insee_dataset = get_dataset_list(silent=True)
     insee_dataset_list = insee_dataset["id"].to_list()
 
     # check if the dataset exists in INSEE's list
@@ -108,23 +109,23 @@ def get_dataset(
     # add metadata
     if metadata:
         try:
-            
-            idbank_list = get_series_list(dataset, silent=True)            
 
-            newcol = [col for col in idbank_list.columns if col not in data.columns] + [
-                "IDBANK"
-            ]
+            idbank_list = get_series_list(dataset, silent=True)
+
+            newcol = [
+                col for col in idbank_list.columns if col not in data.columns
+            ] + ["IDBANK"]
             idbank_list = idbank_list[newcol]
 
             data = data.merge(idbank_list, on="IDBANK", how="left")
             # remove all na columns
             data = data.dropna(axis=1, how="all")
-        except:
+        except Exception:
             pass
 
         try:
             data = _add_numeric_metadata(data)
-        except:
+        except Exception:
             pass
 
     return data

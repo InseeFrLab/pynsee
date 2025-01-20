@@ -46,7 +46,7 @@ def _get_dataset_dimension(
     def extract_local_rep(data, i):
         try:
             local_rep = next(iter(data[i][1][0][0].attrib.values()))
-        except:
+        except Exception:
             local_rep = None
         finally:
             return local_rep
@@ -54,7 +54,7 @@ def _get_dataset_dimension(
     def extract_id(data, i):
         try:
             id_val = next(iter(data[i].attrib.values()))
-        except:
+        except Exception:
             id_val = None
         finally:
             return id_val
