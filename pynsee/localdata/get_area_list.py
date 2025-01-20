@@ -35,7 +35,7 @@ def get_area_list(area=None, date=None, update=False, silent=False):
     list_available_area = [
         "departements",
         "regions",
-        # "communes",
+        "communes",
         "communesAssociees",
         "communesDeleguees",
         "arrondissementsMunicipaux",
