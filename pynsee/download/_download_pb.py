@@ -1,10 +1,12 @@
-import requests
 from tqdm import tqdm
 import urllib3
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+from pynsee.utils.requests_params import (
+    _get_requests_proxies,
+    _get_requests_session,
+)
 
-from pynsee.utils.requests_params import _get_requests_proxies, _get_requests_session
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
 def _download_pb(url: str, fname: str, total: int = None):
