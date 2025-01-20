@@ -36,16 +36,16 @@ def _dwn_idbank_files():
 
     try:
         file_to_dwn = os.environ["pynsee_idbank_file"]
-    except Exception:
+    except KeyError:
         file_to_dwn = "https://www.insee.fr/fr/statistiques/fichier/2862759/202407_correspondance_idbank_dimension.zip"
 
-    # TODO : won't work !
-    try:
-        data = _dwn_idbank_file(file_to_dwn=file_to_dwn)
-    except Exception:
-        idbank_file_not_found = True
-    else:
-        idbank_file_not_found = False
+    with PynseeAPISession() as session:
+        try:
+            data = _dwn_idbank_file(file_to_dwn=file_to_dwn, session=session)
+        except Exception:
+            idbank_file_not_found = True
+        else:
+            idbank_file_not_found = False
 
     i = 0
 
