@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 def _get_credentials() -> Dict[str, str]:
-    '''
+    """
     Try to load credentials.
 
     If the environment variables `insee_key` and `insee_secret` are set, use
@@ -24,11 +24,11 @@ def _get_credentials() -> Dict[str, str]:
 
     Returns a dict containing at least an "insee_key" and an "insee_secret"
     entry.
-    '''
+    """
     key_dict: Dict[str, str] = {}
 
     sirene_key = os.environ.get("sirene_key")
-    
+
     if sirene_key is None:
         sirene_key = os.environ.get("SIRENE_KEY")
 
@@ -36,19 +36,20 @@ def _get_credentials() -> Dict[str, str]:
         envir_var_used = False
         try:
             config_file = os.path.join(
-                user_config_dir("pynsee", ensure_exists=True), "config.json")
-            
+                user_config_dir("pynsee", ensure_exists=True), "config.json"
+            )
+
             with open(config_file, "r") as f:
                 key_dict = json.load(f)
-    
+
             http_proxy = key_dict["http_proxy"]
             https_proxy = key_dict["https_proxy"]
-    
+
             if (http_proxy is None) or (not isinstance(http_proxy, str)):
                 http_proxy = ""
             if (https_proxy is None) or (not isinstance(https_proxy, str)):
                 https_proxy = ""
-    
+
             os.environ["http_proxy"] = http_proxy
             os.environ["https_proxy"] = https_proxy
         except Exception:

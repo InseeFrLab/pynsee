@@ -57,7 +57,7 @@ def _request_insee(
         print_url = os.environ["pynsee_print_url"]
         if print_url == "True":
             print(api_url)
-    except:
+    except Exception:
         pass
 
     # force sdmx use with a system variable
@@ -65,7 +65,7 @@ def _request_insee(
         pynsee_use_sdmx = os.environ["pynsee_use_sdmx"]
         if pynsee_use_sdmx == "True":
             api_url = None
-    except:
+    except Exception:
         pass
 
     # if api_url is provided, it is used first,
@@ -79,8 +79,8 @@ def _request_insee(
         if keys is not None:
             try:
                 sirene_key = keys["sirene_key"]
-            except:
-                sirene_key = None                
+            except Exception:
+                sirene_key = None
         else:
             sirene_key = None
 
@@ -93,12 +93,14 @@ def _request_insee(
 
         session = _get_requests_session()
 
-        sirene_request = (re.match(".*api-sirene.*", api_url) and (sirene_key is not None))
+        sirene_request = re.match(".*api-sirene.*", api_url) and (
+            sirene_key is not None
+        )
 
         if sirene_request:
-            headers["X-INSEE-Api-Key-Integration"] = sirene_key   
+            headers["X-INSEE-Api-Key-Integration"] = sirene_key
 
-        if  sirene_request or (not re.match(".*api-sirene.*", api_url)):
+        if sirene_request or (not re.match(".*api-sirene.*", api_url)):
 
             # avoid reaching the limit of 30 queries per minute from insee api
             _wait_api_query_limit(api_url)
