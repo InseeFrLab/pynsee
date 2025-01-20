@@ -6,13 +6,14 @@ Created on Wed Feb  1 13:52:54 2023
 """
 
 import pandas as pd
-import os
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.save_df import save_df
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @save_df(day_lapse_max=90)
 def get_descending_area(
@@ -59,7 +60,7 @@ def get_descending_area(
 
     params_hash = ["get_descending_area", area, code, date, type]
     params_hash = [x if x else "_" for x in params_hash]
-    
+
     INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/geo/"
 
     api_link = INSEE_localdata_api_link + area + f"/{code}/descendants?"
@@ -72,9 +73,7 @@ def get_descending_area(
 
     api_link = api_link + "&".join(params)
 
-    request = _request_insee(
-        api_url=api_link, file_format="application/json"
-    )
+    request = _request_insee(api_url=api_link, file_format="application/json")
 
     try:
         data = request.json()
@@ -89,6 +88,6 @@ def get_descending_area(
 
     except Exception:
         logger.error("No data found !")
-        data_final = pd.DataFrame()    
+        data_final = pd.DataFrame()
 
     return data_final
