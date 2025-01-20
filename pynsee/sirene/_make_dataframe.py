@@ -12,8 +12,10 @@ def _make_dataframe(data_request, main_key, query_number):
 
     try:
         data = data_request[main_key]
-    except:
-        main_key_list = [key for key in list(data_request.keys()) if key != "header"]
+    except Exception:
+        main_key_list = [
+            key for key in list(data_request.keys()) if key != "header"
+        ]
         main_key = main_key_list[0]
         data = data_request[main_key]
 

@@ -14,6 +14,7 @@ from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.utils.requests_params import _get_requests_proxies
 
+
 def _get_location_openstreetmap(query, session=None, update=False):
 
     if session is None:
@@ -23,8 +24,10 @@ def _get_location_openstreetmap(query, session=None, update=False):
         session.mount("http://", adapter)
         session.mount("https://", adapter)
 
-    api_link = "https://nominatim.openstreetmap.org/search.php?" \
+    api_link = (
+        "https://nominatim.openstreetmap.org/search.php?"
         f"q={query}&format=jsonv2&limit=1"
+    )
 
     insee_folder = _create_insee_folder()
     filename = os.path.join(insee_folder, f"{_hash(api_link)}.json")
@@ -35,7 +38,9 @@ def _get_location_openstreetmap(query, session=None, update=False):
     except Exception:
         user_agent = ""
 
-    headers = {"User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")}
+    headers = {
+        "User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")
+    }
 
     proxies = _get_requests_proxies()
 

@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import os
 from functools import lru_cache
 import itertools
-import pandas as pd
 import re
 from unidecode import unidecode
 
@@ -33,6 +31,7 @@ def _warning_data_save():
         "Set update=True to trigger an update"
     )
 
+
 @save_df(day_lapse_max=30, obj=SireneDataFrame)
 def search_sirene(
     variable,
@@ -47,7 +46,7 @@ def search_sirene(
     legal=False,
     closed=False,
     update=False,
-    silent=False
+    silent=False,
 ):
     """Get data about companies from criteria on variables
 
@@ -120,10 +119,10 @@ def search_sirene(
         >>>            number = 2500,
         >>>            kind = "siret")
         >>> #
-        >>> # Find 1000 companies whose name sounds like Dassault Système or is a big company (GE), 
+        >>> # Find 1000 companies whose name sounds like Dassault Système or is a big company (GE),
         >>> # search is made as well on patterns whose accents have been removed
         >>> import os
-        >>> # environment variable 'pynsee_print_url' force the package to print the request 
+        >>> # environment variable 'pynsee_print_url' force the package to print the request
         >>> os.environ["pynsee_print_url"] = 'True'
         >>> df = search_sirene(variable = ["denominationUniteLegale", 'categorieEntreprise'],
         >>>                 pattern = ['Dassot Système', 'GE'],
@@ -148,7 +147,8 @@ def search_sirene(
         )
         if check_phonetic_search is False:
             raise ValueError(
-                "!!! phonetic_search must be True, False or a list of True and False !!!"
+                "!!! phonetic_search must be True, "
+                "False or a list of True and False !!!"
             )
         else:
             phntc_list = phonetic_search
@@ -158,37 +158,37 @@ def search_sirene(
     else:
         alive = False
 
-    if type(variable) == str:
+    if isinstance(variable, str):
         variable = [variable]
 
-    if type(pattern) == str:
+    if isinstance(pattern, str):
         pattern = [pattern]
 
     list_siren_hist_variable = [
-        "nomUniteLegale",#
-        "nomUsageUniteLegale",#
-        "denominationUniteLegale",#
-        "denominationUsuelle1UniteLegale",#
-        "denominationUsuelle2UniteLegale",#
+        "nomUniteLegale",  #
+        "nomUsageUniteLegale",  #
+        "denominationUniteLegale",  #
+        "denominationUsuelle1UniteLegale",  #
+        "denominationUsuelle2UniteLegale",  #
         "denominationUsuelle3UniteLegale",
-        "categorieJuridiqueUniteLegale",#
-        "etatAdministratifUniteLegale",#
-        "nicSiegeUniteLegale",#
-        "activitePrincipaleUniteLegale",#
-        "caractereEmployeurUniteLegale",#
-        "economieSocialeSolidaireUniteLegale",#
-        #"nomenclatureActivitePrincipaleUniteLegale",
-    ] + ['societeMissionUniteLegale']
+        "categorieJuridiqueUniteLegale",  #
+        "etatAdministratifUniteLegale",  #
+        "nicSiegeUniteLegale",  #
+        "activitePrincipaleUniteLegale",  #
+        "caractereEmployeurUniteLegale",  #
+        "economieSocialeSolidaireUniteLegale",  #
+        # "nomenclatureActivitePrincipaleUniteLegale",
+    ] + ["societeMissionUniteLegale"]
 
     list_siret_hist_variable = [
-        "denominationUsuelleEtablissement",#
-        "enseigne1Etablissement",#
-        "enseigne2Etablissement",#
-        "enseigne3Etablissement",#
-        "activitePrincipaleEtablissement",#
-        "etatAdministratifEtablissement",#
-        "nomenclatureActiviteEtablissement",#
-        "caractereEmployeurEtablissement",#
+        "denominationUsuelleEtablissement",  #
+        "enseigne1Etablissement",  #
+        "enseigne2Etablissement",  #
+        "enseigne3Etablissement",  #
+        "activitePrincipaleEtablissement",  #
+        "etatAdministratifEtablissement",  #
+        "nomenclatureActiviteEtablissement",  #
+        "caractereEmployeurEtablissement",  #
     ]
 
     if kind == "siren":
@@ -208,8 +208,8 @@ def search_sirene(
         # using OR, unless it's a range condition, cf.
         # https://www.sirene.fr/static-resources/htm/sommaire.html
         if not (
-            re.match(r"\[\w+\s+TO\s+\w+\]", patt) or
-            re.match(r"\{\w+\s+TO\s+\w+\}", patt)
+            re.match(r"\[\w+\s+TO\s+\w+\]", patt)
+            or re.match(r"\{\w+\s+TO\s+\w+\}", patt)
         ):
             patt = re.sub(r"\s+", "|", patt)
         else:
@@ -221,13 +221,13 @@ def search_sirene(
         if upper_case:
             list_var_patt_maj = [p.upper() for p in list_patt]
             list_patt += list_var_patt_maj
-            
+
         if decode:
             list_var_decode = [unidecode(p) for p in list_patt]
             list_patt += list_var_decode
 
         list_patt = list(set(list_patt))
-        
+
         list_var_patt = []
         for ptt in list_patt:
             if var in list_hist_variable:
@@ -235,7 +235,7 @@ def search_sirene(
             else:
                 ptt_h = "{}{}:{}".format(var, phntc_string, ptt)
 
-            list_var_patt += [ptt_h]                
+            list_var_patt += [ptt_h]
 
         list_var_pattern.append(list_var_patt)
 

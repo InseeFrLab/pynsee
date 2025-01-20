@@ -57,9 +57,7 @@ def get_sirene_data(*id):
             elif kind == "siret":
                 main_key = "etablissement"
 
-            INSEE_api_sirene = (
-                "https://api.insee.fr/api-sirene/3.11/" + kind
-            )
+            INSEE_api_sirene = "https://api.insee.fr/api-sirene/3.11/" + kind
             link = (
                 INSEE_api_sirene + "/" + re.sub(r"\s+", "", str(list_ids[i]))
             )
@@ -67,13 +65,14 @@ def get_sirene_data(*id):
             try:
                 with HiddenPrints():
                     request = _request_insee(
-                        api_url=link, file_format="application/json;charset=utf-8"
+                        api_url=link,
+                        file_format="application/json;charset=utf-8",
                     )
-    
+
                     data_request = request.json()
                 try:
                     data = data_request[main_key]
-                except:
+                except Exception:
                     main_key_list = [
                         key
                         for key in list(data_request.keys())
@@ -83,7 +82,7 @@ def get_sirene_data(*id):
                     data = data_request[main_key]
 
                 data_final = _make_dataframe_from_dict(data)
-            except:
+            except Exception:
                 pass
             else:
                 list_data.append(data_final)
