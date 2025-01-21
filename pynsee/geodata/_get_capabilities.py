@@ -11,9 +11,7 @@ from pynsee.utils.requests_params import (
 
 
 @lru_cache(maxsize=None)
-def _get_capabilities(
-    key="", version="1.0.0", service="wmts", tweak=""
-) -> io.BytesIO:
+def _get_capabilities(key="", version="1.0.0", service="wmts") -> io.BytesIO:
 
     service_upper = service.upper()
 
