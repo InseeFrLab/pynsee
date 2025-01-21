@@ -40,7 +40,7 @@ def get_dataset_list(update=False, silent=False):
 
         INSEE_sdmx_link_dataflow = "https://bdm.insee.fr/series/sdmx/dataflow"
         INSEE_api_link_dataflow = (
-            "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all"
+            "https://api.insee.fr/series/BDM/dataflow/FR1/all"
         )
 
         with PynseeAPISession() as session:

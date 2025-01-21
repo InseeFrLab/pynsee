@@ -17,7 +17,7 @@ def _get_dimension_values(
     INSEE_sdmx_link_codelist = (
         "https://www.bdm.insee.fr/series/sdmx/codelist/FR1"
     )
-    INSEE_api_link_codelist = "https://api.insee.fr/series/BDM/V1/codelist/FR1"
+    INSEE_api_link_codelist = "https://api.insee.fr/series/BDM/codelist/FR1"
 
     INSEE_sdmx_link_codelist_dimension = (
         INSEE_sdmx_link_codelist + "/" + cl_dimension
