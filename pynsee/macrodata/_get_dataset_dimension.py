@@ -15,7 +15,7 @@ def _get_dataset_dimension(
 ):
 
     INSEE_sdmx_link_datastructure = (
-        "https://www.bdm.insee.fr/series/sdmx/datastructure/FR1"
+        "https://bdm.insee.fr/series/sdmx/datastructure/FR1"
     )
     INSEE_api_link_datastructure = (
         "https://api.insee.fr/series/BDM/V1/datastructure/FR1"
