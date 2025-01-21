@@ -43,6 +43,26 @@ class PynseeAPISession(requests.Session):
 
         super().__init__()
 
+        self._mount_adapters()
+
+        proxies = {
+            "http": os.environ.get("http_proxy", ""),
+            "https": os.environ.get("https_proxy", ""),
+        }
+        self.headers.update(proxies)
+
+        username = os.environ.get("USERNAME", "username")
+        version = pynsee.__version__
+        useragent = {"User-Agent": f"python_pynsee_{username}/{version}"}
+
+        # Note : geoplatform seems to impose the "/version" to the user-agent
+        self.headers.update(useragent)
+
+        self.sirene_key = _get_credentials().get("sirene_key", None)
+        self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
+
+    def _mount_adapters(self):
+
         # default retries adapter
         retry_adapt = Retry(total=3, backoff_factor=1, status_forcelist=[502])
         adapter = HTTPAdapter(max_retries=retry_adapt)
@@ -65,49 +85,52 @@ class PynseeAPISession(requests.Session):
                 },
             }
 
-        # 30 queries/min for SIRENE
-        sirene_adapter = LimiterAdapter(per_minute=30, **kw_adapter("sirene"))
-        self.mount("https://api.insee.fr/api-sirene", sirene_adapter)
-
-        # 30 queries/min for BDM: from documentation, though there is no
-        # need of a token?!
-        bdm_adapter = LimiterAdapter(per_minute=30, **kw_adapter("bdm"))
-        self.mount("https://api.insee.fr/series/BDM", bdm_adapter)
-
-        # 30 queries/min for (old) localdata API: from documentation, though
-        # there is need of a token!?
-        metadata_adapter = LimiterAdapter(
-            per_minute=30, **kw_adapter("localdata")
-        )
-        self.mount("https://api.insee.fr/donnees-locales", metadata_adapter)
-
-        # 30 queries/min for (new) melodi API: from documentation, though
-        # there is need of a token!?
-        melodi_adapter = LimiterAdapter(per_minute=30, **kw_adapter("melodi"))
-        self.mount("https://api.insee.fr/melodi", melodi_adapter)
-
-        # 10_000 queries/min for metadata API: from subscription page, though
-        # there is need of a token!?
-        metadata_adapter = LimiterAdapter(
-            per_minute=10_000, **kw_adapter("metadata")
-        )
-        self.mount("https://api.insee.fr/metadonnees/", metadata_adapter)
-
-        proxies = {
-            "http": os.environ.get("http_proxy", ""),
-            "https": os.environ.get("https_proxy", ""),
+        rates = {
+            "sirene": {
+                "url": "https://api.insee.fr/api-sirene",
+                # 30 queries/min for SIRENE
+                "rates": {"per_minute": 30},
+            },
+            "bdm": {
+                "url": "https://api.insee.fr/series/BDM",
+                # 30 queries/min for BDM: from documentation, though there is
+                # no need of a token?!
+                "rates": {"per_minute": 30},
+            },
+            "sdmx": {
+                "url": "https://bdm.insee.fr",
+                # not documented afik, but let's set it to the same rate as bdm
+                "rates": {"per_minute": 30},
+            },
+            "localdata": {
+                "url": "https://api.insee.fr/donnees-locales",
+                # 30 queries/min for (old) localdata: from documentation,
+                # though there is no need of a token?!
+                "rates": {"per_minute": 30},
+            },
+            "melodi": {
+                "url": "https://api.insee.fr/melodi",
+                # 30 queries/min for melodi: from documentation, though there
+                # is no need of a token?!
+                "rates": {"per_minute": 30},
+            },
+            "metadata": {
+                "url": "https://api.insee.fr/metadonnees/",
+                # 10_000 queries/min for metadata: from subscription page,
+                # though there is need of a token!?
+                "rates": {"per_minute": 10_000},
+            },
+            "nominatim": {
+                "url": "https://nominatim.openstreetmap.org/",
+                # https://operations.osmfoundation.org/policies/nominatim/
+                "rates": {"per_second": 1},
+            },
+            # note : note documented on data.geopf.fr ?
         }
-        self.headers.update(proxies)
 
-        username = os.environ.get("USERNAME", "username")
-        version = pynsee.__version__
-        useragent = {"User-Agent": f"python_pynsee_{username}/{version}"}
-
-        # Note : geoplatform seems to impose the "/version" to the user-agent
-        self.headers.update(useragent)
-
-        self.sirene_key = _get_credentials().get("sirene_key", None)
-        self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
+        for api, config in rates.items():
+            adapter = LimiterAdapter(**config["rates"], **kw_adapter(api))
+            self.mount(config["url"], adapter)
 
     def request(
         self, method, url, timeout=(5, 10), raise_if_not_ok=True, **kwargs
@@ -285,10 +308,3 @@ class PynseeAPISession(requests.Session):
             raise requests.exceptions.RequestException(
                 "Une erreur est survenue", response=results
             )
-
-
-# if __name__ == "__main__":
-#     s = PynseeAPISession()
-#     url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
-#     r = s.get(url)
-#     print(r)
