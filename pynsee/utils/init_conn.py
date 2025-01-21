@@ -20,7 +20,7 @@ def opener(path, flags):
 
 
 def init_conn(
-    sirene_key: str = "", http_proxy: str = "", https_proxy: str = ""
+    sirene_key: str = None, http_proxy: str = None, https_proxy: str = None
 ) -> None:
     """Save your credentials to connect to INSEE APIs, subscribe to api.insee.fr
 
@@ -59,17 +59,22 @@ def init_conn(
     }
     invalid_requests = {}
 
-    with PynseeAPISession() as session:
+    with PynseeAPISession(
+        http_proxy=http_proxy, https_proxy=https_proxy, sirene_key=sirene_key
+    ) as session:
 
         for api, api_url in queries.items():
-            if api == "Sirene":
-                headers = {"X-INSEE-Api-Key-Integration": sirene_key}
-            else:
-                headers = {}
 
             try:
-                results = session.get(api_url, headers=headers, verify=False)
+                results = session.get(api_url, verify=False)
             except requests.exceptions.RequestException as exc:
+                try:
+                    exc.response.status_code
+                except AttributeError:
+                    raise RuntimeError(
+                        f"Could not reach {api} at {api_url}, please control "
+                        "your proxy configuration."
+                    )
                 if exc.response.status_code == 404:
                     raise RuntimeError(
                         f"Could not reach {api} at {api_url}, please get in "
@@ -93,6 +98,11 @@ def init_conn(
             "please make sure you subscribed to them (if you need those):\n"
             f"{invalid_requests}"
         )
+    elif len(invalid_requests) == len(queries):
+        raise ValueError(
+            "No API was reached. That's strange, please get in touch if the "
+            "issue persists."
+        )
     else:
         logger.info(
             "Subscription to all INSEE's APIs has been successfull\n"
@@ -104,15 +114,11 @@ def init_conn(
     # save config
     config = {
         "sirene_key": sirene_key,
-        "http_proxy": http_proxy,
-        "https_proxy": https_proxy,
+        "http_proxy": http_proxy if not http_proxy == "" else "DIRECT",
+        "https_proxy": https_proxy if not https_proxy == "" else "DIRECT",
     }
 
     with open(config_file, "w", opener=opener) as f:
         json.dump(config, f)
 
     logger.info("Credentials have been saved.")
-
-
-if __name__ == "__main__":
-    init_conn()

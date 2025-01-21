@@ -15,42 +15,64 @@ logger = logging.getLogger(__name__)
 
 
 def _get_credentials() -> Dict[str, str]:
-    '''
+    """
     Try to load credentials.
 
-    If the environment variables `insee_key` and `insee_secret` are set, use
-    these.
-    Otherwise try to load them from the config file.
+    If the environment variable `sirene_key` is set, use it.
+    Otherwise try to load it from the config file.
 
-    Returns a dict containing at least an "insee_key" and an "insee_secret"
-    entry.
-    '''
+    Returns a dict containing at least an "sirene_key" entry.
+    """
     key_dict: Dict[str, str] = {}
 
-    sirene_key = os.environ.get("sirene_key")
-    
-    if sirene_key is None:
-        sirene_key = os.environ.get("SIRENE_KEY")
+    def get_env_case_insensitive(x: str):
+        "Fetch an environment variable (case insentitive)"
+        val = os.environ.get(x)
+        if val is None:
+            return os.environ.get(x.upper())
+        return val
 
-    if sirene_key is None:
+    sirene_key = get_env_case_insensitive("sirene_key")
+    http_proxy = get_env_case_insensitive("http_proxy")
+    https_proxy = get_env_case_insensitive("https_proxy")
+
+    if sirene_key == "":
         envir_var_used = False
         try:
             config_file = os.path.join(
-                user_config_dir("pynsee", ensure_exists=True), "config.json")
-            
+                user_config_dir("pynsee", ensure_exists=True), "config.json"
+            )
+
             with open(config_file, "r") as f:
                 key_dict = json.load(f)
-    
-            http_proxy = key_dict["http_proxy"]
-            https_proxy = key_dict["https_proxy"]
-    
-            if (http_proxy is None) or (not isinstance(http_proxy, str)):
+
+            if key_dict["http_proxy"] != http_proxy:
+                logger.warning(
+                    f"Current http_proxy ({http_proxy}) is being overwritten "
+                    "by pynsee config. "
+                    "To reset it, please use pynsee.utils.init_conn.\n"
+                    f"Used http_proxy is now {key_dict['http_proxy']}"
+                )
+                http_proxy = key_dict["http_proxy"]
+
+            if key_dict["https_proxy"] != https_proxy:
+                logger.warning(
+                    f"Current https_proxy ({http_proxy}) is being overwritten "
+                    "by pynsee config. "
+                    "To reset it, please use pynsee.utils.init_conn.\n"
+                    f"Used http_proxy is now {key_dict['http_proxy']}"
+                )
+                https_proxy = key_dict["https_proxy"]
+
+            if not isinstance(http_proxy, str):
                 http_proxy = ""
-            if (https_proxy is None) or (not isinstance(https_proxy, str)):
+
+            if not isinstance(https_proxy, str):
                 https_proxy = ""
-    
-            os.environ["http_proxy"] = http_proxy
-            os.environ["https_proxy"] = https_proxy
+
+            key_dict["https_proxy"] = https_proxy
+            key_dict["http_proxy"] = https_proxy
+
         except Exception:
             _missing_credentials()
     else:
