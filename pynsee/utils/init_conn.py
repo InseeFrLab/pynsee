@@ -66,6 +66,17 @@ def init_conn(
         for api, api_url in queries.items():
 
             try:
+                if api == "Sirene" and not session.sirene_key:
+                    # the user is probably not expecting to use SIRENE anyway:
+                    # simple warning and jump to next API in order to avoid
+                    # urllib retries
+                    logger.warning(
+                        f"Remember to subscribe to {api} API on api.insee.fr "
+                        "if you ever want to use it (type `help(init_conn)` "
+                        "to know more about this)"
+                    )
+                    invalid_requests[api] = 999
+
                 results = session.get(api_url, verify=False)
             except requests.exceptions.RequestException as exc:
                 try:
