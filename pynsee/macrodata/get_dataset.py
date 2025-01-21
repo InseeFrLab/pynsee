@@ -9,6 +9,7 @@ from pynsee.macrodata.get_series_list import get_series_list
 from pynsee.utils._paste import _paste
 from pynsee.utils.save_df import save_df
 
+
 @save_df(day_lapse_max=30)
 def get_dataset(
     dataset,
@@ -20,7 +21,6 @@ def get_dataset(
     endPeriod=None,
     firstNObservations=None,
     lastNObservations=None,
-    includeHistory=None,
     updatedAfter=None,
 ):
     """Get dataset's data from INSEE BDM database
@@ -44,8 +44,6 @@ def get_dataset(
 
         lastNObservations (int, optional): get the last N observations for each key series (idbank).
 
-        includeHistory (boolean, optional): boolean to access the previous releases (not available on all series).
-
         updatedAfter (str, optional): starting point for querying the previous releases (format yyyy-mm-ddThh:mm:ss)
 
     Raises:
@@ -58,12 +56,12 @@ def get_dataset(
         >>> from pynsee.macrodata import get_dataset
         >>> ipc_data = get_dataset("IPC-2015",
         >>>        filter = "M......ENSEMBLE...CVS.2015",
-        >>>        includeHistory = True, updatedAfter = "2017-07-11T08:45:00")
+        >>>        updatedAfter = "2017-07-11T08:45:00")
         >>> #
         >>> business_climate = get_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
     """
-    
-    insee_dataset = get_dataset_list(silent=True)    
+
+    insee_dataset = get_dataset_list(silent=True)
     insee_dataset_list = insee_dataset["id"].to_list()
 
     # check if the dataset exists in INSEE's list
@@ -108,12 +106,12 @@ def get_dataset(
     # add metadata
     if metadata:
         try:
-            
-            idbank_list = get_series_list(dataset, silent=True)            
 
-            newcol = [col for col in idbank_list.columns if col not in data.columns] + [
-                "IDBANK"
-            ]
+            idbank_list = get_series_list(dataset, silent=True)
+
+            newcol = [
+                col for col in idbank_list.columns if col not in data.columns
+            ] + ["IDBANK"]
             idbank_list = idbank_list[newcol]
 
             data = data.merge(idbank_list, on="IDBANK", how="left")
