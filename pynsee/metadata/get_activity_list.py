@@ -13,10 +13,15 @@ from pynsee.utils._paste import _paste
 from pynsee.metadata._get_naf import _get_naf
 from pynsee.metadata._get_nomenclature_agreg import _get_nomenclature_agreg
 from pynsee.metadata._add_A17_activity import _add_A17_activity
-from pynsee.metadata._add_A5_activity import _get_A5_activity_label, _add_A5_activity
+from pynsee.metadata._add_A5_activity import (
+    _get_A5_activity_label,
+    _add_A5_activity,
+)
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _warning_activity():
@@ -25,7 +30,7 @@ def _warning_activity():
 
 
 @lru_cache(maxsize=None)
-def get_activity_list(level, version="NAFRev2"):
+def get_activity_list(level):
     """Get a list of economic activities from NAF/NACE rev 2 2008 classification
 
     Notes:
@@ -33,8 +38,6 @@ def get_activity_list(level, version="NAFRev2"):
 
     Args:
         level (str): Levels available are :  A5, A10, A17, A21, A38, A64, A88, A129, A138, NAF1, NAF2, NAF3, NAF4, NAF5
-
-        version (str, optional): Defaults to 'NAFRev2'.
 
     Raises:
         ValueError: an error is raised if level is not in the default list
@@ -67,7 +70,8 @@ def get_activity_list(level, version="NAFRev2"):
 
     if level not in level_available:
         raise ValueError(
-            "!!! level must be in %s !!!", _paste(level_available, collapse=" ")
+            "!!! level must be in %s !!!",
+            _paste(level_available, collapse=" "),
         )
 
     A5_activity_list = _get_A5_activity_label()
@@ -93,9 +97,9 @@ def get_activity_list(level, version="NAFRev2"):
         "table_NAF2-NA.csv",
     ]
 
-    list_expected_files = [insee_folder + "/naf2008/" + f for f in list_expected_files]
-
-    list_available_file = [not os.path.exists(f) for f in list_expected_files]
+    list_expected_files = [
+        insee_folder + "/naf2008/" + f for f in list_expected_files
+    ]
 
     # unzipping raw files
     try:
@@ -103,6 +107,7 @@ def get_activity_list(level, version="NAFRev2"):
         zip_file = str(pkg_path) + "/data/naf.zip"
     except:
         import pkg_resources
+
         zip_file = pkg_resources.resource_stream(__name__, "data/naf.zip")
 
     with zipfile.ZipFile(zip_file, "r") as zip_ref:
@@ -241,14 +246,26 @@ def get_activity_list(level, version="NAFRev2"):
         ifile = 8
         ncol = 6
         first_col = 1
-        label_list_col = ["A129", "A138", "NAF", "TITLE_A138_EN", "TITLE_A138_FR"]
+        label_list_col = [
+            "A129",
+            "A138",
+            "NAF",
+            "TITLE_A138_EN",
+            "TITLE_A138_FR",
+        ]
         col_merged = ["A138", "TITLE_A138_EN"]
 
     if level == "A129":
         ifile = 8
         ncol = 6
         first_col = 1
-        label_list_col = ["A129", "A138", "NAF", "TITLE_A129_EN", "TITLE_A129_FR"]
+        label_list_col = [
+            "A129",
+            "A138",
+            "NAF",
+            "TITLE_A129_EN",
+            "TITLE_A129_FR",
+        ]
         col_merged = ["A129", "TITLE_A129_EN"]
 
     if level == "A88":
