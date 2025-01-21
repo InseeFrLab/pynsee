@@ -77,7 +77,7 @@ class PynseeAPISession(requests.Session):
         super().__init__()
 
         # status_forcelist used to be necessary for geodata module
-        retry_adapt = Retry(total=3, backoff_factor=1, status_forcelist=[502])
+        retry_adapt = Retry(total=5, backoff_factor=1, status_forcelist=[502])
         adapter = HTTPAdapter(max_retries=retry_adapt)
         self.mount("https://", adapter)
         self.mount("https://", adapter)
@@ -109,7 +109,7 @@ class PynseeAPISession(requests.Session):
         self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
 
     def request(
-        self, method, url, timeout=(5, 10), raise_if_not_ok=True, **kwargs
+        self, method, url, timeout=(10, 15), raise_if_not_ok=True, **kwargs
     ):
 
         logger.info(url)
@@ -278,7 +278,7 @@ class PynseeAPISession(requests.Session):
             if print_msg:
                 msg = (
                     "An error occurred !\n"
-                    f"Query : {url}\n{results}\n"
+                    f"Query : {url}\nResults : {results}\n"
                     "Make sure you have subscribed to all APIs !\n"
                     "Click on all APIs' icons one by one, select your "
                     "application, and click on Subscribe"
