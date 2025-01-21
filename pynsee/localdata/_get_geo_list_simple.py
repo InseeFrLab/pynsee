@@ -12,7 +12,7 @@ from pynsee.utils.requests_session import PynseeAPISession
 
 @lru_cache(maxsize=None)
 def _get_geo_list_simple(geo, date=None, progress_bar=False):
-    api_url = "https://api.insee.fr/metadonnees/V1/geo/" + geo
+    api_url = "https://api.insee.fr/metadonnees/geo/" + geo
     if date:
         api_url += f"?date={date}"
 

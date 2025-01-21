@@ -37,7 +37,7 @@ def get_old_city(code, date=None):
     if date is not None:
         api_link = api_link + "?date=" + date
 
-    # api_link = 'https://api.insee.fr/metadonnees/V1/geo/commune/24259/precedents'
+    # api_link = 'https://api.insee.fr/metadonnees/geo/commune/24259/precedents'
 
     with PynseeAPISession() as session:
         request = session.request_insee(
