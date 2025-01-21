@@ -27,7 +27,6 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
     Cellule = data_request["Cellule"]
     Variable = data_request["Variable"]
     Croisement = data_request["Croisement"]
-    # Zone = data_request["Zone"]
 
     dataset_version = Croisement["JeuDonnees"]["code"]
     dataset_name = Croisement["JeuDonnees"]["Source"]

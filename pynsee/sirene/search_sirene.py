@@ -83,42 +83,42 @@ def search_sirene(
         >>> from pynsee.metadata import get_activity_list
         >>> from pynsee.sirene import search_sirene
         >>> from pynsee.sirene import get_dimension_list
-        >>> #
+        >>>
         >>> # Get available column names, it is useful to design your query with search_sirene
         >>> sirene_dimension = get_dimension_list()
-        >>> #
+        >>>
         >>> # Get activity list (NAF rev 2)
         >>> naf5 = get_activity_list('NAF5')
-        >>> #
+        >>>
         >>> # Get a list of hospitals in Paris
         >>> df = search_sirene(variable = ["activitePrincipaleUniteLegale",
         >>>                                "codePostalEtablissement"],
         >>>                    pattern = ["86.10Z", "75*"], kind = "siret")
-        >>> #
+        >>>
         >>> # Get a list of companies located in Igny city whose name matches with 'pizza' using a phonetic search
         >>> df = search_sirene(variable = ["libelleCommuneEtablissement",
         >>>                            'denominationUniteLegale'],
         >>>                    pattern = ["igny", 'pizza'],
         >>>                    phonetic_search=True, kind = "siret")
-        >>> #
+        >>>
         >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company)
         >>> # and whose legal status is SAS (societe par actions simplifiee)
         >>> df = search_sirene(variable=["denominationUniteLegale",
         >>>                              'categorieJuridiqueUniteLegale'],
         >>>                    pattern=["sncf", '5710'], kind="siren")
-        >>> #
+        >>>
         >>> # Get data on Hadrien Leclerc
         >>> df = search_sirene(variable = ['prenom1UniteLegale', 'nomUniteLegale'],
         >>>                           pattern = ['hadrien', 'leclerc'],
         >>>                           phonetic_search = [True, False],
         >>>                           closed=True)
-        >>> #
+        >>>
         >>> # Find 2500 tobacco shops
         >>> df = search_sirene(variable = ['denominationUniteLegale'],
         >>>            pattern = ['tabac'],
         >>>            number = 2500,
         >>>            kind = "siret")
-        >>> #
+        >>>
         >>> # Find 1000 companies whose name sounds like Dassault Système or is a big company (GE),
         >>> # search is made as well on patterns whose accents have been removed
         >>> import os
@@ -165,30 +165,30 @@ def search_sirene(
         pattern = [pattern]
 
     list_siren_hist_variable = [
-        "nomUniteLegale",  #
-        "nomUsageUniteLegale",  #
-        "denominationUniteLegale",  #
-        "denominationUsuelle1UniteLegale",  #
-        "denominationUsuelle2UniteLegale",  #
+        "nomUniteLegale",
+        "nomUsageUniteLegale",
+        "denominationUniteLegale",
+        "denominationUsuelle1UniteLegale",
+        "denominationUsuelle2UniteLegale",
         "denominationUsuelle3UniteLegale",
-        "categorieJuridiqueUniteLegale",  #
-        "etatAdministratifUniteLegale",  #
-        "nicSiegeUniteLegale",  #
-        "activitePrincipaleUniteLegale",  #
-        "caractereEmployeurUniteLegale",  #
-        "economieSocialeSolidaireUniteLegale",  #
+        "categorieJuridiqueUniteLegale",
+        "etatAdministratifUniteLegale",
+        "nicSiegeUniteLegale",
+        "activitePrincipaleUniteLegale",
+        "caractereEmployeurUniteLegale",
+        "economieSocialeSolidaireUniteLegale",
         # "nomenclatureActivitePrincipaleUniteLegale",
     ] + ["societeMissionUniteLegale"]
 
     list_siret_hist_variable = [
-        "denominationUsuelleEtablissement",  #
-        "enseigne1Etablissement",  #
-        "enseigne2Etablissement",  #
-        "enseigne3Etablissement",  #
-        "activitePrincipaleEtablissement",  #
-        "etatAdministratifEtablissement",  #
-        "nomenclatureActiviteEtablissement",  #
-        "caractereEmployeurEtablissement",  #
+        "denominationUsuelleEtablissement",
+        "enseigne1Etablissement",
+        "enseigne2Etablissement",
+        "enseigne3Etablissement",
+        "activitePrincipaleEtablissement",
+        "etatAdministratifEtablissement",
+        "nomenclatureActiviteEtablissement",
+        "caractereEmployeurEtablissement",
     ]
 
     if kind == "siren":
