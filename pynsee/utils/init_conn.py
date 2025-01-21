@@ -4,7 +4,8 @@
 import json
 import logging
 import os
-import time
+
+import requests
 
 from platformdirs import user_config_dir
 
@@ -19,12 +20,12 @@ def opener(path, flags):
 
 
 def init_conn(
-    sirene_key: str, http_proxy: str = "", https_proxy: str = ""
+    sirene_key: str = "", http_proxy: str = "", https_proxy: str = ""
 ) -> None:
     """Save your credentials to connect to INSEE APIs, subscribe to api.insee.fr
 
     Args:
-        sirene_key (str): user's key for sirene API
+        sirene_key (str, optional): user's key for sirene API
         http_proxy (str, optional): Proxy server address, e.g. 'http://my_proxy_server:port'. Defaults to "".
         https_proxy (str, optional): Proxy server address, e.g. 'http://my_proxy_server:port'. Defaults to "".
 
@@ -51,58 +52,45 @@ def init_conn(
     logger.debug("SHOULD GET LOGGING")
 
     queries = {
-        "BDM": "https://api.insee.fr/series/BDM/V1/dataflow/FR1/all",
-        "Metadata": "https://api.insee.fr/metadonnees/V1/codes/cj/n3/5599",
+        "BDM": "https://api.insee.fr/series/BDM/dataflow/FR1/all",
+        "Metadata": "https://api.insee.fr/metadonnees/codes/cj/n3/5599",
         "Sirene": "https://api.insee.fr/api-sirene/3.11/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
-        "Local Data": "https://api.insee.fr/donnees-locales/V0.1/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
+        "Local Data": "https://api.insee.fr/donnees-locales/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
     }
-
-    file_format = {
-        "BDM": "application/xml",
-        "Metadata": "application/xml",
-        "Sirene": "application/json;charset=utf-8",
-        "Local Data": "application/xml",
-    }
-
     invalid_requests = {}
 
     with PynseeAPISession() as session:
 
         for api, api_url in queries.items():
-            headers = {"Accept": file_format[api]}
             if api == "Sirene":
-                headers["X-INSEE-Api-Key-Integration"] = sirene_key
+                headers = {"X-INSEE-Api-Key-Integration": sirene_key}
+            else:
+                headers = {}
 
-            results = session.get(api_url, headers=headers, verify=False)
-
-            code = results.status_code
-
-            if code == 429:
-                time.sleep(10)
-
+            try:
                 results = session.get(api_url, headers=headers, verify=False)
+            except requests.exceptions.RequestException as exc:
+                if exc.response.status_code == 404:
+                    raise RuntimeError(
+                        f"Could not reach {api} at {api_url}, please get in "
+                        "touch if the issue persists."
+                    )
+                elif results.status_code != 200:
+                    logger.critical(
+                        f"Please subscribe to {api} API on api.insee.fr !\n"
+                        f"Received error {exc.response.status_code}: "
+                    )
 
-            if results.status_code == 404:
-                RuntimeError(
-                    f"Could not reach {api} at {api_url}, please get in touch"
-                    " if the issue persists."
-                )
-            elif results.status_code != 200:
-                logger.critical(
-                    f"Please subscribe to {api} API on api.insee.fr !\n"
-                    f"Received error {results.status_code}: "
-                )
-
-                invalid_requests[api] = results.status_code
+                invalid_requests[api] = exc.response.status_code
 
     config_file = os.path.join(
         user_config_dir("pynsee", ensure_exists=True), "config.json"
     )
 
     if invalid_requests:
-        raise ValueError(
+        logger.error(
             "Invalid credentials, the following APIs returned error codes, "
-            "please make sure you subscribed to them:\n"
+            "please make sure you subscribed to them (if you need those):\n"
             f"{invalid_requests}"
         )
     else:
@@ -124,3 +112,7 @@ def init_conn(
         json.dump(config, f)
 
     logger.info("Credentials have been saved.")
+
+
+if __name__ == "__main__":
+    init_conn()
