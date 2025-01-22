@@ -1,0 +1,7 @@
+[flake8]
+extend-ignore = E722,C901
+count = True
+exclude = .git,__pycache__,docs/*,*.yaml,*.zip,.env,*.svg,*.md,*.qmd,*.css,*.txt,*.rst,Dockerfile,.spyproject,.pytest_cache,*.lock,*.toml
+max-complexity = 10
+max-line-length = 127
+statistics = True

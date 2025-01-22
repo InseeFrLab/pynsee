@@ -32,8 +32,14 @@ git commit --amend -s
 
 We use a DCO bot to enforce the DCO on each pull request and branch commits.
 
+### Linting
+
+This project currently uses flake8 and black as pre-commit hooks and will check the code's conformity on the automated tests.
+
+To run the pre-commit hooks on your machine, please run `pre-commit install` locally.
+
+You can then run the pre-commit manually using `pre-commit run --all-files`.
 
 ### Licence
 
 By contributing, you agree that your contributions will be licensed under the OPEN LICENSE 2.0.
-
