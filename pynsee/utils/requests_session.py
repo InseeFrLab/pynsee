@@ -77,7 +77,9 @@ class PynseeAPISession(requests.Session):
         super().__init__()
 
         # status_forcelist used to be necessary for geodata module
-        retry_adapt = Retry(total=5, backoff_factor=1, status_forcelist=[502])
+        retry_adapt = Retry(
+            total=7, backoff_factor=1, status_forcelist=[429, 502, 503, 504]
+        )
         adapter = HTTPAdapter(max_retries=retry_adapt)
         self.mount("https://", adapter)
         self.mount("https://", adapter)
@@ -117,7 +119,7 @@ class PynseeAPISession(requests.Session):
             warnings.simplefilter(
                 "ignore", urllib3.exceptions.InsecureRequestWarning
             )
-            response = super().request(method, url, timeout=(5, 10), **kwargs)
+            response = super().request(method, url, timeout=timeout, **kwargs)
             if raise_if_not_ok and not response.ok:
                 raise requests.exceptions.RequestException(
                     f"response was {response.status_code} for {url}",
