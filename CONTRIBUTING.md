@@ -39,7 +39,7 @@ These can be installed via ``pip install flake8 black pre-commit``.
 
 To run the pre-commit hooks on your machine, please run `pre-commit install` locally.
 
-You can then run the pre-commit manually using `pre-commit run --all-files`.
+You can then run the pre-commit manually using `pre-commit run --all-files` if you want but it will be run every time you try to commit anyway and commiting will not go through until all issues are fixed.
 
 ### Licence
 
