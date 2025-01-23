@@ -109,9 +109,9 @@ def get_dataset(
 
             idbank_list = get_series_list(dataset, silent=True)
 
-            newcol = [
-                col for col in idbank_list.columns if col not in data.columns
-            ] + ["IDBANK"]
+            newcol = [col for col in idbank_list.columns if col not in data.columns] + [
+                "IDBANK"
+            ]
             idbank_list = idbank_list[newcol]
 
             data = data.merge(idbank_list, on="IDBANK", how="left")
