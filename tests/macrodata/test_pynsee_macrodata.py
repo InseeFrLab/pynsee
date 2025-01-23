@@ -10,8 +10,8 @@ from datetime import datetime
 from datetime import timedelta
 import re
 
-from pynsee.macrodata._get_insee import _get_insee
-from pynsee.macrodata._get_date import _get_date
+# from pynsee.macrodata._get_insee import _get_insee
+# from pynsee.macrodata._get_date import _get_date
 from pynsee.macrodata._get_idbank_internal_data_harmonized import (
     _get_idbank_internal_data_harmonized,
 )
@@ -37,7 +37,7 @@ from pynsee.macrodata.get_column_title import get_column_title
 from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
 
-from pynsee.utils._clean_insee_folder import _clean_insee_folder
+# from pynsee.utils._clean_insee_folder import _clean_insee_folder
 
 test_SDMX = True
 
@@ -166,13 +166,17 @@ class TestFunction(TestCase):
             data = get_dataset("BALANCE-PAIEMENTS", lastNObservations=1)
             self.assertTrue(isinstance(data, pd.DataFrame))
 
-        # def test_get_dataset_2(self):
+            # def test_get_dataset_2(self):
 
-        #     data = get_dataset("CHOMAGE-TRIM-NATIONAL",
-        #                        filter="T.HALO.VALEUR_ABSOLUE.FR-D976.1.15-24.INDIVIDUS.CVS.FALSE",
-        #                        lastNObservations=1)
+            #     data = get_dataset("CHOMAGE-TRIM-NATIONAL",
+            #                        filter="T.HALO.VALEUR_ABSOLUE.FR-D976.1.15-24.INDIVIDUS.CVS.FALSE",
+            #                        lastNObservations=1)
 
-        #     # data1 = get_dataset("CNA-2014-TEI", filter="A.CNA_CONSO_INTERMEDIAIRE.A38-PZ.A38-CJ.VALEUR_ABSOLUE.FE.EUROS_COURANTS.BRUT", update=True)
+            #     data1 = get_dataset(
+            #         "CNA-2014-TEI",
+            #         filter="A.CNA_CONSO_INTERMEDIAIRE.A38-PZ.A38-CJ.VALEUR_ABSOLUE.FE.EUROS_COURANTS.BRUT",
+            #         update=True,
+            #     )
 
         #     self.assertTrue(isinstance(data, pd.DataFrame))
         #                     # & isinstance(data1, pd.DataFrame))
