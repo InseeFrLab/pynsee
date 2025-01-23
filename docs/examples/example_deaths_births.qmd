@@ -29,7 +29,7 @@ df_idbank = get_series_list("DECES-MORTALITE", "NAISSANCES-FECONDITE")
 
 df_idbank = df_idbank.loc[(df_idbank.FREQ == "M") & # monthly
                           (df_idbank.REF_AREA == "FM") & # metropolitan France
-                          (df_idbank.DEMOGRAPHIE.isin(["NAISS","DECES"]))] 
+                          (df_idbank.DEMOGRAPHIE.isin(["NAISS","DECES"]))]
 
 # get data
 data = get_series(df_idbank.IDBANK)
@@ -53,7 +53,7 @@ sns.relplot(
     data=data,
     x = "DATE", y = "OBS_VALUE",
     hue="color", row="period",
-    kind="line", 
+    kind="line",
     facet_kws=dict(sharex=False),
 )
 ```

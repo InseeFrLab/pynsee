@@ -58,8 +58,7 @@ def _add_insee_dep_from_id_com(df):
             dep = dep.rename(columns={"geometry": "insee_dep_geometry"})
 
             df = df.merge(dep, on="insee_dep", how="left")
-    except Exception as e:
-        # print(e)
+    except Exception:
         pass
 
     return df
@@ -111,8 +110,7 @@ def _add_insee_dep_from_geodata(df):
 
             df["insee_dep"] = list_dep
             df["insee_dep_geometry"] = list_dep_geo
-    except Exception as e:
-        # print(e)
+    except Exception:
         pass
 
     return df

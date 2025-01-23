@@ -11,12 +11,12 @@ et faire une petite carte pour les illustrer
 
 Nous allons récupérer deux sources de données:
 
-1. La récupération et le chargement 
+1. La récupération et le chargement
 des données présentes sur le site
 de l'Insee se fait avec le module `pynsee.download`
 et sa fonction `load_data`. En l'occurrence, nous
 utilisons le millésime 2015 de Filosofi
-2. La récupération du fond de carte de l'IGN se fait 
+2. La récupération du fond de carte de l'IGN se fait
 au travers du module `pynsee.geodata` et de
 sa fonction `get_geodata`
 
@@ -50,4 +50,3 @@ mapcom.merge(
     left_on = "insee_com",
     right_on = "CODGEO").plot(column = "MED15")
 ```
-

@@ -77,12 +77,12 @@ DF = DF.merge(marie, how = 'left', on = ['dpt', 'annais'])
 for y in list_year:
     valParis = DF.loc[(DF['annais'] == y) & (DF['dpt'] == '75'), 'pct'].values
     valCorse = DF.loc[(DF['annais'] == y) & (DF['dpt'] == '20'), 'pct'].values
-    
+
     for d in ['91', '92', '93', '94', '95', '78']:
         valdep = DF.loc[(DF['annais'] == y) & (DF['dpt'] == d), 'pct'].values
         if np.isnan(valdep):
             DF.loc[(DF['annais'] == y) & (DF['dpt'] == d), 'pct'] = valParis
-            
+
     for d in ['2A', '2B']:
         valdep = DF.loc[(DF['annais'] == y) & (DF['dpt'] == d), 'pct'].values
         if np.isnan(valdep):
@@ -110,15 +110,15 @@ plt.suptitle("Percentage of new female babies whose name is Marie", x = 0.3, y =
              fontsize = 12, fontweight='bold')
 
 for a, ax in zip(np.unique(datamap.annais.values), axes):
-    
+
     ax.set_axis_off()
     dt = datamap[datamap.annais == a]
     p = dt.plot(column='pct', ax=ax, cmap=colormap,norm=normalize)
     ax.set_title(a)
-    
-bbox = ax.get_position() 
+
+bbox = ax.get_position()
 cax = fig.add_axes([bbox.x1 + 0.01, bbox.y0 + 0.2, 0.01, bbox.height])
-    
+
 fig.colorbar(cm.ScalarMappable(norm=normalize, cmap=colormap), cax=cax)
 plt.subplots_adjust(hspace=-0.2, wspace=-0.1)
 

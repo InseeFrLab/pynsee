@@ -19,7 +19,7 @@ test_SDMX = True
 
 
 class TestFunction(TestCase):
-    
+
     version = (sys.version_info[0] == 3) & (sys.version_info[1] == 9)
 
     test_onyxia = re.match(".*onyxia.*", os.getcwd())

@@ -39,16 +39,16 @@ jobs:
       run: |
         pip install jupytext
         pip install -r requirements.txt
-        pip install .[full]     
+        pip install .[full]
         pip install -r requirements-extra.txt
-        # test all notebooks        
-        cd docs/examples 
+        # test all notebooks
+        cd docs/examples
         jupytext --to py *.md
         # run all py files
         # for f in *.py; do python "$f"; done
         cd ../..
     - name: Test with pytest
-      env:      
+      env:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
         pytest -v --cov
@@ -58,5 +58,3 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
-        
-   

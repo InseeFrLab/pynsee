@@ -77,7 +77,9 @@ def get_local_metadata():
     except Exception:
         import pkg_resources
 
-        zip_file = pkg_resources.resource_stream(__name__, "data/local_metadata.zip")
+        zip_file = pkg_resources.resource_stream(
+            __name__, "data/local_metadata.zip"
+        )
 
     with zipfile.ZipFile(zip_file, "r") as zip_ref:
         zip_ref.extractall(insee_folder)
@@ -103,15 +105,23 @@ def get_local_metadata():
                 df = pd.read_csv(file2load, sep=",", encoding="UTF-8")
 
                 if reshape is True:
-                    df.columns = ["var" if x == "variable" else x for x in df.columns]
+                    df.columns = [
+                        "var" if x == "variable" else x for x in df.columns
+                    ]
 
-                    list_other_col = [col for col in df.columns if col not in list_col]
+                    list_other_col = [
+                        col for col in df.columns if col not in list_col
+                    ]
 
                     if len(list_other_col) > 0:
-                        list_col2 = [col for col in list_col if col in df.columns]
+                        list_col2 = [
+                            col for col in list_col if col in df.columns
+                        ]
                         list_col_new2 = list_col2 + ["dataset_value"]
                         # reshape dataframe
-                        df = pd.melt(df, id_vars=list_col2, value_vars=list_other_col)
+                        df = pd.melt(
+                            df, id_vars=list_col2, value_vars=list_other_col
+                        )
                         # rename col variable into dataset_value
                         df.columns = [
                             "dataset_value" if x == "variable" else x
@@ -160,7 +170,9 @@ def get_local_metadata():
         reshape=True,
     )
 
-    variables = mesure_croisement[["croisement", "mesure", "dataset_value", "dataset"]]
+    variables = mesure_croisement[
+        ["croisement", "mesure", "dataset_value", "dataset"]
+    ]
 
     #
     # get variables labels
@@ -181,7 +193,9 @@ def get_local_metadata():
     #
     variables_splitted = variables["croisement"].str.split("-").tolist()
 
-    variables_splitted = pd.DataFrame(variables_splitted, index=variables.index)
+    variables_splitted = pd.DataFrame(
+        variables_splitted, index=variables.index
+    )
 
     for icol in range(len(variables_splitted.columns)):
         var_label_icol = var_label
@@ -201,7 +215,9 @@ def get_local_metadata():
             if not pd.isna(val):
                 if var_labels.iloc[irow, icol_var_label] != "":
                     var_labels.iloc[irow, icol_var_label] = (
-                        var_labels.iloc[irow, icol_var_label] + " - " + str(val)
+                        var_labels.iloc[irow, icol_var_label]
+                        + " - "
+                        + str(val)
                     )
                 else:
                     var_labels.iloc[irow, icol_var_label] = str(val)
@@ -230,7 +246,9 @@ def get_local_metadata():
         list_col=["jeu_donnees", "millesime_donnees", "millesime_geo"],
     )
 
-    millesime = millesime[["jeu_donnees", "millesime_geo", "millesime_donnees"]]
+    millesime = millesime[
+        ["jeu_donnees", "millesime_geo", "millesime_donnees"]
+    ]
     millesime.columns = ["dataset_value", "millesime_geo", "millesime_donnees"]
     millesime = millesime.drop_duplicates()
 
@@ -253,7 +271,9 @@ def get_local_metadata():
     ]
 
     # variables = variables.dropna(subset=['GEO_DATE'])
-    variables = variables[~variables.DATASET_VERSION.str.contains("filtre_geo ")]
+    variables = variables[
+        ~variables.DATASET_VERSION.str.contains("filtre_geo ")
+    ]
     variables = variables.reset_index(drop=True)
 
     return variables

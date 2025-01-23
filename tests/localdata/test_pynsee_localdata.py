@@ -196,7 +196,7 @@ class TestFunction(TestCase):
                 # "arrondissementsMunicipaux",
             ]
 
-            list_geo_data = []
+            # list_geo_data = []
             for geo in list_available_geo:
                 self.assertTrue(isinstance(get_geo_list(geo), pd.DataFrame))
                 # list_geo_data.append()

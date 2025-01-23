@@ -85,10 +85,10 @@ def get_local_data(
     if isinstance(geocodes, pd.core.series.Series):
         geocodes = geocodes.to_list()
 
-    if type(geocodes) == str:
+    if isinstance(geocodes, str):
         geocodes = [geocodes]
 
-    if type(geocodes) != list:
+    if not isinstance(geocodes, list):
         raise ValueError("!!! geocodes must be a list !!!")
 
     if (geocodes == ["1"]) or (geocodes == ["all"]) or (geocodes == "all"):

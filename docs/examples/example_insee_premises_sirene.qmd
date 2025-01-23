@@ -47,7 +47,7 @@ df = data.get_location()
 
 ```{python}
 def _convert_polygon(geo, crs_in='EPSG:4326', crs_out='EPSG:3857'):
-    
+
     if geo is not None:
         crsIn = pyproj.CRS(crs_in)
         crsOut = pyproj.CRS(crs_out)
@@ -76,7 +76,7 @@ gdf = gdf.reset_index(drop=True)
 for i in range(len(gdf.index)):
     gdf.loc[i,'name'] = str(i+1) + ' - ' + gdf.loc[i,'enseigne1Etablissement']
     gdf.loc[i,'i'] = i + 1
-    
+
 # cleaning
 gdf = gdf[~gdf.geometry.isnull()]
 ```
@@ -111,4 +111,3 @@ legends = [mpatches.Patch(label=f) for f in gdf.name]
 plt.legend(handles=legends, ncol=2, bbox_to_anchor=(1.05, 1))
 plt.show()
 ```
-

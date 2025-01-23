@@ -8,7 +8,7 @@
 # pynsee 0.1.8
 
 * sirene module compatible with SIRENE API v3.11
-* geodata module compatible with the new IGN's geoplatform 
+* geodata module compatible with the new IGN's geoplatform
 * data cached in parquet files thanks to a new decorator used across modules
 * fixes in the docs/examples
 * macroeconomic series list can be retrieved even if it is zipped twice
@@ -31,7 +31,7 @@
 
 # pynsee 0.1.5
 
-* shapely>= 1.8.0 defined in both setup.py and requirements 
+* shapely>= 1.8.0 defined in both setup.py and requirements
 
 # pynsee 0.1.4
 
@@ -61,10 +61,10 @@
 * internal idbank list update
 * readme update
 
-# pynsee 0.1.0 
+# pynsee 0.1.0
 
 * tools to search and download data from INSEE APIs : BDM, LocalData, MetaData, SIRENE
-* automatic token generator for api.insee.fr from user's credentials saved locally 
+* automatic token generator for api.insee.fr from user's credentials saved locally
 * pynsee.download module gives access to more than 1200 stored files on insee.fr
 * tools to search and download geographical data from IGN API : administrative limits
 * GeoFrDataFrame class with dedicated modules to manipulate overseas departements data
@@ -73,11 +73,10 @@
 * data stored internally in the package (used mostly as backups):
     * BDM series list
     * BDM datasets list
-    * local metadata 
+    * local metadata
     * activity classification (naf rev2 2008)
     * list of definitions
     * list of files on insee.fr
 * full documentation made with docstring and hosted by ReadTheDocs
 * hands-on examples covering all modules displayed in the documentation
 * test coverage >90%
-

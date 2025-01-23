@@ -14,7 +14,7 @@ Pynsee python package contains tools to easily search and download French data f
 
 .. image:: https://img.shields.io/conda/vn/conda-forge/pynsee.svg
    :target: https://anaconda.org/conda-forge/pynsee
-   :alt: Conda Forge Version   
+   :alt: Conda Forge Version
 
 .. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/refs/heads/master/reports/coverage-badge.svg
    :target: https://pypi.org/project/pynsee/
@@ -31,7 +31,7 @@ Pynsee python package contains tools to easily search and download French data f
 .. image:: https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg
    :target: https://www.python.org/
    :alt: Python versions
-   
+
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
    :target: https://pypi.org/project/black/
    :alt: Code formatting
@@ -43,31 +43,31 @@ Pynsee python package contains tools to easily search and download French data f
 .. image:: https://anaconda.org/conda-forge/pynsee/badges/latest_release_date.svg
    :target: https://anaconda.org/conda-forge/pynsee
    :alt: Latest Release Date
-   
+
 .. image:: https://img.shields.io/pypi/dm/pynsee
    :target: https://pypistats.org/packages/pynsee
    :alt: PyPi Downloads
-   
+
 :raw-html:`<br />`
-   
+
 `pynsee` gives a quick access to more than 150 000 macroeconomic series,
 a dozen datasets of local data, numerous sources available on `insee.fr <https://www.insee.fr>`_
 as well as key metadata and SIRENE database containing data on all French companies.
 Have a look at the detailed API page `portail-api.insee.fr <https://portail-api.insee.fr/>`_.
 
-This package is a contribution to reproducible research and public data transparency. 
+This package is a contribution to reproducible research and public data transparency.
 It benefits from the developments made by teams working on APIs at INSEE and IGN.
 
 Installation & API subscription
 -------------------------------
 
-Credentials are necessary to access SIRENE API available through `pynsee` by the module `sirene`. API credentials can be created here : `portail-api.insee.fr <https://portail-api.insee.fr/>`_. All other modules are freely accessible. 
+Credentials are necessary to access SIRENE API available through `pynsee` by the module `sirene`. API credentials can be created here : `portail-api.insee.fr <https://portail-api.insee.fr/>`_. All other modules are freely accessible.
 
 .. code-block:: python
 
    # Download Pypi package
    pip install pynsee[full]
-   
+
    # Get the development version from GitHub
    # git clone https://github.com/InseeFrLab/pynsee.git
    # cd pynsee
@@ -90,7 +90,7 @@ Data Search and Collection Advice
    Alternatively, you can make a keyword-based search with ``search_macrodata``, e.g. ``search_macrodata('GDP')``.
    Then, get the data with ``get_dataset`` or ``get_series``
 * **Local data** : use first ``get_local_metadata``, then get data with ``get_local_data``
-* **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list`` 
+* **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list``
 * **Sirene (French companies database)** : use first ``get_dimension_list``, then use ``search_sirene`` with dimensions as filtering variables
 * **Geodata** : get the list of available geographical data with ``get_geodata_list`` and then retrieve it with ``get_geodata``
 * **Files on insee.fr**: get the list of available files on insee.fr with ``get_file_list`` and then download it with ``download_file``
@@ -114,16 +114,16 @@ Example - Population Map
     import matplotlib.cm as cm
     import matplotlib.pyplot as plt
     import descartes
-    
+
     import warnings
     from shapely.errors import ShapelyDeprecationWarning
     warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
-    
+
     # get geographical data list
     geodata_list = get_geodata_list()
     # get departments geographical limits
     com = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:commune')
-    
+
     mapcom = gpd.GeoDataFrame(com).set_crs("EPSG:3857")
 
     mapcom = mapcom.to_crs(epsg=3035)
@@ -132,15 +132,15 @@ Example - Population Map
 
     mapcom['REF_AREA'] = 'D' + mapcom['insee_dep']
     mapcom['density'] = mapcom['population'] / mapcom['area']
-    
+
     mapcom = GeoFrDataFrame(mapcom)
     mapcom = mapcom.translate(departement = ['971', '972', '974', '973', '976'],
                               factor = [1.5, 1.5, 1.5, 0.35, 1.5])
-                              
+
     mapcom = mapcom.zoom(departement = ["75","92", "93", "91", "77", "78", "95", "94"],
                      factor=1.5, startAngle = math.pi * (1 - 3 * 1/9))
     mapcom
-    
+
     mapplot = gpd.GeoDataFrame(mapcom)
     mapplot.loc[mapplot.density < 40, 'range'] = "< 40"
     mapplot.loc[mapplot.density >= 20000, 'range'] = "> 20 000"
@@ -159,7 +159,7 @@ Example - Population Map
     list_ranges.append("> 20 000")
 
     mapplot['range'] = mapplot['range'].astype(CategoricalDtype(categories=list_ranges, ordered=True))
-    
+
     fig, ax = plt.subplots(1,1,figsize=[15,15])
     mapplot.plot(column='range', cmap=cm.viridis,
     legend=True, ax=ax,
@@ -173,19 +173,19 @@ Example - Population Map
                 format='svg', dpi=1200,
                 bbox_inches = 'tight',
                 pad_inches = 0)
-    
+
 How to avoid proxy issues ?
 ---------------------------
 
 .. code-block:: python
 
-   # Use the proxy_server argument of the init_conn function to change the proxy server address   
+   # Use the proxy_server argument of the init_conn function to change the proxy server address
    from pynsee.utils.init_conn import init_conn
    init_conn(sirene_key="my_sirene_key",
              http_proxy="http://my_proxy_server:port",
              https_proxy="http://my_proxy_server:port")
-             
-   # Alternativety you can use directly environment variables as follows. 
+
+   # Alternativety you can use directly environment variables as follows.
    # Beware not to commit your credentials!
    import os
    os.environ['sirene_key'] = 'my_sirene_key'

@@ -19,7 +19,7 @@ Get geographical data
     .. automethod:: get_geom
 
     .. automethod:: translate
-    
+
     .. automethod:: zoom
 
 
@@ -57,11 +57,10 @@ Get sirene data
 .. autoclass:: pynsee.sirene.SireneDataFrame.SireneDataFrame
 
     .. automethod:: get_location
-    
+
 Get data from insee.fr files
 ----------------------------
 
 .. autofunction:: pynsee.download.download_file
 
 .. autofunction:: pynsee.download.get_column_metadata
-

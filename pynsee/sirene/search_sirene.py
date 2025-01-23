@@ -27,7 +27,8 @@ def _warning_search_sirene():
 @lru_cache(maxsize=None)
 def _warning_data_save():
     logger.info(
-        "Locally saved data has been used\n" "Set update=True to trigger an update"
+        "Locally saved data has been used\n"
+        "Set update=True to trigger an update"
     )
 
 
@@ -163,7 +164,9 @@ def search_sirene(
         else:
             phntc_list = [False] * len(variable)
     else:
-        check_phonetic_search = all([(x in [True, False]) for x in phonetic_search])
+        check_phonetic_search = all(
+            [(x in [True, False]) for x in phonetic_search]
+        )
         if check_phonetic_search is False:
             raise ValueError(
                 "!!! phonetic_search must be True, False or a list of True and False !!!"
