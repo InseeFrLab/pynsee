@@ -13,9 +13,11 @@ def download_file(id, variables=None, update=False, silent=False):
     Args:
         id (str): file id, check get_file_list to have a full list of available files
 
-        variables (list): a list of variables to load from the data file, use get_column_metadata function to have the full list
+        variables (list): a list of variables to load from the data file, use
+          get_column_metadata function to have the full list
 
-        update (bool, optional): Trigger an update, otherwise locally saved data is used. Defaults to False.
+        update (bool, optional): Trigger an update, otherwise locally saved data is
+          used. Defaults to False.
 
         silent (bool, optional): Set to True, to disable messages printed in log info
 
