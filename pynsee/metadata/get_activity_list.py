@@ -2,7 +2,6 @@
 # Copyright : INSEE, 2021
 
 from functools import lru_cache
-import os
 import re
 import zipfile
 import importlib
@@ -30,7 +29,7 @@ def _warning_activity():
 
 
 @lru_cache(maxsize=None)
-def get_activity_list(level, version="NAFRev2"):
+def get_activity_list(level):
     """Get a list of economic activities from NAF/NACE rev 2 2008 classification
 
     Notes:
@@ -38,8 +37,6 @@ def get_activity_list(level, version="NAFRev2"):
 
     Args:
         level (str): Levels available are :  A5, A10, A17, A21, A38, A64, A88, A129, A138, NAF1, NAF2, NAF3, NAF4, NAF5
-
-        version (str, optional): Defaults to 'NAFRev2'.
 
     Raises:
         ValueError: an error is raised if level is not in the default list
@@ -99,17 +96,13 @@ def get_activity_list(level, version="NAFRev2"):
         "table_NAF2-NA.csv",
     ]
 
-    list_expected_files = [
-        insee_folder + "/naf2008/" + f for f in list_expected_files
-    ]
-
-    list_available_file = [not os.path.exists(f) for f in list_expected_files]
+    list_expected_files = [insee_folder + "/naf2008/" + f for f in list_expected_files]
 
     # unzipping raw files
     try:
         pkg_path = importlib.resources.files(__name__)
         zip_file = str(pkg_path) + "/data/naf.zip"
-    except Exception:
+    except:
         import pkg_resources
 
         zip_file = pkg_resources.resource_stream(__name__, "data/naf.zip")

@@ -10,9 +10,7 @@ from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.download._check_url import _check_url
 
 
-def _download_store_file(
-    tempdir: tempfile.TemporaryDirectory, id: str, update: bool
-):
+def _download_store_file(tempdir: tempfile.TemporaryDirectory, id: str):
     """Download requested file and return some metadata that will
     be used
 
@@ -49,7 +47,6 @@ def _download_store_file(
 
     url_found = _check_url(caract["lien"])
 
-    # TODO: update is NOT used
     _download_pb(url=url_found, fname=filename, total=caract["size"])
 
     # CHECKSUM MD5 ------------------------------------------

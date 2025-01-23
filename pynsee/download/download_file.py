@@ -32,7 +32,7 @@ def download_file(id, variables=None, update=False, silent=False):
 
     with tempfile.TemporaryDirectory() as tmpdir:
 
-        dwn = _download_store_file(tmpdir, id, update=update)
+        dwn = _download_store_file(tmpdir, id)
         df = _load_data_from_schema(dwn, variables=variables)
 
     return df
