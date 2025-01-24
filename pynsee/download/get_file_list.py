@@ -58,7 +58,6 @@ def get_file_list():
 
 @lru_cache(maxsize=None)
 def warning_metadata_download():
-
     logger.info(
         "pynsee.download's metadata rely on volunteering contributors and "
         "their manual updates. "

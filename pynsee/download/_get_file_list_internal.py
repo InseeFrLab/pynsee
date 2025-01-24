@@ -5,7 +5,6 @@ import json
 
 
 def _get_file_list_internal():
-
     try:
         zip_file = (
             str(importlib.resources.files(__name__))

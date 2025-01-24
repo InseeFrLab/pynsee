@@ -13,14 +13,12 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _get_dict_data_source():
-
     try:
         URL_DATA_LIST = os.environ["pynsee_file_list"]
     except Exception:
-        URL_DATA_LIST = (
-            "https://raw.githubusercontent.com/"
-            + "InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"
-        )
+        URL_MELODI = "https://minio.lab.sspcloud.fr/pierrelamarche/melodi/liste_donnees.json"
+        URL_DOREMIFASOL = "https://raw.githubusercontent.com/InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"  # inherited from previous pynsee version
+        URL_DATA_LIST = [URL_MELODI] + [URL_DOREMIFASOL]
     try:
         proxies = {
             "http": os.environ["http_proxy"],
@@ -31,18 +29,33 @@ def _get_dict_data_source():
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-    try:
-        jsonfile = requests.get(
-            URL_DATA_LIST, proxies=proxies, verify=False
-        ).json()
-    except Exception:
-        jsonfile = _get_file_list_internal()
+    if isinstance(URL_DATA_LIST, list):
+        try:
+            jsonfile1 = requests.get(
+                URL_MELODI, proxies=proxies, verify=False
+            ).json()
+            jsonfile2 = requests.get(
+                URL_DOREMIFASOL, proxies=proxies, verify=False
+            ).json()
+            jsonfile = jsonfile1 + jsonfile2
+        except Exception:
+            logger.error("Error when reading sources catalog")
+    else:
+        try:
+            jsonfile = [
+                requests.get(
+                    URL_DATA_LIST, proxies=proxies, verify=False
+                ).jsson()
+            ]
+        except Exception:
+            jsonfile = _get_file_list_internal()
 
-        logger.error(
-            "Package's internal data has been used !\n"
-            "File list download failed !\n"
-            "Please contact the package maintainer if this error persists !"
-        )
+            logger.error(
+                "Package's internal data has been used !\n"
+                "File list download failed !\n"
+                "Please contact the package maintainer if this error "
+                "persists !"
+            )
 
     # HACK BECAUSE OF DUPLICATED ENTRIES -------------------------------
 
