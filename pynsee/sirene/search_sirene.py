@@ -51,42 +51,27 @@ def search_sirene(
     """Get data about companies from criteria on variables
 
     Args:
-        variable (str or list): name of the variable on which the search is
-          applied.
+        variable (str or list): name of the variable on which the search is applied.
 
         pattern (str or list): the pattern or criterium searched
 
-        kind (str, optional): kind of companies : siren or siret. Defaults to
-          "siret"
+        kind (str, optional): kind of companies : siren or siret. Defaults to "siret"
 
-        phonetic_search (bool, or list of bool, optional): If True phonetic
-          search is triggered on the all variables of the list, if it is a list
-          of True/False, phonetic search is used accordingly on the list of
-          variables
+        phonetic_search (bool, or list of bool, optional): If True phonetic search is triggered on the all variables of the list, if it is a list of True/False, phonetic search is used accordingly on the list of variables
 
-        and_condition (bool, optional): If True, only records meeting all
-          conditions are kept (AND is inserted between the conditions). If
-          False, all records meeting at least one condition are kept (OR is
-          inserted between the conditions).
+        and_condition (bool, optional): If True, only records meeting all conditions are kept (AND is inserted between the conditions). If False, all records meeting at least one condition are kept (OR is inserted between the conditions).
 
-        number (int, optional): Number of companies searched. Defaults to 1000.
-          If it is above 1000, multiple queries are triggered.
+        number (int, optional): Number of companies searched. Defaults to 1000. If it is above 1000, multiple queries are triggered.
 
-        upper_case (bool, optional): If True, values of argument 'pattern' are
-          converted to upper case and added to the list of searched patterns.
+        upper_case (bool, optional): If True, values of argument 'pattern' are converted to upper case and added to the list of searched patterns.
 
-        decode (bool, optional): If True, values of argument 'pattern' are
-          decoded, especially accents are removed and added to the list of
-          searched patterns.
+        decode (bool, optional): If True, values of argument 'pattern' are decoded, especially accents are removed and added to the list of searched patterns.
 
-        activity (bool, optional): If True, activty title is added based on
-          NAF/NACE. Defaults to True.
+        activity (bool, optional): If True, activty title is added based on NAF/NACE. Defaults to True.
 
         legal (bool, optional): If True, legal entities title are added
 
-        closed (bool, optional): If False, closed entities are removed from the
-          data and for each legal entity only the last period for which the data
-          is stable is displayed
+        closed (bool, optional): If False, closed entities are removed from the data and for each legal entity only the last period for which the data is stable is displayed
 
         silent (bool, optional): Set to True, to disable messages printed in log info
 
@@ -99,8 +84,7 @@ def search_sirene(
         >>> from pynsee.sirene import search_sirene
         >>> from pynsee.sirene import get_dimension_list
         >>> #
-        >>> # Get available column names, it is useful to design your query
-        >>> # with search_sirene
+        >>> # Get available column names, it is useful to design your query with search_sirene
         >>> sirene_dimension = get_dimension_list()
         >>> #
         >>> # Get activity list (NAF rev 2)
@@ -111,26 +95,23 @@ def search_sirene(
         >>>                                "codePostalEtablissement"],
         >>>                    pattern = ["86.10Z", "75*"], kind = "siret")
         >>> #
-        >>> # Get a list of companies located in Igny city whose name matches
-        >>> # with 'pizza' using a phonetic search
+        >>> # Get a list of companies located in Igny city whose name matches with 'pizza' using a phonetic search
         >>> df = search_sirene(variable = ["libelleCommuneEtablissement",
         >>>                            'denominationUniteLegale'],
         >>>                    pattern = ["igny", 'pizza'],
         >>>                    phonetic_search=True, kind = "siret")
         >>> #
-        >>> # Get a list of companies whose name matches with 'SNCF' (French
-        >>> # national railway company)
+        >>> # Get a list of companies whose name matches with 'SNCF' (French national railway company)
         >>> # and whose legal status is SAS (societe par actions simplifiee)
         >>> df = search_sirene(variable=["denominationUniteLegale",
         >>>                              'categorieJuridiqueUniteLegale'],
         >>>                    pattern=["sncf", '5710'], kind="siren")
         >>> #
         >>> # Get data on Hadrien Leclerc
-        >>> df = search_sirene(
-        >>>     variable = ['prenom1UniteLegale', 'nomUniteLegale'],
-        >>>     pattern = ['hadrien', 'leclerc'],
-        >>>     phonetic_search = [True, False],
-        >>>     closed=True)
+        >>> df = search_sirene(variable = ['prenom1UniteLegale', 'nomUniteLegale'],
+        >>>                           pattern = ['hadrien', 'leclerc'],
+        >>>                           phonetic_search = [True, False],
+        >>>                           closed=True)
         >>> #
         >>> # Find 2500 tobacco shops
         >>> df = search_sirene(variable = ['denominationUniteLegale'],
@@ -138,27 +119,24 @@ def search_sirene(
         >>>            number = 2500,
         >>>            kind = "siret")
         >>> #
-        >>> # Find 1000 companies whose name sounds like Dassault Système or is
-        >>> # a big company (GE), search is made as well on patterns whose
-        >>> # accents have been removed
+        >>> # Find 1000 companies whose name sounds like Dassault Système or is a big company (GE),
+        >>> # search is made as well on patterns whose accents have been removed
         >>> import os
-        >>> # environment variable 'pynsee_print_url' force the package to
-        >>> # print the request
+        >>> # environment variable 'pynsee_print_url' force the package to print the request
         >>> os.environ["pynsee_print_url"] = 'True'
-        >>> df = search_sirene(
-        >>>     variable = ["denominationUniteLegale", 'categorieEntreprise'],
-        >>>     pattern = ['Dassot Système', 'GE'],
-        >>>     and_condition = False,
-        >>>     upper_case = True,
-        >>>     decode = True,
-        >>>     update = True,
-        >>>     phonetic_search  = [True, False],
-        >>>     number = 1000)
+        >>> df = search_sirene(variable = ["denominationUniteLegale", 'categorieEntreprise'],
+        >>>                 pattern = ['Dassot Système', 'GE'],
+        >>>                 and_condition = False,
+        >>>                 upper_case = True,
+        >>>                 decode = True,
+        >>>                 update = True,
+        >>>                 phonetic_search  = [True, False],
+        >>>                 number = 1000)
     """
     if (not kind == "siret") & (not kind == "siren"):
         raise ValueError("!!! kind should be among : siren, siret !!!")
 
-    if type(phonetic_search) is not list:
+    if not isinstance(phonetic_search, list):
         if phonetic_search is True:
             phntc_list = [True] * len(variable)
         else:
