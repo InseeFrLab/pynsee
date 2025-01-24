@@ -21,8 +21,8 @@ def _check_url(url):
             return url
 
         logger.error(
-            f"File not found on insee.fr:\n{url} - please open an issue "
-            "on:\nhttps://github.com/InseeFrLab/pynsee"
+            f"File not found on insee.fr:\n{url} - please open an issue on:\n"
+            "https://github.com/InseeFrLab/pynsee"
         )
 
         try:
@@ -32,7 +32,6 @@ def _check_url(url):
             list_potential_dates = []
 
             def get_close_dates_list(start_year, timespan=10):
-
                 start_year = int(start_year)
                 start_year_short = int(str(start_year)[-2:])
 
@@ -44,9 +43,7 @@ def _check_url(url):
                     )
                     + list(
                         range(
-                            start_year_short,
-                            start_year_short - timespan,
-                            -1,
+                            start_year_short, start_year_short - timespan, -1
                         )
                     )
                 )
@@ -65,7 +62,6 @@ def _check_url(url):
             list_potential_dates = list(dict.fromkeys(list_potential_dates))
 
             for d in list_potential_dates:
-
                 filename2 = filename.replace(str(datefile), str(d))
                 url2 = "/".join(
                     list_string_split[: (len(list_string_split) - 1)]
@@ -91,6 +87,7 @@ def _check_url(url):
                 logger.warning(
                     f"The following file has been used instead:\n{url2}"
                 )
+
         else:
             url2 = url
 

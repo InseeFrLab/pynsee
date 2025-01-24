@@ -12,26 +12,33 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _get_dict_data_source():
-
     try:
         URL_DATA_LIST = os.environ["pynsee_file_list"]
-    except:
-        URL_DATA_LIST = (
-            "https://raw.githubusercontent.com/"
-            + "InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"
-        )
+    except KeyError:
+        URL_MELODI = "https://minio.lab.sspcloud.fr/pierrelamarche/melodi/liste_donnees.json"
+        URL_DOREMIFASOL = "https://raw.githubusercontent.com/InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"  # inherited from previous pynsee version
+        URL_DATA_LIST = [URL_MELODI] + [URL_DOREMIFASOL]
 
-    try:
-        with PynseeAPISession() as session:
-            jsonfile = session.get(URL_DATA_LIST).json()
-    except:
-        jsonfile = _get_file_list_internal()
+    with PynseeAPISession() as session:
+        if isinstance(URL_DATA_LIST, list):
+            try:
+                jsonfile1 = session.get(URL_MELODI, verify=False).json()
+                jsonfile2 = session.get(URL_DOREMIFASOL, verify=False).json()
+                jsonfile = jsonfile1 + jsonfile2
+            except Exception:
+                logger.error("Error when reading sources catalog")
+        else:
+            try:
+                jsonfile = [session.get(URL_DATA_LIST, verify=False).json()]
+            except Exception:
+                jsonfile = _get_file_list_internal()
 
-        logger.error(
-            "Package's internal data has been used !\n"
-            "File list download failed !\n"
-            "Please contact the package maintainer if this error persists !"
-        )
+                logger.error(
+                    "Package's internal data has been used !\n"
+                    "File list download failed !\n"
+                    "Please contact the package maintainer if this error "
+                    "persists !"
+                )
 
     # HACK BECAUSE OF DUPLICATED ENTRIES -------------------------------
 
