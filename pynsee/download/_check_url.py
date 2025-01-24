@@ -9,8 +9,8 @@ from requests.packages.urllib3.util.retry import Retry
 
 logger = logging.getLogger(__name__)
 
-def _check_url(url):
 
+def _check_url(url):
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     try:
@@ -32,7 +32,7 @@ def _check_url(url):
         logger.error(
             f"File not found on insee.fr:\n{url} - please open an issue on:\n"
             "https://github.com/InseeFrLab/pynsee"
-            )
+        )
 
         try:
             list_string_split = url.split("/")
@@ -41,14 +41,15 @@ def _check_url(url):
             list_potential_dates = []
 
             def get_close_dates_list(start_year, timespan=10):
-
                 start_year = int(start_year)
                 start_year_short = int(str(start_year)[-2:])
 
-                list_close_year = list(range(start_year, start_year + timespan)) + \
-                                    list(range(start_year, start_year - timespan, -1)) + \
-                                    list(range(start_year_short, start_year_short + timespan)) + \
-                                    list(range(start_year_short, start_year_short - timespan, -1))
+                list_close_year = (
+                    list(range(start_year, start_year + timespan))
+                    + list(range(start_year, start_year - timespan, -1))
+                    + list(range(start_year_short, start_year_short + timespan))
+                    + list(range(start_year_short, start_year_short - timespan, -1))
+                )
 
                 list_close_year = [str(y) for y in list_close_year]
 
@@ -64,7 +65,6 @@ def _check_url(url):
             list_potential_dates = list(dict.fromkeys(list_potential_dates))
 
             for d in list_potential_dates:
-
                 filename2 = filename.replace(str(datefile), str(d))
                 url2 = "/".join(
                     list_string_split[: (len(list_string_split) - 1)] + [filename2]
@@ -78,21 +78,12 @@ def _check_url(url):
                     logger.warning(f"No other similar files have been found")
                     url2 = url
         except:
-            logger.error(
-                "Error raised while trying to find another similar file"
-                )
+            logger.error("Error raised while trying to find another similar file")
 
-        if 'url2' in locals():
+        if "url2" in locals():
             if url != url2:
-                logger.warning(
-                    f"The following file has been used instead:\n{url2}"
-                    )
+                logger.warning(f"The following file has been used instead:\n{url2}")
         else:
             url2 = url
 
         return url2
-
-
-
-
-

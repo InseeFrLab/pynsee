@@ -5,7 +5,9 @@ from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.utils._move_col_after import _move_col_before
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def get_file_list():
@@ -42,10 +44,10 @@ def get_file_list():
         "separateur": "separator",
         "derniere_ligne": "last_row",
         "valeurs_manquantes": "missing_value",
-        "disponible": "available"
+        "disponible": "available",
     }
-    df = df.rename(columns = rename_col_dict)
-    
+    df = df.rename(columns=rename_col_dict)
+
     df = df[~df.link.str.contains("https://api.insee.fr")]
 
     warning_metadata_download()
@@ -55,7 +57,6 @@ def get_file_list():
 
 @lru_cache(maxsize=None)
 def warning_metadata_download():
-
     logger.info(
         "pynsee.download's metadata rely on volunteering contributors and "
         "their manual updates. "

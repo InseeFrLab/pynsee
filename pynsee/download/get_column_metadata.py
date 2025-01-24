@@ -77,9 +77,7 @@ def get_column_metadata(id):
                 labels = labels[
                     ["column", "value", "value_label_fr", "column_label_fr"]
                 ]
-                logger.info(
-                    "Column-specific metadata has been found for this file"
-                )
+                logger.info("Column-specific metadata has been found for this file")
 
     else:
         raise ValueError(
