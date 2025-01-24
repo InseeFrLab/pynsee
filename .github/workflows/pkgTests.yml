@@ -40,7 +40,7 @@ jobs:
                  --per-file-ignores='__init__.py:F401,F403 tests/*:F401'
     - name: Lint with black
       run: |
-        black --include '\.py$' --line-length 79
+        black . --include '\.py$' --line-length 79
     - name: Test examples
       env:
         sirene_key: ${{ secrets.SIRENE_KEY }}
