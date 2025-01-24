@@ -4,6 +4,7 @@ on:
   push:
       branches:
         - 'master'
+        - 'black-formatting'
 
 jobs:
   build:
