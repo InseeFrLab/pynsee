@@ -63,17 +63,17 @@ data = _download_data()
 
 ```{python}
 def _extract_lat_lon(string, pattern = "CRS3035RES200mN"):
-    """function to extract latitude and longitude from data""" 
-    
+    """function to extract latitude and longitude from data"""
+
     splitted_string = re.sub(pattern, "", string).split("E")
-    lat_lon_numeric = [int(x) for x in splitted_string] 
+    lat_lon_numeric = [int(x) for x in splitted_string]
     return lat_lon_numeric
 
 def _make_square(string, sideLength = 200):
-    """function to make square from geographical points"""    
-    
+    """function to make square from geographical points"""
+
     lat, lon = _extract_lat_lon(string)
-    polygon = Polygon([Point(lon, lat), 
+    polygon = Polygon([Point(lon, lat),
                       Point(lon + sideLength, lat),
                       Point(lon + sideLength, lat + sideLength),
                       Point(lon, lat + sideLength),
@@ -112,7 +112,7 @@ geoMarseille
 ```
 
 ```{python}
-# compute percentage of poor households for each 200m square 
+# compute percentage of poor households for each 200m square
 cols = ["Men_pauv", "Men"]
 dataMarseille[cols] = dataMarseille[cols].apply(pd.to_numeric, errors='coerce')
 dataMarseille["Men_pauv_pct"] = dataMarseille["Men_pauv"] / dataMarseille["Men"] * 100
@@ -122,8 +122,8 @@ dataMarseilleMap = geopandas.GeoDataFrame(dataMarseille)
 
 ```{python}
 # make plot
-ax = dataMarseilleMap.plot(column='Men_pauv_pct', 
-                           cmap=cm.viridis, 
+ax = dataMarseilleMap.plot(column='Men_pauv_pct',
+                           cmap=cm.viridis,
                            legend=True,
                            legend_kwds={'shrink': 0.5},
                            figsize = (15,15))
@@ -133,4 +133,3 @@ plt.suptitle('Poverty in Marseille in 2015', y=0.85, fontweight="bold")
 plt.title('percentage of poor households on a 200m-square grid', size=11, x=0.6)
 plt.show()
 ```
-

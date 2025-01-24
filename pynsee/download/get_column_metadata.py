@@ -38,7 +38,8 @@ def get_column_metadata(id):
             id_used = suggestions[0]
             if not id == id_used:
                 logger.warning(
-                    f"Metadata for {id} has not been found, metadata for {id_used} is provided instead"
+                    f"Metadata for {id} has not been found, metadata for "
+                    f"{id_used} is provided instead"
                 )
         else:
             id_used = id
@@ -77,11 +78,14 @@ def get_column_metadata(id):
                 labels = labels[
                     ["column", "value", "value_label_fr", "column_label_fr"]
                 ]
-                logger.info("Column-specific metadata has been found for this file")
+                logger.info(
+                    "Column-specific metadata has been found for this file"
+                )
 
     else:
         raise ValueError(
-            "id not found in file list, please check metadata from get_file_list"
+            "id not found in file list, please check metadata "
+            "from get_file_list"
         )
 
     return labels

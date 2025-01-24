@@ -20,7 +20,7 @@ def _get_naf(file):
     naf = pd.read_csv(
         file,
         sep=";",
-        encoding="ISO-8859-1"
+        encoding="ISO-8859-1",
         # encoding='latin1'
     )
 

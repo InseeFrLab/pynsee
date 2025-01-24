@@ -53,7 +53,7 @@ def _get_dimension_values(
     def extract_name_fr(data, i):
         try:
             name_fr = data[i][0].text
-        except:
+        except Exception:
             name_fr = None
         finally:
             return name_fr
@@ -61,7 +61,7 @@ def _get_dimension_values(
     def extract_name_en(data, i):
         try:
             name_en = data[i][1].text
-        except:
+        except Exception:
             name_en = None
         finally:
             return name_en
@@ -69,7 +69,7 @@ def _get_dimension_values(
     def extract_id(data, i):
         try:
             id = data[i].attrib.values()
-        except:
+        except Exception:
             id = None
         finally:
             return id

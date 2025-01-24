@@ -33,7 +33,7 @@ def get_legal_entity(codes, print_err_msg=True, update=False, silent=False):
         try:
             data = _get_one_legal_entity(code, print_err_msg=print_err_msg)
             list_data.append(data)
-        except:
+        except Exception:
             pass
 
     data_final = pd.concat(list_data).reset_index(drop=True)

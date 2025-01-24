@@ -33,13 +33,6 @@ def _get_dict_data_source():
             except Exception:
                 jsonfile = _get_file_list_internal()
 
-                logger.error(
-                    "Package's internal data has been used !\n"
-                    "File list download failed !\n"
-                    "Please contact the package maintainer if this error "
-                    "persists !"
-                )
-
     # HACK BECAUSE OF DUPLICATED ENTRIES -------------------------------
 
     potential_keys = [items["nom"] for items in jsonfile]

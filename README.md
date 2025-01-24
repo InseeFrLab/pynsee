@@ -13,12 +13,12 @@
 
 
 ``pynsee`` gives a quick access to more than 150 000 macroeconomic series,
-a dozen datasets of local data, numerous sources available on [insee.fr](https://www.insee.fr), 
+a dozen datasets of local data, numerous sources available on [insee.fr](https://www.insee.fr),
 geographical limits of administrative areas taken from IGN
 as well as key metadata and SIRENE database containing data on all French companies.
 Have a look at the detailed API page [portail-api.insee.fr](https://portail-api.insee.fr/).
 
-This package is a contribution to reproducible research and public data transparency. 
+This package is a contribution to reproducible research and public data transparency.
 It benefits from the developments made by teams working on APIs at INSEE and IGN.
 
 ## Installation & API subscription
@@ -28,7 +28,7 @@ Credentials are necessary to access SIRENE API available through `pynsee` by the
 ```python
 
 # Download Pypi package
-pip install pynsee[full] 
+pip install pynsee[full]
 
 # Get the development version from GitHub
 # git clone https://github.com/InseeFrLab/pynsee.git
@@ -36,7 +36,7 @@ pip install pynsee[full]
 # pip install .[full]
 
 # Subscribe to portail-api.insee.fr and get your credentials!
-# Save your credentials with init_conn function :      
+# Save your credentials with init_conn function :
 from pynsee.utils.init_conn import init_conn
 init_conn(sirene_key="my_sirene_key")
 
@@ -51,7 +51,7 @@ init_conn(sirene_key="my_sirene_key")
    Alternatively, you can make a keyword-based search with ``search_macrodata``, e.g. ``search_macrodata('GDP')``.
    Then, get the data with ``get_dataset`` or ``get_series``
 * **Local data** : use first ``get_local_metadata``, then get data with ``get_local_data``
-* **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list`` 
+* **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list``
 * **Sirene (French companies database)** : use first ``get_dimension_list``, then use ``search_sirene`` with dimensions as filtering variables
 * **Geodata** : get the list of available geographical data with ``get_geodata_list`` and then retrieve it with ``get_geodata``
 * **Files on insee.fr**: get the list of available files on insee.fr with ``get_file_list`` and then download it with ``download_file``
@@ -100,7 +100,7 @@ mapcom['density'] = mapcom['population'] / mapcom['area']
 mapcom = GeoFrDataFrame(mapcom)
 mapcom = mapcom.translate(departement = ['971', '972', '974', '973', '976'],
                           factor = [1.5, 1.5, 1.5, 0.35, 1.5])
-                          
+
 mapcom = mapcom.zoom(departement = ["75","92", "93", "91", "77", "78", "95", "94"],
                  factor=1.5, startAngle = math.pi * (1 - 3 * 1/9))
 mapcom
@@ -137,14 +137,14 @@ fig.savefig('pop_france.svg',
             format='svg', dpi=1200,
             bbox_inches = 'tight',
             pad_inches = 0)
- 
+
 ```
 
 ## How to avoid proxy issues ?
 
 ```python
 
-# Use the proxy_server argument of the init_conn function to change the proxy server address   
+# Use the proxy_server argument of the init_conn function to change the proxy server address
 from pynsee.utils.init_conn import init_conn
 init_conn(sirene_key="my_sirene_key",
          http_proxy="http://my_proxy_server:port",
@@ -153,14 +153,14 @@ init_conn(sirene_key="my_sirene_key",
 # Beware : any change to the keys should be tested after having cleared the cache
 # Please do : from pynsee.utils import *; clear_all_cache()
 
-# Alternativety you can use directly environment variables as follows. 
+# Alternativety you can use directly environment variables as follows.
 # Beware not to commit your credentials!
 import os
 os.environ['sirene_key'] = 'my_sirene_key'
 os.environ['http_proxy'] = "http://my_proxy_server:port"
 os.environ['https_proxy'] = "http://my_proxy_server:port"
 
-``` 
+```
 
 ## Support
 

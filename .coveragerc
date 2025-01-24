@@ -1,4 +1,4 @@
 [run]
-omit = 
+omit =
     tests/*
     pynsee/macrodata/_build_series_list.py

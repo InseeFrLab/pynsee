@@ -49,4 +49,3 @@ Search files on insee.fr
 ------------------------
 
 .. autofunction:: pynsee.download.get_file_list
-

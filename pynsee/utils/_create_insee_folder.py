@@ -34,7 +34,7 @@ def _create_insee_folder():
             f.write("")
         # testing requires restricted rights on the machine
 
-    except:
+    except Exception:
         # if error temporary folder is returned
         insee_folder = _get_temp_dir()
         logger.warning(

@@ -53,7 +53,7 @@ def get_definition_list():
         try:
             pkg_path = importlib.resources.files(__name__)
             zip_file = str(pkg_path) + "/data/definition.zip"
-        except:
+        except Exception:
             import pkg_resources
 
             zip_file = pkg_resources.resource_stream(

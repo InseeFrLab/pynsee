@@ -1,0 +1,9 @@
+[flake8]
+extend-ignore = E722,C901,E501
+count = True
+exclude = .git,__pycache__,docs/*,*.yaml,*.zip,.env,*.svg,*.md,*.qmd,*.css,*.txt,*.rst,Dockerfile,.spyproject,.pytest_cache,*.lock,*.toml
+max-complexity = 10
+statistics = True
+per-file-ignores =
+    __init__.py:F401,F403
+    tests/*:F401

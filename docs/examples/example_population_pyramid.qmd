@@ -16,7 +16,7 @@ title: "Population pyramid"
 from pynsee.localdata import *
 
 import pandas as pd
-pd.options.mode.chained_assignment = None 
+pd.options.mode.chained_assignment = None
 %matplotlib inline
 import matplotlib.pyplot as plt
 
@@ -50,4 +50,3 @@ axes[0].invert_xaxis()
 
 
 ```
-

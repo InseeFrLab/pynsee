@@ -94,7 +94,7 @@ def get_dataset_list(update=False, silent=False):
         df = df[df["Name.en"] != ""]
         df = df[df["Name.fr"] != ""]
 
-    except:
+    except Exception:
         df = _get_dataset_list_internal()
 
         logger.error(

@@ -31,7 +31,7 @@ warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
 url = 'https://www.data.gouv.fr/fr/datasets/r/1ffb6125-1cea-4a03-80be-520c1c3a5411'
 
 def download_data(url=url):
-    
+
     results = requests.get(url)
     dirpath = tempfile.mkdtemp()
     dwnFile = dirpath + '\\fr_presidential_election_1stround_2022.txt'
@@ -39,7 +39,7 @@ def download_data(url=url):
     with open(dwnFile, 'wb') as f:
         f.write(results.content)
         f.close()
-        
+
     return dwnFile
 
 dwnFile = download_data()
@@ -50,26 +50,26 @@ dwnFile = download_data()
 def make_dataframes(dataFile=dwnFile):
     """
     function to make clean dataframes from data.gouv.fr file
-        it returns one dataframe containing data about votes by candidate and commune, 
+        it returns one dataframe containing data about votes by candidate and commune,
         and a dataframe containing communes agregated data
-    """    
-    
+    """
+
     # import data
     data = pd.read_csv(dataFile, dtype='str', sep=';', encoding='latin-1', skiprows=1, header=None)
     colNames = pd.read_csv(dataFile, dtype='str', sep=';', encoding='latin-1', nrows=1, header=None)
     colNamesCommunes = colNames.iloc[0,:18].to_list()
     colNamesBallots = colNames.iloc[0,19:len(colNames.columns)].to_list()
-    
+
     # make dataframe only on communes agregated data
     dfCommunes = data.iloc[:,:18]
     dfCommunes.columns = colNamesCommunes
-    
+
     # make dataframe only with detailed data, candidate by candidate
     icols = [x for x in range(4)] + [x for x in range(19, len(data.columns))]
     dfBallots = data.iloc[:, icols]
     dfBallots.columns = [x for x in range(len(dfBallots.columns))]
     colnamesCandidates = colNamesCommunes[:4] + colNamesBallots
-    
+
     # reshape detailed data
     list_df = []
     for icandidate in range(1, 12):
@@ -81,20 +81,20 @@ def make_dataframes(dataFile=dwnFile):
     dfFinal = pd.concat(list_df).reset_index(drop=True)
 
     dfFinal['Voix'] = pd.to_numeric(dfFinal['Voix'])
-        
+
     dfFinal = dfFinal.rename(columns={"Code du département":"dep", "Code de la commune":"com"})
     dfCommunes = dfCommunes.rename(columns={"Code du département":"dep", "Code de la commune":"com"})
-    
-    # add clean communes id  
+
+    # add clean communes id
     for r in dfCommunes.index:
         dep = str(dfCommunes.loc[r, "dep"])
         comId = str(dfCommunes.loc[r, "com"])
-        if dep.startswith('Z'):        
+        if dep.startswith('Z'):
             dep = '97'
         dfCommunes.loc[r,"insee_com"] = dep + comId
-        
+
     dfFinal = dfFinal.merge(dfCommunes, on = ["dep", "com"], how="left")
-    
+
     return dfFinal, dfCommunes
 
 dfBallots, dfCommunes = make_dataframes()
@@ -103,11 +103,11 @@ dfBallots, dfCommunes = make_dataframes()
 ```{python}
 # select only the candidate who has won the most votes for each commune
 colList = dfBallots.columns[:4].to_list() + ["insee_com"]
-FirstCandidate = dfBallots.loc[dfBallots.reset_index().groupby(colList)['Voix'].idxmax()].reset_index(drop=True)    
+FirstCandidate = dfBallots.loc[dfBallots.reset_index().groupby(colList)['Voix'].idxmax()].reset_index(drop=True)
 ```
 
 ```{python}
-# download geographical limits of communes from IGN, and merge it with 
+# download geographical limits of communes from IGN, and merge it with
 IGNCom = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:commune').translate().zoom()
 com = IGNCom.merge(FirstCandidate, how='left', on ='insee_com')
 com = com.dropna()
@@ -129,5 +129,3 @@ plt.suptitle('The results of the first round of the 2022 presidential election b
             fontsize = 12, fontweight='bold')
 plt.show()
 ```
-
-

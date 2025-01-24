@@ -5,7 +5,9 @@ from shapely.geometry import shape
 import warnings
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 def _geojson_parser(data):
 
@@ -20,7 +22,8 @@ def _geojson_parser(data):
             {
                 f: df[f]
                 for f in df.keys()
-                if f not in (["geometry", "bbox"]) and (type(df[f]) is not list)
+                if f not in (["geometry", "bbox"])
+                and (type(df[f]) is not list)
             },
             index=[0],
         )
@@ -30,17 +33,17 @@ def _geojson_parser(data):
             if type(dfk) is list:
                 try:
                     df2[k] = [df[k]]
-                except:
+                except Exception:
                     pass
 
         geom = data[c]["geometry"]["coordinates"]
 
         data_type = data[c]["geometry"]["type"]
-        
+
         try:
-            if 'id' not in df2.columns:
-                df2['id'] = data[c]['id']
-        except:
+            if "id" not in df2.columns:
+                df2["id"] = data[c]["id"]
+        except Exception:
             pass
 
         Shape = shape({"type": data_type, "coordinates": geom})

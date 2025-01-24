@@ -6,8 +6,6 @@ import pandas as pd
 
 def _get_date(freq, time_period):
 
-    # from datetime import datetime
-
     if freq == "M":
         dates = [tp + "-01" for tp in time_period]
 
@@ -35,7 +33,6 @@ def _get_date(freq, time_period):
     if freq not in ["M", "A", "S", "T", "B"]:
         dates = time_period
     else:
-        # dates = [datetime.strptime(date, '%Y-%m-%d').date() for date in dates]
         dates = pd.to_datetime(dates, format="%Y-%m-%d")
 
     return dates

@@ -26,10 +26,10 @@ def get_definition(ids):
         >>>                       'c1361', 'c2173', 'c2070'])
 
     """
-    if type(ids) == str:
+    if isinstance(ids, str):
         ids = [ids]
 
-    if type(ids) != list:
+    if not isinstance(ids, list):
         raise ValueError("!!! ids must be a list or a str!!!")
 
     # ids = ['c1020', 'c1601']
@@ -54,7 +54,7 @@ def get_definition(ids):
     def extract_data(data, item1, i, item2):
         try:
             val = data[item1][i][item2]
-        except:
+        except Exception:
             val = None
         return val
 
@@ -108,7 +108,7 @@ def get_definition(ids):
                     )
                     def_short_fr = clean_definition(def_short_fr)
                     def_short_en = clean_definition(def_short_en)
-            except:
+            except Exception:
                 pass
 
             update = data["dateMiseAJour"]
@@ -129,7 +129,7 @@ def get_definition(ids):
                 },
                 index=[0],
             )
-        except:
+        except Exception:
             df = pd.DataFrame(
                 {
                     "ID": id,

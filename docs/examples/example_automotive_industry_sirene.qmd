@@ -4,7 +4,7 @@ title: "Car industry example"
 
 To reproduce this example, you need to register to
 Insee's API and configure `pynsee`. Go check @sec-config for
-details. 
+details.
 
 ## Dependencies
 
@@ -67,8 +67,8 @@ df = data.loc[data['effectifsMinEtablissement'] > 100]
 df = df.reset_index(drop=True)
 ```
 
-`df` is a `pandas DataFrame` supercharged with a few 
-convenient methods. One of them is `get_location` that 
+`df` is a `pandas DataFrame` supercharged with a few
+convenient methods. One of them is `get_location` that
 helps finding longitude and latitudes of businesses:
 
 ```{python}
@@ -76,8 +76,8 @@ helps finding longitude and latitudes of businesses:
 df = df.get_location()
 ```
 
-We finally transform that in `geopandas.GeoDataFrame` 
-to prepare a map. 
+We finally transform that in `geopandas.GeoDataFrame`
+to prepare a map.
 
 ```{python}
 # make geodataframe
@@ -86,7 +86,7 @@ gdf = gdf.reset_index(drop=True)
 gdf = gdf.sort_values(by=['effectifsMinEtablissement'], ascending=False)
 ```
 
-Let's keep the following list of car constructors: 
+Let's keep the following list of car constructors:
 
 ```{python}
 # make cleaned labels

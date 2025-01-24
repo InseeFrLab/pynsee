@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import os
-import pandas as pd
-
 from pynsee.geodata._get_full_list_wfs import _get_full_list_wfs
 
 from pynsee.utils.save_df import save_df
+
 
 @save_df(day_lapse_max=90)
 def get_geodata_list(update=False, silent=False):
@@ -44,7 +42,9 @@ def get_geodata_list(update=False, silent=False):
         list_first_col = [
             col for col in data_full_list.columns if col in list_var
         ]
-        list_other_col = [col for col in data_full_list.columns if col not in list_first_col]
+        list_other_col = [
+            col for col in data_full_list.columns if col not in list_first_col
+        ]
 
         data_list = data_full_list[list_first_col + list_other_col]
         data_list = data_list.drop_duplicates().reset_index(drop=True)
