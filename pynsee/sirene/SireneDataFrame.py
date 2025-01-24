@@ -107,7 +107,6 @@ class SireneDataFrame(pd.DataFrame):
 
             if set(list_col).issubset(df.columns):
                 list_location = []
-                timeSleep = 1
 
                 with PynseeAPISession() as session:
 

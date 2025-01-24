@@ -54,7 +54,6 @@ def _get_geodata(
             "crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'"
         )
 
-    topic = "administratif"
     service = "WFS"
     Version = "2.0.0"
 

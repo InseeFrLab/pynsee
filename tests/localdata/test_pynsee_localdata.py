@@ -5,7 +5,7 @@ from unittest import TestCase
 import pandas as pd
 import unittest
 
-from pynsee.localdata._get_geo_relation import _get_geo_relation
+# from pynsee.localdata._get_geo_relation import _get_geo_relation
 from pynsee.localdata._get_insee_one_area import _get_insee_one_area
 
 from pynsee.localdata.get_area_list import get_area_list
@@ -18,7 +18,8 @@ from pynsee.localdata.get_population import get_population
 from pynsee.localdata.get_old_city import get_old_city
 from pynsee.localdata.get_new_city import get_new_city
 from pynsee.localdata.get_area_projection import get_area_projection
-from pynsee.localdata.get_ascending_area import get_ascending_area
+
+# from pynsee.localdata.get_ascending_area import get_ascending_area
 from pynsee.localdata.get_descending_area import get_descending_area
 
 # manual commands for testing only on geodata module
@@ -183,7 +184,7 @@ class TestFunction(TestCase):
             # "arrondissementsMunicipaux",
         ]
 
-        list_geo_data = []
+        # list_geo_data = []
         for geo in list_available_geo:
             # time.sleep(1)
             self.assertTrue(isinstance(get_geo_list(geo), pd.DataFrame))

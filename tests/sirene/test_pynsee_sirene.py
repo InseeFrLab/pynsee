@@ -21,7 +21,8 @@ from pynsee.sirene import (
     get_sirene_relatives,
     search_sirene,
 )
-from pynsee.sirene._request_sirene import _request_sirene
+
+# from pynsee.sirene._request_sirene import _request_sirene
 
 # manual commands for testing only on geodata module
 # coverage run -m unittest tests/geodata/test_pynsee_geodata.py
@@ -55,7 +56,7 @@ class TestFunction(TestCase):
         with self.assertRaises(ValueError):
             get_sirene_relatives("0")
 
-    def test_get_sirene_relatives(self):
+    def test_get_sirene_relatives2(self):
         df = get_sirene_relatives(["39860733300059", "00555008200027"])
         test = isinstance(df, pd.DataFrame)
         self.assertTrue(test)

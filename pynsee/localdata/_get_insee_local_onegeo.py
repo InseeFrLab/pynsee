@@ -28,7 +28,6 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
     Cellule = data_request["Cellule"]
     Variable = data_request["Variable"]
     Croisement = data_request["Croisement"]
-    Zone = data_request["Zone"]
 
     dataset_version = Croisement["JeuDonnees"]["code"]
     dataset_name = Croisement["JeuDonnees"]["Source"]
@@ -43,7 +42,7 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
         for m in range(len(modalite)):
             try:
                 dico_added = {modalite[m]["variable"]: modalite[m]["code"]}
-            except:
+            except Exception:
                 dico_added = {modalite["variable"]: modalite["code"]}
             dico = {**dico, **dico_added}
 
@@ -51,7 +50,7 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
         dico = {k: v for k, v in dico.items() if len(v) != 0}
         try:
             df = pd.DataFrame(dico, index=[0])
-        except:
+        except Exception:
             df = pd.DataFrame(dico)
 
         list_data.append(df)
@@ -95,9 +94,5 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
     )
 
     data["OBS_VALUE"] = pd.to_numeric(data["OBS_VALUE"])
-
-    # except Exception as e:
-    #     #print(e)
-    #     data = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": None}, index=[0])
 
     return data

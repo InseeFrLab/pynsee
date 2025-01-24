@@ -3,7 +3,7 @@ import os
 import pandas as pd
 from parameterized import parameterized
 
-from pynsee.download import *
+# from pynsee.download import *
 from pynsee.download._check_url import _check_url
 from pynsee.download import download_file
 from pynsee.download import get_file_list
