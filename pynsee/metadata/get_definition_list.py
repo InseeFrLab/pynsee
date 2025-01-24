@@ -12,14 +12,16 @@ import importlib
 import pandas as pd
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _warning_definition_internal_data():
     logger.info(
         "Internal package data has been used !\n"
         "If some data is missing, please use get_definition !"
-        )
+    )
 
 
 @lru_cache(maxsize=None)
@@ -51,9 +53,12 @@ def get_definition_list():
         try:
             pkg_path = importlib.resources.files(__name__)
             zip_file = str(pkg_path) + "/data/definition.zip"
-        except:
+        except Exception:
             import pkg_resources
-            zip_file = pkg_resources.resource_stream(__name__, "data/definition.zip")
+
+            zip_file = pkg_resources.resource_stream(
+                __name__, "data/definition.zip"
+            )
 
         with zipfile.ZipFile(zip_file, "r") as zip_ref:
             zip_ref.extractall(insee_folder)

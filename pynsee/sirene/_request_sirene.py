@@ -14,13 +14,6 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _request_sirene(query, kind, number=1001):
-    # , query_limit=20
-
-    # query = '?q=denominationUniteLegale:pizza'
-    # query = '?q=periode(activitePrincipaleEtablissement:56.30Z) AND codePostalEtablissement:83*'
-    # query = '?q=(periode(activitePrincipaleEtablissement:56.30Z) AND codePostalEtablissement:83*) OR (periode(activitePrincipaleEtablissement:56.30Z) AND codePostalEtablissement:82*))'
-    # kind = 'siret'
-    # number = 4500
 
     if kind == "siren":
         main_key = "unitesLegales"
@@ -130,7 +123,8 @@ def _request_sirene(query, kind, number=1001):
 
                     if df_nrows == number:
                         logger.warning(
-                            "maximum reached, increase value of number argument !"
+                            "maximum reached, "
+                            "increase value of number argument !"
                         )
 
         data_final = pd.concat(list_dataframe)

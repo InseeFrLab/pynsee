@@ -43,7 +43,7 @@ def _wait_api_query_limit(query):
     else:
         try:
             qCount = pd.read_parquet(file)
-        except:
+        except Exception:
             os.remove(file)
             qCount = pd.DataFrame(
                 {"query": query, "run_time": date_time_now}, index=[0]
@@ -59,7 +59,7 @@ def _wait_api_query_limit(query):
                 qCount.loc[r, "time_gap"] < timespan_insee_api
             )
 
-        qCount = qCount.loc[qCount["oneMin"] == True]
+        qCount = qCount.loc[qCount["oneMin"] == True]  # NOQA
         n_query = len(qCount.index)
 
         if n_query >= max_query_insee_api - 1:

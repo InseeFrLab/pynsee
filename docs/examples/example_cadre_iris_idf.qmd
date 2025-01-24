@@ -59,19 +59,19 @@ ign_iris_2020 = "ftp://Contours_IRIS_ext:ao6Phu5ohJ4jaeji@ftp3.ign.fr/CONTOURS-I
 ign_iris_2017 = "ftp://Contours_IRIS_ext:ao6Phu5ohJ4jaeji@ftp3.ign.fr/CONTOURS-IRIS_2-1__SHP__FRA_2017-01-01.7z"
 
 def get_iris_data(url=ign_iris_2017, update=False):
-    
+
     list_string_split = url.split("/")
     filename = list_string_split[len(list_string_split)-1]
     list_string_split_filename = filename.split(".")
     filename_clean = list_string_split_filename[0]
-    
+
     home = Path.home()
     dataDir = str(home) + "/" + filename_clean
     if not os.path.exists(dataDir):
         os.mkdir(dataDir)
 
     file_iris = dataDir + "/" + "file_" + filename_clean
-        
+
     if (not os.path.exists(file_iris)) or (update):
         with closing(request.urlopen(url, timeout=None)) as r:
             with open(file_iris, 'wb') as f:
@@ -89,17 +89,17 @@ def get_iris_data(url=ign_iris_2017, update=False):
             if re.search("CONTOURS-IRIS.shp", filename):
                 list_file += [filename]
                 list_file_size += [os.path.getsize(filename)]
-    
+
     list_shp_df = []
-                
-    for f in list_file:  
-               
+
+    for f in list_file:
+
         shp = gpd.read_file(f)
         shp = shp.to_crs("EPSG:3857")
         list_shp_df += [shp]
-        
+
     shpFinal = pd.concat(list_shp_df)
-    
+
     return shpFinal
 
 shapefile = get_iris_data(update=True)
@@ -121,4 +121,3 @@ ax.set_axis_off()
 ax.set(title='Proportion of upper and middle middle class workers among working population in 2017')
 plt.show()
 ```
-

@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import logging
+
 import pandas as pd
-import os
+
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils._paste import _paste
 from pynsee.utils.save_df import save_df
+
+logger = logging.getLogger(__name__)
+
 
 @save_df(day_lapse_max=90)
 def get_area_list(area=None, date=None, update=False, silent=False):
@@ -80,8 +85,10 @@ def get_area_list(area=None, date=None, update=False, silent=False):
     list_data = []
 
     for a in list_available_area:
+
         api_url = "https://api.insee.fr/metadonnees/geo/" + a
-        print(api_url)
+        logger.info(api_url)
+
         if date:
             api_url += f"?date={date}"
 

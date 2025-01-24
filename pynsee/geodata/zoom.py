@@ -29,7 +29,7 @@ def zoom(
         radius (float, optional): radius used with center point to make offshore point, distance in meter
 
         startAngle (float, optional): start angle defining offshore point, by default it is pi * (1 - 2.5 * 1/9))
-        
+
         factor (float, optional): make departements bigger or smaller.
         This parameter is used by shapely.affinity.scale function, please refer to its documentation to choose the value.
 
@@ -55,7 +55,9 @@ def zoom(
         df = self
         if all([x in df.columns for x in ["insee_dep", "geometry"]]):
 
-            zoomDep = df[df["insee_dep"].isin(departement)].reset_index(drop=True)
+            zoomDep = df[df["insee_dep"].isin(departement)].reset_index(
+                drop=True
+            )
 
             if len(zoomDep.index) > 0:
 
@@ -63,7 +65,9 @@ def zoom(
                 end = Point(center[0] + radius, center[1])
                 line = LineString([center, end])
 
-                line = rotate(line, startAngle, origin=center, use_radians=True)
+                line = rotate(
+                    line, startAngle, origin=center, use_radians=True
+                )
                 endPoint = Point(line.coords[1])
                 center = _get_center(zoomDep)
 

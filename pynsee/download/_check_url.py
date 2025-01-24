@@ -14,8 +14,11 @@ def _check_url(url):
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
+        proxies = {
+            "http": os.environ["http_proxy"],
+            "https": os.environ["https_proxy"],
+        }
+    except Exception:
         proxies = {"http": "", "https": ""}
 
     session = requests.Session()
@@ -47,8 +50,14 @@ def _check_url(url):
                 list_close_year = (
                     list(range(start_year, start_year + timespan))
                     + list(range(start_year, start_year - timespan, -1))
-                    + list(range(start_year_short, start_year_short + timespan))
-                    + list(range(start_year_short, start_year_short - timespan, -1))
+                    + list(
+                        range(start_year_short, start_year_short + timespan)
+                    )
+                    + list(
+                        range(
+                            start_year_short, start_year_short - timespan, -1
+                        )
+                    )
                 )
 
                 list_close_year = [str(y) for y in list_close_year]
@@ -67,22 +76,30 @@ def _check_url(url):
             for d in list_potential_dates:
                 filename2 = filename.replace(str(datefile), str(d))
                 url2 = "/".join(
-                    list_string_split[: (len(list_string_split) - 1)] + [filename2]
+                    list_string_split[: (len(list_string_split) - 1)]
+                    + [filename2]
                 )
-                results = session.get(url2, proxies=proxies, stream=True, verify=False)
+                results = session.get(
+                    url2, proxies=proxies, stream=True, verify=False
+                )
 
                 if results.status_code == 200:
                     break
 
                 if d == list_potential_dates[-1]:
-                    logger.warning(f"No other similar files have been found")
+                    logger.warning("No other similar files have been found")
                     url2 = url
-        except:
-            logger.error("Error raised while trying to find another similar file")
+        except Exception:
+            logger.error(
+                "Error raised while trying to find another similar file"
+            )
 
         if "url2" in locals():
             if url != url2:
-                logger.warning(f"The following file has been used instead:\n{url2}")
+                logger.warning(
+                    f"The following file has been used instead:\n{url2}"
+                )
+
         else:
             url2 = url
 

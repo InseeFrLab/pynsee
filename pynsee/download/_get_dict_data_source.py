@@ -15,40 +15,46 @@ logger = logging.getLogger(__name__)
 def _get_dict_data_source():
     try:
         URL_DATA_LIST = os.environ["pynsee_file_list"]
-    except:
-        URL_MELODI = (
-            "https://minio.lab.sspcloud.fr/pierrelamarche/melodi/liste_donnees.json"
-        )
+    except Exception:
+        URL_MELODI = "https://minio.lab.sspcloud.fr/pierrelamarche/melodi/liste_donnees.json"
         URL_DOREMIFASOL = "https://raw.githubusercontent.com/InseeFrLab/DoReMIFaSol/master/data-raw/liste_donnees.json"  # inherited from previous pynsee version
         URL_DATA_LIST = [URL_MELODI] + [URL_DOREMIFASOL]
     try:
-        proxies = {"http": os.environ["http_proxy"], "https": os.environ["https_proxy"]}
-    except:
+        proxies = {
+            "http": os.environ["http_proxy"],
+            "https": os.environ["https_proxy"],
+        }
+    except Exception:
         proxies = {"http": "", "https": ""}
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
     if isinstance(URL_DATA_LIST, list):
         try:
-            jsonfile1 = requests.get(URL_MELODI, proxies=proxies, verify=False).json()
+            jsonfile1 = requests.get(
+                URL_MELODI, proxies=proxies, verify=False
+            ).json()
             jsonfile2 = requests.get(
                 URL_DOREMIFASOL, proxies=proxies, verify=False
             ).json()
             jsonfile = jsonfile1 + jsonfile2
-        except:
+        except Exception:
             logger.error("Error when reading sources catalog")
     else:
         try:
             jsonfile = [
-                requests.get(URL_DATA_LIST, proxies=proxies, verify=False).json()
+                requests.get(
+                    URL_DATA_LIST, proxies=proxies, verify=False
+                ).jsson()
             ]
-        except:
+        except Exception:
             jsonfile = _get_file_list_internal()
 
             logger.error(
                 "Package's internal data has been used !\n"
                 "File list download failed !\n"
-                "Please contact the package maintainer if this error persists !"
+                "Please contact the package maintainer if this error "
+                "persists !"
             )
 
     # HACK BECAUSE OF DUPLICATED ENTRIES -------------------------------

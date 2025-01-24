@@ -1,7 +1,9 @@
 import tempfile
 
 
-def _import_options(tempdir: tempfile.TemporaryDirectory, caract: dict, filename: str):
+def _import_options(
+    tempdir: tempfile.TemporaryDirectory, caract: dict, filename: str
+):
     """Internal to generate a dictionary of options
     required to import files
 
@@ -62,7 +64,7 @@ def _import_options(tempdir: tempfile.TemporaryDirectory, caract: dict, filename
     import_args.update({"dtype": list_cols})
     try:
         encoding = caract["encoding"]
-    except:
+    except Exception:
         encoding = "Nan"
     import_args.update({"encoding": encoding})
 

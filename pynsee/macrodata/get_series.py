@@ -11,6 +11,7 @@ from pynsee.macrodata._load_dataset_data import _load_dataset_data
 from pynsee.utils._paste import _paste
 from pynsee.utils.save_df import save_df
 
+
 @save_df(day_lapse_max=30)
 def get_series(
     *idbanks,
@@ -21,7 +22,6 @@ def get_series(
     endPeriod=None,
     firstNObservations=None,
     lastNObservations=None,
-    includeHistory=None,
     updatedAfter=None
 ):
     """Get data from INSEE series idbank
@@ -43,8 +43,6 @@ def get_series(
         firstNObservations (int, optional): get the first N observations for each key series (idbank).
 
         lastNObservations (int, optional): get the last N observations for each key series (idbank).
-
-        includeHistory (boolean, optional): boolean to access the previous releases (not available on all series).
 
         updatedAfter (str, optional): starting point for querying the previous releases (format yyyy-mm-ddThh:mm:ss)
 
@@ -137,7 +135,7 @@ def get_series(
             api_query = api_query + added_param_string
 
         df = _get_insee(
-            api_query=api_query,  
+            api_query=api_query,
             sdmx_query=sdmx_query,
             step=str("{0}/{1}").format(q + 1, max_seq_idbank),
         )
@@ -158,15 +156,16 @@ def get_series(
                     metadata_df["IDBANK"].isin(list_idbank_data)
                 ].reset_index(drop=True)
 
-                list_col = ['IDBANK'] + [c for c in metadata_df.columns if c not in data]
+                list_col = ["IDBANK"] + [
+                    c for c in metadata_df.columns if c not in data
+                ]
                 metadata_df = metadata_df[list_col]
 
                 data = data.merge(metadata_df, on="IDBANK", how="left")
 
                 # remove all na columns
                 data = data.dropna(axis=1, how="all")
-        except Exception as e:
-            # print(e)
+        except Exception:
             pass
 
         try:

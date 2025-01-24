@@ -3,7 +3,6 @@
 
 from functools import lru_cache
 import pandas as pd
-import numpy as np
 
 from pynsee.utils._request_insee import _request_insee
 
@@ -19,14 +18,15 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
         variables, dataset_version, nivgeo, codegeo, modalite
     )
 
-    request = _request_insee(api_url=link, file_format="application/json;charset=utf-8")
+    request = _request_insee(
+        api_url=link, file_format="application/json;charset=utf-8"
+    )
 
     data_request = request.json()
 
     Cellule = data_request["Cellule"]
     Variable = data_request["Variable"]
     Croisement = data_request["Croisement"]
-    Zone = data_request["Zone"]
 
     dataset_version = Croisement["JeuDonnees"]["code"]
     dataset_name = Croisement["JeuDonnees"]["Source"]
@@ -41,7 +41,7 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
         for m in range(len(modalite)):
             try:
                 dico_added = {modalite[m]["variable"]: modalite[m]["code"]}
-            except:
+            except Exception:
                 dico_added = {modalite["variable"]: modalite["code"]}
             dico = {**dico, **dico_added}
 
@@ -49,9 +49,9 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
         dico = {k: v for k, v in dico.items() if len(v) != 0}
         try:
             df = pd.DataFrame(dico, index=[0])
-        except:
+        except Exception:
             df = pd.DataFrame(dico)
-            
+
         list_data.append(df)
 
     data = pd.concat(list_data)
@@ -63,18 +63,19 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
         for d in range(len(values)):
             df_dict = pd.DataFrame(values[d], index=[0])
             list_dict_var.append(df_dict)
-    
+
         var_name = Variable[i]["code"]
-        
-        df = (pd.concat(list_dict_var)
-              .reset_index(drop=True)
-              .drop(columns=['variable'])
-              .rename(columns = {'code': var_name})
-             )
-        
+
+        df = (
+            pd.concat(list_dict_var)
+            .reset_index(drop=True)
+            .drop(columns=["variable"])
+            .rename(columns={"code": var_name})
+        )
+
         data[f"{var_name}_label"] = Variable[i]["Libelle"]
-        
-        data = data.merge(df, on = var_name, how="left")
+
+        data = data.merge(df, on=var_name, how="left")
     data = data.assign(
         DATASET_VERSION=dataset_version,
         DATASET_NAME=dataset_name,
@@ -92,9 +93,5 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
     )
 
     data["OBS_VALUE"] = pd.to_numeric(data["OBS_VALUE"])
-
-    # except Exception as e:
-    #     #print(e)
-    #     data = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": None}, index=[0])
 
     return data

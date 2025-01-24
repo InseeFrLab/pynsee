@@ -39,4 +39,6 @@ def _unzip_pb(fzip, dest, desc="Extracting"):
                     zipf.open(i) as tempfi,
                     open(os.fspath(dest / i.filename), "wb") as fileobj,
                 ):
-                    copyfileobj(CallbackIOWrapper(pbar.update, tempfi), fileobj)
+                    copyfileobj(
+                        CallbackIOWrapper(pbar.update, tempfi), fileobj
+                    )

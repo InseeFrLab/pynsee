@@ -91,7 +91,7 @@ doctors = doctors.sort_values(["categorieJuridiqueUniteLegale"])
 
 doctors.to_csv("doctors.csv")
 list_denomination_uniteLegale = doctors.denominationUniteLegale.unique()
-# list_denomination_uniteLegale                 
+# list_denomination_uniteLegale
 ```
 
 ```{python}
@@ -131,7 +131,7 @@ doctors
 ```{python}
 # count general practioners by commun
 hdLegalStatus = doctors.groupby(['categorieJuridiqueUniteLegale'], dropna=True)['effectifsMinEtablissement'].agg(['mean', "count"])
-   
+
 hdLegalStatus["meanHeadcountLegalStatus"] = hdLegalStatus["mean"].apply(lambda x: _replace_nan(x, 1))
 
 hdLegalStatus["categorieJuridiqueUniteLegale"] = hdLegalStatus.index
@@ -157,7 +157,7 @@ doctors["headcountFinal"] = doctors["headcount"] / doctors.groupby("siren", drop
 dupDoctors = doctors[doctors["siren"].duplicated(keep=False)].reset_index(drop=True)
 dupDoctors.to_csv("dupDoctors.csv")
 
-list_adress_var = ["numeroVoieEtablissement", "typeVoieEtablissementLibelle", 
+list_adress_var = ["numeroVoieEtablissement", "typeVoieEtablissementLibelle",
                    "libelleVoieEtablissement", "codePostalEtablissement", "libelleCommuneEtablissement"]
 
 addressDupDoctors = doctors[doctors[list_adress_var].duplicated(keep=False)].reset_index(drop=True)
@@ -184,15 +184,15 @@ doctorsCom = doctorsCom.reset_index(drop=True)
 ```
 
 ```{python}
-import os, sys 
+import os, sys
 
 communes = get_geo_list("communes")
 
 def _find_commune_identifier(com, dep, communes=communes):
-    
+
     try:
-        list_com = [c.upper() for c in communes.TITLE.to_list()]    
-        communes["TITLE"] = list_com    
+        list_com = [c.upper() for c in communes.TITLE.to_list()]
+        communes["TITLE"] = list_com
         communes = communes[communes["CODE_DEP"] == dep].reset_index(drop=True)
 
         match = difflib.get_close_matches(com.upper(), list_com)[0]
@@ -201,9 +201,9 @@ def _find_commune_identifier(com, dep, communes=communes):
         cog = cog.loc[0, "CODE"]
     except:
         cog = None
-    
-    return cog      
-  
+
+    return cog
+
 for r in doctorsCom.index:
     dep = doctorsCom.loc[r, "codePostalEtablissement"][:2]
     comName = doctorsCom.loc[r, "libelleCommuneEtablissement"]
@@ -304,4 +304,3 @@ ax.set_axis_off()
 ax.set(title='Distribution of doctors in Ile-de-France\nunit: 1 doctor/ 1000 inhabitants')
 plt.show()
 ```
-

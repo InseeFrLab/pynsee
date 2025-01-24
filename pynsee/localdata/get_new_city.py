@@ -66,7 +66,7 @@ def get_new_city(code, date=None):
 
         data_final = pd.concat(list_data).reset_index(drop=True)
 
-    except:
+    except Exception:
         logger.error("No data found !")
         data_final = pd.DataFrame()
 

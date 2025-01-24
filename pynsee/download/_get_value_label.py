@@ -1,7 +1,4 @@
-import logging
 from pynsee.download._get_dict_data_source import _get_dict_data_source
-
-logger = logging.getLogger(__name__)
 
 
 def _get_value_label(id):

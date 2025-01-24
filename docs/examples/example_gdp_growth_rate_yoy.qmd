@@ -16,7 +16,7 @@ title: "GDP Growth rate"
 ```
 
 ```{python}
-from pynsee.macrodata import * 
+from pynsee.macrodata import *
 
 import pandas as pd
 import matplotlib.ticker as ticker
@@ -54,4 +54,3 @@ ax.get_legend().remove()
 ax.xaxis.label.set_visible(False)
 plt.show()
 ```
-

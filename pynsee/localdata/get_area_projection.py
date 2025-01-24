@@ -10,6 +10,8 @@ from pynsee.utils.save_df import save_df
 import logging
 
 logger = logging.getLogger(__name__)
+
+
 @lru_cache(maxsize=None)
 def _warning_get_area_projection():
     logger.info(

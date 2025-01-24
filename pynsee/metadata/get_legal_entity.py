@@ -4,10 +4,10 @@
 import pandas as pd
 from functools import lru_cache
 from tqdm import trange
-import os
 
 from pynsee.utils._request_insee import _request_insee
 from pynsee.utils.save_df import save_df
+
 
 @save_df(day_lapse_max=30)
 def get_legal_entity(codes, print_err_msg=True, update=False, silent=False):
@@ -33,13 +33,13 @@ def get_legal_entity(codes, print_err_msg=True, update=False, silent=False):
         try:
             data = _get_one_legal_entity(code, print_err_msg=print_err_msg)
             list_data.append(data)
-        except:
+        except Exception:
             pass
 
     data_final = pd.concat(list_data).reset_index(drop=True)
 
     data_final = data_final.rename(columns={"intitule": "title"})
-    
+
     return data_final
 
 
