@@ -37,8 +37,6 @@ def get_old_city(code, date=None):
     if date is not None:
         api_link = api_link + "?date=" + date
 
-    # api_link = 'https://api.insee.fr/metadonnees/geo/commune/24259/precedents'
-
     with PynseeAPISession() as session:
         request = session.request_insee(
             api_url=api_link, file_format="application/json"
@@ -46,14 +44,7 @@ def get_old_city(code, date=None):
 
     try:
         data = request.json()
-
-        list_data = []
-
-        for i in range(len(data)):
-            df = pd.DataFrame(data[i], index=[0])
-            list_data.append(df)
-
-        data_final = pd.concat(list_data).reset_index(drop=True)
+        data_final = pd.DataFrame(data)
 
     except Exception:
         logger.error("No data found !")
