@@ -44,7 +44,10 @@ def get_sirene_relatives(*siret):
         for i in range(len(types)):
 
             criteria = types[i] + ":" + re.sub(r"\s+", "", list_siret[s])
-            query = f"https://api.insee.fr/api-sirene/3.11/siret/liensSuccession?q={criteria}"
+            query = (
+                "https://api.insee.fr/api-sirene/3.11/siret/liensSuccession"
+                f"?q={criteria}"
+            )
             try:
                 with HiddenPrints():
                     with PynseeAPISession() as session:
@@ -56,7 +59,7 @@ def get_sirene_relatives(*siret):
                         )
 
                     json = result.json()
-            except:
+            except Exception:
                 pass
             else:
                 list_df += [_make_dataframe_from_dict(json)]

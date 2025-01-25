@@ -74,7 +74,7 @@ def get_sirene_data(*id):
                     data_request = request.json()
                 try:
                     data = data_request[main_key]
-                except:
+                except Exception:
                     main_key_list = [
                         key
                         for key in list(data_request.keys())
@@ -84,7 +84,7 @@ def get_sirene_data(*id):
                     data = data_request[main_key]
 
                 data_final = _make_dataframe_from_dict(data)
-            except:
+            except Exception:
                 pass
             else:
                 list_data.append(data_final)

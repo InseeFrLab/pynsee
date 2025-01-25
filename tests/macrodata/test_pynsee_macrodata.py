@@ -225,7 +225,7 @@ class TestFunction(TestCase):
         try:
             df = _download_idbank_list()
             # df = _download_idbank_list(insee_date_test=future_date)
-        except:
+        except Exception:
             df = pd.DataFrame({"test_backup": ["test_backup"]})
 
         test1 = isinstance(df, pd.DataFrame)
