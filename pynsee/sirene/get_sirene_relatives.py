@@ -4,6 +4,7 @@ import re
 from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.utils.HiddenPrints import HiddenPrints
+from pynsee.sirene.SireneDataFrame import SireneDataFrame
 
 
 def get_sirene_relatives(*siret):
@@ -61,7 +62,7 @@ def get_sirene_relatives(*siret):
                 list_df += [_make_dataframe_from_dict(json)]
 
     if len(list_df) > 0:
-        df = pd.concat(list_df).reset_index(drop=True)
+        df = SireneDataFrame(pd.concat(list_df).reset_index(drop=True))
 
         for c in ["statut", "message", "nombre", "total", "debut"]:
             if c in df.columns:
