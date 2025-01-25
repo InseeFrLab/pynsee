@@ -117,8 +117,7 @@ class PynseeAPISession(requests.Session):
 
         insee_folder = _create_insee_folder()
         rate_folder = os.path.join(insee_folder, "rate_limiter")
-        if not os.path.exists(rate_folder):
-            os.makedirs(rate_folder)
+        os.makedirs(rate_folder, exist_ok=True)
 
         # the sent custom adapters for each API, to allow a separate rate
         # tracking for each
