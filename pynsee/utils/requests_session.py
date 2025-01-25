@@ -112,7 +112,7 @@ class PynseeAPISession(requests.Session):
             total=7, backoff_factor=1, status_forcelist=[429, 502, 503, 504]
         )
         adapter = HTTPAdapter(max_retries=retry_adapt)
-        self.mount("https://", adapter)
+        self.mount("http://", adapter)
         self.mount("https://", adapter)
 
         insee_folder = _create_insee_folder()
