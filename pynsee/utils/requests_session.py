@@ -2,16 +2,18 @@ import logging
 import os
 import re
 import time
-import urllib3
 import warnings
 
 import requests
 from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+import urllib3
+from urllib3.util.retry import Retry
+from requests_ratelimiter import LimiterAdapter
+from pyrate_limiter import SQLiteBucket
 
 import pynsee
 from pynsee.utils._get_credentials import _get_credentials
-from pynsee.utils._wait_api_query_limit import _wait_api_query_limit
+from pynsee.utils._create_insee_folder import _create_insee_folder
 
 logger = logging.getLogger(__name__)
 
@@ -75,14 +77,7 @@ class PynseeAPISession(requests.Session):
         """
 
         super().__init__()
-
-        # status_forcelist used to be necessary for geodata module
-        retry_adapt = Retry(
-            total=7, backoff_factor=1, status_forcelist=[429, 502, 503, 504]
-        )
-        adapter = HTTPAdapter(max_retries=retry_adapt)
-        self.mount("https://", adapter)
-        self.mount("https://", adapter)
+        self._mount_adapters()
 
         if any(x is not None for x in (http_proxy, https_proxy, sirene_key)):
             # set credentials for a new pynsee connection
@@ -109,6 +104,81 @@ class PynseeAPISession(requests.Session):
 
         self.sirene_key = credentials.get("sirene_key", None)
         self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
+
+    def _mount_adapters(self):
+
+        # default retries adapter
+        retry_adapt = Retry(
+            total=7, backoff_factor=1, status_forcelist=[429, 502, 503, 504]
+        )
+        adapter = HTTPAdapter(max_retries=retry_adapt)
+        self.mount("https://", adapter)
+        self.mount("https://", adapter)
+
+        insee_folder = _create_insee_folder()
+        rate_folder = os.path.join(insee_folder, "rate_limiter")
+
+        # the sent custom adapters for each API, to allow a separate rate
+        # tracking for each
+        def kw_adapter(api: str):
+            return {
+                "max_retries": retry_adapt,
+                "bucket_class": SQLiteBucket,
+                "bucket_kwargs": {
+                    "path": os.path.join(rate_folder, f"{api}.db"),
+                    "isolation_level": "EXCLUSIVE",
+                    "check_same_thread": False,
+                },
+            }
+
+        rates = {
+            "sirene": {
+                "url": "https://api.insee.fr/api-sirene",
+                # 30 queries/min for SIRENE
+                "rates": {"per_minute": 30},
+            },
+            "bdm": {
+                "url": "https://api.insee.fr/series/BDM",
+                # 30 queries/min for BDM: from documentation, though there is
+                # no need of a token?!
+                "rates": {"per_minute": 30},
+            },
+            "sdmx": {
+                "url": "https://bdm.insee.fr",
+                # not documented afik, but let's set it to the same rate as bdm
+                "rates": {"per_minute": 30},
+            },
+            "localdata": {
+                "url": "https://api.insee.fr/donnees-locales",
+                # 30 queries/min for (old) localdata: from documentation,
+                # though there is no need of a token?!
+                "rates": {"per_minute": 30},
+            },
+            "melodi": {
+                "url": "https://api.insee.fr/melodi",
+                # 30 queries/min for melodi: from documentation, though there
+                # is no need of a token?!
+                "rates": {"per_minute": 30},
+            },
+            "metadata": {
+                "url": "https://api.insee.fr/metadonnees/",
+                # 10_000 queries/min for metadata (from subscription page)
+                # but INSEE confirm this is a default value (corresponding
+                # to the theoric coverage of simultaneous requests by the
+                # portal). Let's go for a more realistic rate instead...
+                "rates": {"per_minute": 600},
+            },
+            "nominatim": {
+                "url": "https://nominatim.openstreetmap.org/",
+                # https://operations.osmfoundation.org/policies/nominatim/
+                "rates": {"per_second": 1},
+            },
+            # note : note documented on data.geopf.fr ?
+        }
+
+        for api, config in rates.items():
+            adapter = LimiterAdapter(**config["rates"], **kw_adapter(api))
+            self.mount(config["url"], adapter)
 
     def request(
         self, method, url, timeout=(10, 15), raise_if_not_ok=True, **kwargs
@@ -210,10 +280,6 @@ class PynseeAPISession(requests.Session):
 
         headers = {"Accept": file_format}
 
-        # avoid reaching the limit of 30 queries per minute from insee api
-        if self._query_is_valid_sirene_call(url):
-            _wait_api_query_limit(url)
-
         try:
             results = self.get(
                 url,
@@ -290,10 +356,3 @@ class PynseeAPISession(requests.Session):
             raise requests.exceptions.RequestException(
                 "Une erreur est survenue", response=results
             )
-
-
-# if __name__ == "__main__":
-#     s = PynseeAPISession()
-#     url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
-#     r = s.get(url)
-#     print(r)
