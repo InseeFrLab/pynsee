@@ -5,3 +5,4 @@ from pynsee.geodata import *
 from pynsee.metadata import *
 from pynsee.utils import *
 from pynsee.download import *
+from pynsee.catalog import *
