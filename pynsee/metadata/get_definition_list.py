@@ -37,8 +37,7 @@ def get_definition_list():
 
     insee_folder_local_def = insee_folder + "/" + "definition"
 
-    if not os.path.exists(insee_folder_local_def):
-        os.mkdir(insee_folder_local_def)
+    os.makedirs(insee_folder_local_def, exist_ok=True)
 
     list_expected_files = ["all_definitions.csv"]
 

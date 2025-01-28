@@ -41,8 +41,7 @@ def get_local_metadata():
 
     insee_folder_local_metadata = insee_folder + "/" + "local_metadata"
 
-    if not os.path.exists(insee_folder_local_metadata):
-        os.mkdir(insee_folder_local_metadata)
+    os.makedirs(insee_folder_local_metadata, exist_ok=True)
 
     dataset_label = [
         "Recensement de la population",
