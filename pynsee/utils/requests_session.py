@@ -485,9 +485,7 @@ class PynseeAPISession(requests.Session):
             elif code == 429:
 
                 if (
-                    os.environ.get(
-                        "PYNSEE_DISPLAY_ALL_WARNINGS", "false"
-                    ).lower()
+                    os.environ.get("PYNSEE_DISPLAY_ALL_WARNINGS").lower()
                     == "true"
                 ):
                     msg = (
