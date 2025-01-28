@@ -388,8 +388,6 @@ class PynseeAPISession(requests.Session):
             True if the API is a SIRENE api query. False if not.
 
         """
-
-        ""
         return bool(re.match(".*api-sirene.*", url))
 
     def _request_sdmx_insee(
@@ -585,12 +583,12 @@ class PynseeAPISession(requests.Session):
                     raise RuntimeError(
                         f"Could not reach {api} at {api_url}, please control "
                         "your proxy configuration."
-                    )
+                    ) from exc
                 if exc.response.status_code == 404:
                     raise RuntimeError(
                         f"Could not reach {api} at {api_url}, please get in "
                         "touch if the issue persists."
-                    )
+                    ) from exc
 
                 invalid_requests[api] = exc.response.status_code
 
