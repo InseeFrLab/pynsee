@@ -3,7 +3,7 @@ import logging
 import os
 import re
 import time
-from typing import Optional
+from typing import Optional, Union
 import warnings
 
 import requests
@@ -36,7 +36,9 @@ def get_env_case_insensitive(x: str):
 
 class PynseeAPISession(requests.Session):
     """
-    Session class used to allow specific timeouts and
+    Session class used throughout pynsee for http(s) queries. This session
+    object uses a specific set of config values, use
+    `help(PynseeAPISession.__init__)` for more informations.
     """
 
     INSEE_API_CODES = {
@@ -72,8 +74,6 @@ class PynseeAPISession(requests.Session):
 
         **This function should only be loaded with arguments through
         pynsee.utils.init_conn**.
-
-        To configure a proxy, use environment variables.
 
         See pynsee.utils.init_conn to create a new configuration.
 
@@ -140,6 +140,16 @@ class PynseeAPISession(requests.Session):
                 _warn_env_credentials(k)
 
     def _mount_adapters(self):
+        """
+        Mount adapters for http queries :
+            * default retries config for every http(s) requests
+            * and with specific rate-limiting for each API called
+
+        Those rate-limits are ensured with requests-ratelimiter and an SQLite
+        backend, stored by default in pynsee's appdata folder. They are **NOT**
+        (yet) adequate for any task shared between multiple machines.
+
+        """
 
         # default retries adapter
         # 429 Too Many Requests (RFC 6585)
@@ -155,11 +165,11 @@ class PynseeAPISession(requests.Session):
 
         insee_folder = _create_insee_folder()
         rate_folder = os.path.join(insee_folder, "rate_limiter")
+
         os.makedirs(rate_folder, exist_ok=True)
 
-        # the sent custom adapters for each API, to allow a separate rate
-        # tracking for each
         def kw_adapter(api: str):
+            "set given arguments to configure an ratelimiter adapter"
             return {
                 "max_retries": retry_adapt,
                 "bucket_class": SQLiteBucket,
@@ -170,6 +180,8 @@ class PynseeAPISession(requests.Session):
                 },
             }
 
+        # set custom adapters for each API, to allow a separate rate tracking
+        # for each
         rates = {
             "sirene": {
                 "url": "https://api.insee.fr/api-sirene",
@@ -212,7 +224,7 @@ class PynseeAPISession(requests.Session):
                 # https://operations.osmfoundation.org/policies/nominatim/
                 "rates": {"per_second": 1},
             },
-            # note : note documented on data.geopf.fr ?
+            # note : nothing found in data.geopf.fr's documentation ?
         }
 
         for api, config in rates.items():
@@ -220,8 +232,45 @@ class PynseeAPISession(requests.Session):
             self.mount(config["url"], adapter)
 
     def request(
-        self, method, url, timeout=(10, 15), raise_if_not_ok=True, **kwargs
-    ):
+        self,
+        method: str,
+        url: str,
+        timeout: Union[tuple, int] = (10, 15),
+        raise_if_not_ok: bool = True,
+        **kwargs,
+    ) -> requests.Response:
+        """
+        Overwrite requests.Session's request. Allows to set specific timeouts
+        and to raise exceptions if response is not ok. Also silences urllib's
+        warnings on insecure requests being performed.
+
+        Parameters
+        ----------
+        method : str
+            Usually, "GET" or "POST".
+        url : str
+            URL to query.
+        timeout : Union[tuple, int], optional
+            timeout used for the query. See requests' documentation for more
+            info. The default is (10, 15).
+        raise_if_not_ok : bool, optional
+            If set to True, a RequestException will automatically be raised if
+            the response is not ok (= `status_code` < 400).
+            The default is True.
+        **kwargs :
+            Any other kwargs are passed directly to requests.Session.request
+
+        Raises
+        ------
+        RequestException
+            If the requests fails (only if raise_if_not_ok is set to True).
+
+        Returns
+        -------
+        response : requests.Response
+            HTTP response from the requests package.
+
+        """
 
         logger.info(url)
         with warnings.catch_warnings():
@@ -238,14 +287,45 @@ class PynseeAPISession(requests.Session):
 
     def request_insee(
         self,
-        api_url=None,
-        sdmx_url=None,
-        file_format="application/xml",
-        print_msg=True,
-        raise_if_not_ok=False,
-    ):
-        "Performs a query to insee, either through API or sdmx_url"
-        result = None
+        api_url: Optional[str] = None,
+        sdmx_url: Optional[str] = None,
+        file_format: str = "application/xml",
+        print_msg: bool = True,
+        raise_if_not_ok: bool = False,
+    ) -> requests.Response:
+        """
+        Performs a query to INSEE, either through API or sdmx_url
+
+        Parameters
+        ----------
+        api_url : Optional[str]
+            URL to be queried on the API portal, optional. The default is None.
+        sdmx_url : Optional[str]
+            URL to be queried on the SDMX (Statistical Data and Metadata
+            eXchange) webservice of INSEE, optional. The default is None.
+        file_format : str, optional
+            Which king of file to expect. This currently alters the output of
+            INSEE's APIs. The default is "application/xml".
+        print_msg : bool, optional
+            If True, will log critical entries to warn of failures to query
+            the APIs. The default is True.
+        raise_if_not_ok : bool, optional
+            See PynseeAPISession.request. The default is False.
+
+        Raises
+        ------
+        RequestException
+            In case sirene_key is missing for a call to SIRENE API.
+
+        ValueError
+            If neither api_url or sdmx_url have been set.
+
+        Returns
+        -------
+        result : requests.Response
+            HTTP response from the requests package.
+
+        """
 
         try:
             if api_url and self._query_is_valid_sirene_call(api_url):
@@ -261,7 +341,7 @@ class PynseeAPISession(requests.Session):
                         "from pynsee.utils import clear_all_cache;"
                         " clear_all_cache()\n"
                     )
-                    raise ValueError(msg)
+                    raise requests.exceptions.RequestException(msg)
 
             if api_url:
                 result = self._request_api_insee(
@@ -270,13 +350,15 @@ class PynseeAPISession(requests.Session):
                     raise_if_not_ok=raise_if_not_ok,
                     print_msg=print_msg,
                 )
-
-        except ValueError as e:
-
-            if self._query_is_valid_sirene_call(api_url):
-                # Log the error as a SIRENE API call can not function without
-                # key
-                logger.critical(e)
+            elif sdmx_url:
+                result = self._request_sdmx_insee(
+                    sdmx_url, raise_if_not_ok=raise_if_not_ok
+                )
+            else:
+                raise ValueError(
+                    "either api_url or sdmx_url must be set: urls are "
+                    "currently missing"
+                )
 
         except requests.exceptions.RequestException:
             if sdmx_url:
@@ -285,14 +367,59 @@ class PynseeAPISession(requests.Session):
                 result = self._request_sdmx_insee(
                     sdmx_url, raise_if_not_ok=raise_if_not_ok
                 )
+            else:
+                # in that case, simply raise the exception
+                raise
 
         return result
 
-    def _query_is_valid_sirene_call(self, url):
-        "check if an URL is a valid API call to SIRENE"
-        return re.match(".*api-sirene.*", url)
+    def _query_is_valid_sirene_call(self, url: str) -> bool:
+        """
+        Check if an URL is a valid API call to SIRENE.
 
-    def _request_sdmx_insee(self, url, raise_if_not_ok=True):
+        Parameters
+        ----------
+        url : str
+            Url to check.
+
+        Returns
+        -------
+        bool
+            True if the API is a SIRENE api query. False if not.
+
+        """
+
+        ""
+        return bool(re.match(".*api-sirene.*", url))
+
+    def _request_sdmx_insee(
+        self, url: str, raise_if_not_ok: bool = True
+    ) -> requests.Response:
+        """
+        Performs a "get" query on the SDMX (Statistical Data and Metadata
+        eXchange) webservice of INSEE.
+
+        Parameters
+        ----------
+        url : str
+            URL to query.
+        raise_if_not_ok : bool, optional
+            If set to True, a RequestException will automatically be raised if
+            the response is not ok (= `status_code` < 400).
+            The default is True.
+
+        Raises
+        ------
+        RequestException
+            If the requests fails (only if raise_if_not_ok is set to True).
+
+        Returns
+        -------
+        results : requests.Response
+            HTTP response from the requests package.
+
+        """
+
         results = self.get(url, verify=False)
         if raise_if_not_ok and not results.ok:
             raise requests.exceptions.RequestException(
@@ -302,11 +429,40 @@ class PynseeAPISession(requests.Session):
 
     def _request_api_insee(
         self,
-        url,
-        file_format="application/xml",
-        raise_if_not_ok=False,
-        print_msg=True,
-    ):
+        url: str,
+        file_format: str = "application/xml",
+        raise_if_not_ok: bool = False,
+        print_msg: bool = True,
+    ) -> requests.Response:
+        """
+        Performs a "get" query on the INSEE's API portal.
+
+        Parameters
+        ----------
+        url : str
+            URL to query.
+        file_format : str, optional
+            Which king of file to expect. This currently alters the output of
+            INSEE's APIs. The default is "application/xml".
+        raise_if_not_ok : bool, optional
+            If set to True, a RequestException will automatically be raised if
+            the response is not ok (= `status_code` < 400).
+            The default is False.
+        print_msg : bool, optional
+            If True, will log critical entries to warn that the call to
+            APIs failed. The default is True.
+
+        Raises
+        ------
+        RequestException
+            In case of requests failure.
+
+        Returns
+        -------
+        results : requests.Response
+            HTTP response from the requests package.
+
+        """
 
         headers = {"Accept": file_format}
 
@@ -377,17 +533,30 @@ class PynseeAPISession(requests.Session):
                 msg = (
                     "An error occurred !\n"
                     f"Query : {url}\nResults : {results}\n"
-                    "Make sure you have subscribed to all APIs !\n"
-                    "Click on all APIs' icons one by one, select your "
-                    "application, and click on Subscribe"
                 )
 
                 logger.warning(msg)
             raise requests.exceptions.RequestException(
-                "Une erreur est survenue", response=results
+                "An error occured", response=results
             )
 
-    def _test_connections(self):
+    def _test_connections(self) -> dict:
+        """
+        Test the valid connection to each API.
+
+        Raises
+        ------
+        RuntimeError
+            If we got a proxy error or a 404 exception.
+        ValueError
+            If no API was reached.
+
+        Returns
+        -------
+        invalid_requests : dict
+            Dict of {"api name": response.status_code} for invalid queries.
+
+        """
         queries = {
             "BDM": "https://api.insee.fr/series/BDM/dataflow/FR1/all",
             "Metadata": "https://api.insee.fr/metadonnees/codes/cj/n3/5599",
