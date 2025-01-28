@@ -1,17 +1,59 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import json
+import os
 import unittest
 from unittest import TestCase
 
-from pynsee.utils._get_credentials import _get_credentials
+from platformdirs import user_config_dir
+
+from pynsee.utils._get_credentials import _get_credentials_from_configfile
 from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.clear_all_cache import clear_all_cache
+from pynsee.utils.init_conn import init_conn
+
+
+def patch_retries(func):
+    """
+    patch the session with a no-retry policy to speed-up tests intended to get
+    http failures
+    """
+
+    def wrapper(*args, **kwargs):
+        init = PynseeAPISession._mount_adapters
+        PynseeAPISession._mount_adapters = lambda x: None
+        try:
+            func(*args, **kwargs)
+        except Exception:
+            raise
+        finally:
+            PynseeAPISession._mount_adapters = init
+
+    return wrapper
+
+
+def patch_test_connections(func):
+    """
+    patch the session to simulate a valid connection for each API
+    """
+
+    def wrapper(*args, **kwargs):
+        init = PynseeAPISession._test_connections
+        PynseeAPISession._test_connections = lambda x: {}
+        try:
+            func(*args, **kwargs)
+        except Exception:
+            raise
+        finally:
+            PynseeAPISession._test_connections = init
+
+    return wrapper
 
 
 class TestFunction(TestCase):
 
-    StartKeys = _get_credentials()
+    StartKeys = _get_credentials_from_configfile()
 
     def test_request_insee_1(self):
         # if api is not well provided but sdmx url works
@@ -31,6 +73,75 @@ class TestFunction(TestCase):
 
         clear_all_cache()
         self.assertTrue(True)
+
+    @patch_retries
+    def test_init_conn_with_dummy_proxy(self):
+        "Check that a wrong proxy configuration raises a RuntimeError"
+
+        with self.assertRaises(RuntimeError):
+            os.environ["http_proxy"] = "spam"
+            os.environ["https_proxy"] = "bacon"
+            init_conn(sirene_key="eggs")
+
+        del os.environ["http_proxy"], os.environ["https_proxy"]
+
+    @patch_retries
+    def test_dummy_sirene_token_is_not_stored(self):
+        "Check that a wrong SIRENE token is never stored"
+        config_file = os.path.join(
+            user_config_dir("pynsee", ensure_exists=True), "config.json"
+        )
+        with open(config_file, "w") as f:
+            json.dump({"sirene_key": "spam"}, f)
+
+        init_conn(sirene_key="eggs")
+
+        config_file = os.path.join(
+            user_config_dir("pynsee", ensure_exists=True), "config.json"
+        )
+        with open(config_file, "r") as f:
+            self.assertFalse(json.load(f)["sirene_key"])
+
+    @patch_test_connections
+    def test_overriding_insee_config_and_environ(self):
+        "check that the order of precedance for config keys is respected"
+
+        config_file = os.path.join(
+            user_config_dir("pynsee", ensure_exists=True), "config.json"
+        )
+        with open(config_file, "w") as f:
+            json.dump({"sirene_key": "spam", "https_proxy": "sausage"}, f)
+
+        os.environ["sirene_key"] = "eggs"
+        os.environ["https_proxy"] = "bacon"
+
+        with PynseeAPISession() as session:
+            # os.environ has precendence over previous config
+            self.assertTrue(session.sirene_key == "eggs")
+            self.assertTrue(session.proxies["https"] == "bacon")
+
+        with PynseeAPISession(
+            sirene_key="spam", https_proxy="sausage"
+        ) as session:
+            # explicit arg has precendence over os.environ
+            self.assertTrue(session.sirene_key == "spam")
+            self.assertTrue(session.proxies["https"] == "sausage")
+
+        del os.environ["sirene_key"]
+        del os.environ["https_proxy"]
+
+        init_conn(sirene_key="sausage", https_proxy="spam")
+        with open(config_file, "r") as f:
+            # confirm init_conn ends with sirene_key/proxies correctly saved
+            config = json.load(f)
+        self.assertTrue(config["sirene_key"] == "sausage")
+        self.assertTrue(config["https_proxy"] == "spam")
+
+        with PynseeAPISession() as session:
+            # confirm that previous config is restored
+            self.assertTrue(session.sirene_key == "sausage")
+            self.assertTrue(session.proxies["http"] is None)
+            self.assertTrue(session.proxies["https"] == "spam")
 
 
 if __name__ == "__main__":
