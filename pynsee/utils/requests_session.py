@@ -577,7 +577,7 @@ class PynseeAPISession(requests.Session):
                     )
                     invalid_requests[api] = 999
 
-                results = self.get(api_url, verify=False, stream=True)
+                self.get(api_url, verify=False, stream=True)
             except requests.exceptions.RequestException as exc:
                 try:
                     exc.response.status_code
@@ -590,19 +590,6 @@ class PynseeAPISession(requests.Session):
                     raise RuntimeError(
                         f"Could not reach {api} at {api_url}, please get in "
                         "touch if the issue persists."
-                    )
-                elif results.status_code == 401:
-                    logger.critical(
-                        f"Please subscribe to {api} API on api.insee.fr !\n"
-                        "This query needs a specific token which was missing "
-                        "(type `help(init_conn)` to know more about this)."
-                    )
-                elif not results.ok:
-                    logger.critical(
-                        "Something unexpected happened while querying the"
-                        f" {api} API on api.insee.fr !\n"
-                        f"Received response code : {exc.response.status_code}."
-                        "\nPlease get in touch if the issue persists."
                     )
 
                 invalid_requests[api] = exc.response.status_code
