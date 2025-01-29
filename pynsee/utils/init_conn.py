@@ -58,6 +58,9 @@ def init_conn(
         user_config_dir("pynsee", ensure_exists=True), "config.json"
     )
 
+    with open(config_file, opener=opener, encoding="utf8") as f:
+        init_config = json.load(f)
+
     with PynseeAPISession(
         sirene_key=sirene_key, http_proxy=http_proxy, https_proxy=https_proxy
     ) as session:
@@ -85,7 +88,19 @@ def init_conn(
         )
 
     if invalid_requests and ("Sirene" in invalid_requests):
-        sirene_key = None
+
+        if not sirene_key:
+            # user has probably no use for SIRENE API and has already
+            # been warned about this
+            sirene_key = None
+        else:
+            # invalid sirene key, restore from previous valid stored key
+            try:
+                sirene_key = init_config["sirene_key"]
+            except KeyError:
+                sirene_key = None
+            else:
+                logger.warning("Previous SIRENE key has been restored.")
 
     config = {
         "sirene_key": sirene_key,
