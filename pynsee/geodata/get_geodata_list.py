@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
-import pandas as pd
-
 from pynsee.geodata._get_full_list_wfs import _get_full_list_wfs
 
 from pynsee.utils.save_df import save_df

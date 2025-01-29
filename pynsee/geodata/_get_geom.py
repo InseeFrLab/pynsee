@@ -8,7 +8,9 @@ from shapely.geometry import (
 )
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 def _get_geom(df, col="geometry"):
 
@@ -40,8 +42,7 @@ def _get_geom(df, col="geometry"):
             ]
             logger.warning(
                 "One shape in geometry column is not among supported shapely "
-                "classes or is None:\n %s"
-                % ", ".join(shapes)
+                "classes or is None:\n %s" % ", ".join(shapes)
             )
 
         geoListType = list(dict.fromkeys(geoListType))

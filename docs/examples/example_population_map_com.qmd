@@ -37,12 +37,12 @@ mapcom["area"] = mapcom['geometry'].area / 10**6
 mapcom = mapcom.to_crs(epsg=3857)
 
 mapcom['REF_AREA'] = 'D' + mapcom['insee_dep']
-mapcom['density'] = mapcom['population'] / mapcom['area'] 
+mapcom['density'] = mapcom['population'] / mapcom['area']
 ```
 
 ```{python}
 mapcom = GeoFrDataFrame(mapcom)
-mapcom = mapcom.translate(departement = ['971', '972', '974', '973', '976'], 
+mapcom = mapcom.translate(departement = ['971', '972', '974', '973', '976'],
                           factor = [1.5, 1.5, 1.5, 0.35, 1.5])
 ```
 
@@ -70,7 +70,7 @@ for i in range(len(density_ranges)-1):
 
 list_ranges.append("> 20 000")
 
-mapplot['range'] = mapplot['range'].astype(CategoricalDtype(categories=list_ranges, ordered=True))  
+mapplot['range'] = mapplot['range'].astype(CategoricalDtype(categories=list_ranges, ordered=True))
 ```
 
 ```{python}
@@ -88,4 +88,3 @@ fig.savefig('pop_france.svg',
             bbox_inches = 'tight',
             pad_inches = 0)
 ```
-

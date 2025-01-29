@@ -1,4 +1,3 @@
-import pandas as pd
 from pynsee.utils._move_col_after import _move_col_after
 
 
@@ -22,7 +21,9 @@ def _add_A17_activity(df):
     string = "|".join(["CB", "CC", "CE", "CF", "CG", "CH", "CM"])
     df2["A17"] = df2["A17"].replace(to_replace=string, value="C5", regex=True)
 
-    df2["A17"] = df2["A17"].replace(to_replace="JA|JB|JC", value="JZ", regex=True)
+    df2["A17"] = df2["A17"].replace(
+        to_replace="JA|JB|JC", value="JZ", regex=True
+    )
 
     string = "|".join(["MA", "MB", "MC", "NZ"])
     df2["A17"] = df2["A17"].replace(to_replace=string, value="MN", regex=True)

@@ -5,7 +5,7 @@ import pandas as pd
 import datetime
 from functools import lru_cache
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 
 import logging
 
@@ -40,9 +40,7 @@ def get_new_city(code, date=None):
         >>> from pynsee.localdata import get_next_city
         >>> df = get_next_city(code = '24431', date = '2018-01-01')
     """
-    # api_link = 'https://api.insee.fr/metadonnees/V1/geo/commune/24431/suivants?date=2018-01-01'
-
-    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
+    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/geo/"
 
     api_link = INSEE_localdata_api_link + "commune/" + str(code) + "/suivants"
 
@@ -55,7 +53,10 @@ def get_new_city(code, date=None):
         date = str(now.year - 10)
         api_link = api_link + "?date=" + date + "-01-01"
 
-    request = _request_insee(api_url=api_link, file_format="application/json")
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=api_link, file_format="application/json"
+        )
 
     try:
         data = request.json()
@@ -68,7 +69,7 @@ def get_new_city(code, date=None):
 
         data_final = pd.concat(list_data).reset_index(drop=True)
 
-    except:
+    except Exception:
         logger.error("No data found !")
         data_final = pd.DataFrame()
 

@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
-import os
-import time
-import requests
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 import pandas as pd
 from pynsee.geodata._geojson_parser import _geojson_parser
 from pynsee.geodata._distance import _distance
+from pynsee.utils.requests_session import PynseeAPISession
 
 import logging
 
@@ -19,11 +15,7 @@ def _set_global_var(args):
     list_bbox_full = args[1]
     crsPolygon0 = args[2]
 
-    session = requests.Session()
-    retry = Retry(connect=3, backoff_factor=1, status_forcelist=[502])
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
+    session = PynseeAPISession()
 
 
 def _get_data_with_bbox2(i):
@@ -62,20 +54,9 @@ def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
     link_query = link + BBOX
 
     if ("session" not in globals()) or ("session" not in locals()):
-        session = requests.Session()
-        retry = Retry(connect=3, backoff_factor=1, status_forcelist=[502])
-        adapter = HTTPAdapter(max_retries=retry)
-        session.mount("http://", adapter)
-        session.mount("https://", adapter)
+        session = PynseeAPISession()
 
-    proxies = {}
-    for key in ["http", "https"]:
-        try:
-            proxies[key] = os.environ[f"{key}_proxy"]
-        except KeyError:
-            proxies[key] = ""
-
-    with session.get(link_query, proxies=proxies) as r:
+    with session.get(link_query) as r:
         try:
             data_json = r.json()
         except Exception:

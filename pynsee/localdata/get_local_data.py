@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import os
 from functools import lru_cache
 from tqdm import trange
 import pandas as pd
 import numpy as np
 import re
-import sys
-import datetime
 
 from pynsee.localdata._find_latest_local_dataset import (
     _find_latest_local_dataset,
@@ -42,13 +39,14 @@ def get_local_data(
     geocodes=["1"],
     update=False,
     silent=True,
+    backwardperiod=6,
 ):
     """Get INSEE local numeric data
 
     Args:
         variables (str): one or several variables separated by an hyphen (see get_local_metadata)
 
-        dataset_version (str): code of a dataset version (see get_local_metadata), if dates are replaced by 'latest' the function triggers a loop to find the latest data available (examples: 'GEOlatestRPlatest', 'GEOlatestFLORESlatest')
+        dataset_version (str): code of a dataset version (see get_local_metadata), if dates are replaced by 'latest' the function triggers a loop to find the latest data available (examples: 'GEOlatestRPlatest', 'GEOlatestFLORESlatest').
 
         nivgeo (str): code of kind of French administrative area (see get_nivgeo_list), by default it is 'FE' ie all France
 
@@ -57,6 +55,8 @@ def get_local_data(
         update (bool): data is saved locally, set update=True to trigger an update
 
         silent (bool, optional): Set to True, to disable messages printed in log info
+
+        backwardperiod (int, optional): this arg is used only whenever the latest data is searched, it specifies the number of past years the loop should run through.
 
     Raises:
         ValueError: Error if geocodes is not a list
@@ -85,10 +85,10 @@ def get_local_data(
     if isinstance(geocodes, pd.core.series.Series):
         geocodes = geocodes.to_list()
 
-    if type(geocodes) == str:
+    if isinstance(geocodes, str):
         geocodes = [geocodes]
 
-    if type(geocodes) != list:
+    if not isinstance(geocodes, list):
         raise ValueError("!!! geocodes must be a list !!!")
 
     if (geocodes == ["1"]) or (geocodes == ["all"]) or (geocodes == "all"):
@@ -114,7 +114,12 @@ def get_local_data(
     if pattern.match(dataset_version):
 
         dataset_version = _find_latest_local_dataset(
-            dataset_version, variables, nivgeo, geocodes[0], update
+            dataset_version,
+            variables,
+            nivgeo,
+            geocodes[0],
+            update,
+            backwardperiod,
         )
 
     list_data_all = []
@@ -131,7 +136,7 @@ def get_local_data(
                 variables, dataset_version, nivgeo, codegeo
             )
 
-        except Exception as e:
+        except Exception:
             df = df_default
 
         list_data_all.append(df)

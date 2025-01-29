@@ -59,7 +59,9 @@ def _load_data_from_schema(
 
             if not len(suggestions) == 0:
                 foundFile = suggestions[0]
-                file_to_import = os.path.join(f"{zipDirectory}", f"{foundFile}")
+                file_to_import = os.path.join(
+                    f"{zipDirectory}", f"{foundFile}"
+                )
             else:
                 foundFile = ""
 
@@ -94,7 +96,7 @@ def _load_data_from_schema(
                     dtype="str",
                     usecols=variables,
                 )
-            except:
+            except Exception:
                 encoding = telechargementFichier["import_args"]["encoding"]
                 useEncoding = True
                 if isinstance(encoding, str):
@@ -137,18 +139,21 @@ def _load_data_from_schema(
         )
 
     list_files = [file_to_import]
-    
+
     if telechargementFichier["result"]["zip"] is True:
-        list_files += [dataPathFile,
-                       os.path.join(f"{zipDirectory}", telechargementFichier["file_archive"]),
-                       telechargementFichier["file_archive"]]
-    
+        list_files += [
+            dataPathFile,
+            os.path.join(
+                f"{zipDirectory}", telechargementFichier["file_archive"]
+            ),
+            telechargementFichier["file_archive"],
+        ]
+
     for f in list_files:
         if os.path.exists(f):
             try:
                 os.remove(f)
-            except:
+            except Exception:
                 pass
-    
 
     return df_insee

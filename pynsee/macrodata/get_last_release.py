@@ -9,7 +9,7 @@ import re
 import datetime
 import warnings
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 
 
 @lru_cache(maxsize=None)
@@ -22,7 +22,8 @@ def get_last_release():
     """
     link = "https://bdm.insee.fr/series/sdmx/rss/donnees"
     try:
-        request = _request_insee(sdmx_url=link)
+        with PynseeAPISession() as session:
+            request = session.request_insee(sdmx_url=link)
 
         file = io.BytesIO(request.content)
 
@@ -65,4 +66,3 @@ def get_last_release():
         data = pd.DataFrame()
 
     return data
-

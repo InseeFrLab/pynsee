@@ -1,28 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import time
+import multiprocessing
+
 import pandas as pd
 import requests
-import os
-import multiprocessing
 import tqdm
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
-from pathlib import Path
-import urllib3
-import warnings
 
-from pynsee.utils._warning_cached_data import _warning_cached_data
 from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
 from pynsee.geodata._get_data_with_bbox import _set_global_var
 from pynsee.geodata._geojson_parser import _geojson_parser
 
 from pynsee.utils.save_df import save_df
-from pynsee.utils.requests_params import (
-    _get_requests_headers,
-    _get_requests_proxies,
-)
+from pynsee.utils.requests_session import PynseeAPISession
 
 import logging
 
@@ -64,12 +54,10 @@ def _get_geodata(
             "crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'"
         )
 
-    topic = "administratif"
     service = "WFS"
     Version = "2.0.0"
 
     # make the query link for ign
-    # geoportail = "https://wxs.ign.fr/{}/geoportail".format(topic)
     geoportail = f"https://data.geopf.fr/{service.lower()}/ows?"
     Service = "SERVICE=" + service + "&"
     version = "VERSION=" + Version + "&"
@@ -115,35 +103,20 @@ def _get_geodata(
     else:
         link = link0
 
-    with requests.Session() as session:
-        retry = Retry(connect=3, backoff_factor=1)
-        adapter = HTTPAdapter(max_retries=retry)
-        session.mount("http://", adapter)
-        session.mount("https://", adapter)
+    with PynseeAPISession() as session:
 
-        headers = _get_requests_headers()
-        proxies = _get_requests_proxies()
+        try:
+            data = session.get(link, verify=False)
 
-        with warnings.catch_warnings():
-            warnings.simplefilter(
-                "ignore", urllib3.exceptions.InsecureRequestWarning
+        except requests.exceptions.RequestException as exc:
+            logger.critical(exc)
+            return pd.DataFrame(
+                {
+                    "status": exc.response.status_code,
+                    "comment": exc.response.text,
+                },
+                index=[0],
             )
-            data = session.get(
-                link, proxies=proxies, headers=headers, verify=False
-            )
-
-            if data.status_code == 502:
-                time.sleep(1)
-                data = session.get(link, proxies=proxies, headers=headers)
-
-            if data.status_code != 200:
-                logger.debug("Query:\n%s" % link)
-                logger.debug(data)
-                logger.debug(data.text)
-                return pd.DataFrame(
-                    {"status": data.status_code, "comment": data.text},
-                    index=[0],
-                )
 
     data_json = data.json()
 

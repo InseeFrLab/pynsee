@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import os
 from functools import lru_cache
 import itertools
-import pandas as pd
 import re
 from unidecode import unidecode
 
@@ -138,7 +136,7 @@ def search_sirene(
     if (not kind == "siret") & (not kind == "siren"):
         raise ValueError("!!! kind should be among : siren, siret !!!")
 
-    if type(phonetic_search) is not list:
+    if not isinstance(phonetic_search, list):
         if phonetic_search is True:
             phntc_list = [True] * len(variable)
         else:
@@ -159,10 +157,10 @@ def search_sirene(
     else:
         alive = False
 
-    if type(variable) == str:
+    if isinstance(variable, str):
         variable = [variable]
 
-    if type(pattern) == str:
+    if isinstance(pattern, str):
         pattern = [pattern]
 
     list_siren_hist_variable = [
@@ -251,8 +249,6 @@ def search_sirene(
     string_query = " OR ".join(permutation_and_parenth)
 
     query = "?q=" + string_query
-    list_var_string = [str(b) for b in [kind, number]]
-    string = "".join(list_var_string)
 
     data_final = _request_sirene(query=query, kind=kind, number=number)
 

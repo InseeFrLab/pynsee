@@ -6,9 +6,8 @@ Created on Wed Feb  1 13:52:54 2023
 """
 
 import pandas as pd
-import os
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.save_df import save_df
 
 import logging
@@ -64,7 +63,7 @@ def get_ascending_area(
     params_hash = ["get_ascending_area", area, code, date, type]
     params_hash = [x if x else "_" for x in params_hash]
 
-    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
+    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/geo/"
 
     api_link = INSEE_localdata_api_link + area + f"/{code}/ascendants?"
 
@@ -76,7 +75,10 @@ def get_ascending_area(
 
     api_link = api_link + "&".join(params)
 
-    request = _request_insee(api_url=api_link, file_format="application/json")
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=api_link, file_format="application/json"
+        )
 
     try:
         data = request.json()

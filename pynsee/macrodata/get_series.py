@@ -22,7 +22,6 @@ def get_series(
     endPeriod=None,
     firstNObservations=None,
     lastNObservations=None,
-    includeHistory=None,
     updatedAfter=None
 ):
     """Get data from INSEE series idbank
@@ -44,8 +43,6 @@ def get_series(
         firstNObservations (int, optional): get the first N observations for each key series (idbank).
 
         lastNObservations (int, optional): get the last N observations for each key series (idbank).
-
-        includeHistory (boolean, optional): boolean to access the previous releases (not available on all series).
 
         updatedAfter (str, optional): starting point for querying the previous releases (format yyyy-mm-ddThh:mm:ss)
 
@@ -168,8 +165,7 @@ def get_series(
 
                 # remove all na columns
                 data = data.dropna(axis=1, how="all")
-        except Exception as e:
-            # print(e)
+        except Exception:
             pass
 
         try:

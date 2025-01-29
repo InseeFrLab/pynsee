@@ -1,6 +1,6 @@
 import io
 import zipfile
-import pkg_resources
+import importlib
 import pandas as pd
 
 from pynsee.utils.save_df import save_df
@@ -12,9 +12,15 @@ def _get_dataset_list_internal(silent=True):
     silent (bool, optional): Set to True, to disable messages printed in log info
     """
 
-    zip_file = pkg_resources.resource_stream(
-        __name__, "data/dataset_list_internal.zip"
-    )
+    try:
+        pkg_macrodata = importlib.resources.files(__name__)
+        zip_file = str(pkg_macrodata) + "/data/dataset_list_internal.zip"
+    except Exception:
+        import pkg_resources
+
+        zip_file = pkg_resources.resource_stream(
+            __name__, "data/dataset_list_internal.zip"
+        )
 
     with zipfile.ZipFile(zip_file, "r") as zip_ref:
         dataset_file = io.BytesIO(zip_ref.read("dataset_list_internal.csv"))

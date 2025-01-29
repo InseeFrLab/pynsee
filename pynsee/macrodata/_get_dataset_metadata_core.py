@@ -12,10 +12,6 @@ from pynsee.utils.save_df import save_df
 @save_df(day_lapse_max=90)
 def _get_dataset_metadata_core(dataset, update=False, silent=True):
 
-    # from pynsee.macrodata._get_dataset_metadata_core import _get_dataset_metadata_core
-    # test1 = _get_dataset_metadata_core('IPC-2015', update=True)
-    # test2 = _get_dataset_metadata_core('IRL', update=True)
-
     idbank_list = _download_idbank_list(update=update, silent=silent)
 
     # get dataset's dimensions
@@ -32,7 +28,8 @@ def _get_dataset_metadata_core(dataset, update=False, silent=True):
     # make a dataframe from the splitted cleflow
     new_columns = dataset_dimension.dimension.to_list()
 
-    # subset new columns in case of mismatch between idbank list and insee metadata
+    # subset new columns in case of mismatch between idbank list and insee
+    # metadata
     new_columns = [new_columns[c] for c in range(len(df_cleflow_splitted[0]))]
 
     df_cleflow_splitted = pd.DataFrame(

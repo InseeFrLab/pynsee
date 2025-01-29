@@ -21,7 +21,6 @@ def get_dataset(
     endPeriod=None,
     firstNObservations=None,
     lastNObservations=None,
-    includeHistory=None,
     updatedAfter=None,
 ):
     """Get dataset's data from INSEE BDM database
@@ -47,8 +46,6 @@ def get_dataset(
 
         lastNObservations (int, optional): get the last N observations for each key series (idbank).
 
-        includeHistory (boolean, optional): boolean to access the previous releases (not available on all series).
-
         updatedAfter (str, optional): starting point for querying the previous releases (format yyyy-mm-ddThh:mm:ss)
 
     Raises:
@@ -61,7 +58,7 @@ def get_dataset(
         >>> from pynsee.macrodata import get_dataset
         >>> ipc_data = get_dataset("IPC-2015",
         >>>        filter = "M......ENSEMBLE...CVS.2015",
-        >>>        includeHistory = True, updatedAfter = "2017-07-11T08:45:00")
+        >>>        updatedAfter = "2017-07-11T08:45:00")
         >>> #
         >>> business_climate = get_dataset("CLIMAT-AFFAIRES", lastNObservations = 1)
     """
@@ -111,7 +108,6 @@ def get_dataset(
     # add metadata
     if metadata:
         try:
-
             idbank_list = get_series_list(dataset, silent=silent)
 
             newcol = [
@@ -122,12 +118,12 @@ def get_dataset(
             data = data.merge(idbank_list, on="IDBANK", how="left")
             # remove all na columns
             data = data.dropna(axis=1, how="all")
-        except:
+        except Exception:
             pass
 
         try:
             data = _add_numeric_metadata(data)
-        except:
+        except Exception:
             pass
 
     return data

@@ -14,49 +14,26 @@ from platformdirs import user_config_dir
 logger = logging.getLogger(__name__)
 
 
-def _get_credentials() -> Dict[str, str]:
-    '''
-    Try to load credentials.
+def _get_credentials_from_configfile() -> Dict[str, str]:
+    """
+    Try to load credentials and proxy configuration from config file.
 
-    If the environment variables `insee_key` and `insee_secret` are set, use
-    these.
-    Otherwise try to load them from the config file.
-
-    Returns a dict containing at least an "insee_key" and an "insee_secret"
-    entry.
-    '''
+    Returns a dict containing at least an "sirene_key" entry.
+    """
     key_dict: Dict[str, str] = {}
 
+    config_file = os.path.join(
+        user_config_dir("pynsee", ensure_exists=True), "config.json"
+    )
+
     try:
-        key_dict["insee_key"] = os.environ["insee_key"]
-        key_dict["insee_secret"] = os.environ["insee_secret"]
+        with open(config_file, "r") as f:
+            key_dict = json.load(f)
 
-        envir_var_used = True
-    except KeyError:
-        envir_var_used = False
-
-        config_file = os.path.join(
-            user_config_dir("pynsee", ensure_exists=True), "config.json")
-
-        try:
-            with open(config_file, "r") as f:
-                key_dict = json.load(f)
-
-            http_proxy = key_dict["http_proxy"]
-            https_proxy = key_dict["https_proxy"]
-
-            if (http_proxy is None) or (not isinstance(http_proxy, str)):
-                http_proxy = ""
-            if (https_proxy is None) or (not isinstance(https_proxy, str)):
-                https_proxy = ""
-
-            os.environ["http_proxy"] = http_proxy
-            os.environ["https_proxy"] = https_proxy
-        except Exception:
-            _missing_credentials()
-
-    if envir_var_used:
-        _warn_env_credentials()
+    except FileNotFoundError:
+        # no credentials/config stored
+        _missing_credentials()
+        return key_dict
 
     return key_dict
 
@@ -68,14 +45,5 @@ def _missing_credentials() -> None:
         "pynsee.utils.init_conn to save them locally.\n"
         "Otherwise, you can still use environment variables as follow:\n\n"
         "import os\n"
-        "os.environ['insee_key'] = 'my_insee_key'\n"
-        "os.environ['insee_secret'] = 'my_insee_secret'"
-    )
-
-
-@lru_cache(maxsize=None)
-def _warn_env_credentials() -> None:
-    logger.warning(
-        "Existing environment variables used, instead of locally "
-        "saved credentials"
+        "os.environ['sirene_key'] = 'my_sirene_key'"
     )

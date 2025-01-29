@@ -90,19 +90,19 @@ url_ign_iris22 = "https://wxs.ign.fr/1yhlj2ehpqf3q6dt6a2y7b64/telechargement/ins
 ign_iris_ftp20 = "ftp://Contours_IRIS_ext:ao6Phu5ohJ4jaeji@ftp3.ign.fr/CONTOURS-IRIS_2-1__SHP__FRA_2020-01-01.7z"
 
 def get_iris_data(url=ign_iris_ftp20, update=False):
-    
+
     list_string_split = url.split("/")
     filename = list_string_split[len(list_string_split)-1]
     list_string_split_filename = filename.split(".")
     filename_clean = list_string_split_filename[0]
-    
+
     home = Path.home()
     dataDir = str(home) + "/" + filename_clean
     if not os.path.exists(dataDir):
         os.mkdir(dataDir)
 
     file_iris = dataDir + "/" + "file_" + filename_clean
-        
+
     if (not os.path.exists(file_iris)) or (update):
         with closing(request.urlopen(url, timeout=None)) as r:
             with open(file_iris, 'wb') as f:
@@ -120,17 +120,17 @@ def get_iris_data(url=ign_iris_ftp20, update=False):
             if re.search("CONTOURS-IRIS.shp", filename):
                 list_file += [filename]
                 list_file_size += [os.path.getsize(filename)]
-    
+
     list_shp_df = []
-                
-    for f in list_file:  
-               
+
+    for f in list_file:
+
         shp = gpd.read_file(f)
         shp = shp.to_crs("EPSG:3857")
         list_shp_df += [shp]
-        
+
     shpFinal = pd.concat(list_shp_df)
-    
+
     return shpFinal
 ```
 
@@ -150,11 +150,11 @@ dataMax = data[data["pct"] == data["pct_max"]].reset_index(drop=True)
 
 list_dep_extract = []
 for i in dataMax.index:
-    dep = dataMax["COMMUNE"].values[i][:3]    
+    dep = dataMax["COMMUNE"].values[i][:3]
     if not re.search("^97", dep):
-        dep = dataMax["COMMUNE"].values[i][:2]          
+        dep = dataMax["COMMUNE"].values[i][:2]
     list_dep_extract += [dep]
-    
+
 dataMax["insee_dep"] = list_dep_extract
 
 dataFinal = dataMax.merge(shp[["CODE_IRIS", "geometry", "NOM_COM"]], on=["CODE_IRIS"], how = "left")
@@ -166,7 +166,7 @@ dataFinal = dataFinal.reset_index(drop=True)
 ```
 
 ```{python}
-# iris limit missing for the following iris 
+# iris limit missing for the following iris
 dataFinal.loc[dataFinal["geometry"].isnull(), ['insee_dep', "COMMUNE", "NOM_COM","CODE_IRIS", "geometry", "pct"]]
 ```
 
@@ -182,7 +182,7 @@ for c in list_com:
     if len(dc.index) == 1:
         geo = com[com["insee_com"] == c]
         if len(geo.index) == 1:
-            geo = geo.get_geom() 
+            geo = geo.get_geom()
             dataFinal.loc[(dataFinal["COMMUNE"] == c), "geometry"] = [geo]
 ```
 
