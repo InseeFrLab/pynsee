@@ -89,37 +89,34 @@ class PynseeAPISession(requests.Session):
         super().__init__()
         self._mount_adapters()
 
-        credentials = _get_credentials_from_configfile()
+        config = {
+            "http_proxy": http_proxy,
+            "https_proxy": https_proxy,
+            "sirene_key": sirene_key,
+        }
 
-        for k in ("http_proxy", "https_proxy", "sirene_key"):
+        stored_config = _get_credentials_from_configfile()
 
-            v = get_env_case_insensitive(k)
-
-            setattr(self, f"warning_{k}", v is not None)
-
-            if v is not None:
-                # note: v might be set to the empty string for proxy config,
+        for k, v in config.items():
+            venv = get_env_case_insensitive(k)
+            if v is None:
+                # Use env variable if it exist, otherwise stored value.
+                # Note: v might be set to the empty string for proxy config,
                 # which is **not** the same as None
-                credentials[k] = v
-
-        def get_from_configfile_and_deactivate_warn(var):
-            # deactivate warning as variable ultimately gathered from previous
-            # config
-            setattr(self, f"warning_{var}", False)
-            return credentials.get(var)
+                if venv is not None:
+                    config[k] = venv
+                    _warn_env_credentials(k)
+                else:
+                    try:
+                        config[k] = stored_config[k]
+                    except KeyError:
+                        # no previous config stored
+                        pass
 
         self.proxies.update(
             {
-                "http": (
-                    http_proxy
-                    if http_proxy is not None  # note (again), None != ""
-                    else get_from_configfile_and_deactivate_warn("http_proxy")
-                ),
-                "https": (
-                    https_proxy
-                    if https_proxy is not None  # note (again), None != ""
-                    else get_from_configfile_and_deactivate_warn("https_proxy")
-                ),
+                "http": config["http_proxy"],
+                "https": config["https_proxy"],
             }
         )
 
@@ -130,14 +127,8 @@ class PynseeAPISession(requests.Session):
         # Note : geoplatform seems to impose the "/version" to the user-agent
         self.headers.update(useragent)
 
-        self.sirene_key = (
-            sirene_key or get_from_configfile_and_deactivate_warn("sirene_key")
-        )
+        self.sirene_key = config["sirene_key"]
         self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
-
-        for k in ("http_proxy", "https_proxy", "sirene_key"):
-            if getattr(self, f"warning_{k}"):
-                _warn_env_credentials(k)
 
     def _mount_adapters(self):
         """
