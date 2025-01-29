@@ -58,8 +58,11 @@ def init_conn(
         user_config_dir("pynsee", ensure_exists=True), "config.json"
     )
 
-    with open(config_file, opener=opener, encoding="utf8") as f:
-        init_config = json.load(f)
+    try:
+        with open(config_file, opener=opener, encoding="utf8") as f:
+            init_config = json.load(f)
+    except FileNotFoundError:
+        init_config = {}
 
     with PynseeAPISession(
         sirene_key=sirene_key, http_proxy=http_proxy, https_proxy=https_proxy
