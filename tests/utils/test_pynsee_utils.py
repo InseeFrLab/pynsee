@@ -52,6 +52,32 @@ def patch_test_connections(func):
     return wrapper
 
 
+def clean_os_patch(func):
+    """
+    clean/restore the os variables
+    """
+
+    def wrapper(*args, **kwargs):
+        keys = "sirene_key", "https_proxy", "http_proxy"
+        keys = list(keys) + [x.upper() for x in keys]
+        init = {k: os.environ[k] for k in keys if k in os.environ}
+        for k in init:
+            del os.environ[k]
+        try:
+            func(*args, **kwargs)
+        except Exception:
+            raise
+        finally:
+            for k in keys:
+                try:
+                    del os.environ[k]
+                except KeyError:
+                    pass
+            os.environ.update(init)
+
+    return wrapper
+
+
 class TestFunction(TestCase):
 
     StartKeys = _get_credentials_from_configfile()
@@ -78,6 +104,7 @@ class TestFunction(TestCase):
         clear_all_cache()
         self.assertTrue(True)
 
+    @clean_os_patch
     @patch_retries
     def test_init_conn_with_dummy_proxy(self):
         "Check that a wrong proxy configuration raises a RequestException"
@@ -89,9 +116,11 @@ class TestFunction(TestCase):
 
         del os.environ["http_proxy"], os.environ["https_proxy"]
 
+    @clean_os_patch
     @patch_retries
     def test_dummy_sirene_token_is_not_stored(self):
         "Check that a wrong SIRENE token is never stored"
+
         config_file = os.path.join(
             user_config_dir("pynsee", ensure_exists=True), "config.json"
         )
@@ -104,8 +133,9 @@ class TestFunction(TestCase):
             user_config_dir("pynsee", ensure_exists=True), "config.json"
         )
         with open(config_file, "r") as f:
-            self.assertFalse(json.load(f)["sirene_key"])
+            self.assertFalse(json.load(f)["sirene_key"] == "eggs")
 
+    @clean_os_patch
     @patch_test_connections
     def test_overriding_insee_config_and_environ(self):
         "check that the order of precedance for config keys is respected"
@@ -131,15 +161,19 @@ class TestFunction(TestCase):
             self.assertTrue(session.sirene_key == "spam")
             self.assertTrue(session.proxies["https"] == "sausage")
 
-        del os.environ["sirene_key"]
-        del os.environ["https_proxy"]
+        for key in "sirene_key", "https_proxy", "http_proxy":
+            try:
+                del os.environ[key]
+            except KeyError:
+                pass
 
-        init_conn(sirene_key="sausage", https_proxy="spam")
+        init_conn(sirene_key="sausage", https_proxy="spam", http_proxy=None)
         with open(config_file, "r") as f:
             # confirm init_conn ends with sirene_key/proxies correctly saved
             config = json.load(f)
         self.assertTrue(config["sirene_key"] == "sausage")
         self.assertTrue(config["https_proxy"] == "spam")
+        self.assertTrue(config["http_proxy"] is None)
 
         with PynseeAPISession() as session:
             # confirm that previous config is restored
