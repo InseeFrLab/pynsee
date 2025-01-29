@@ -1,11 +1,8 @@
 import logging
 import re
-import requests
 import warnings
 
 from functools import lru_cache
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 
 import numpy as np
 import pandas as pd
@@ -15,8 +12,10 @@ from shapely.geometry import Point
 from shapely.errors import ShapelyDeprecationWarning
 
 from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
-from pynsee.sirene._get_location_openstreetmap import _get_location_openstreetmap
-from pynsee.utils._check_df_full_null import _check_df_full_null
+from pynsee.sirene._get_location_openstreetmap import (
+    _get_location_openstreetmap,
+)
+from pynsee.utils.requests_session import PynseeAPISession
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +84,8 @@ class SireneDataFrame(pd.DataFrame):
 
         with warnings.catch_warnings():
             warnings.filterwarnings(
-                "ignore", category=ShapelyDeprecationWarning)
+                "ignore", category=ShapelyDeprecationWarning
+            )
 
             df = self.reset_index(drop=True)
 
@@ -107,72 +107,64 @@ class SireneDataFrame(pd.DataFrame):
 
             if set(list_col).issubset(df.columns):
                 list_location = []
-                timeSleep = 1
-                session = requests.Session()
-                retry = Retry(connect=3, backoff_factor=timeSleep)
-                adapter = HTTPAdapter(max_retries=retry)
-                session.mount("http://", adapter)
-                session.mount("https://", adapter)
 
-                for i in trange(len(df.index), desc="Getting location"):
-                    siret = clean(df.loc[i, "siret"])
-                    nb = clean(df.loc[i, "numeroVoieEtablissement"])
-                    street_type = clean(
-                        df.loc[i, "typeVoieEtablissementLibelle"])
-                    street_name = clean(df.loc[i, "libelleVoieEtablissement"])
+                with PynseeAPISession() as session:
 
-                    postal_code = clean(df.loc[i, "codePostalEtablissement"])
-                    city = clean(df.loc[i, "libelleCommuneEtablissement"])
-                    city = re.sub("[0-9]|EME", "", city)
-
-                    city = re.sub(" D ", " D'", re.sub(" L ", " L'", city))
-                    street_name = re.sub(
-                        " D ", " D'", re.sub(" L ", " L'", street_name)
-                    )
-                    street_type = re.sub(
-                        " D ", " D'", re.sub(" L ", " L'", street_type)
-                    )
-
-                    list_var = []
-
-                    variables = [
-                        nb, street_type, street_name, postal_code, city
-                    ]
-
-                    for var in variables:
-                        if var != "":
-                            list_var += [re.sub(" ", "+", var)]
-
-                    query = "+".join(list_var)
-
-                    if query != "":
-                        query += "+FRANCE"
-
-                    list_var_backup = []
-
-                    for var in [postal_code, city]:
-                        if var != "":
-                            list_var_backup += [re.sub(" ", "+", var)]
-
-                    query_backup = "+".join(list_var_backup)
-
-                    if query_backup != "":
-                        query_backup += "+FRANCE"
-
-                    exact_location = True
-
-                    try:
-                        (
-                            lat,
-                            lon,
-                            category,
-                            typeLoc,
-                            importance,
-                        ) = _get_location_openstreetmap(
-                            query=query, session=session, update=update
+                    for i in trange(len(df.index), desc="Getting location"):
+                        siret = clean(df.loc[i, "siret"])
+                        nb = clean(df.loc[i, "numeroVoieEtablissement"])
+                        street_type = clean(
+                            df.loc[i, "typeVoieEtablissementLibelle"]
                         )
-                    except Exception:
-                        exact_location = False
+                        street_name = clean(
+                            df.loc[i, "libelleVoieEtablissement"]
+                        )
+
+                        postal_code = clean(
+                            df.loc[i, "codePostalEtablissement"]
+                        )
+                        city = clean(df.loc[i, "libelleCommuneEtablissement"])
+                        city = re.sub("[0-9]|EME", "", city)
+
+                        city = re.sub(" D ", " D'", re.sub(" L ", " L'", city))
+                        street_name = re.sub(
+                            " D ", " D'", re.sub(" L ", " L'", street_name)
+                        )
+                        street_type = re.sub(
+                            " D ", " D'", re.sub(" L ", " L'", street_type)
+                        )
+
+                        list_var = []
+
+                        variables = [
+                            nb,
+                            street_type,
+                            street_name,
+                            postal_code,
+                            city,
+                        ]
+
+                        for var in variables:
+                            if var != "":
+                                list_var += [re.sub(" ", "+", var)]
+
+                        query = "+".join(list_var)
+
+                        if query != "":
+                            query += "+FRANCE"
+
+                        list_var_backup = []
+
+                        for var in [postal_code, city]:
+                            if var != "":
+                                list_var_backup += [re.sub(" ", "+", var)]
+
+                        query_backup = "+".join(list_var_backup)
+
+                        if query_backup != "":
+                            query_backup += "+FRANCE"
+
+                        exact_location = True
 
                         try:
                             (
@@ -182,48 +174,66 @@ class SireneDataFrame(pd.DataFrame):
                                 typeLoc,
                                 importance,
                             ) = _get_location_openstreetmap(
-                                query=query_backup, session=session,
-                                update=update
+                                query=query, session=session, update=update
                             )
-                            importance = None
                         except Exception:
-                            lat, lon, category, typeLoc, importance = (
-                                None,
-                                None,
-                                None,
-                                None,
-                                None,
-                            )
-                        else:
-                            _warning_get_location()
+                            exact_location = False
 
-                    df_location = pd.DataFrame({
-                            "siret": siret,
-                            "latitude": lat,
-                            "longitude": lon,
-                            "category": category,
-                            "crsCoord": "EPSG:4326",
-                            "type": typeLoc,
-                            "importance": importance,
-                            "exact_location": exact_location,
-                        },
-                        index=[0],
-                    )
+                            try:
+                                (
+                                    lat,
+                                    lon,
+                                    category,
+                                    typeLoc,
+                                    importance,
+                                ) = _get_location_openstreetmap(
+                                    query=query_backup,
+                                    session=session,
+                                    update=update,
+                                )
+                                importance = None
+                            except Exception:
+                                lat, lon, category, typeLoc, importance = (
+                                    None,
+                                    None,
+                                    None,
+                                    None,
+                                    None,
+                                )
+                            else:
+                                _warning_get_location()
 
-                    list_location.append(df_location)
+                        df_location = pd.DataFrame(
+                            {
+                                "siret": siret,
+                                "latitude": lat,
+                                "longitude": lon,
+                                "category": category,
+                                "crsCoord": "EPSG:4326",
+                                "type": typeLoc,
+                                "importance": importance,
+                                "exact_location": exact_location,
+                            },
+                            index=[0],
+                        )
 
-                #list_location = [loc for loc in list_location if not loc.empty]
-                list_location = [loc for loc in list_location if len(loc.index) > 0]
-                list_location = [df.dropna(axis=1, how='all') for df in list_location]
+                        list_location.append(df_location)
+
+                # list_location = [loc for loc in list_location if not loc.empty]
+                list_location = [
+                    loc for loc in list_location if len(loc.index) > 0
+                ]
+                list_location = [
+                    df.dropna(axis=1, how="all") for df in list_location
+                ]
 
                 df_location = pd.concat(list_location)
-                
-                #df_location = pd.concat([df for df in list_location if (not df.empty) and (not _check_df_full_null(df))])
+
+                # df_location = pd.concat([df for df in list_location if (not df.empty) and (not _check_df_full_null(df))])
 
                 df_location = df_location.reset_index(drop=True)
 
-                sirene_df = pd.merge(
-                    self, df_location, on="siret", how="left")
+                sirene_df = pd.merge(self, df_location, on="siret", how="left")
 
                 sirene_df["latitude"] = pd.to_numeric(sirene_df["latitude"])
                 sirene_df["longitude"] = pd.to_numeric(sirene_df["longitude"])

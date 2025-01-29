@@ -98,7 +98,7 @@ def _clean_data(
                             on="categorieJuridiqueUniteLegale",
                             how="left",
                         )
-                    except:
+                    except Exception:
                         pass
         # empty columns at the end
         list_all_na_col = [

@@ -67,7 +67,7 @@ data = pl.get_local_data(dataset_version = 'GEO2020FLORES2017',
 data = data.rename(columns={'NA17': 'A17'})
 ```
 
-Let's only keep 
+Let's only keep
 headcounts and remove the total from the data:
 
 ```{python}
@@ -90,7 +90,7 @@ df['employment_share'] = 100 * df["OBS_VALUE"] / df['OBS_VALUE'].groupby(df['COD
 
 ## Combining datasets
 
-Let's merge values and geographic 
+Let's merge values and geographic
 borders:
 
 ```{python}
@@ -98,7 +98,7 @@ datamap = gpd.GeoDataFrame(dep).merge(
   df, how = 'right', on = 'CODEGEO')
 ```
 
-We are going to 
+We are going to
 add english activity labels at A17 level
 thanks to the `pynsee.metadata.get_activity_list`
 function:
@@ -115,7 +115,7 @@ datamap["lon"] = datamap["center"].x
 datamap["lat"] = datamap["center"].y
 
 # list of departements
-list_dep = datamap["CODEGEO"].unique() 
+list_dep = datamap["CODEGEO"].unique()
 ```
 
 ## Preparing our map
@@ -161,26 +161,26 @@ datamap_points.loc[
 #| eval : false
 #| echo: false
 
-def extract_lon(x):    
+def extract_lon(x):
     return wkt.loads(x).xy[0][0]
-def extract_lat(x):    
+def extract_lat(x):
     return wkt.loads(x).xy[1][0]
 
 ax = datamap.plot(color='white', edgecolor='black', figsize = (15,15))
 
 for idep in list_dep:
-    df = datamap[datamap["CODEGEO"] == idep].reset_index(drop=True)   
+    df = datamap[datamap["CODEGEO"] == idep].reset_index(drop=True)
     df["lon"] = df["center"].apply(lambda x: extract_lon(x))
     df["lat"] = df["center"].apply(lambda x: extract_lat(x))
-    
+
     df = df[df["lon"] == min(df["lon"])].reset_index(drop=True)
     center = df.loc[0,"lon"], df.loc[0,"lat"]
-    
+
     ratios = df["employment_share"]
-    
+
     ax_sub = inset_axes(ax, width=0.4, height=0.4, loc=10, bbox_to_anchor=center, bbox_transform=ax.transData)
     ax_sub.pie(ratios, wedgeprops={'edgecolor': 'gray','linewidth': 0.25}, colors = colors)
-    
+
 plt.suptitle('Employment by sector and departement', x = 0.4, y = 0.85,
             horizontalalignment= 'left',
             fontsize = 12, fontweight='bold')
@@ -188,4 +188,3 @@ plt.legend(emplTot.index, loc="lower left", bbox_to_anchor=(-27, -9), ncol=2)
 
 plt.show()
 ```
-

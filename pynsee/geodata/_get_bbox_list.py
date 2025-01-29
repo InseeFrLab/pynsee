@@ -42,11 +42,11 @@ def _get_bbox_list(polygon=None, update=False, crsPolygon="EPSG:4326"):
 
                     try:
                         intersection = polygon.intersection(poly_bbox)
-                    except:
+                    except Exception:
                         try:
                             polygon = polygon.buffer(0)
                             intersection = polygon.intersection(poly_bbox)
-                        except:
+                        except Exception:
                             pass
 
                     if hasattr(intersection, "geoms"):
@@ -58,7 +58,9 @@ def _get_bbox_list(polygon=None, update=False, crsPolygon="EPSG:4326"):
 
                         for p in range(len(list_intersect_bounds)):
                             if list_intersect_bounds[p] not in bbox_list_final:
-                                bbox_list_final.append(list_intersect_bounds[p])
+                                bbox_list_final.append(
+                                    list_intersect_bounds[p]
+                                )
 
             if len(bbox_list_final) == 0:
                 bbox_list_final = bbox
@@ -74,7 +76,7 @@ def _get_bbox_list(polygon=None, update=False, crsPolygon="EPSG:4326"):
             open_file = open(file_name, "rb")
             bbox_list_final = pickle.load(open_file)
             open_file.close()
-        except:
+        except Exception:
             os.remove(file_name)
             bbox_list_final = _get_bbox_list(polygon=polygon, update=True)
 

@@ -13,17 +13,16 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: documentation 
+   :caption: documentation
    :hidden:
-      
+
    utils
    search_data
-   get_data    
+   get_data
 
 .. toctree::
    :maxdepth: 2
    :caption: examples
    :hidden:
-   
+
    examples
-   

@@ -4,12 +4,14 @@ import pandas as pd
 import datetime
 from functools import lru_cache
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.save_df import save_df
 
 import logging
 
 logger = logging.getLogger(__name__)
+
+
 @lru_cache(maxsize=None)
 def _warning_get_area_projection():
     logger.info(
@@ -67,7 +69,7 @@ def get_area_projection(
     else:
         area = areas[area.lower()]
 
-    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/V1/geo/"
+    INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/geo/"
 
     api_link = f"{INSEE_localdata_api_link}{area}/{code}/projetes?date={date}"
 
@@ -78,9 +80,11 @@ def get_area_projection(
     api_link += f"&dateProjection={dateProjection}"
 
     try:
-        request = _request_insee(
-            api_url=api_link, file_format="application/json"
-        )
+        with PynseeAPISession() as session:
+            request = session.request_insee(
+                api_url=api_link, file_format="application/json"
+            )
+
         data = pd.DataFrame(request.json())
 
     except Exception:

@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.12"]
 
     steps:
     - uses: actions/checkout@v2
@@ -22,41 +22,46 @@ jobs:
       run: |
         #sudo apt-get install libgeos-dev
         python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-cov geopandas nbconvert matplotlib descartes 
+        pip install flake8 black pytest pytest-xdist pytest-cov geopandas nbconvert matplotlib descartes parameterized
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements-extra.txt ]; then pip install -r requirements-extra.txt; fi
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --ignore=E722,C901 --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        # exit-zero treats all errors as warnings.
+        flake8 . --count \
+                 --extend-ignore=E722,C901,E501 \
+                 --exit-zero \
+                 --max-complexity=10 \
+                 --statistics \
+                 --exclude .git,__pycache__,docs/*,*.yaml,*.zip,.env,*.svg,*.md,*.qmd,*.css,*.txt,*.rst,Dockerfile,.spyproject,.pytest_cache,*.lock,*.toml \
+                 --per-file-ignores='__init__.py:F401,F403 tests/*:F401'
+    - name: Lint with black
+      run: |
+        black . --include '\.py$' --line-length 79
     - name: Test examples
       env:
-        insee_key: ${{ secrets.INSEE_KEY }}
-        insee_secret: ${{ secrets.INSEE_SECRET }}
+        sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
         pip install jupytext
         pip install -r requirements.txt
-        pip install .[full]     
+        pip install .[full]
         pip install -r requirements-extra.txt
-        # test all notebooks        
-        cd docs/examples 
+        # test all notebooks
+        cd docs/examples
         jupytext --to py *.md
         # run all py files
         # for f in *.py; do python "$f"; done
         cd ../..
     - name: Test with pytest
-      env:      
-        insee_key: ${{ secrets.INSEE_KEY }}
-        insee_secret: ${{ secrets.INSEE_SECRET }}
+      env:
+        sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
-        pytest -v --cov
+        pytest -v --cov -n auto
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
       if: github.ref == 'refs/heads/master'
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
-        
-   

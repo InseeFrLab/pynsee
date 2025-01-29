@@ -3,9 +3,8 @@
 
 from functools import lru_cache
 import pandas as pd
-import numpy as np
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 
 
 @lru_cache(maxsize=None)
@@ -14,109 +13,86 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
     count_sep = variables.count("-")
     modalite = ".all" * (count_sep + 1)
 
-    link = "https://api.insee.fr/donnees-locales/V0.1/donnees/"
+    link = "https://api.insee.fr/donnees-locales/donnees/"
     link = link + "geo-{}@{}/{}-{}{}".format(
         variables, dataset_version, nivgeo, codegeo, modalite
     )
 
-    request = _request_insee(api_url=link, file_format="application/json;charset=utf-8")
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=link, file_format="application/json;charset=utf-8"
+        )
 
-    try:
+    data_request = request.json()
 
-        data_request = request.json()
+    Cellule = data_request["Cellule"]
+    Variable = data_request["Variable"]
+    Croisement = data_request["Croisement"]
 
-        # if 'Cellule' in list(data_request.keys()):
-        Cellule = data_request["Cellule"]
-        Variable = data_request["Variable"]
-        Croisement = data_request["Croisement"]
-        Zone = data_request["Zone"]
+    dataset_version = Croisement["JeuDonnees"]["code"]
+    dataset_name = Croisement["JeuDonnees"]["Source"]
+    data_date = Croisement["JeuDonnees"]["Annee"]
 
-        dataset_version = Croisement["JeuDonnees"]["@code"]
-        dataset_name = Croisement["JeuDonnees"]["Source"]
-        data_date = Croisement["JeuDonnees"]["Annee"]
-        geo_date = Zone["Millesime"]["@annee"]
-        codegeo_label = Zone["Millesime"]["Nccenr"]
+    list_data = []
 
-        list_data = []
+    for i in range(len(Cellule)):
+        dico = {**Cellule[i]["Zone"], **Cellule[i]["Mesure"]}
+        modalite = Cellule[i]["Modalite"]
 
-        for i in range(len(Cellule)):
-            dico = {**Cellule[i]["Zone"], **Cellule[i]["Mesure"]}
-            modalite = Cellule[i]["Modalite"]
-
-            for m in range(len(modalite)):
-                try:
-                    dico_added = {modalite[m]["@variable"]: modalite[m]["@code"]}
-                except:
-                    dico_added = {modalite["@variable"]: modalite["@code"]}
-                dico = {**dico, **dico_added}
-
-            dico["OBS_VALUE"] = Cellule[i]["Valeur"]
-            df = pd.DataFrame(dico, index=[0])
-            list_data.append(df)
-
-        data = pd.concat(list_data)
-
-        try:
-            for i in range(len(Variable)):
-
-                try:
-                    df = pd.DataFrame(Variable[i]["Modalite"], index=[0])
-                except:
-                    list_dict_var = []
-                    values = Variable[i]["Modalite"]
-                    for d in range(len(values)):
-                        df_dict = pd.DataFrame(values[d], index=[0])
-                        list_dict_var.append(df_dict)
-                    df = pd.concat(list_dict_var).reset_index(drop=True)
-
-                var_name = Variable[i]["@code"]
-                df = df[["@code", "Libelle"]]
-                df.columns = [var_name, var_name + "_label"]
-                data = data.merge(df, on=var_name, how="left")
-        except:
+        for m in range(len(modalite)):
             try:
-                var_name = Variable["@code"]
-                var_name_label = var_name + "_label"
-                value = Variable["Modalite"]["@code"]
-                label = Variable["Modalite"]["Libelle"]
-                df = pd.DataFrame({var_name: value, var_name_label: label}, index=[0])
-                data = data.merge(df, on=var_name, how="left")
-            except:
-                var_name = Variable["@code"]
-                var_name_label = var_name + "_label"
+                dico_added = {modalite[m]["variable"]: modalite[m]["code"]}
+            except Exception:
+                dico_added = {modalite["variable"]: modalite["code"]}
+            dico = {**dico, **dico_added}
 
-                list_dict_var = []
-                values = Variable["Modalite"]
-                for d in range(len(values)):
-                    df_dict = pd.DataFrame(values[d], index=[0])
-                    list_dict_var.append(df_dict)
-                df = pd.concat(list_dict_var).reset_index(drop=True)
-                df = df[["@code", "Libelle"]]
-                df.columns = [var_name, var_name_label]
-                data = data.merge(df, on=var_name, how="left")
+        dico["OBS_VALUE"] = Cellule[i]["Valeur"]
+        dico = {k: v for k, v in dico.items() if len(v) != 0}
+        try:
+            df = pd.DataFrame(dico, index=[0])
+        except Exception:
+            df = pd.DataFrame(dico)
 
-        data = data.assign(
-            DATASET_VERSION=dataset_version,
-            DATASET_NAME=dataset_name,
-            DATA_DATE=data_date,
-            GEO_DATE=geo_date,
-            CODEGEO_label=codegeo_label,
+        list_data.append(df)
+
+    data = pd.concat(list_data)
+
+    for i in range(len(Variable)):
+
+        list_dict_var = []
+        values = Variable[i]["Modalite"]
+        for d in range(len(values)):
+            df_dict = pd.DataFrame(values[d], index=[0])
+            list_dict_var.append(df_dict)
+
+        var_name = Variable[i]["code"]
+
+        df = (
+            pd.concat(list_dict_var)
+            .reset_index(drop=True)
+            .drop(columns=["variable"])
+            .rename(columns={"code": var_name})
         )
 
-        data.rename(
-            columns={
-                "@codgeo": "CODEGEO",
-                "@nivgeo": "NIVGEO",
-                "@code": "UNIT",
-                "$": "UNIT_label_fr",
-            },
-            inplace=True,
-        )
+        data[f"{var_name}_label"] = Variable[i]["Libelle"]
 
-        data["OBS_VALUE"] = pd.to_numeric(data["OBS_VALUE"])
+        data = data.merge(df, on=var_name, how="left")
+    data = data.assign(
+        DATASET_VERSION=dataset_version,
+        DATASET_NAME=dataset_name,
+        DATA_DATE=data_date,
+    )
 
-    except Exception as e:
-        #print(e)
-        data = pd.DataFrame({"CODEGEO": codegeo, "OBS_VALUE": None}, index=[0])
+    data.rename(
+        columns={
+            "codgeo": "CODEGEO",
+            "nivgeo": "NIVGEO",
+            "code": "UNIT",
+            "value": "UNIT_label_fr",
+        },
+        inplace=True,
+    )
+
+    data["OBS_VALUE"] = pd.to_numeric(data["OBS_VALUE"])
 
     return data

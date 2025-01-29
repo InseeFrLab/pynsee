@@ -1,43 +1,44 @@
 
 [![](https://badge.fury.io/py/pynsee.svg)](https://pypi.org/project/pynsee/)
-[![](https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
-[![](https://github.com/InseeFrLab/pynsee/actions/workflows/examples.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
-[![](https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK)](https://codecov.io/gh/InseeFrLab/pynsee?branch=master)
+![Tests Status](https://raw.githubusercontent.com/InseeFrLab/pynsee/refs/heads/master/reports/tests-badge.svg)
+![Coverage Status](https://raw.githubusercontent.com/InseeFrLab/pynsee/refs/heads/master/reports/coverage-badge.svg)
+
+<!-- [![](https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
+[![](https://github.com/InseeFrLab/pynsee/actions/workflows/examples.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions) -->
+<!-- [![](https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK)](https://codecov.io/gh/InseeFrLab/pynsee?branch=master) -->
 [![](https://readthedocs.org/projects/pynsee/badge/?version=latest)](https://pynsee.readthedocs.io/en/latest/?badge=latest)
-[![](https://img.shields.io/badge/python-3.8%20%7C%203.9%20%7C%203.10%20%7C%203.11-blue.svg)](https://www.python.org/)
+[![](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
 [![](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
 [![](https://img.shields.io/pypi/dm/pynsee)](https://pypistats.org/packages/pynsee)
 
 
 ``pynsee`` gives a quick access to more than 150 000 macroeconomic series,
-a dozen datasets of local data, numerous sources available on [insee.fr](https://www.insee.fr), 
+a dozen datasets of local data, numerous sources available on [insee.fr](https://www.insee.fr),
 geographical limits of administrative areas taken from IGN
 as well as key metadata and SIRENE database containing data on all French companies.
-Have a look at the detailed API page [api.insee.fr](https://api.insee.fr/catalogue/).
+Have a look at the detailed API page [portail-api.insee.fr](https://portail-api.insee.fr/).
 
-This package is a contribution to reproducible research and public data transparency. 
+This package is a contribution to reproducible research and public data transparency.
 It benefits from the developments made by teams working on APIs at INSEE and IGN.
 
 ## Installation & API subscription
 
-The files available on [insee.fr](https://www.insee.fr) and IGN data, i.e. the use of `download` and `geodata` modules, do not require authentication.
-Credentials are necessary to access some of the INSEE APIs available through `pynsee` by the modules `macrodata`, `localdata`, `metadata` and `sirene`. 
-API credentials can be created here : [api.insee.fr](https://api.insee.fr/catalogue/)
+Credentials are necessary to access SIRENE API available through `pynsee` by the module `sirene`. API credentials can be created here : [portail-api.insee.fr](https://portail-api.insee.fr/). All other modules are freely accessible.
 
 ```python
 
 # Download Pypi package
-pip install pynsee[full] 
+pip install pynsee[full]
 
 # Get the development version from GitHub
 # git clone https://github.com/InseeFrLab/pynsee.git
 # cd pynsee
 # pip install .[full]
 
-# Subscribe to api.insee.fr and get your credentials!
-# Save your credentials with init_conn function :      
+# Subscribe to portail-api.insee.fr and get your credentials!
+# Save your credentials with init_conn function :
 from pynsee.utils.init_conn import init_conn
-init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
+init_conn(sirene_key="my_sirene_key")
 
 # Beware : any change to the keys should be tested after having cleared the cache
 # Please do : from pynsee.utils import clear_all_cache; clear_all_cache()
@@ -50,7 +51,7 @@ init_conn(insee_key="my_insee_key", insee_secret="my_insee_secret")
    Alternatively, you can make a keyword-based search with ``search_macrodata``, e.g. ``search_macrodata('GDP')``.
    Then, get the data with ``get_dataset`` or ``get_series``
 * **Local data** : use first ``get_local_metadata``, then get data with ``get_local_data``
-* **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list`` 
+* **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list``
 * **Sirene (French companies database)** : use first ``get_dimension_list``, then use ``search_sirene`` with dimensions as filtering variables
 * **Geodata** : get the list of available geographical data with ``get_geodata_list`` and then retrieve it with ``get_geodata``
 * **Files on insee.fr**: get the list of available files on insee.fr with ``get_file_list`` and then download it with ``download_file``
@@ -61,7 +62,7 @@ For further advice, have a look at the documentation and gallery of the [example
 ## Example - Population Map
 
 <h1 align="center">
-<img src="https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png?token=AP32AXOVNXK5LWKM4OJ5THDAZRHZK">
+<img src="https://raw.githubusercontent.com/InseeFrLab/pynsee/master/docs/_static/popfrance.png">
 </h1>
 
 ```python
@@ -99,7 +100,7 @@ mapcom['density'] = mapcom['population'] / mapcom['area']
 mapcom = GeoFrDataFrame(mapcom)
 mapcom = mapcom.translate(departement = ['971', '972', '974', '973', '976'],
                           factor = [1.5, 1.5, 1.5, 0.35, 1.5])
-                          
+
 mapcom = mapcom.zoom(departement = ["75","92", "93", "91", "77", "78", "95", "94"],
                  factor=1.5, startAngle = math.pi * (1 - 3 * 1/9))
 mapcom
@@ -136,32 +137,30 @@ fig.savefig('pop_france.svg',
             format='svg', dpi=1200,
             bbox_inches = 'tight',
             pad_inches = 0)
- 
+
 ```
 
 ## How to avoid proxy issues ?
 
 ```python
 
-# Use the proxy_server argument of the init_conn function to change the proxy server address   
+# Use the proxy_server argument of the init_conn function to change the proxy server address
 from pynsee.utils.init_conn import init_conn
-init_conn(insee_key="my_insee_key",
-         insee_secret="my_insee_secret",
+init_conn(sirene_key="my_sirene_key",
          http_proxy="http://my_proxy_server:port",
          https_proxy="http://my_proxy_server:port")
 
 # Beware : any change to the keys should be tested after having cleared the cache
 # Please do : from pynsee.utils import *; clear_all_cache()
 
-# Alternativety you can use directly environment variables as follows. 
+# Alternativety you can use directly environment variables as follows.
 # Beware not to commit your credentials!
 import os
-os.environ['insee_key'] = 'my_insee_key'
-os.environ['insee_secret'] = 'my_insee_secret'
+os.environ['sirene_key'] = 'my_sirene_key'
 os.environ['http_proxy'] = "http://my_proxy_server:port"
 os.environ['https_proxy'] = "http://my_proxy_server:port"
 
-``` 
+```
 
 ## Support
 

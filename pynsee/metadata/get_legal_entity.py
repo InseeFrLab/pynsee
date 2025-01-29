@@ -4,10 +4,10 @@
 import pandas as pd
 from functools import lru_cache
 from tqdm import trange
-import os
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.save_df import save_df
+
 
 @save_df(day_lapse_max=30)
 def get_legal_entity(codes, print_err_msg=True, update=False, silent=False):
@@ -33,13 +33,13 @@ def get_legal_entity(codes, print_err_msg=True, update=False, silent=False):
         try:
             data = _get_one_legal_entity(code, print_err_msg=print_err_msg)
             list_data.append(data)
-        except:
+        except Exception:
             pass
 
     data_final = pd.concat(list_data).reset_index(drop=True)
 
     data_final = data_final.rename(columns={"intitule": "title"})
-    
+
     return data_final
 
 
@@ -55,14 +55,15 @@ def _get_one_legal_entity(c, print_err_msg=True):
         )
 
     INSEE_legal_entity_n3 = (
-        "https://api.insee.fr/metadonnees/V1/codes/cj/" + n + "/"
+        "https://api.insee.fr/metadonnees/codes/cj/" + n + "/"
     )
 
-    request = _request_insee(
-        api_url=INSEE_legal_entity_n3 + c,
-        file_format="application/json;charset=utf-8",
-        print_msg=print_err_msg,
-    )
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=INSEE_legal_entity_n3 + c,
+            file_format="application/json;charset=utf-8",
+            print_msg=print_err_msg,
+        )
 
     data_request = request.json()
 

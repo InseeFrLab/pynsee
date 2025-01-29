@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-import os
-import time
-import requests
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 import pandas as pd
 from pynsee.geodata._geojson_parser import _geojson_parser
 from pynsee.geodata._distance import _distance
@@ -55,14 +50,7 @@ def _get_data_with_bbox(session, link, list_bbox, crsPolygon="EPSG:4326"):
 
     link_query = link + BBOX
 
-    proxies = {}
-    for key in ["http", "https"]:
-        try:
-            proxies[key] = os.environ[f"{key}_proxy"]
-        except KeyError:
-            proxies[key] = ""
-
-    with session.get(link_query, proxies=proxies) as r:
+    with session.get(link_query) as r:
         try:
             data_json = r.json()
         except Exception:

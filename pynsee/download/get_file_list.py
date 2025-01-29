@@ -4,8 +4,11 @@ from functools import lru_cache
 from pynsee.download._get_dict_data_source import _get_dict_data_source
 from pynsee.utils._move_col_after import _move_col_before
 
+
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def get_file_list():
@@ -31,32 +34,20 @@ def get_file_list():
     df = df.reset_index(drop=True)
     df = _move_col_before(df, "id", "nom")
 
-    df.columns = [
-        "id",
-        "name",
-        "label",
-        "collection",
-        "link",
-        "type",
-        "zip",
-        "big_zip",
-        "data_file",
-        "tab",
-        "first_row",
-        "api_rest",
-        "md5",
-        "size",
-        "label_col",
-        "date_ref",
-        "meta_file",
-        "separator",
-        "type_col",
-        "long_col",
-        "val_col",
-        "encoding",
-        "last_row",
-        "missing_value",
-    ]
+    rename_col_dict = {
+        "nom": "name",
+        "libelle": "label",
+        "lien": "link",
+        "fichier_donnees": "data_file",
+        "onglet": "tab",
+        "premiere_ligne": "first_row",
+        "fichier_meta": "meta_file",
+        "separateur": "separator",
+        "derniere_ligne": "last_row",
+        "valeurs_manquantes": "missing_value",
+        "disponible": "available",
+    }
+    df = df.rename(columns=rename_col_dict)
 
     df = df[~df.link.str.contains("https://api.insee.fr")]
 
@@ -67,7 +58,6 @@ def get_file_list():
 
 @lru_cache(maxsize=None)
 def warning_metadata_download():
-
     logger.info(
         "pynsee.download's metadata rely on volunteering contributors and "
         "their manual updates. "

@@ -9,6 +9,7 @@ from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
 
 from pynsee.utils.save_df import save_df
 
+
 @save_df(day_lapse_max=30)
 def get_series_list(*datasets, update=False, silent=False):
     """Download an INSEE's series key list for one or several datasets from BDM macroeconomic database
@@ -45,8 +46,8 @@ def get_series_list(*datasets, update=False, silent=False):
     for dt in datasets:
         if dt not in insee_dataset_list:
             raise ValueError(
-                "\n%s is not a dataset from INSEE\nGet a dataset list with get_dataset_list function"
-                % dt
+                f"\n{dt} is not a dataset from INSEE\nGet a dataset "
+                "list with get_dataset_list function"
             )
 
     idbank_list_dataset = []
@@ -72,6 +73,8 @@ def get_series_list(*datasets, update=False, silent=False):
         columns={"nomflow": "DATASET", "idbank": "IDBANK", "cleFlow": "KEY"}
     )
 
-    idbank_list.columns = [col.replace("-", "_") for col in idbank_list.columns]
+    idbank_list.columns = [
+        col.replace("-", "_") for col in idbank_list.columns
+    ]
 
     return idbank_list

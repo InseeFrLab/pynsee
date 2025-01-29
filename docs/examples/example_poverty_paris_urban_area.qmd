@@ -34,7 +34,7 @@ code_com_paris = areaParis.code.to_list()
 ```
 
 ```{python}
-# get numeric values from INSEE database 
+# get numeric values from INSEE database
 dataParis = get_local_data(dataset_version='GEO2020FILO2017',
                        variables =  'INDICS_FILO_DISP_DET',
                        nivgeo = 'COM',
@@ -80,4 +80,3 @@ fig.savefig('poverty_paris_urban_area.svg',
             bbox_inches = 'tight',
             pad_inches = 0)
 ```
-

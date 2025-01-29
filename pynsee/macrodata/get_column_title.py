@@ -9,7 +9,7 @@ from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 
 
-def get_column_title(dataset=None):
+def get_column_title(dataset=None, update=True):
     """Get the title of a dataset's columns
 
     Args:
@@ -43,8 +43,10 @@ def get_column_title(dataset=None):
 
     for idt in trange(n_dataset, desc="1/2 - Getting columns list "):
         dt = dataset_list[idt]
-        dataset_dimension = _get_dataset_dimension(dt)
-        dataset_dimension = dataset_dimension[["dimension", "local_representation"]]
+        dataset_dimension = _get_dataset_dimension(dt, update=update)
+        dataset_dimension = dataset_dimension[
+            ["dimension", "local_representation"]
+        ]
         list_column.append(dataset_dimension)
 
     df_column = pd.concat(list_column)

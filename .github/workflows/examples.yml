@@ -4,7 +4,7 @@ on:
   push:
       branches: [doc]
   schedule:
-    - cron: '0 3 * * *'
+    - cron: '0 3 * * 0'
 
 jobs:
   build:
@@ -21,23 +21,22 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-        
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-cov geopandas nbconvert matplotlib descartes  
+        pip install flake8 pytest pytest-cov geopandas nbconvert matplotlib descartes
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      
+
     - name: Test all examples
       env:
-        insee_key: ${{ secrets.INSEE_KEY }}
-        insee_secret: ${{ secrets.INSEE_SECRET }}
+        sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
         pip install jupytext
-        pip install .[full] 
-        pip install -r docs/requirements.txt            
-        # test all notebooks        
-        cd docs/examples 
+        pip install .[full]
+        pip install -r docs/requirements.txt
+        # test all notebooks
+        cd docs/examples
         # delete py existing files
         for f in *.py; do rm "$f"; done
         # convert notebooks to py files
@@ -45,12 +44,10 @@ jobs:
         # run all py files
         for f in *.py; do echo "$f"; python "$f"; done
         cd ../..
-        
-    - name: Test idbank list download
-      env:      
-        insee_key: ${{ secrets.INSEE_KEY }}
-        insee_secret: ${{ secrets.INSEE_SECRET }}
-      run: |     
-        pip install . 
-        python -c "from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files;_dwn_idbank_files()"
 
+    - name: Test idbank list download
+      env:
+        sirene_key: ${{ secrets.SIRENE_KEY }}
+      run: |
+        pip install .
+        python -c "from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files;_dwn_idbank_files()"

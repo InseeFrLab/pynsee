@@ -1,36 +1,23 @@
 # -*- coding: utf-8 -*-
 
-import os
-import requests
-import tempfile
-import urllib3
+import io
 from functools import lru_cache
-from pynsee.utils.requests_params import _get_requests_headers, _get_requests_session, _get_requests_proxies
+from pynsee.utils.requests_session import PynseeAPISession
 
 
 @lru_cache(maxsize=None)
-def _get_capabilities(key='', version="1.0.0", service="wmts", tweak=""):
+def _get_capabilities(key="", version="1.0.0", service="wmts") -> io.BytesIO:
 
     service_upper = service.upper()
 
-    #link = "https://wxs.ign.fr/{}/geoportail/{}{}?SERVICE={}&VERSION={}&REQUEST=GetCapabilities".format(
-    #    key, tweak, service, service_upper, version
-    #)
-    link = f"https://data.geopf.fr/{service}?SERVICE={service_upper}&VERSION={version}&REQUEST=GetCapabilities"
+    link = (
+        f"https://data.geopf.fr/{service}?SERVICE={service_upper}"
+        f"&VERSION={version}&REQUEST=GetCapabilities"
+    )
 
-    session = _get_requests_session()
-    headers = _get_requests_headers()
-    proxies = _get_requests_proxies()
-    
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    results = session.get(link, proxies=proxies, headers=headers, verify=False)
+    with PynseeAPISession() as session:
 
-    raw_data_file = tempfile.mkdtemp() + "/" + "raw_data_file"
-
-    with open(raw_data_file, "wb") as f:
-        f.write(results.content)
-        f.close()
-
-    session.close()
+        results = session.get(link, verify=False)
+        raw_data_file = io.BytesIO(results.content)
 
     return raw_data_file

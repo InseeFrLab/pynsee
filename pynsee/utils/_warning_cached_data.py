@@ -2,7 +2,9 @@
 from functools import lru_cache
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @lru_cache(maxsize=None)
 def _warning_cached_data(file):
