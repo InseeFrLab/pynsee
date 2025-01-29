@@ -7,6 +7,7 @@ import os
 from typing import Optional
 
 from platformdirs import user_config_dir
+import requests
 
 from pynsee.utils.requests_session import PynseeAPISession
 
@@ -62,7 +63,7 @@ def init_conn(
     ) as session:
         try:
             invalid_requests = session._test_connections()
-        except (ValueError, RuntimeError):
+        except (ValueError, requests.exceptions.RequestException):
             try:
                 os.unlink(config_file)
             except FileNotFoundError:

@@ -542,7 +542,7 @@ class PynseeAPISession(requests.Session):
 
         Raises
         ------
-        RuntimeError
+        RequestException
             If we got a proxy error or a 404 exception.
         ValueError
             If no API was reached.
@@ -580,12 +580,12 @@ class PynseeAPISession(requests.Session):
                 try:
                     exc.response.status_code
                 except AttributeError:
-                    raise RuntimeError(
+                    raise requests.exceptions.RequestException(
                         f"Could not reach {api} at {api_url}, please control "
                         "your proxy configuration."
                     ) from exc
                 if exc.response.status_code == 404:
-                    raise RuntimeError(
+                    raise requests.exceptions.RequestException(
                         f"Could not reach {api} at {api_url}, please get in "
                         "touch if the issue persists."
                     ) from exc

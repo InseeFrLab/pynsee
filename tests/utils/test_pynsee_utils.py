@@ -7,6 +7,7 @@ import unittest
 from unittest import TestCase
 
 from platformdirs import user_config_dir
+import requests
 
 from pynsee.utils._get_credentials import _get_credentials_from_configfile
 from pynsee.utils.requests_session import PynseeAPISession
@@ -57,6 +58,7 @@ class TestFunction(TestCase):
 
     def test_request_insee_1(self):
         # if api is not well provided but sdmx url works
+
         clear_all_cache()
 
         sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
@@ -64,7 +66,9 @@ class TestFunction(TestCase):
             "https://api.insee.dummy/series/BDM/V1/data/SERIES_BDM/001688370"
         )
 
-        with PynseeAPISession() as session:
+        with PynseeAPISession(
+            http_proxy="", https_proxy="", sirene_key=""
+        ) as session:
             results = session.request_insee(api_url=api_url, sdmx_url=sdmx_url)
         test = results.status_code == 200
         self.assertTrue(test)
@@ -76,9 +80,9 @@ class TestFunction(TestCase):
 
     @patch_retries
     def test_init_conn_with_dummy_proxy(self):
-        "Check that a wrong proxy configuration raises a RuntimeError"
+        "Check that a wrong proxy configuration raises a RequestException"
 
-        with self.assertRaises(RuntimeError):
+        with self.assertRaises(requests.exceptions.RequestException):
             os.environ["http_proxy"] = "spam"
             os.environ["https_proxy"] = "bacon"
             init_conn(sirene_key="eggs")
