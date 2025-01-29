@@ -482,10 +482,10 @@ class PynseeAPISession(requests.Session):
                 success = False
             elif code == 429:
 
-                if (
-                    os.environ.get("PYNSEE_DISPLAY_ALL_WARNINGS").lower()
-                    == "true"
-                ):
+                display_warnings = os.environ.get(
+                    "PYNSEE_DISPLAY_ALL_WARNINGS"
+                ).lower()
+                if display_warnings == "true":
                     msg = (
                         "API query number limit reached - "
                         "function might be slowed down"
