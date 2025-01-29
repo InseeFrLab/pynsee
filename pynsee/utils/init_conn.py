@@ -84,30 +84,16 @@ def init_conn(
             f"locally here:\n{config_file}"
         )
 
-    # save config
-    if not invalid_requests and ("Sirene" not in invalid_requests):
-        # everything works, or at least SIRENE
-        config = {
-            "sirene_key": sirene_key,
-            "http_proxy": http_proxy,
-            "https_proxy": https_proxy,
-        }
+    if invalid_requests and ("Sirene" in invalid_requests):
+        sirene_key = None
 
+    config = {
+        "sirene_key": sirene_key,
+        "http_proxy": http_proxy,
+        "https_proxy": https_proxy,
+    }
+
+    if not invalid_requests:
         with open(config_file, "w", opener=opener, encoding="utf8") as f:
             json.dump(config, f)
-
         logger.info("Credentials have been saved.")
-
-    elif invalid_requests:
-        # some APIs are working, excepting SIRENE. User has already been warned
-        # about this.
-        config = {
-            "sirene_key": None,
-            "http_proxy": http_proxy,
-            "https_proxy": https_proxy,
-        }
-
-    with open(config_file, "w", opener=opener, encoding="utf8") as f:
-        json.dump(config, f)
-
-    logger.info("Credentials have been saved.")
