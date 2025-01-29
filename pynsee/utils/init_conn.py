@@ -65,7 +65,7 @@ def init_conn(
             invalid_requests = session._test_connections()
         except (ValueError, requests.exceptions.RequestException):
             try:
-                os.unlink(config_file)
+                os.remove(config_file)
             except FileNotFoundError:
                 pass
             raise
