@@ -4,6 +4,7 @@ on:
   push:
       branches:
         - 'master'
+        - 'pytest-xdist-remove-utils'
 
 jobs:
   build:
