@@ -5,7 +5,7 @@ from functools import lru_cache
 import pandas as pd
 
 from pynsee.utils._paste import _paste
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.localdata.get_area_list import get_area_list
 
 
@@ -50,9 +50,10 @@ def _get_insee_one_area(area_type, codearea):
     if codearea in list_available_codeareas:
         api_url = "https://api.insee.fr/metadonnees/geo/"
         api_url = api_url + type2 + "/" + codearea + "/descendants"
-        request = _request_insee(
-            api_url=api_url, file_format="application/json"
-        )
+        with PynseeAPISession() as session:
+            request = session.request_insee(
+                api_url=api_url, file_format="application/json"
+            )
 
         data = request.json()
         list_data_area = []

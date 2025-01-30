@@ -4,7 +4,7 @@
 from functools import lru_cache
 import pandas as pd
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 
 
 @lru_cache(maxsize=None)
@@ -18,9 +18,10 @@ def _get_insee_local_onegeo(variables, dataset_version, nivgeo, codegeo):
         variables, dataset_version, nivgeo, codegeo, modalite
     )
 
-    request = _request_insee(
-        api_url=link, file_format="application/json;charset=utf-8"
-    )
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=link, file_format="application/json;charset=utf-8"
+        )
 
     data_request = request.json()
 

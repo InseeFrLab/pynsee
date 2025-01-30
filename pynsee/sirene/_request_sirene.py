@@ -4,7 +4,7 @@ import pandas as pd
 import math
 from functools import lru_cache
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.sirene._make_dataframe import _make_dataframe
 
 import logging
@@ -38,9 +38,11 @@ def _request_sirene(query, kind, number=1001):
     if number > number_query_limit:
         link = link + "&curseur=*"
 
-    request = _request_insee(
-        api_url=link, file_format="application/json;charset=utf-8"
-    )
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=link,
+            file_format="application/json;charset=utf-8",
+        )
 
     list_dataframe = []
 
@@ -82,10 +84,11 @@ def _request_sirene(query, kind, number=1001):
                     + following_cursor
                 )
 
-                request_new = _request_insee(
-                    api_url=new_query,
-                    file_format="application/json;charset=utf-8",
-                )
+                with PynseeAPISession() as session:
+                    request_new = session.request_insee(
+                        api_url=new_query,
+                        file_format="application/json;charset=utf-8",
+                    )
 
                 request_status = request_new.status_code
 

@@ -5,7 +5,7 @@ import pandas as pd
 import datetime
 from functools import lru_cache
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 
 import logging
 
@@ -53,7 +53,10 @@ def get_new_city(code, date=None):
         date = str(now.year - 10)
         api_link = api_link + "?date=" + date + "-01-01"
 
-    request = _request_insee(api_url=api_link, file_format="application/json")
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=api_link, file_format="application/json"
+        )
 
     try:
         data = request.json()

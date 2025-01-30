@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from tqdm import trange
 
 import re
@@ -63,7 +63,10 @@ def get_definition(ids):
         id = ids[i]
         query = link + "/" + id
 
-        request = _request_insee(api_url=query, file_format="application/json")
+        with PynseeAPISession() as session:
+            request = session.request_insee(
+                api_url=query, file_format="application/json"
+            )
 
         try:
             data = request.json()

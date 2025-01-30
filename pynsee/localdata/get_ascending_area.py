@@ -7,7 +7,7 @@ Created on Wed Feb  1 13:52:54 2023
 
 import pandas as pd
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.save_df import save_df
 
 import logging
@@ -75,7 +75,10 @@ def get_ascending_area(
 
     api_link = api_link + "&".join(params)
 
-    request = _request_insee(api_url=api_link, file_format="application/json")
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=api_link, file_format="application/json"
+        )
 
     try:
         data = request.json()

@@ -2,7 +2,7 @@
 # Copyright : INSEE, 2021
 
 from functools import lru_cache
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 
@@ -37,8 +37,7 @@ def get_definition_list():
 
     insee_folder_local_def = insee_folder + "/" + "definition"
 
-    if not os.path.exists(insee_folder_local_def):
-        os.mkdir(insee_folder_local_def)
+    os.makedirs(insee_folder_local_def, exist_ok=True)
 
     list_expected_files = ["all_definitions.csv"]
 
@@ -65,7 +64,10 @@ def get_definition_list():
 
     link = "https://api.insee.fr/metadonnees/concepts/definitions"
 
-    request = _request_insee(api_url=link, file_format="application/json")
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=link, file_format="application/json"
+        )
 
     data_request = request.json()
 

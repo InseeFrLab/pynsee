@@ -1,37 +1,25 @@
 from datetime import date
 import logging
-import requests
 import re
-import os
-import urllib3
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+
+import requests
+
+from pynsee.utils.requests_session import PynseeAPISession
 
 logger = logging.getLogger(__name__)
 
 
 def _check_url(url):
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-    try:
-        proxies = {
-            "http": os.environ["http_proxy"],
-            "https": os.environ["https_proxy"],
-        }
-    except Exception:
-        proxies = {"http": "", "https": ""}
+    with PynseeAPISession() as session:
 
-    session = requests.Session()
-    retry = Retry(connect=3, backoff_factor=1)
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
+        try:
+            check = session.get(url, stream=True, verify=False)
+        except requests.exceptions.RequestException:
+            pass
+        else:
+            return url
 
-    check = session.get(url, proxies=proxies, stream=True, verify=False)
-
-    if check.status_code == 200:
-        return url
-    else:
         logger.error(
             f"File not found on insee.fr:\n{url} - please open an issue on:\n"
             "https://github.com/InseeFrLab/pynsee"
@@ -79,11 +67,11 @@ def _check_url(url):
                     list_string_split[: (len(list_string_split) - 1)]
                     + [filename2]
                 )
-                results = session.get(
-                    url2, proxies=proxies, stream=True, verify=False
-                )
-
-                if results.status_code == 200:
+                try:
+                    results = session.get(url2, stream=True, verify=False)
+                except requests.exceptions.RequestException:
+                    pass
+                else:
                     break
 
                 if d == list_potential_dates[-1]:

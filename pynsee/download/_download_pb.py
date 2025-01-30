@@ -1,12 +1,7 @@
 from tqdm import tqdm
-import urllib3
 
-from pynsee.utils.requests_params import (
-    _get_requests_proxies,
-    _get_requests_session,
-)
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+from pynsee.utils.requests_session import PynseeAPISession
 
 
 def _download_pb(url: str, fname: str, total: int = None):
@@ -20,11 +15,8 @@ def _download_pb(url: str, fname: str, total: int = None):
         fname {str} -- Destination where data will be written
     """
 
-    proxies = _get_requests_proxies()
-    session = _get_requests_session()
-
-    with session as s:
-        resp = s.get(url, proxies=proxies, stream=True, verify=False)
+    with PynseeAPISession() as s:
+        resp = s.get(url, stream=True, verify=False)
 
     if total is None:
         total = int(resp.headers.get("content-length", 0))

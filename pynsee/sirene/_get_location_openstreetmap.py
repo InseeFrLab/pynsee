@@ -1,10 +1,5 @@
 import json
 import os
-import requests
-
-from pathlib import Path
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 
 import pandas as pd
 
@@ -12,17 +7,14 @@ from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.utils._warning_cached_data import _warning_cached_data
-from pynsee.utils.requests_params import _get_requests_proxies
+
+from pynsee.utils.requests_session import PynseeAPISession
 
 
 def _get_location_openstreetmap(query, session=None, update=False):
 
     if session is None:
-        session = requests.Session()
-        retry = Retry(connect=3, backoff_factor=1)
-        adapter = HTTPAdapter(max_retries=retry)
-        session.mount("http://", adapter)
-        session.mount("https://", adapter)
+        session = PynseeAPISession()
 
     api_link = (
         "https://nominatim.openstreetmap.org/search.php?"
@@ -32,22 +24,10 @@ def _get_location_openstreetmap(query, session=None, update=False):
     insee_folder = _create_insee_folder()
     filename = os.path.join(insee_folder, f"{_hash(api_link)}.json")
 
-    try:
-        home = str(Path.home())
-        user_agent = os.path.basename(home)
-    except Exception:
-        user_agent = ""
-
-    headers = {
-        "User-Agent": "python_package_pynsee_" + user_agent.replace("/", "")
-    }
-
-    proxies = _get_requests_proxies()
-
     data = None
 
     if update or not os.path.isfile(filename):
-        results = session.get(api_link, proxies=proxies, headers=headers)
+        results = session.get(api_link)
         data = results.json()
 
         with open(filename, "w") as f:

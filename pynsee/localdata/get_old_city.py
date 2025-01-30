@@ -4,7 +4,7 @@
 import pandas as pd
 from functools import lru_cache
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 import logging
 
 logger = logging.getLogger(__name__)
@@ -37,18 +37,14 @@ def get_old_city(code, date=None):
     if date is not None:
         api_link = api_link + "?date=" + date
 
-    request = _request_insee(api_url=api_link, file_format="application/json")
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=api_link, file_format="application/json"
+        )
 
     try:
         data = request.json()
-
-        list_data = []
-
-        for i in range(len(data)):
-            df = pd.DataFrame(data[i], index=[0])
-            list_data.append(df)
-
-        data_final = pd.concat(list_data).reset_index(drop=True)
+        data_final = pd.DataFrame(data)
 
     except Exception:
         logger.error("No data found !")
