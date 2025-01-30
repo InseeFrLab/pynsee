@@ -57,7 +57,7 @@ jobs:
         # run all py files
         # for f in *.py; do python "$f"; done
         cd ../..
-    - name: Test with pytest
+    - name: Test with pytest and xdist
       env:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
