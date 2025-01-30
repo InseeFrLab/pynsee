@@ -4,6 +4,7 @@ on:
   pull_request_target:
     branches:
         - 'master'
+        - 'pytest-xdist-remove-utils'
 
 jobs:
   build:
@@ -24,7 +25,7 @@ jobs:
       run: |
         #sudo apt-get install libgeos-dev
         python -m pip install --upgrade pip
-        pip install flake8 black pytest pytest-cov geopandas nbconvert matplotlib descartes parameterized
+        pip install flake8 black pytest pytest-xdist pytest-cov geopandas nbconvert matplotlib descartes parameterized
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements-extra.txt ]; then pip install -r requirements-extra.txt; fi
     - name: Lint with flake8
@@ -60,7 +61,7 @@ jobs:
       env:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
-        pytest -v --cov
+        pytest -v --cov --dist loadscope -n auto
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
       if: github.ref == 'refs/heads/master'
