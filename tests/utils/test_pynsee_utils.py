@@ -114,9 +114,6 @@ class TestFunction(TestCase):
             os.environ["https_proxy"] = "bacon"
             init_conn(sirene_key="eggs")
 
-        del os.environ["http_proxy"], os.environ["https_proxy"]
-
-    @clean_os_patch
     @patch_retries
     def test_dummy_sirene_token_is_not_stored(self):
         "Check that a wrong SIRENE token is never stored"
@@ -127,7 +124,11 @@ class TestFunction(TestCase):
         with open(config_file, "w") as f:
             json.dump({"sirene_key": "spam"}, f)
 
-        init_conn(sirene_key="eggs")
+        init_conn(
+            sirene_key="eggs",
+            http_proxy=os.environ.get("http_proxy"),
+            https_proxy=os.environ.get("https_proxy"),
+        )
 
         config_file = os.path.join(
             user_config_dir("pynsee", ensure_exists=True), "config.json"
