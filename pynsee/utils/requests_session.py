@@ -107,11 +107,7 @@ class PynseeAPISession(requests.Session):
                     config[k] = venv
                     _warn_env_credentials(k)
                 else:
-                    try:
-                        config[k] = stored_config[k]
-                    except KeyError:
-                        # no previous config stored
-                        pass
+                    config[k] = stored_config.get(k)
 
         self.proxies.update(
             {

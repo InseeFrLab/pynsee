@@ -111,7 +111,7 @@ def init_conn(
         "https_proxy": https_proxy,
     }
 
-    if not invalid_requests:
+    if {"Sirene"}.issuperset(invalid_requests):
         with open(config_file, "w", opener=opener, encoding="utf8") as f:
             json.dump(config, f)
         logger.info("Credentials have been saved.")
