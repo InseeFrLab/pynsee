@@ -114,9 +114,6 @@ class TestFunction(TestCase):
             os.environ["https_proxy"] = "bacon"
             init_conn(sirene_key="eggs")
 
-        del os.environ["http_proxy"], os.environ["https_proxy"]
-
-    @clean_os_patch
     @patch_retries
     def test_dummy_sirene_token_is_not_stored(self):
         "Check that a wrong SIRENE token is never stored"
