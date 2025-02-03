@@ -124,11 +124,7 @@ class TestFunction(TestCase):
         with open(config_file, "w") as f:
             json.dump({"sirene_key": "spam"}, f)
 
-        init_conn(
-            sirene_key="eggs",
-            http_proxy=os.environ.get("http_proxy"),
-            https_proxy=os.environ.get("https_proxy"),
-        )
+        init_conn(sirene_key="eggs")
 
         config_file = os.path.join(
             user_config_dir("pynsee", ensure_exists=True), "config.json"
