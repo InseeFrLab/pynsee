@@ -4,7 +4,6 @@ on:
   push:
       branches:
         - 'master'
-        - 'pytest-xdist-remove-utils'
 
 jobs:
   build:
@@ -55,11 +54,11 @@ jobs:
         # run all py files
         # for f in *.py; do python "$f"; done
         cd ../..
-    - name: Test with pytest
+    - name: Test with pytest and xdist
       env:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
-        pytest -v --cov -n auto
+        pytest -v --cov --dist loadscope -n auto
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
       if: github.ref == 'refs/heads/master'
