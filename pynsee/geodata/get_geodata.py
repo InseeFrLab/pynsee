@@ -5,7 +5,11 @@ from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
 from pynsee.geodata._get_geodata import _get_geodata
 
 
-def get_geodata(id, update=False, crs="EPSG:3857"):
+def get_geodata(
+    dataset_id: str,
+    update: bool = False,
+    crs: str = "EPSG:3857"
+) -> GeoFrDataFrame:
     """Get geographical data with identifier and from IGN API
 
     Args:
@@ -29,8 +33,14 @@ def get_geodata(id, update=False, crs="EPSG:3857"):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
 
-        df = _get_geodata(id=id, update=update, crs=crs)
+        gdf = _get_geodata(dataset_id=dataset_id, update=update, crs=crs)
 
-        df = GeoFrDataFrame(df)
+        if not isinstance(gdf, GeoFrDataFrame):
+            message = (
+                f"Request failed: {gdf.loc[0, 'status']}, "
+                f"{gdf.loc[0, 'comment']}."
+            )
 
-    return df
+            raise RuntimeError(message)
+
+    return gdf

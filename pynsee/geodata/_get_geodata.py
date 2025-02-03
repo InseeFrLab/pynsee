@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 @save_df(day_lapse_max=90)
 def _get_geodata(
-    id,
+    dataset_id: str,
     polygon=None,
     update=False,
     silent=False,
@@ -54,27 +54,7 @@ def _get_geodata(
             "crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'"
         )
 
-    service = "WFS"
-    Version = "2.0.0"
-
-    # make the query link for ign
-    geoportail = f"https://data.geopf.fr/{service.lower()}/ows?"
-    Service = "SERVICE=" + service + "&"
-    version = "VERSION=" + Version + "&"
-    request = "REQUEST=GetFeature&"
-    typename = "TYPENAME=" + id + "&"
-    Crs = "srsName=" + crs + "&"
-
-    link0 = (
-        geoportail
-        # + "/wfs?"
-        + Service
-        + version
-        + request
-        + typename
-        + Crs
-        + "OUTPUTFORMAT=application/json&COUNT=1000"
-    )
+    bbox = ""
 
     # add bounding box to link if polygon provided
     if polygon is not None:
@@ -98,16 +78,27 @@ def _get_geodata(
                 "urn:ogc:def:crs:" + crsPolygon,
             ]
 
-        BBOX = "&BBOX={}".format(",".join(bounds))
-        link = link0 + BBOX
-    else:
-        link = link0
+        bbox = "&BBOX={}".format(",".join(bounds))
+
+    geoportail = "https://data.geopf.fr"
+    fmt = "application/json"
+
+    urlhits = "{url}/wfs/ows?service=WFS&version=2.0.0" \
+              "&request=GetFeature&typenames={typename}&outputFormat={fmt}" \
+              "&resultType=hits" + bbox
+
+    urldata = "{url}/wfs/?service=WFS&version=2.0.0" \
+              "&request=GetFeature&typenames={typename}" \
+              "&outputFormat={fmt}&startIndex={start}&count={num_hits}" \
+              "&srsName={crs}" + bbox
+
+    hits = urlhits.format(url=geoportail, typename=dataset_id, fmt=fmt)
+
+    print(hits)
 
     with PynseeAPISession() as session:
-
         try:
-            data = session.get(link, verify=False)
-
+            data = session.get(hits, verify=False)
         except requests.exceptions.RequestException as exc:
             logger.critical(exc)
             return pd.DataFrame(
@@ -118,12 +109,29 @@ def _get_geodata(
                 index=[0],
             )
 
+        num_hits = data.json()["numberMatched"]
+
+        data = {}
+
+        # iterate if necessary
+        count = 1000
+
+        if num_hits > count:
+            max_it = num_hits // count + 1
+        else:
+            link = urldata.format(
+                url=geoportail, typename=dataset_id, fmt=fmt, start=0,
+                num_hits=num_hits, crs=crs)
+
+            data = session.get(link, verify=False)
+
+
     data_json = data.json()
 
     json = data_json["features"]
 
     # if maximum reached
-    # split the query with the bouding box list
+    # split the query with the bounding box list
     if len(json) == 1000:
         list_bbox = _get_bbox_list(
             polygon=polygon, update=update, crsPolygon=crsPolygon

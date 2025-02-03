@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+import logging
+
 import pandas as pd
+
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.geodata._geojson_parser import _geojson_parser
 from pynsee.geodata._distance import _distance
-from pynsee.utils.requests_session import PynseeAPISession
 
-import logging
+
 
 logger = logging.getLogger(__name__)
 

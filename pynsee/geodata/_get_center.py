@@ -1,10 +1,10 @@
-from pynsee.geodata._extract_bounds import _extract_bounds
-from pynsee.geodata._get_geom import _get_geom
+from ._extract_bounds import _extract_bounds
+from .GeoFrDataFrame import GeoFrDataFrame
 
 
-def _get_center(df, col="geometry"):
+def _get_center(gdf: GeoFrDataFrame, col: str = "geometry"):
 
-    geo = _get_geom(df, col=col)
+    geo = getattr(gdf, col)
 
     center = _extract_center(geo)
 
