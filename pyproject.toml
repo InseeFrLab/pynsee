@@ -10,8 +10,8 @@ name = "pynsee"
 authors = [
   { name="Hadrien Leclerc", email="leclerc.hadrien@gmail.com" },
   { name="Lino Galiana" },
-  { name="Thomas Grandjean" },
-  { name="Tanguy Fardet", email="tanguy.fardet@ens-lyon.org"},
+  { name="Thomas Grandjean", email="thomas.grandjean@developpement-durable.gouv.fr" },
+  { name="Tanguy Fardet", email="tanguy.fardet@ens-lyon.org" },
 ]
 license = {file = "LICENSE.md"}
 description = "Tools to Easily Search and Download French Data From INSEE and IGN APIs."
