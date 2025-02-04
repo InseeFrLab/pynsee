@@ -7,6 +7,7 @@ import warnings
 from typing import Optional, Type
 
 import pandas as pd
+import geopandas as gpd
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
@@ -88,7 +89,17 @@ def save_df(
             else:
                 try:
                     if parquet:
-                        df = pd.read_parquet(file_name)
+                        return_type = func.__annotations__.get("return")
+                        is_geo = issubclass(return_type, gpd.GeoDataFrame)
+
+                        mod = gpd if is_geo else pd
+
+                        df = mod.read_parquet(file_name)
+
+                        if is_geo:
+                            from pynsee.geodata import GeoFrDataFrame
+
+                            df = GeoFrDataFrame(df)
                     else:
                         df = pd.read_pickle(file_name)
 

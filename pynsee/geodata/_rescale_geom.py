@@ -2,7 +2,7 @@ from shapely.affinity import scale
 import warnings
 from shapely.errors import ShapelyDeprecationWarning
 
-from pynsee.geodata._get_center import _get_center
+from ._get_center import _get_center
 
 
 def _rescale_geom(df, factor, col="geometry"):

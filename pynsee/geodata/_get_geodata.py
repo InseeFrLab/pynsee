@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import multiprocessing
+from typing import Optional, Union
+from xml.etree import ElementTree
 
-import pandas as pd
 import requests
 import tqdm
-
-from pynsee.geodata._get_bbox_list import _get_bbox_list
-from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
-from pynsee.geodata._get_data_with_bbox import _set_global_var
-from pynsee.geodata._geojson_parser import _geojson_parser
+from geopandas import GeoDataFrame
+from shapely import MultiPolygon, Polygon
 
 from pynsee.utils.save_df import save_df
 from pynsee.utils.requests_session import PynseeAPISession
 
-import logging
+from .GeoFrDataFrame import GeoFrDataFrame
+
 
 logger = logging.getLogger(__name__)
 
@@ -22,13 +22,14 @@ logger = logging.getLogger(__name__)
 @save_df(day_lapse_max=90)
 def _get_geodata(
     dataset_id: str,
-    polygon=None,
-    update=False,
-    silent=False,
-    crs="EPSG:3857",
-    crsPolygon="EPSG:4326",
-):
-    """Get geographical data with identifier and from IGN API
+    polygon: Optional[Union[MultiPolygon, Polygon]] = None,
+    update: bool = False,
+    silent: bool = False,
+    crs: str = "EPSG:3857",
+    crsPolygon: str = "EPSG:4326",
+) -> GeoDataFrame:
+    """
+    Get geographical data with identifier and from IGN API
 
     Args:
         id (str): _description_
@@ -83,25 +84,26 @@ def _get_geodata(
     geoportail = "https://data.geopf.fr"
     fmt = "application/json"
 
-    urlhits = "{url}/wfs/ows?service=WFS&version=2.0.0" \
-              "&request=GetFeature&typenames={typename}&outputFormat={fmt}" \
-              "&resultType=hits" + bbox
+    urlhits = (
+        "{url}/wfs/ows?service=WFS&version=2.0.0"
+        "&request=GetFeature&typenames={typename}&resultType=hits" + bbox
+    )
 
-    urldata = "{url}/wfs/?service=WFS&version=2.0.0" \
-              "&request=GetFeature&typenames={typename}" \
-              "&outputFormat={fmt}&startIndex={start}&count={num_hits}" \
-              "&srsName={crs}" + bbox
+    urldata = (
+        "{url}/wfs/?service=WFS&version=2.0.0"
+        "&request=GetFeature&typenames={typename}"
+        "&outputFormat={fmt}&startIndex={start}&count={count}"
+        "&srsName={crs}" + bbox
+    )
 
-    hits = urlhits.format(url=geoportail, typename=dataset_id, fmt=fmt)
-
-    print(hits)
+    hits = urlhits.format(url=geoportail, typename=dataset_id)
 
     with PynseeAPISession() as session:
         try:
             data = session.get(hits, verify=False)
         except requests.exceptions.RequestException as exc:
             logger.critical(exc)
-            return pd.DataFrame(
+            return GeoDataFrame(
                 {
                     "status": exc.response.status_code,
                     "comment": exc.response.text,
@@ -109,88 +111,71 @@ def _get_geodata(
                 index=[0],
             )
 
-        num_hits = data.json()["numberMatched"]
+        root = ElementTree.fromstring(data.content)
+        num_hits = int(root.attrib["numberMatched"])
 
-        data = {}
-
-        # iterate if necessary
+        data = []
         count = 1000
 
+        # iterate if necessary
         if num_hits > count:
-            max_it = num_hits // count + 1
+            num_calls = num_hits // count
+
+            if num_calls * count < num_hits:
+                num_calls += 1
+
+            maxstart = num_calls * count
+
+            Nproc = min(num_calls, 6, multiprocessing.cpu_count())
+
+            def _make_request(i: int) -> dict:
+                start = i * count
+                cnt = count if start - maxstart >= count else num_hits - start
+
+                link = urldata.format(
+                    url=geoportail,
+                    typename=dataset_id,
+                    fmt=fmt,
+                    start=start,
+                    count=cnt,
+                    crs=crs,
+                )
+
+                return session.get(link, verify=False), link
+
+            with multiprocessing.Pool(processes=Nproc) as pool:
+                list_req = list(
+                    tqdm.tqdm(
+                        pool.imap_unordered(session.get, range(num_calls)),
+                        total=num_calls,
+                    )
+                )
+
+            for r, link in list_req:
+                _check_request_update_data(data, r, link, polygon)
         else:
             link = urldata.format(
-                url=geoportail, typename=dataset_id, fmt=fmt, start=0,
-                num_hits=num_hits, crs=crs)
+                url=geoportail,
+                typename=dataset_id,
+                fmt=fmt,
+                start=0,
+                count=num_hits,
+                crs=crs,
+            )
 
-            data = session.get(link, verify=False)
+            r = session.get(link, verify=False)
 
+            _check_request_update_data(data, r, link, polygon)
 
-    data_json = data.json()
+    gdf = GeoFrDataFrame.from_features(data, crs=crs)
 
-    json = data_json["features"]
-
-    # if maximum reached
-    # split the query with the bounding box list
-    if len(json) == 1000:
-        list_bbox = _get_bbox_list(
-            polygon=polygon, update=update, crsPolygon=crsPolygon
+    if gdf.empty:
+        return GeoDataFrame(
+            {"status": 200, "comment": "Valid request returned empty result"},
+            index=[0],
         )
 
-        Nprocesses = min(6, multiprocessing.cpu_count())
-
-        args = [link0, list_bbox, crsPolygon]
-        irange = range(len(list_bbox))
-
-        with multiprocessing.Pool(
-            initializer=_set_global_var,
-            initargs=(args,),
-            processes=Nprocesses,
-        ) as pool:
-            list_data = list(
-                tqdm.tqdm(
-                    pool.imap(_get_data_with_bbox2, irange),
-                    total=len(list_bbox),
-                )
-            )
-
-        data_all = pd.concat(list_data).reset_index(drop=True)
-
-    elif len(json) != 0:
-        data_all = _geojson_parser(json).reset_index(drop=True)
-
-    else:
-        msg = f"Query is correct but no data found : {link}"
-        logger.error(msg)
-        if polygon is not None:
-            logger.warning(
-                "Check that crsPolygon argument corresponds "
-                "to polygon data !"
-            )
-
-        return pd.DataFrame({"status": 200, "comment": msg}, index=[0])
-
-    # drop duplicates
-    data_col = data_all.columns
-
-    if "geometry" in data_col:
-        selected_col = [
-            col for col in data_col if col not in ["geometry", "bbox"]
-        ]
-        data_all_clean = data_all[selected_col].drop_duplicates()
-
-        row_selected = [int(i) for i in data_all_clean.index]
-        geom = data_all.loc[row_selected, "geometry"]
-        data_all_clean["geometry"] = geom
-
-        if "bbox" in data_col:
-            geom = data_all.loc[row_selected, "bbox"]
-            data_all_clean["bbox"] = geom
-
-        data_all_clean = data_all_clean.reset_index(drop=True)
-
-    else:
-        data_all_clean = data_all.drop_duplicates()
+    print(type(gdf), len(gdf), type(gdf.geometry))
 
     # drop data outside polygon
     if polygon is not None:
@@ -199,16 +184,43 @@ def _get_geodata(
             "using polygon argument can be imprecise"
         )
 
-        row_selected = []
-        for i in range(len(data_all_clean)):
-            geom = data_all_clean.loc[i, "geometry"]
-            if geom.intersects(polygon):
-                row_selected.append(i)
-        if len(row_selected) > 0:
-            data_all_clean = data_all_clean.loc[row_selected, :]
+        if gdf.crs != crsPolygon:
+            gdf = gdf.to_crs(crsPolygon)
 
-    data_all_clean = data_all_clean.reset_index(drop=True)
+        return (
+            gdf.iloc[gdf.sindex.query(polygon, predicate="intersects")]
+            .to_crs(crs)
+            .reset_index(drop=True)
+        )
 
-    data_all_clean["crsCoord"] = crs
+    print(type(gdf), len(gdf), type(gdf.geometry))
 
-    return data_all_clean
+    return gdf
+
+
+def _check_request_update_data(
+    data: list,
+    r: requests.Request,
+    link: str,
+    polygon: Optional[Union[MultiPolygon, Polygon]],
+) -> None:
+    """Check that the request succeeded and update"""
+    if not r.ok:
+        raise requests.RequestException(
+            f"The following query raise an error {r.status_code}: {link}"
+        )
+
+    json = r.json()["features"]
+
+    if json:
+        data.extend(json)
+    else:
+        msg = f"Query is correct but no data found: {link}"
+
+        if polygon is not None:
+            msg += (
+                "\nCheck that crsPolygon argument corresponds "
+                "to polygon data!"
+            )
+
+        logger.error(msg)

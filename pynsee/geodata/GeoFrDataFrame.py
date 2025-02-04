@@ -13,15 +13,32 @@ class GeoFrDataFrame(GeoDataFrame):
     def _constructor(self):
         return GeoFrDataFrame
 
-
     def get_geom(self):
-        ''' Deprecated alias for `geometry` '''
+        """Deprecated alias for `geometry`"""
         warnings.warn(
             message="`get_geom` is deprecated, please use the `geometry` "
-                "property instead.",
-            stacklevel=2
+            "property of the `GeoFrDataFrame` instead.",
+            stacklevel=2,
         )
+
         return self.geometry
 
-    from pynsee.geodata.translate import translate
-    from pynsee.geodata.zoom import zoom
+    def translate(self, *args, **kwargs) -> "GeoFrDataFrame":
+        """
+        Apply translation for oversea territories.
+
+        See: :func:`pynsee.geodata.translate.translate`.
+        """
+        from .translate import translate
+
+        return translate(self, *args, **kwargs)
+
+    def zoom(self, *args, **kwargs) -> "GeoFrDataFrame":
+        """
+        Zoom for parisian departments.
+
+        See: :func:`pynsee.geodata.zoom.zoom`.
+        """
+        from .zoom import zoom
+
+        return zoom(self, *args, **kwargs)

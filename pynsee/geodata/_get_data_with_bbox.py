@@ -8,7 +8,6 @@ from pynsee.geodata._geojson_parser import _geojson_parser
 from pynsee.geodata._distance import _distance
 
 
-
 logger = logging.getLogger(__name__)
 
 

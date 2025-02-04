@@ -1,7 +1,7 @@
-from pynsee.geodata._get_geom import _get_geom
+from .GeoFrDataFrame import GeoFrDataFrame
 
 
-def get_geom(self):
+def get_geom(gdf: GeoFrDataFrame):
     """Extract a shape (Polygon, Point ...) from a GeoFrDataFrame
 
     Examples:
@@ -16,7 +16,4 @@ def get_geom(self):
         >>> # Extract a polygon from the GeoDataframe
         >>> geo = df.get_geom()
     """
-
-    geo = _get_geom(self)
-
-    return geo
+    return gdf.get_geom()

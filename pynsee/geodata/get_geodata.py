@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import warnings
-from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
-from pynsee.geodata._get_geodata import _get_geodata
+from .GeoFrDataFrame import GeoFrDataFrame
+from ._get_geodata import _get_geodata
 
 
 def get_geodata(
-    dataset_id: str,
-    update: bool = False,
-    crs: str = "EPSG:3857"
+    dataset_id: str, update: bool = False, crs: str = "EPSG:3857"
 ) -> GeoFrDataFrame:
     """Get geographical data with identifier and from IGN API
 
@@ -34,6 +32,8 @@ def get_geodata(
         warnings.simplefilter("ignore")
 
         gdf = _get_geodata(dataset_id=dataset_id, update=update, crs=crs)
+
+        print(type(gdf), len(gdf), type(gdf.geometry))
 
         if not isinstance(gdf, GeoFrDataFrame):
             message = (

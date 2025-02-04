@@ -6,8 +6,8 @@ from shapely.geometry import Point, LineString
 import warnings
 from shapely.errors import ShapelyDeprecationWarning
 
-from pynsee.geodata._rescale_geom import _rescale_geom
-from pynsee.geodata._get_center import _get_center
+from ._rescale_geom import _rescale_geom
+from ._get_center import _get_center
 
 
 def zoom(
