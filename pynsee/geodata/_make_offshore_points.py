@@ -1,16 +1,20 @@
 import math
 import warnings
+from typing import Optional
+
 from shapely.affinity import rotate
 from shapely.geometry import Point, LineString
 
 
 def _make_offshore_points(
-    center=Point(-1, 47.181903),
+    center: Optional[Point] = None,
     radius=8,
     angle=1 / 17,
     startAngle=math.pi * (1 - 1.5 * 1 / 17),
     list_ovdep=["974", "971", "972", "973", "976"],
 ):
+    if center is None:
+        center = Point(-1, 47.181903)
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

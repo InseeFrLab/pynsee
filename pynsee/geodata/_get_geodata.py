@@ -19,7 +19,7 @@ from .GeoFrDataFrame import GeoFrDataFrame
 logger = logging.getLogger(__name__)
 
 
-@save_df(day_lapse_max=90)
+@save_df(obj=GeoFrDataFrame, day_lapse_max=90)
 def _get_geodata(
     dataset_id: str,
     polygon: Optional[Union[MultiPolygon, Polygon]] = None,
@@ -175,8 +175,6 @@ def _get_geodata(
             index=[0],
         )
 
-    print(type(gdf), len(gdf), type(gdf.geometry))
-
     # drop data outside polygon
     if polygon is not None:
         logger.warning(
@@ -192,8 +190,6 @@ def _get_geodata(
             .to_crs(crs)
             .reset_index(drop=True)
         )
-
-    print(type(gdf), len(gdf), type(gdf.geometry))
 
     return gdf
 

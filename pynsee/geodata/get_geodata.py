@@ -33,8 +33,6 @@ def get_geodata(
 
         gdf = _get_geodata(dataset_id=dataset_id, update=update, crs=crs)
 
-        print(type(gdf), len(gdf), type(gdf.geometry))
-
         if not isinstance(gdf, GeoFrDataFrame):
             message = (
                 f"Request failed: {gdf.loc[0, 'status']}, "

@@ -35,7 +35,7 @@ def _warning_cached_data(file, mdate=None, day_lapse=None):
 
 
 def save_df(
-    obj: Type[pd.DataFrame] = pd.DataFrame,
+    obj: Optional[Type[pd.DataFrame]] = None,
     parquet: bool = True,
     day_lapse_max: Optional[int] = None,
 ):
@@ -89,31 +89,26 @@ def save_df(
             else:
                 try:
                     if parquet:
-                        return_type = func.__annotations__.get("return")
-                        is_geo = issubclass(return_type, gpd.GeoDataFrame)
+                        rt = func.__annotations__.get("return")
 
-                        mod = gpd if is_geo else pd
+                        mod = gpd if issubclass(rt, gpd.GeoDataFrame) else pd
 
                         df = mod.read_parquet(file_name)
-
-                        if is_geo:
-                            from pynsee.geodata import GeoFrDataFrame
-
-                            df = GeoFrDataFrame(df)
                     else:
                         df = pd.read_pickle(file_name)
 
                     if "Unnamed: 0" in df.columns:
                         del df["Unnamed: 0"]
                 except Exception as e:
-                    warnings.warn(str(e))
+                    warnings.warn(str(e), stacklevel=2)
 
                     kwargs2 = kwargs
                     kwargs2["update"] = True
 
                     warnings.warn(
                         "!!! Unable to load data, recalling function "
-                        "with `update` set to True !!!"
+                        "with `update` set to True !!!",
+                        stacklevel=2,
                     )
 
                     df = func(*args, **kwargs2)
@@ -128,6 +123,9 @@ def save_df(
                         _warning_cached_data(
                             file_name, mdate=mdate, day_lapse=day_lapse
                         )
+
+            if obj is None:
+                return df
 
             return obj(df)
 
@@ -146,8 +144,10 @@ def _save_dataframe(
             else:
                 df.to_pickle(file_name, index=False)
     except Exception as e:
-        warnings.warn(str(e))
-        warnings.warn(f"Error, file not saved:\n{file_name}\n{df}\n")
+        warnings.warn(str(e), stacklevel=2)
+        warnings.warn(
+            f"Error, file not saved:\n{file_name}\n{df}\n", stacklevel=2
+        )
     else:
         if not silent:
             logger.info(f"Data saved:\n{file_name}")

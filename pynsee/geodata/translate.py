@@ -88,21 +88,22 @@ def translate(
 
                 ovdep = gdf[gdf["insee_dep"].isin([departement[d]])]
 
-                if len(ovdep.index) > 0:
-
+                if ovdep.empty:
+                    logger.warning(
+                        f"{departement[d]} is missing from insee_dep column !"
+                    )
+                else:
                     ovdep = ovdep.reset_index(drop=True)
 
-                    if "insee_dep_geometry" in gdf.columns:
-                        geocol = "insee_dep_geometry"
-                    else:
-                        geocol = "geometry"
+                    # if "insee_dep_geometry" in gdf.columns:
+                    #     geocol = "insee_dep_geometry"
+                    # else:
+                    #     geocol = "geometry"
 
                     if factor[d] is not None:
-                        ovdep = _rescale_geom(
-                            ovdep, factor=factor[d], col=geocol
-                        )
+                        ovdep = _rescale_geom(ovdep, factor=factor[d])
 
-                    center_x, center_y = _get_center(ovdep, col=geocol)
+                    center_x, center_y = _get_center(ovdep)
 
                     xoff = offshore_points[d].coords.xy[0][0] - center_x
                     yoff = offshore_points[d].coords.xy[1][0] - center_y
@@ -112,11 +113,6 @@ def translate(
                     )
 
                     list_new_dep += [ovdep]
-
-                else:
-                    logger.warning(
-                        f"{departement[d]} is missing from insee_dep column !"
-                    )
 
             if len(list_new_dep) > 0:
 

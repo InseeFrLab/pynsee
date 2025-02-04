@@ -1,18 +1,13 @@
 from geopandas import GeoDataFrame
-from ._extract_bounds import _extract_bounds
 
 
-def _get_center(gdf: GeoDataFrame, col: str = "geometry"):
+def _get_center(gdf: GeoDataFrame):
     """Get the center of the geometries in a GeoDataFrame"""
-    geo = getattr(gdf, col)
+    bounds = gdf.bounds
 
-    return _extract_center(geo)
-
-
-def _extract_center(geo):
-    maxxdf = max(_extract_bounds(geom=geo, var="maxx"))
-    minxdf = min(_extract_bounds(geom=geo, var="minx"))
-    maxydf = max(_extract_bounds(geom=geo, var="maxy"))
-    minydf = min(_extract_bounds(geom=geo, var="miny"))
+    maxxdf = bounds.maxx.max()
+    minxdf = bounds.minx.min()
+    maxydf = bounds.maxy.max()
+    minydf = bounds.miny.min()
 
     return ((maxxdf + minxdf) / 2, (maxydf + minydf) / 2)
