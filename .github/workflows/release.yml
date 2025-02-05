@@ -16,8 +16,6 @@ jobs:
     name: Build wheel and source dist
     runs-on: ubuntu-22.04
 
-    if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
-
     steps:
       - uses: actions/checkout@v4
 
