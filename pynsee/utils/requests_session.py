@@ -570,7 +570,8 @@ class PynseeAPISession(requests.Session):
                 except AttributeError:
                     raise requests.exceptions.RequestException(
                         f"Could not reach {api} at {api_url}, please control "
-                        "your proxy configuration."
+                        "your proxy configuration "
+                        f"- proxies were {self.proxies}."
                     ) from exc
                 if exc.response.status_code == 404:
                     raise requests.exceptions.RequestException(
