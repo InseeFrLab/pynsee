@@ -128,25 +128,24 @@ def _get_geodata(
 
             Nproc = min(num_calls, 6, multiprocessing.cpu_count())
 
-            def _make_request(i: int) -> dict:
-                start = i * count
-                cnt = count if start - maxstart >= count else num_hits - start
+            link = urldata.format(
+                url=geoportail,
+                typename=dataset_id,
+                fmt=fmt,
+                start="{start}",
+                count="{count}",
+                crs=crs,
+            )
 
-                link = urldata.format(
-                    url=geoportail,
-                    typename=dataset_id,
-                    fmt=fmt,
-                    start=start,
-                    count=cnt,
-                    crs=crs,
-                )
-
-                return session.get(link, verify=False), link
+            args = (
+                (link, session, count, maxstart, num_hits, i)
+                for i in range(num_calls)
+            )
 
             with multiprocessing.Pool(processes=Nproc) as pool:
                 list_req = list(
                     tqdm.tqdm(
-                        pool.imap_unordered(session.get, range(num_calls)),
+                        pool.imap_unordered(_make_request, args),
                         total=num_calls,
                     )
                 )
@@ -192,6 +191,19 @@ def _get_geodata(
         )
 
     return gdf
+
+
+def _make_request(
+    arg: tuple[str, requests.Session, int, int, int, int]
+) -> tuple[requests.Response, str]:
+    """Make the request inside the multiprocessing.Pool"""
+    urldata, session, count, maxstart, num_hits, i = arg
+
+    start = i * count
+    cnt = count if start - maxstart >= count else num_hits - start
+    link = urldata.format(start=start, count=cnt)
+
+    return session.get(link, verify=False), link
 
 
 def _check_request_update_data(

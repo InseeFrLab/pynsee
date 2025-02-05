@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import warnings
+
 from .GeoFrDataFrame import GeoFrDataFrame
 from ._get_geodata import _get_geodata
 
