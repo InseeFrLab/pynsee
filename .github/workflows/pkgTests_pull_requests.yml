@@ -22,9 +22,10 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        #sudo apt-get install libgeos-dev
         python -m pip install --upgrade pip
-        pip install flake8 black pytest pytest-cov geopandas nbconvert matplotlib descartes parameterized
+        pip install -r requirements-dev.txt
+        # additional tests
+        pip install jupytext nbconvert matplotlib descartes
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
@@ -44,7 +45,6 @@ jobs:
       env:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
-        pip install jupytext
         pip install .[full]
         # test all notebooks
         cd docs/examples
@@ -52,11 +52,11 @@ jobs:
         # run all py files
         # for f in *.py; do python "$f"; done
         cd ../..
-    - name: Test with pytest
+    - name: Test with pytest and xdist
       env:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
-        pytest -v --cov
+        pytest -v --cov --dist loadscope -n auto
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v1
       if: github.ref == 'refs/heads/master'

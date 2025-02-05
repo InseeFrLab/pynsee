@@ -1,3 +1,9 @@
 -r requirements.txt
 -r requirements-extra.txt
--r docs/requirements.txt
+# formatting and linting
+flake8
+black
+# tests
+pytest-xdist
+pytest-html
+parameterized
