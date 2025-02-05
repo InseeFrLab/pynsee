@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 name = "pynsee"
 authors = [
   { name="Hadrien Leclerc", email="leclerc.hadrien@gmail.com" },
-  { name="Lino Galiana" },
+  { name="Lino Galiana", email="lino.galiana@insee.fr" },
   { name="Thomas Grandjean", email="thomas.grandjean@developpement-durable.gouv.fr" },
   { name="Tanguy Fardet", email="tanguy.fardet@ens-lyon.org" },
 ]
