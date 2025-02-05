@@ -32,14 +32,6 @@ def get_geodata(
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
 
-        gdf = _get_geodata(dataset_id=dataset_id, update=update, crs=crs)
-
-        if not isinstance(gdf, GeoFrDataFrame):
-            message = (
-                f"Request failed: {gdf.loc[0, 'status']}, "
-                f"{gdf.loc[0, 'comment']}."
-            )
-
-            raise RuntimeError(message)
-
-    return gdf
+        return _get_geodata(
+            dataset_id=dataset_id, update=update, crs=crs, ignore_error=False
+        )

@@ -7,7 +7,6 @@ from xml.etree import ElementTree
 
 import requests
 import tqdm
-from geopandas import GeoDataFrame
 from shapely import MultiPolygon, Polygon
 
 from pynsee.utils.save_df import save_df
@@ -27,15 +26,18 @@ def _get_geodata(
     silent: bool = False,
     crs: str = "EPSG:3857",
     crsPolygon: str = "EPSG:4326",
-) -> GeoDataFrame:
+    ignore_error: bool = True,
+) -> GeoFrDataFrame:
     """
     Get geographical data with identifier and from IGN API
 
     Args:
         id (str): _description_
-        polygon (Polygon, optional): Polygon used to constraint interested area, its crs must be EPSG:4326. Defaults to None.
+        polygon (Polygon, optional): Polygon used to constraint interested area. Defaults to None.
         update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
         crs (str, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
+        crsPolygon (str, optional): CRS used for `polygon`. Defaults to 'EPSG:4326'.
+        ignore_error (boo, optional): whether to ignore errors and return an empty GeoDataFrame. Defaults to True.
 
     Examples:
         >>> from pynsee.geodata import get_geodata_list, get_geodata
@@ -46,8 +48,7 @@ def _get_geodata(
         >>> # Get geographical limits of departments
         >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
 
-    Returns:
-        _type_: _description_
+    Returns: GeoFrDataFrame
     """
 
     if crsPolygon not in ["EPSG:3857", "EPSG:4326"]:
@@ -102,14 +103,11 @@ def _get_geodata(
         try:
             data = session.get(hits, verify=False)
         except requests.exceptions.RequestException as exc:
-            logger.critical(exc)
-            return GeoDataFrame(
-                {
-                    "status": exc.response.status_code,
-                    "comment": exc.response.text,
-                },
-                index=[0],
-            )
+            if ignore_error:
+                logger.critical(exc)
+                return GeoFrDataFrame()
+
+            raise exc
 
         root = ElementTree.fromstring(data.content)
         num_hits = int(root.attrib["numberMatched"])
@@ -166,13 +164,12 @@ def _get_geodata(
 
             _check_request_update_data(data, r, link, polygon)
 
-    gdf = GeoFrDataFrame.from_features(data, crs=crs)
+    if not data:
+        if ignore_error:
+            logging.warn("Error 200: Valid request returned empty result")
+            return GeoFrDataFrame()
 
-    if gdf.empty:
-        return GeoDataFrame(
-            {"status": 200, "comment": "Valid request returned empty result"},
-            index=[0],
-        )
+    gdf = GeoFrDataFrame.from_features(data, crs=crs)
 
     # drop data outside polygon
     if polygon is not None:

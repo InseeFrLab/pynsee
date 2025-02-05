@@ -18,6 +18,7 @@ class GeoFrDataFrame(GeoDataFrame):
         warnings.warn(
             message="`get_geom` is deprecated, please use the `geometry` "
             "property of the `GeoFrDataFrame` instead.",
+            category=DeprecationWarning,
             stacklevel=1,
         )
 

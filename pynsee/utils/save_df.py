@@ -91,7 +91,7 @@ def save_df(
                     if parquet:
                         rt = func.__annotations__.get("return")
 
-                        mod = gpd if issubclass(rt, gpd.GeoDataFrame) else pd
+                        mod = gpd if isinstance(rt, gpd.GeoDataFrame) else pd
 
                         df = mod.read_parquet(file_name)
                     else:
