@@ -1,9 +1,10 @@
 -r requirements.txt
 -r requirements-extra.txt
 # formatting and linting
-flake8
 black
+flake8
 # tests
-pytest-xdist
-pytest-html
 parameterized
+pytest-cov
+pytest-html
+pytest-xdist
