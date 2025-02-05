@@ -6,10 +6,15 @@ import logging
 import os
 from typing import Optional
 
-from platformdirs import user_config_dir
 import requests
 
 from pynsee.utils.requests_session import PynseeAPISession
+from pynsee.constants import (
+    CONFIG_FILE,
+    SIRENE_KEY,
+    HTTPS_PROXY_KEY,
+    HTTP_PROXY_KEY,
+)
 
 
 logger = logging.getLogger(__name__)
@@ -54,12 +59,8 @@ def init_conn(
     """
     logger.debug("SHOULD GET LOGGING")
 
-    config_file = os.path.join(
-        user_config_dir("pynsee", ensure_exists=True), "config.json"
-    )
-
     try:
-        with open(config_file, opener=opener, encoding="utf8") as f:
+        with open(CONFIG_FILE, opener=opener, encoding="utf8") as f:
             init_config = json.load(f)
     except FileNotFoundError:
         init_config = {}
@@ -71,7 +72,7 @@ def init_conn(
             invalid_requests = session._test_connections()
         except (ValueError, requests.exceptions.RequestException):
             try:
-                os.remove(config_file)
+                os.remove(CONFIG_FILE)
             except FileNotFoundError:
                 pass
             raise
@@ -87,7 +88,7 @@ def init_conn(
             "Subscription to all INSEE's APIs has been successfull\n"
             "Unless the user wants to change the key or secret, using this "
             "function is no longer needed as the credentials will be saved "
-            f"locally here:\n{config_file}"
+            f"locally here:\n{CONFIG_FILE}"
         )
 
     if invalid_requests and ("Sirene" in invalid_requests):
@@ -99,19 +100,19 @@ def init_conn(
         else:
             # invalid sirene key, restore from previous valid stored key
             try:
-                sirene_key = init_config["sirene_key"]
+                sirene_key = init_config[SIRENE_KEY]
             except KeyError:
                 sirene_key = None
             else:
                 logger.warning("Previous SIRENE key has been restored.")
 
     config = {
-        "sirene_key": sirene_key,
-        "http_proxy": http_proxy,
-        "https_proxy": https_proxy,
+        SIRENE_KEY: sirene_key,
+        HTTP_PROXY_KEY: http_proxy,
+        HTTPS_PROXY_KEY: https_proxy,
     }
 
-    if not invalid_requests:
-        with open(config_file, "w", opener=opener, encoding="utf8") as f:
+    if {"Sirene"}.issuperset(invalid_requests):
+        with open(CONFIG_FILE, "w", opener=opener, encoding="utf8") as f:
             json.dump(config, f)
         logger.info("Credentials have been saved.")

@@ -94,7 +94,7 @@ def get_geo_list(geo=None, date=None, update=False, silent=True):
                     date=date,
                     type=type_geo,
                 )
-            except RequestException:
+            except (RequestException, SyntaxError):
                 df = _get_geo_relation(
                     geo="region",
                     code=list_reg[r],
