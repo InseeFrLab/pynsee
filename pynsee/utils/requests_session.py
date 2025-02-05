@@ -16,6 +16,7 @@ from pyrate_limiter import SQLiteBucket
 import pynsee
 from pynsee.utils._get_credentials import _get_credentials_from_configfile
 from pynsee.utils._create_insee_folder import _create_insee_folder
+from pynsee.constants import SIRENE_KEY, HTTPS_PROXY_KEY, HTTP_PROXY_KEY
 
 logger = logging.getLogger(__name__)
 
@@ -90,9 +91,9 @@ class PynseeAPISession(requests.Session):
         self._mount_adapters()
 
         config = {
-            "http_proxy": http_proxy,
-            "https_proxy": https_proxy,
-            "sirene_key": sirene_key,
+            HTTP_PROXY_KEY: http_proxy,
+            HTTPS_PROXY_KEY: https_proxy,
+            SIRENE_KEY: sirene_key,
         }
 
         stored_config = _get_credentials_from_configfile()
@@ -107,16 +108,12 @@ class PynseeAPISession(requests.Session):
                     config[k] = venv
                     _warn_env_credentials(k)
                 else:
-                    try:
-                        config[k] = stored_config[k]
-                    except KeyError:
-                        # no previous config stored
-                        pass
+                    config[k] = stored_config.get(k)
 
         self.proxies.update(
             {
-                "http": config["http_proxy"],
-                "https": config["https_proxy"],
+                "http": config[HTTP_PROXY_KEY],
+                "https": config[HTTPS_PROXY_KEY],
             }
         )
 
@@ -127,7 +124,7 @@ class PynseeAPISession(requests.Session):
         # Note : geoplatform seems to impose the "/version" to the user-agent
         self.headers.update(useragent)
 
-        self.sirene_key = config["sirene_key"]
+        self.sirene_key = config[SIRENE_KEY]
         self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
 
     def _mount_adapters(self):
@@ -573,7 +570,8 @@ class PynseeAPISession(requests.Session):
                 except AttributeError:
                     raise requests.exceptions.RequestException(
                         f"Could not reach {api} at {api_url}, please control "
-                        "your proxy configuration."
+                        "your proxy configuration "
+                        f"- proxies were {self.proxies}."
                     ) from exc
                 if exc.response.status_code == 404:
                     raise requests.exceptions.RequestException(
