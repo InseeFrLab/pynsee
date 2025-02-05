@@ -5,9 +5,6 @@ import requests
 import multiprocessing
 import pebble
 import tqdm
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
-
 
 from pynsee.geodata._get_bbox_list import _get_bbox_list
 from pynsee.geodata._get_data_with_bbox import _get_data_with_bbox2
@@ -137,11 +134,7 @@ def _get_geodata(
         args = [link0, list_bbox, crsPolygon]
         irange = range(len(list_bbox))
 
-        with requests.Session() as session:
-            retry = Retry(connect=3, backoff_factor=1, status_forcelist=[502])
-            adapter = HTTPAdapter(max_retries=retry)
-            session.mount("http://", adapter)
-            session.mount("https://", adapter)
+        with PynseeAPISession() as session:
 
             def _get_data_with_bbox3(i):
                 return _get_data_with_bbox2(session, i)
