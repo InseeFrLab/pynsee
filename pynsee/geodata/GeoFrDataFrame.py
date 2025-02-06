@@ -1,5 +1,7 @@
 import warnings
+from typing import Union
 
+from pandas import DataFrame
 from geopandas import GeoDataFrame
 
 
@@ -13,10 +15,38 @@ class GeoFrDataFrame(GeoDataFrame):
     def _constructor(self):
         return GeoFrDataFrame
 
+    def _constructor_from_mgr(
+        self, mgr, axes
+    ) -> Union[DataFrame, "GeoFrDataFrame"]:
+        """Patch to avoid class change"""
+        obj = super()._constructor_from_mgr(mgr, axes)
+
+        if isinstance(obj, GeoDataFrame):
+            obj.__class__ = GeoFrDataFrame
+
+        return obj
+
+    def __getitem__(self, key):
+        """
+        Patch to avoid class change.
+        """
+        result = super().__getitem__(key)
+
+        if isinstance(result, GeoDataFrame):
+            result.__class__ = GeoFrDataFrame
+
+        return result
+
+    def copy(self, deep: bool = True) -> "GeoFrDataFrame":
+        """Patch to avoid class change"""
+        copied = super().copy(deep=deep)
+        copied.__class__ = GeoFrDataFrame
+        return copied
+
     def get_geom(self):
         """Deprecated alias for `geometry`"""
         warnings.warn(
-            message="`get_geom` is deprecated, please use the `geometry` "
+            "`get_geom` is deprecated, please use the `geometry` "
             "property of the `GeoFrDataFrame` instead.",
             category=DeprecationWarning,
             stacklevel=1,
@@ -24,15 +54,30 @@ class GeoFrDataFrame(GeoDataFrame):
 
         return self.geometry
 
+    def transform_overseas(self, *args, **kwargs) -> "GeoFrDataFrame":
+        """
+        Apply translation and zoom to oversea territories.
+
+        See: :func:`pynsee.geodata.translate.translate`.
+        """
+        from .translate import transform_overseas
+
+        return transform_overseas(self, *args, **kwargs)
+
     def translate(self, *args, **kwargs) -> "GeoFrDataFrame":
         """
         Apply translation for oversea territories.
 
         See: :func:`pynsee.geodata.translate.translate`.
         """
-        from .translate import translate
-
-        return translate(self, *args, **kwargs)
+        warnings.warn(
+            "`translate` will switch to the default `GeoDataFrame` "
+            "behavior in the next release. Please use `transform_overseas` "
+            "instead.",
+            category=DeprecationWarning,
+            stacklevel=1,
+        )
+        return self.transform_overseas(*args, **kwargs)
 
     def zoom(self, *args, **kwargs) -> "GeoFrDataFrame":
         """

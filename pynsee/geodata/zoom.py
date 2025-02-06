@@ -60,8 +60,7 @@ def zoom(
             )
 
             if len(zoomDep.index) > 0:
-
-                zoomDep = _rescale_geom(df=zoomDep, factor=factor)
+                _rescale_geom(zoomDep, factor=factor)
                 end = Point(center[0] + radius, center[1])
                 line = LineString([center, end])
 

@@ -16,10 +16,10 @@ from ._add_insee_dep import _add_insee_dep
 logger = logging.getLogger(__name__)
 
 
-def translate(
+def transform_overseas(
     gdf: GeoDataFrame,
     departement: tuple[str, ...] = ("971", "972", "974", "973", "976"),
-    factor: tuple[Optional[float], ...] = (None, None, None, 0.35, None),
+    factor: tuple[Optional[float], ...] = (None, None, None, 0.6, None),
     center: tuple[float, float] = (-133583.39, 5971815.98),
     radius: float = 650000,
     angle: float = 1 / 9 * math.pi,
@@ -71,14 +71,11 @@ def translate(
 
         geocol = "insee_dep_geometry"
 
-        if "insee_dep" not in gdf:
-            gdf = _add_insee_dep(gdf.copy())
-
-            if "insee_dep_geometry" not in gdf:
-                raise ValueError("Could not get department geometries.")
-        else:
+        if "id" in gdf and gdf["id"].str.match("DEPARTEM").all():
             # this is already the departments, work on geometry
             geocol = "geometry"
+        else:
+            gdf = _add_insee_dep(gdf.copy())
 
         offshore_points = _make_offshore_points(
             center=Point(center),
@@ -95,14 +92,10 @@ def translate(
             ovdep = gdf.loc[gdf.insee_dep.values == d].reset_index(drop=True)
 
             if ovdep.empty:
-                logger.warning(
-                    f"{departement[d]} is missing from insee_dep column !"
-                )
+                logger.warning(f"{d} is missing from insee_dep column !")
             else:
                 if factor[i] is not None:
-                    ovdep = _rescale_geom(
-                        ovdep, factor=factor[i], geocol=geocol
-                    )
+                    _rescale_geom(ovdep, factor=factor[i])
 
                 center_x, center_y = _get_center(ovdep, geocol=geocol)
 
@@ -121,3 +114,14 @@ def translate(
             return gdf.drop(columns=["insee_dep_geometry"])
 
         return gdf
+
+
+def translate(*args, **kwargs) -> GeoDataFrame:
+    warnings.warn(
+        "`translate` will be removed in the next release. Please use "
+        "`transform_overseas` instead.",
+        category=DeprecationWarning,
+        stacklevel=1,
+    )
+
+    return transform_overseas(*args, **kwargs)

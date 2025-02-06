@@ -3,7 +3,10 @@ from geopandas import GeoDataFrame, GeoSeries
 from ._get_center import _get_center
 
 
-def _rescale_geom(gdf: GeoDataFrame, factor: float, geocol: str = "geometry"):
+def _rescale_geom(
+    gdf: GeoDataFrame, factor: float, geocol: str = "geometry"
+) -> None:
+    """Rescale geometries of a GeoDataFrame inplace."""
     center = _get_center(gdf, geocol)
 
     geoseries = (
@@ -18,5 +21,3 @@ def _rescale_geom(gdf: GeoDataFrame, factor: float, geocol: str = "geometry"):
         zfact=1.0,
         origin=center,
     )
-
-    return gdf

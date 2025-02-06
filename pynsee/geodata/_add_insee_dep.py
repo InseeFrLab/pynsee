@@ -18,6 +18,9 @@ def _add_insee_dep(gdf):
         if "insee_dep" not in gdf:
             gdf = _add_insee_dep_from_geodata(gdf)
 
+    if "insee_dep_geometry" not in gdf:
+        raise ValueError("Could not get department geometries.")
+
     return gdf
 
 
@@ -56,16 +59,19 @@ def _add_insee_dep_from_id_com(gdf):
 
 def _add_insee_dep_region(gdf):
     try:
-        if "id" in gdf.columns:
-            if all(gdf.id.str.contains("^REGION")):
-                dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
-                dep = _get_geodata_with_backup(dataset_id)
+        if "id" in gdf.columns and all(gdf.id.str.match("^REGION")):
+            dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
 
-                dep = dep[["insee_dep", "insee_reg", "geometry"]]
-                dep = dep.rename(columns={"geometry": "insee_dep_geometry"})
-                gdf = gdf.merge(dep, on="insee_reg", how="left")
+            # get departments, keep only one for each region
+            dep = _get_geodata_with_backup(dataset_id).drop_duplicates(
+                subset="insee_reg", keep="first"
+            )
+
+            dep = dep[["insee_dep", "insee_reg", "geometry"]]
+            dep = dep.rename(columns={"geometry": "insee_dep_geometry"})
+            gdf = gdf.merge(dep, on="insee_reg", how="left")
     except Exception:
-        pass
+        raise
 
     return gdf
 
