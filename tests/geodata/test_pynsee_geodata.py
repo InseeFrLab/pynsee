@@ -33,13 +33,15 @@ def test_get_geodata_short():
     square = [Point(0, 0), Point(0, 0), Point(0, 0), Point(0, 0)]
 
     poly_bbox = Polygon([[p.x, p.y] for p in square])
-    df = _get_geodata(
-        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune",
-        polygon=poly_bbox,
-        update=True,
-    )
-    print(type(df))
-    assert df.loc[0, "status"] == 200
+
+    with pytest.warns(RuntimeWarning):
+        df = _get_geodata(
+            dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune",
+            polygon=poly_bbox,
+            update=True,
+        )
+
+        assert df.empty
 
     df = get_geodata_list(update=True)
     assert isinstance(df, pd.DataFrame)
@@ -185,8 +187,8 @@ def test_get_geodata_short_failure():
 if __name__ == "__main__":
     # test_find_wfs_closest_match()
     # test_get_geodata_with_backup()
-    test_get_geodata_short()
-    # test_get_geodata_short2()
+    # test_get_geodata_short()
+    test_get_geodata_short2()
     # test_get_geodata_short3()
     # test_get_geodata_short4()
     # test_get_geodata_short5()

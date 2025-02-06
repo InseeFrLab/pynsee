@@ -2,6 +2,7 @@
 
 import logging
 import multiprocessing
+import warnings
 from typing import Optional, Union
 from xml.etree import ElementTree
 
@@ -165,19 +166,18 @@ def _get_geodata(
             _check_request_update_data(data, r, link, polygon)
 
     if not data:
-        if ignore_error:
-            logging.warn("Error 200: Valid request returned empty result")
-            return GeoFrDataFrame()
+        warnings.warn(
+            "Error 200: Valid request returned empty result",
+            category=RuntimeWarning,
+            stacklevel=1,
+        )
+
+        return GeoFrDataFrame()
 
     gdf = GeoFrDataFrame.from_features(data, crs=crs)
 
     # drop data outside polygon
     if polygon is not None:
-        logger.warning(
-            "Further checks from the user are needed as results obtained "
-            "using polygon argument can be imprecise"
-        )
-
         if gdf.crs != crsPolygon:
             gdf = gdf.to_crs(crsPolygon)
 

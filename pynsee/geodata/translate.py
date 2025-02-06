@@ -5,7 +5,6 @@ from typing import Optional
 
 import pandas as pd
 from geopandas import GeoDataFrame
-from shapely.affinity import translate as trs
 from shapely.geometry import Point
 
 from ._make_offshore_points import _make_offshore_points
@@ -67,70 +66,58 @@ def translate(
         warnings.simplefilter("ignore")
 
         if init_crs != "EPSG:3857":
-            logging.warn("Converting GeoDataFrame to EPSG:3857.")
+            logging.warning("Converting GeoDataFrame to EPSG:3857.")
             gdf.to_crs("EPSG:3857")
 
-        if "insee_dep" not in gdf.columns:
+        geocol = "insee_dep_geometry"
+
+        if "insee_dep" not in gdf:
             gdf = _add_insee_dep(gdf.copy())
 
-        if "insee_dep" in gdf.columns:
-            offshore_points = _make_offshore_points(
-                center=Point(center),
-                list_ovdep=departement,
-                radius=radius,
-                angle=angle,
-                startAngle=startAngle,
-            )
+            if "insee_dep_geometry" not in gdf:
+                raise ValueError("Could not get department geometries.")
+        else:
+            # this is already the departments, work on geometry
+            geocol = "geometry"
 
-            list_new_dep = []
+        offshore_points = _make_offshore_points(
+            center=Point(center),
+            list_ovdep=departement,
+            radius=radius,
+            angle=angle,
+            startAngle=startAngle,
+        )
 
-            for d in range(len(departement)):
+        # keep only specific departements
+        list_new_dep = [gdf.loc[~gdf.insee_dep.isin(departement)]]
 
-                ovdep = gdf[gdf["insee_dep"].isin([departement[d]])]
+        for i, d in enumerate(departement):
+            ovdep = gdf.loc[gdf.insee_dep.values == d].reset_index(drop=True)
 
-                if ovdep.empty:
-                    logger.warning(
-                        f"{departement[d]} is missing from insee_dep column !"
-                    )
-                else:
-                    ovdep = ovdep.reset_index(drop=True)
-
-                    # if "insee_dep_geometry" in gdf.columns:
-                    #     geocol = "insee_dep_geometry"
-                    # else:
-                    #     geocol = "geometry"
-
-                    if factor[d] is not None:
-                        ovdep = _rescale_geom(ovdep, factor=factor[d])
-
-                    center_x, center_y = _get_center(ovdep)
-
-                    xoff = offshore_points[d].coords.xy[0][0] - center_x
-                    yoff = offshore_points[d].coords.xy[1][0] - center_y
-
-                    ovdep["geometry"] = ovdep["geometry"].apply(
-                        lambda x: trs(x, xoff=xoff, yoff=yoff)
+            if ovdep.empty:
+                logger.warning(
+                    f"{departement[d]} is missing from insee_dep column !"
+                )
+            else:
+                if factor[i] is not None:
+                    ovdep = _rescale_geom(
+                        ovdep, factor=factor[i], geocol=geocol
                     )
 
-                    list_new_dep += [ovdep]
+                center_x, center_y = _get_center(ovdep, geocol=geocol)
 
-            if len(list_new_dep) > 0:
+                xoff = offshore_points[i].coords.xy[0][0] - center_x
+                yoff = offshore_points[i].coords.xy[1][0] - center_y
 
-                ovdepGeo = pd.concat(list_new_dep)
-
-                mainGeo = gdf[~gdf["insee_dep"].isin(departement)].reset_index(
-                    drop=True
+                ovdep.loc[:, "geometry"] = ovdep.geometry.translate(
+                    xoff=xoff, yoff=yoff
                 )
 
-                finalDF = pd.concat([ovdepGeo, mainGeo]).reset_index(drop=True)
+                list_new_dep.append(ovdep)
 
-                gdf = finalDF
-        else:
-            raise ValueError("insee_dep is missing in columns")
+        gdf = pd.concat(list_new_dep, ignore_index=True)
 
-        if "insee_dep_geometry" in gdf.columns:
-            gdf = gdf.drop(columns="insee_dep_geometry")
-            if "insee_dep" in gdf.columns:
-                gdf = gdf.drop(columns="insee_dep")
+        if "insee_dep_geometry" in gdf:
+            return gdf.drop(columns=["insee_dep_geometry"])
 
         return gdf

@@ -1,23 +1,22 @@
-from shapely.affinity import scale
+from geopandas import GeoDataFrame, GeoSeries
 
 from ._get_center import _get_center
 
 
-def _rescale_geom(gdf, factor):
-    center = _get_center(gdf)
+def _rescale_geom(gdf: GeoDataFrame, factor: float, geocol: str = "geometry"):
+    center = _get_center(gdf, geocol)
 
-    list_geoms = []
-    for i in range(len(gdf.geometry)):
-        list_geoms += [
-            scale(
-                geom=gdf.loc[i, "geometry"],
-                xfact=factor,
-                yfact=factor,
-                zfact=1.0,
-                origin=center,
-            )
-        ]
+    geoseries = (
+        gdf[geocol]
+        if geocol == "geometry"
+        else GeoSeries(gdf[geocol], crs=gdf.crs)
+    )
 
-    gdf["geometry"] = list_geoms
+    gdf.loc[:, geocol] = geoseries.scale(
+        xfact=factor,
+        yfact=factor,
+        zfact=1.0,
+        origin=center,
+    )
 
     return gdf

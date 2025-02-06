@@ -1,9 +1,15 @@
-from geopandas import GeoDataFrame
+from geopandas import GeoDataFrame, GeoSeries
 
 
-def _get_center(gdf: GeoDataFrame):
+def _get_center(gdf: GeoDataFrame, geocol="geometry"):
     """Get the center of the geometries in a GeoDataFrame"""
-    bounds = gdf.bounds
+    geoseries = (
+        gdf[geocol]
+        if geocol == "geometry"
+        else GeoSeries(gdf[geocol], crs=gdf.crs)
+    )
+
+    bounds = geoseries.bounds
 
     maxxdf = bounds.maxx.max()
     minxdf = bounds.minx.min()

@@ -91,7 +91,7 @@ def save_df(
                     if parquet:
                         rt = func.__annotations__.get("return")
 
-                        mod = gpd if isinstance(rt, gpd.GeoDataFrame) else pd
+                        mod = gpd if issubclass(rt, gpd.GeoDataFrame) else pd
 
                         df = mod.read_parquet(file_name)
                     else:
@@ -144,9 +144,8 @@ def _save_dataframe(
             else:
                 df.to_pickle(file_name, index=False)
     except Exception as e:
-        warnings.warn(str(e), stacklevel=2)
         warnings.warn(
-            f"Error, file not saved:\n{file_name}\n{df}\n", stacklevel=2
+            f"{e}\nError, file not saved:\n{file_name}\n{df}\n", stacklevel=2
         )
     else:
         if not silent:

@@ -4,70 +4,76 @@ from pandas.api.types import CategoricalDtype
 from ._get_geodata_with_backup import _get_geodata_with_backup
 
 
-def _add_insee_dep(df):
-    df = df.reset_index(drop=True)
+def _add_insee_dep(gdf):
+    gdf = gdf.reset_index(drop=True)
 
     # option 1 : get insee_dep from id_com colum
-    df = _add_insee_dep_from_id_com(df)
+    gdf = _add_insee_dep_from_id_com(gdf)
 
     # option 2 : get insee_dep for regions
-    df = _add_insee_dep_region(df)
+    if "insee_dep" not in gdf:
+        gdf = _add_insee_dep_region(gdf)
 
-    # option 3 : get insee_dep from get_geodata  and polygon intersection
-    df = _add_insee_dep_from_geodata(df)
+        # option 3 : get insee_dep from get_geodata  and polygon intersection
+        if "insee_dep" not in gdf:
+            gdf = _add_insee_dep_from_geodata(gdf)
 
-    return df
-
-
-def _add_insee_dep_region(df):
-    try:
-        if "insee_dep_geometry" not in df.columns:
-            if "id" in df.columns:
-                if all(df.id.str.contains("^REGION")):
-                    dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
-                    dep = _get_geodata_with_backup(dataset_id)
-
-                    dep = dep[["insee_dep", "insee_reg", "geometry"]]
-                    dep = dep.rename(
-                        columns={"geometry": "insee_dep_geometry"}
-                    )
-                    df = df.merge(dep, on="insee_reg", how="left")
-
-    except Exception:
-        pass
-
-    return df
+    return gdf
 
 
-def _add_insee_dep_from_id_com(df):
-    try:
-        if ("id_com" in df.columns) and (
-            "insee_dep_geometry" not in df.columns
-        ):
+def _add_insee_dep_from_id_com(gdf):
+    # add insee_dep column
+    if "insee_com" in gdf.columns:
+        gdf.loc[:, "insee_dep"] = [
+            v[:3] if v.startswith("97") else v[:2]
+            for v in gdf.insee_com.values
+        ]
+    elif "id_com" in gdf.columns:
+        try:
             dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:commune"
             com = _get_geodata_with_backup(dataset_id)
 
             com = com[["id", "insee_dep"]]
             com = com.rename(columns={"id": "id_com"})
-            df = df.merge(com, on="id_com", how="left")
+            gdf = gdf.merge(com, on="id_com", how="left")
+        except Exception:
+            return gdf
 
-            dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
-            dep = _get_geodata_with_backup(dataset_id)
+    # get departments and add the geometry
+    try:
+        dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
+        dep = _get_geodata_with_backup(dataset_id).to_crs(gdf.crs)
 
-            dep = dep[["insee_dep", "geometry"]]
-            dep = dep.rename(columns={"geometry": "insee_dep_geometry"})
+        dep = dep[["insee_dep", "geometry"]]
+        dep = dep.rename(columns={"geometry": "insee_dep_geometry"})
 
-            df = df.merge(dep, on="insee_dep", how="left")
+        gdf = gdf.merge(dep, on="insee_dep", how="left")
     except Exception:
         pass
 
-    return df
+    return gdf
 
 
-def _add_insee_dep_from_geodata(df):
+def _add_insee_dep_region(gdf):
     try:
-        if "insee_dep_geometry" not in df.columns:
-            df = df.reset_index(drop=True)
+        if "id" in gdf.columns:
+            if all(gdf.id.str.contains("^REGION")):
+                dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
+                dep = _get_geodata_with_backup(dataset_id)
+
+                dep = dep[["insee_dep", "insee_reg", "geometry"]]
+                dep = dep.rename(columns={"geometry": "insee_dep_geometry"})
+                gdf = gdf.merge(dep, on="insee_reg", how="left")
+    except Exception:
+        pass
+
+    return gdf
+
+
+def _add_insee_dep_from_geodata(gdf):
+    try:
+        if "insee_dep_geometry" not in gdf.columns:
+            gdf = gdf.reset_index(drop=True)
 
             list_dep = []
             list_dep_geo = []
@@ -89,8 +95,8 @@ def _add_insee_dep_from_geodata(df):
                 drop=True
             )
 
-            for i in trange(len(df.index), desc="Finding departement"):
-                geo = df.loc[i, "geometry"]
+            for i in trange(len(gdf.index), desc="Finding departement"):
+                geo = gdf.loc[i, "geometry"]
                 dep = None
                 depgeo = None
 
@@ -108,9 +114,9 @@ def _add_insee_dep_from_geodata(df):
                 list_dep += [dep]
                 list_dep_geo += [depgeo]
 
-            df["insee_dep"] = list_dep
-            df["insee_dep_geometry"] = list_dep_geo
+            gdf["insee_dep"] = list_dep
+            gdf["insee_dep_geometry"] = list_dep_geo
     except Exception:
         pass
 
-    return df
+    return gdf
