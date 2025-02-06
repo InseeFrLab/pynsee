@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import warnings
+from typing import Optional
+
+from geopandas import GeoDataFrame
 
 from .GeoFrDataFrame import GeoFrDataFrame
 from ._get_geodata import _get_geodata
 
 
 def get_geodata(
-    dataset_id: str, update: bool = False, crs: str = "EPSG:3857"
+    dataset_id: str,
+    update: bool = False,
+    crs: str = "EPSG:3857",
+    constrain_area: Optional[GeoDataFrame] = None,
 ) -> GeoFrDataFrame:
     """Get geographical data with identifier and from IGN API
 
@@ -17,6 +22,14 @@ def get_geodata(
         update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
 
         crs (str, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
+
+        polygon (Polygon, optional): Polygon used to constrain the area of interest. Defaults to None.
+
+        crsPolygon (str, optional): CRS used for `polygon`. Defaults to 'EPSG:4326'.
+
+    .. versionchanged: 0.2.0
+
+        Added `constrain_area` argument.
 
     Examples:
         >>> from pynsee.geodata import get_geodata_list, get_geodata
@@ -28,10 +41,21 @@ def get_geodata(
         >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
 
     """
+    polygon = None
+    crsPolygon = "EPSG:4326"
 
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
+    if constrain_area is not None:
+        if constrain_area.crs.to_string() not in ("EPSG:3857", "EPSG:4326"):
+            constrain_area = constrain_area.to_crs("EPSG:4326")
 
-        return _get_geodata(
-            dataset_id=dataset_id, update=update, crs=crs, ignore_error=False
-        )
+        polygon = constrain_area.union_all()
+        crsPolygon = constrain_area.crs.to_string()
+
+    return _get_geodata(
+        dataset_id=dataset_id,
+        update=update,
+        crs=crs,
+        ignore_error=False,
+        polygon=polygon,
+        crsPolygon=crsPolygon,
+    )

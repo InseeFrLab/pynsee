@@ -9,7 +9,9 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=90)
-def get_area_list(area=None, date=None, update=False, silent=False):
+def get_area_list(
+    area=None, date=None, update=False, silent=False
+) -> pd.DataFrame:
     """Get an exhaustive list of administrative areas : communes, departments, and urban, employment or functional areas
 
     Args:

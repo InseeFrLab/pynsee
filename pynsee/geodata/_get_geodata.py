@@ -34,7 +34,7 @@ def _get_geodata(
 
     Args:
         id (str): _description_
-        polygon (Polygon, optional): Polygon used to constraint interested area. Defaults to None.
+        polygon (Polygon, optional): Polygon used to constrain the area of interest. Defaults to None.
         update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
         crs (str, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
         crsPolygon (str, optional): CRS used for `polygon`. Defaults to 'EPSG:4326'.
@@ -52,7 +52,7 @@ def _get_geodata(
     Returns: GeoFrDataFrame
     """
 
-    if crsPolygon not in ["EPSG:3857", "EPSG:4326"]:
+    if crsPolygon not in ("EPSG:3857", "EPSG:4326"):
         raise ValueError(
             "crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'"
         )
@@ -105,7 +105,18 @@ def _get_geodata(
             data = session.get(hits, verify=False)
         except requests.exceptions.RequestException as exc:
             if ignore_error:
-                logger.critical(exc)
+                message = "Request failed"
+                res = exc.response
+
+                if hasattr(res, "status_code"):
+                    message += f" (error {res.status_code}): {res.reason}"
+                else:
+                    message += str(exc)
+
+                message += f"\nFaulty URL: {hits}."
+
+                warnings.warn(message, category=RuntimeWarning, stacklevel=1)
+
                 return GeoFrDataFrame()
 
             raise exc

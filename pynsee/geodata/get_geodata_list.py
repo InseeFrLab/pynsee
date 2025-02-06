@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from pandas import DataFrame
+
 from pynsee.utils.save_df import save_df
 
 from ._get_full_list_wfs import _get_full_list_wfs
 
 
 @save_df(day_lapse_max=90)
-def get_geodata_list(update=False, silent=False):
+def get_geodata_list(update=False, silent=False) -> DataFrame:
     """Get a list of geographical limits of French administrative areas from IGN API
 
     Args:

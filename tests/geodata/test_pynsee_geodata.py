@@ -4,6 +4,7 @@
 import pandas as pd
 import pytest
 from geopandas import GeoSeries
+from requests import RequestException
 from shapely.geometry import Polygon, MultiPolygon, Point
 
 from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
@@ -29,25 +30,76 @@ def test_get_geodata_with_backup():
     assert isinstance(gdf, GeoFrDataFrame)
 
 
-def test_get_geodata_short():
+def test_get_geodata_dep_polygon_crs_4326():
+    # run this test before those that use `transform_overseas` to avoid
+    # downloading departments multiple times
+    dep29 = get_geodata(
+        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:departement",
+        update=True,
+        crs="EPSG:4326",
+    )
+    dep29 = dep29[dep29["insee_dep"] == "29"]
+    assert isinstance(dep29, GeoFrDataFrame)
+    geo29 = dep29.geometry
+    assert all(isinstance(p, (MultiPolygon, Polygon)) for p in geo29)
+
+    # query with polygon and non-default crs
+    com29 = _get_geodata(
+        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune",
+        polygon=geo29.union_all(),
+        crsPolygon="EPSG:4326",
+        update=True,
+    )
+    assert com29.insee_com.str.startswith("29").any()
+
+    # query with polygon and non-default crs
+    com29 = get_geodata(
+        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune",
+        constrain_area=dep29,
+        update=True,
+    )
+    assert com29.insee_com.str.startswith("29").any()
+
+
+def test_get_geodata_dep_crs_3857():
+    # run this test before those that use `transform_overseas` to avoid
+    # downloading departments multiple times
+    dep29 = get_geodata(
+        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:departement",
+        update=True,
+        crs="EPSG:3857",
+    )
+    dep29 = dep29[dep29["insee_dep"] == "29"].to_crs("EPSG:4121")
+    assert isinstance(dep29, GeoFrDataFrame)
+
+    # test conversion from non default crs
+    com29 = get_geodata(
+        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune",
+        update=True,
+        constrain_area=dep29,
+    )
+    assert com29.insee_com.str.startswith("29").any()
+
+
+def test_get_geodata_empty():
     square = [Point(0, 0), Point(0, 0), Point(0, 0), Point(0, 0)]
 
     poly_bbox = Polygon([[p.x, p.y] for p in square])
 
     with pytest.warns(RuntimeWarning):
-        df = _get_geodata(
+        gdf = _get_geodata(
             dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune",
             polygon=poly_bbox,
             update=True,
         )
 
-        assert df.empty
+        assert gdf.empty
 
     df = get_geodata_list(update=True)
     assert isinstance(df, pd.DataFrame)
 
 
-def test_get_geodata_short2():
+def test_get_geodata_overseas():
     chflieu = get_geodata(
         dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune",
         update=True,
@@ -60,141 +112,94 @@ def test_get_geodata_short2():
         geo = chflieu.get_geom()
         assert isinstance(geo, GeoSeries)
 
-    geo_chflieu = chflieu.translate().zoom().geometry
+    geo_chflieu = chflieu.transform_overseas().zoom().geometry
     assert isinstance(geo_chflieu, GeoSeries)
     assert all(p.geom_type == "Point" for p in geo_chflieu)
 
 
-def test_get_geodata_short3():
+def test_get_geodata_communes():
     com = get_geodata(
         dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune", update=True
     )
     assert isinstance(com, GeoFrDataFrame)
+    assert len(com) > 30000
     assert all(isinstance(p, (Polygon, MultiPolygon)) for p in com.geometry)
 
 
-def test_get_geodata_short4():
-    # query with polygon and crs 4326
-    dep29 = get_geodata(
-        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:departement",
-        update=True,
-        crs="EPSG:4326",
-    )
-    dep29 = dep29[dep29["insee_dep"] == "29"]
-    assert isinstance(dep29, GeoFrDataFrame)
-    geo29 = dep29.geometry
-    assert all(isinstance(p, (MultiPolygon, Polygon)) for p in geo29)
-
-    com29 = _get_geodata(
-        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune",
-        update=True,
-        polygon=geo29,
-        crsPolygon="EPSG:4326",
-    )
-    assert isinstance(com29, GeoFrDataFrame)
-
-
-def test_get_geodata_short5():
-
-    # query with polygon and crs 3857
-    dep29 = get_geodata(
-        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:departement",
-        update=True,
-        crs="EPSG:3857",
-    )
-    dep29 = dep29[dep29["insee_dep"] == "29"]
-    assert isinstance(dep29, GeoFrDataFrame)
-
-    geo29 = dep29.get_geom()
-    assert isinstance(geo29, MultiPolygon)
-    com29 = _get_geodata(
-        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune",
-        update=True,
-        polygon=geo29,
-        crsPolygon="EPSG:3857",
-    )
-    assert isinstance(com29, GeoFrDataFrame)
-
-
-def test_get_geodata_short5b():
-
+def test_get_geodata_com_overseas():
     com = get_geodata(dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune")
-    ovdep = com.translate().zoom()
+    ovdep = com.transform_overseas().zoom()
     assert isinstance(ovdep, GeoFrDataFrame)
-    geo_ovdep = ovdep.get_geom()
-    assert isinstance(geo_ovdep, MultiPolygon)
+    assert all(isinstance(p, (Polygon, MultiPolygon)) for p in ovdep.geometry)
 
 
-def test_get_geodata_short6():
+def test_get_geodata_epci():
     # test _add_insee_dep_from_geodata
     epci = get_geodata(
         dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:epci", update=True
     )
     assert isinstance(epci, GeoFrDataFrame)
-    epcit = epci.translate().zoom()
+    epcit = epci.transform_overseas().zoom()
     assert isinstance(epcit, GeoFrDataFrame)
-    geo_epcit = epcit.get_geom()
-    assert isinstance(geo_epcit, MultiPolygon)
+    assert all(isinstance(p, (Polygon, MultiPolygon)) for p in epcit.geometry)
 
 
-def test_get_geodata_short7():
+def test_get_geodata_region():
     # test _add_insee_dep_region
     reg = get_geodata(
         dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:region", update=True
     )
     assert isinstance(reg, GeoFrDataFrame)
-    regt = reg.translate().zoom()
+    regt = reg.transform_overseas().zoom()
     assert isinstance(regt, GeoFrDataFrame)
-    geo_regt = regt.get_geom()
-    assert isinstance(geo_regt, MultiPolygon)
+    assert all(isinstance(p, (Polygon, MultiPolygon)) for p in regt.geometry)
 
 
-def test_get_geodata_short8():
+def test_get_geodata_bbox_list():
     dep = get_geodata(
         dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:departement",
         crs="EPSG:4326",
     )
     dep13 = dep[dep["insee_dep"] == "13"]
-    geo13 = dep13.get_geom()
+    geo13 = dep13.union_all()
 
     bbox = _get_bbox_list(polygon=geo13, update=True, crsPolygon="EPSG:4326")
     assert isinstance(bbox, list)
     bbox = _get_bbox_list(polygon=geo13)
     assert isinstance(bbox, list)
 
-
-def test_get_geodata_short9():
-    dep = get_geodata(
-        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:departement",
-        crs="EPSG:3857",
-    )
-    dep13 = dep[dep["insee_dep"] == "13"]
-    geo13 = dep13.get_geom()
+    # change crs
+    dep13 = dep13.to_crs("EPSG:3857")
+    geo13 = dep13.union_all()
 
     bbox = _get_bbox_list(polygon=geo13, update=True, crsPolygon="EPSG:3857")
     assert isinstance(bbox, list)
 
 
 def test_get_geodata_short_failure():
-    data = _get_geodata(dataset_id="test", update=True)
-    assert isinstance(data, pd.DataFrame)
-    assert not isinstance(data, GeoFrDataFrame)
+    with pytest.warns(RuntimeWarning):
+        data = _get_geodata(dataset_id="test", update=True)
+        assert isinstance(data, GeoFrDataFrame)
+        assert data.empty
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(RequestException):
         get_geodata(dataset_id="test", update=True)
+
+    with pytest.raises(RequestException):
+        _get_geodata(dataset_id="test", ignore_error=False, update=True)
 
 
 if __name__ == "__main__":
-    # test_find_wfs_closest_match()
-    # test_get_geodata_with_backup()
-    # test_get_geodata_short()
-    test_get_geodata_short2()
-    # test_get_geodata_short3()
-    # test_get_geodata_short4()
-    # test_get_geodata_short5()
-    # test_get_geodata_short5b()
-    # test_get_geodata_short6()
-    # test_get_geodata_short7()
-    # test_get_geodata_short8()
-    # test_get_geodata_short9()
-    # test_get_geodata_short_failure()
+    test_find_wfs_closest_match()
+    test_get_geodata_with_backup()
+    test_get_geodata_dep_polygon_crs_4326()
+    test_get_geodata_dep_crs_3857()
+    test_get_geodata_empty()
+    test_get_geodata_overseas()
+    test_get_geodata_communes()
+    test_get_geodata_com_overseas()
+    test_get_geodata_epci()
+    test_get_geodata_region()
+    test_get_geodata_bbox_list()
+    test_get_geodata_with_backup()
+    test_get_geodata_short_failure()

@@ -91,7 +91,14 @@ def save_df(
                     if parquet:
                         rt = func.__annotations__.get("return")
 
-                        mod = gpd if issubclass(rt, gpd.GeoDataFrame) else pd
+                        mod = (
+                            gpd
+                            if (
+                                rt is not None
+                                and issubclass(rt, gpd.GeoDataFrame)
+                            )
+                            else pd
+                        )
 
                         df = mod.read_parquet(file_name)
                     else:
@@ -124,10 +131,10 @@ def save_df(
                             file_name, mdate=mdate, day_lapse=day_lapse
                         )
 
-            if obj is None:
-                return df
+            if obj is not None:
+                df.__class__ = obj
 
-            return obj(df)
+            return df
 
         return wrapper
 
