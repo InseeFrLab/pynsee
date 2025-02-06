@@ -42,6 +42,7 @@ repository = "https://github.com/InseeFrLab/pynsee"
 bug-tracker = "https://github.com/InseeFrLab/pynsee/issues"
 documentation = "https://pynsee.readthedocs.io"
 
+
 [tool.setuptools]
 package-dir = {"" = "."}
 include-package-data = false
@@ -57,3 +58,8 @@ include = ["pynsee*"]
 dependencies = {file = ["requirements.txt"]}
 optional-dependencies.full = {file = ["requirements.txt", "requirements-extra.txt"]}
 version = {attr = "pynsee.__version__"}
+
+
+[tool.black]
+include = '\.py$'
+line-length = 79
