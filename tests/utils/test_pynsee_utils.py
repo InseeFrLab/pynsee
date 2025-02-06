@@ -5,6 +5,7 @@ import json
 import os
 import unittest
 from unittest import TestCase
+import re
 
 import requests
 
@@ -109,6 +110,36 @@ def patch_test_connections(func):
     return wrapper
 
 
+def patch_test_connections_and_failure_for_sirene(func):
+    """
+    patch the session to simulate a valid connection for each API except SIRENE
+    """
+
+    def wrapper(*args, **kwargs):
+        init = PynseeAPISession._request_api_insee
+
+        def _request_api_insee(url, *args, **kwargs):
+            if re.match(".*api-sirene.*", url):
+                dummy_response = object()
+                dummy_response.status_code = 400
+                raise requests.exceptions.RequestException(
+                    response=dummy_response
+                )
+            else:
+
+                return
+
+        PynseeAPISession._request_api_insee = _request_api_insee
+        try:
+            func(*args, **kwargs)
+        except Exception:
+            raise
+        finally:
+            PynseeAPISession._request_api_insee = init
+
+    return wrapper
+
+
 def clean_os_patch(func):
     """
     clean/restore the os variables
@@ -180,9 +211,12 @@ class TestFunction(TestCase):
             )
 
     @patch_configfile_os_keys
-    @patch_retries
+    @patch_test_connections_and_failure_for_sirene
     def test_dummy_sirene_token_is_not_stored(self):
-        "Check that a wrong SIRENE token is never stored"
+        """
+        Check that a wrong SIRENE token is never stored and allows to use other
+        APIs still
+        """
 
         with open(pynsee.constants.CONFIG_FILE, "w") as f:
             json.dump({"DUMMY_SIRENE_KEY": "spam"}, f)
