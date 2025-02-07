@@ -58,9 +58,9 @@ class GeoFrDataFrame(GeoDataFrame):
         """
         Apply translation and zoom to oversea territories.
 
-        See: :func:`pynsee.geodata.translate.translate`.
+        See: :func:`pynsee.geodata.transform_overseas`.
         """
-        from .translate import transform_overseas
+        from .translate_and_zoom import transform_overseas
 
         return transform_overseas(self, *args, **kwargs)
 
@@ -68,7 +68,9 @@ class GeoFrDataFrame(GeoDataFrame):
         """
         Apply translation for oversea territories.
 
-        See: :func:`pynsee.geodata.translate.translate`.
+        .. deprecated:: 0.2.0
+
+            Use :meth:`GeoFrDataFrame.transform_overseas` instead.
         """
         warnings.warn(
             "`translate` will switch to the default `GeoDataFrame` "
@@ -85,6 +87,6 @@ class GeoFrDataFrame(GeoDataFrame):
 
         See: :func:`pynsee.geodata.zoom.zoom`.
         """
-        from .zoom import zoom
+        from .translate_and_zoom import zoom
 
         return zoom(self, *args, **kwargs)

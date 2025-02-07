@@ -1,13 +1,18 @@
+from typing import Optional
+
 from geopandas import GeoDataFrame, GeoSeries
 
 from ._get_center import _get_center
 
 
 def _rescale_geom(
-    gdf: GeoDataFrame, factor: float, geocol: str = "geometry"
+    gdf: GeoDataFrame,
+    factor: float,
+    geocol: str = "geometry",
+    center: Optional[tuple[float, float]] = None,
 ) -> None:
     """Rescale geometries of a GeoDataFrame inplace."""
-    center = _get_center(gdf, geocol)
+    center = center or _get_center(gdf, geocol)
 
     geoseries = (
         gdf[geocol]

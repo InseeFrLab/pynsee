@@ -1,4 +1,4 @@
-from .GeoFrDataFrame import GeoFrDataFrame
+from .geofrdataframe import GeoFrDataFrame
 
 
 def get_geom(gdf: GeoFrDataFrame):

@@ -34,7 +34,7 @@ def _add_insee_dep_from_id_com(gdf):
     elif "id_com" in gdf.columns:
         try:
             dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:commune"
-            com = _get_geodata_with_backup(dataset_id)
+            com = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
 
             com = com[["id", "insee_dep"]]
             com = com.rename(columns={"id": "id_com"})
@@ -45,7 +45,7 @@ def _add_insee_dep_from_id_com(gdf):
     # get departments and add the geometry
     try:
         dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
-        dep = _get_geodata_with_backup(dataset_id).to_crs(gdf.crs)
+        dep = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
 
         dep = dep[["insee_dep", "geometry"]]
         dep = dep.rename(columns={"geometry": "insee_dep_geometry"})
@@ -63,8 +63,10 @@ def _add_insee_dep_region(gdf):
             dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
 
             # get departments, keep only one for each region
-            dep = _get_geodata_with_backup(dataset_id).drop_duplicates(
-                subset="insee_reg", keep="first"
+            dep = (
+                _get_geodata_with_backup(dataset_id)
+                .drop_duplicates(subset="insee_reg", keep="first")
+                .to_crs("EPSG:3857")
             )
 
             dep = dep[["insee_dep", "insee_reg", "geometry"]]
@@ -85,7 +87,7 @@ def _add_insee_dep_from_geodata(gdf):
             list_dep_geo = []
 
             dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
-            dep_list = _get_geodata_with_backup(dataset_id)
+            dep_list = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
 
             list_ovdep = ["971", "972", "974", "973", "976"]
             list_other_dep = [

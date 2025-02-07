@@ -5,7 +5,8 @@ from typing import Optional
 
 import pandas as pd
 from geopandas import GeoDataFrame
-from shapely.geometry import Point
+from shapely.affinity import rotate
+from shapely.geometry import Point, LineString
 
 from ._make_offshore_points import _make_offshore_points
 from ._rescale_geom import _rescale_geom
@@ -67,7 +68,7 @@ def transform_overseas(
 
         if init_crs != "EPSG:3857":
             logging.warning("Converting GeoDataFrame to EPSG:3857.")
-            gdf.to_crs("EPSG:3857")
+            gdf = gdf.to_crs("EPSG:3857")
 
         geocol = "insee_dep_geometry"
 
@@ -94,10 +95,23 @@ def transform_overseas(
             if ovdep.empty:
                 logger.warning(f"{d} is missing from insee_dep column !")
             else:
-                if factor[i] is not None:
-                    _rescale_geom(ovdep, factor=factor[i])
+                center = _get_center(ovdep, geocol=geocol)
 
-                center_x, center_y = _get_center(ovdep, geocol=geocol)
+                if factor[i] is not None:
+                    # get the center of the department to rescale the
+                    # geometry properly
+
+                    _rescale_geom(ovdep, factor=factor[i], center=center)
+
+                    if geocol != "geometry":
+                        _rescale_geom(
+                            ovdep,
+                            factor=factor[i],
+                            geocol=geocol,
+                            center=center,
+                        )
+
+                center_x, center_y = center
 
                 xoff = offshore_points[i].coords.xy[0][0] - center_x
                 yoff = offshore_points[i].coords.xy[1][0] - center_y
@@ -125,3 +139,68 @@ def translate(*args, **kwargs) -> GeoDataFrame:
     )
 
     return transform_overseas(*args, **kwargs)
+
+
+def zoom(
+    gdf: GeoDataFrame,
+    departement: tuple[str, ...] = ("75", "92", "93", "94"),
+    center: tuple[float, float] = (-133583.39, 5971815.98),
+    radius: float = 650000,
+    startAngle: float = math.pi * (1 - 2.5 * 1 / 9),
+    factor: float = 2,
+) -> GeoDataFrame:
+    """Zoom on parisian departements
+
+    Args:
+        departement (list, optional): list of departements to be moved, departements closest to Paris are selected by default
+
+        center (tuple, optional): center point from which an offshore point is computed to move Parisian departements
+        It should be defined as a (longitude, latitude) point in crs EPSG:3857
+
+        radius (float, optional): radius used with center point to make offshore point, distance in meter
+
+        startAngle (float, optional): start angle defining offshore point, by default it is pi * (1 - 2.5 * 1/9))
+
+        factor (float, optional): make departements bigger or smaller.
+        This parameter is used by shapely.affinity.scale function, please refer to its documentation to choose the value.
+
+    Notes:
+        by default zoom method focuses on the closest departements to Paris, but the function can be used to make a zoom on
+        any departement anywhere on the map
+
+    Examples:
+        >>> from pynsee.geodata import get_geodata_list, get_geodata
+        >>> #
+        >>> # Get a list of geographical limits of French administrative areas from IGN API
+        >>> geodata_list = get_geodata_list()
+        >>> #
+        >>> # Get geographical limits of departments
+        >>> df = get_geodata('ADMINEXPRESS-COG-CARTO.LATEST:departement')
+        >>> #
+        >>> # Zoom on parisian departements
+        >>> dfZoom = df.zoom()
+    """
+    if all([x in gdf.columns for x in ["insee_dep", "geometry"]]):
+        zoomDep = gdf[gdf["insee_dep"].isin(departement)].reset_index(
+            drop=True
+        )
+
+        if len(zoomDep.index) > 0:
+            _rescale_geom(zoomDep, factor=factor)
+            end = Point(center[0] + radius, center[1])
+            line = LineString([center, end])
+
+            line = rotate(line, startAngle, origin=center, use_radians=True)
+            endPoint = Point(line.coords[1])
+            center = _get_center(zoomDep)
+
+            xoff = endPoint.coords.xy[0][0] - center[0]
+            yoff = endPoint.coords.xy[1][0] - center[1]
+
+            zoomDep["geometry"] = zoomDep["geometry"].translate(
+                xoff=xoff, yoff=yoff
+            )
+
+            gdf = pd.concat([gdf, zoomDep]).reset_index(drop=True)
+
+    return gdf

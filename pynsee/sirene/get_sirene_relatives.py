@@ -4,7 +4,7 @@ import re
 from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.utils.HiddenPrints import HiddenPrints
-from pynsee.sirene.SireneDataFrame import SireneDataFrame
+from .sirenedataframe import SireneDataFrame
 
 
 def get_sirene_relatives(*siret):

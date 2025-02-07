@@ -13,7 +13,7 @@ from shapely import MultiPolygon, Polygon
 from pynsee.utils.save_df import save_df
 from pynsee.utils.requests_session import PynseeAPISession
 
-from .GeoFrDataFrame import GeoFrDataFrame
+from .geofrdataframe import GeoFrDataFrame
 
 
 logger = logging.getLogger(__name__)

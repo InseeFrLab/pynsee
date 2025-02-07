@@ -7,7 +7,7 @@ from geopandas import GeoSeries
 from requests import RequestException
 from shapely.geometry import Polygon, MultiPolygon, Point
 
-from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
+from pynsee.geodata import GeoFrDataFrame
 from pynsee.geodata.get_geodata import get_geodata
 from pynsee.geodata.get_geodata_list import get_geodata_list
 from pynsee.geodata._get_geodata import _get_geodata

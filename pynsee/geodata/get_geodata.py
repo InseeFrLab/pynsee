@@ -4,7 +4,7 @@ from typing import Optional
 
 from geopandas import GeoDataFrame
 
-from .GeoFrDataFrame import GeoFrDataFrame
+from .geofrdataframe import GeoFrDataFrame
 from ._get_geodata import _get_geodata
 
 

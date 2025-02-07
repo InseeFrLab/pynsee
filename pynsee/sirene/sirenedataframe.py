@@ -3,19 +3,17 @@ import re
 import warnings
 
 from functools import lru_cache
+from typing import Union
 
-import numpy as np
 import pandas as pd
 
 from tqdm import trange
 from shapely.geometry import Point
 from shapely.errors import ShapelyDeprecationWarning
 
-from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
-from pynsee.sirene._get_location_openstreetmap import (
-    _get_location_openstreetmap,
-)
+from pynsee.geodata import GeoFrDataFrame
 from pynsee.utils.requests_session import PynseeAPISession
+from ._get_location_openstreetmap import _get_location_openstreetmap
 
 logger = logging.getLogger(__name__)
 
@@ -47,7 +45,9 @@ class SireneDataFrame(pd.DataFrame):
     def _constructor(self):
         return SireneDataFrame
 
-    def get_location(self, update=False):
+    def get_location(
+        self, update=False
+    ) -> Union[GeoFrDataFrame, "SireneDataFrame"]:
         """
         Get latitude and longitude from OpenStreetMap, add geometry column and
         turn ``SireneDataframe`` into ``GeoFrDataFrame``.
@@ -106,10 +106,18 @@ class SireneDataFrame(pd.DataFrame):
             ]
 
             if set(list_col).issubset(df.columns):
-                list_location = []
+                res = {
+                    "siret": [],
+                    "geometry": [],
+                    "longitude": [],
+                    "latitude": [],
+                    "category": [],
+                    "type": [],
+                    "importance": [],
+                    "exact_location": [],
+                }
 
                 with PynseeAPISession() as session:
-
                     for i in trange(len(df.index), desc="Getting location"):
                         siret = clean(df.loc[i, "siret"])
                         nb = clean(df.loc[i, "numeroVoieEtablissement"])
@@ -203,57 +211,22 @@ class SireneDataFrame(pd.DataFrame):
                             else:
                                 _warning_get_location()
 
-                        df_location = pd.DataFrame(
-                            {
-                                "siret": siret,
-                                "latitude": lat,
-                                "longitude": lon,
-                                "category": category,
-                                "crsCoord": "EPSG:4326",
-                                "type": typeLoc,
-                                "importance": importance,
-                                "exact_location": exact_location,
-                            },
-                            index=[0],
+                        res["siret"].append(siret)
+                        res["latitude"].append(lat)
+                        res["longitude"].append(lon)
+                        res["category"].append(category)
+                        res["type"].append(typeLoc)
+                        res["importance"].append(importance)
+                        res["exact_location"].append(exact_location)
+                        res["geometry"].append(
+                            Point(lon, lat) if None not in (lon, lat) else None
                         )
 
-                        list_location.append(df_location)
+                df_loc = pd.DataFrame(res).dropna(axis=1, how="all")
 
-                # list_location = [loc for loc in list_location if not loc.empty]
-                list_location = [
-                    loc for loc in list_location if len(loc.index) > 0
-                ]
-                list_location = [
-                    df.dropna(axis=1, how="all") for df in list_location
-                ]
-
-                df_location = pd.concat(list_location)
-
-                # df_location = pd.concat([df for df in list_location if (not df.empty) and (not _check_df_full_null(df))])
-
-                df_location = df_location.reset_index(drop=True)
-
-                sirene_df = pd.merge(self, df_location, on="siret", how="left")
-
-                sirene_df["latitude"] = pd.to_numeric(sirene_df["latitude"])
-                sirene_df["longitude"] = pd.to_numeric(sirene_df["longitude"])
-                list_points = []
-
-                for i in range(len(sirene_df.index)):
-                    if (sirene_df.loc[i, "latitude"] is None) or np.isnan(
-                        sirene_df.loc[i, "latitude"]
-                    ):
-                        list_points += [None]
-                    else:
-                        list_points += [
-                            Point(
-                                sirene_df.loc[i, "longitude"],
-                                sirene_df.loc[i, "latitude"],
-                            )
-                        ]
-
-                sirene_df["geometry"] = list_points
-
-                return GeoFrDataFrame(sirene_df)
+                return GeoFrDataFrame(
+                    pd.merge(self, df_loc, on="siret", how="left"),
+                    crs="EPSG:4326",
+                )
 
             return df

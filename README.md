@@ -136,8 +136,8 @@ fig.savefig('pop_france.svg',
 # Use the proxy_server argument of the init_conn function to change the proxy server address
 from pynsee.utils.init_conn import init_conn
 init_conn(sirene_key="my_sirene_key",
-         http_proxy="http://my_proxy_server:port",
-         https_proxy="http://my_proxy_server:port")
+          http_proxy="http://my_proxy_server:port",
+          https_proxy="http://my_proxy_server:port")
 
 # Beware : any change to the keys should be tested after having cleared the cache
 # Please do : from pynsee.utils import *; clear_all_cache()

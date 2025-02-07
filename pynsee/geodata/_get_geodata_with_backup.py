@@ -2,7 +2,7 @@ from requests import RequestException
 
 from ._find_wfs_closest_match import _find_wfs_closest_match
 from ._get_geodata import _get_geodata
-from .GeoFrDataFrame import GeoFrDataFrame
+from .geofrdataframe import GeoFrDataFrame
 
 
 def _get_geodata_with_backup(string: str) -> GeoFrDataFrame:

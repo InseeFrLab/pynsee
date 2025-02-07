@@ -13,7 +13,7 @@ from shapely.geometry import (
     MultiPoint,
 )
 
-from pynsee.geodata.GeoFrDataFrame import GeoFrDataFrame
+from pynsee.geodata import GeoFrDataFrame
 from pynsee.sirene import (
     SireneDataFrame,
     get_dimension_list,
