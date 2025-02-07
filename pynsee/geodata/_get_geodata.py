@@ -125,7 +125,7 @@ def _get_geodata(
         num_hits = int(root.attrib["numberMatched"])
 
         data = []
-        count = 1000
+        count = 5000  # max items returned by https://data.geopf.fr/wfs
 
         # iterate if necessary
         if num_hits > count:
@@ -208,7 +208,7 @@ def _make_request(
     urldata, session, count, maxstart, num_hits, i = arg
 
     start = i * count
-    cnt = count if start - maxstart >= count else num_hits - start
+    cnt = num_hits - start if num_hits - start <= count else count
     link = urldata.format(start=start, count=cnt)
 
     return session.get(link, verify=False), link
