@@ -4,6 +4,10 @@ from .geofrdataframe import GeoFrDataFrame
 def get_geom(gdf: GeoFrDataFrame):
     """Extract a shape (Polygon, Point ...) from a GeoFrDataFrame
 
+    .. deprecated:: 0.2.0
+
+        Use :meth:`GeoFrDataFrame.geometry` instead.
+
     Examples:
         >>> from pynsee.geodata import get_geodata_list, get_geodata
         >>> #

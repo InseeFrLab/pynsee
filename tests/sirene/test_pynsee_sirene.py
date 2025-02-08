@@ -4,15 +4,6 @@ import unittest
 from unittest import TestCase
 from pandas import pandas as pd
 
-from shapely.geometry import (
-    Point,
-    Polygon,
-    MultiPolygon,
-    LineString,
-    MultiLineString,
-    MultiPoint,
-)
-
 from pynsee.geodata import GeoFrDataFrame
 from pynsee.sirene import (
     SireneDataFrame,
@@ -84,8 +75,7 @@ class TestFunction(TestCase):
             kind="siret",
         )
 
-        test = True
-        test = test & isinstance(df, SireneDataFrame)
+        assert isinstance(df, SireneDataFrame)
 
         df = search_sirene(
             variable="activitePrincipaleEtablissement",
@@ -96,22 +86,8 @@ class TestFunction(TestCase):
         df = df.reset_index(drop=True)
 
         sirdf = df.get_location()
-        test = test & isinstance(sirdf, GeoFrDataFrame)
-
-        geo = sirdf.get_geom()
-        test = test & (
-            type(geo)
-            in [
-                Point,
-                Polygon,
-                MultiPolygon,
-                LineString,
-                MultiLineString,
-                MultiPoint,
-            ]
-        )
-
-        self.assertTrue(test)
+        assert isinstance(sirdf, GeoFrDataFrame)
+        assert all(p.geom_type == "Point" for p in sirdf.geometry)
 
     # def test_get_sirene_data(self):
     #     df1 = get_sirene_data(['32227167700021', '26930124800077'])

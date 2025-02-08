@@ -14,9 +14,13 @@ Get geographical data
 
 .. autofunction:: pynsee.geodata.get_geodata
 
-.. autoclass:: pynsee.geodata.geofrdataframe.geofrdataframe
+.. autoclass:: pynsee.geodata.geofrdataframe.GeoFrDataFrame
+
+    .. automethod:: geometry
 
     .. automethod:: get_geom
+
+    .. automethod:: transform_overseas
 
     .. automethod:: translate
 

@@ -44,7 +44,14 @@ class GeoFrDataFrame(GeoDataFrame):
         return copied
 
     def get_geom(self):
-        """Deprecated alias for `geometry`"""
+        """
+        Deprecated alias for `geometry`.
+
+        .. deprecated:: 0.2.0
+
+            Use :meth:`GeoFrDataFrame.geometry` instead.
+
+        """
         warnings.warn(
             "`get_geom` is deprecated, please use the `geometry` "
             "property of the `GeoFrDataFrame` instead.",
@@ -66,7 +73,7 @@ class GeoFrDataFrame(GeoDataFrame):
 
     def translate(self, *args, **kwargs) -> "GeoFrDataFrame":
         """
-        Apply translation for oversea territories.
+        Deprecated alias of `transform_overseas`.
 
         .. deprecated:: 0.2.0
 
