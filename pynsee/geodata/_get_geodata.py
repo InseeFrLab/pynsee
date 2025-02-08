@@ -115,7 +115,7 @@ def _get_geodata(
 
                 message += f"\nFaulty URL: {hits}."
 
-                warnings.warn(message, category=RuntimeWarning, stacklevel=1)
+                warnings.warn(message, category=RuntimeWarning, stacklevel=2)
 
                 return GeoFrDataFrame()
 
@@ -180,7 +180,7 @@ def _get_geodata(
         warnings.warn(
             "Error 200: Valid request returned empty result",
             category=RuntimeWarning,
-            stacklevel=1,
+            stacklevel=2,
         )
 
         return GeoFrDataFrame()

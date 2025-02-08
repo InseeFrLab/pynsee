@@ -1,12 +1,16 @@
 import warnings
 from typing import Union
 
+import numpy as np
 from pandas import DataFrame
-from geopandas import GeoDataFrame
+from geopandas import GeoDataFrame, GeoSeries
 
 
 class GeoFrDataFrame(GeoDataFrame):
-    """Class for handling GeoDataFrames built from IGN's geographical data"""
+    """
+    Class for handling GeoDataFrames built from IGN's geographical data.
+    It inherits from :class:`~geopandas.GeoDataFrame`.
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -49,14 +53,14 @@ class GeoFrDataFrame(GeoDataFrame):
 
         .. deprecated:: 0.2.0
 
-            Use :meth:`GeoFrDataFrame.geometry` instead.
+            Use :attr:`~geopandas.GeoDataFrame.geometry` instead.
 
         """
         warnings.warn(
             "`get_geom` is deprecated, please use the `geometry` "
             "property of the `GeoFrDataFrame` instead.",
             category=DeprecationWarning,
-            stacklevel=1,
+            stacklevel=2,
         )
 
         return self.geometry
@@ -71,30 +75,47 @@ class GeoFrDataFrame(GeoDataFrame):
 
         return transform_overseas(self, *args, **kwargs)
 
-    def translate(self, *args, **kwargs) -> "GeoFrDataFrame":
+    def translate(self, *args, **kwargs) -> Union[GeoSeries, "GeoFrDataFrame"]:
         """
-        Deprecated alias of `transform_overseas`.
-        This will switch to the normal behavior of
-        :meth:`GeoDataFrame.translate` in ``pynsee >= 0.3``
+        This function is a deprecated alias of
+        :meth:`~GeoFrDataFrame.transform_overseas`.
+        It will try to guess whether you want to run `transform_overseas`
+        or the real :meth:`GeoDataFrame.translate` depending on the
+        arguments that were passed.
+        If no arguments are passed, it will run `transform_overseas`.
 
-        .. deprecated:: 0.2.0
+        .. warning::
 
-            Use :meth:`GeoFrDataFrame.transform_overseas` instead.
+            Starting with ``pynsee >= 0.3.0``, this function will only
+            run :meth:`GeoDataFrame.translate`. Do switch to
+            :meth:`GeoFrDataFrame.transform_overseas` if this is what
+            you wanted to run.
         """
+        run_super_translate = False
+
+        if args and isinstance(args[0], (int, np.integer, float)):
+            run_super_translate = True
+        elif kwargs and ("xoff" in kwargs or "yoff" in kwargs):
+            run_super_translate = True
+
+        if run_super_translate:
+            return super().translate(*args, **kwargs)
+
         warnings.warn(
-            "`translate` will switch to the default `GeoDataFrame` "
+            "`translate` will switch to the default `GeoDataFrame.translate` "
             "behavior in the next release. Please use `transform_overseas` "
             "instead.",
             category=DeprecationWarning,
-            stacklevel=1,
+            stacklevel=2,
         )
+
         return self.transform_overseas(*args, **kwargs)
 
     def zoom(self, *args, **kwargs) -> "GeoFrDataFrame":
         """
         Zoom for parisian departments.
 
-        See: :func:`pynsee.geodata.zoom.zoom`.
+        See: :func:`pynsee.geodata.zoom`.
         """
         from .translate_and_zoom import zoom
 

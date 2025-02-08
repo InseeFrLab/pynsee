@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 def transform_overseas(
     gdf: GeoDataFrame,
     departement: tuple[str, ...] = ("971", "972", "974", "973", "976"),
-    factor: tuple[Optional[float], ...] = (None, None, None, 0.6, None),
+    factor: tuple[Optional[float], ...] = (None, None, None, 0.35, None),
     center: tuple[float, float] = (-133583.39, 5971815.98),
     radius: float = 650000,
     angle: float = 1 / 9 * math.pi,
@@ -128,17 +128,6 @@ def transform_overseas(
             return gdf.drop(columns=["insee_dep_geometry"])
 
         return gdf
-
-
-def translate(*args, **kwargs) -> GeoDataFrame:
-    warnings.warn(
-        "`translate` will be removed in the next release. Please use "
-        "`transform_overseas` instead.",
-        category=DeprecationWarning,
-        stacklevel=1,
-    )
-
-    return transform_overseas(*args, **kwargs)
 
 
 def zoom(

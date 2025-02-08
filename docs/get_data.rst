@@ -9,14 +9,14 @@ Get macroeconomic data
 
 .. autofunction:: pynsee.macrodata.get_series_title
 
-Get geographical data
----------------------
+Get and analyze geographical data
+---------------------------------
 
 .. autofunction:: pynsee.geodata.get_geodata
 
 .. autoclass:: pynsee.geodata.geofrdataframe.GeoFrDataFrame
 
-    .. automethod:: geometry
+    :inherited-members: geometry
 
     .. automethod:: get_geom
 
@@ -26,6 +26,10 @@ Get geographical data
 
     .. automethod:: zoom
 
+.. autofunction:: pynsee.geodata.transform_overseas
+
+.. autofunction:: pynsee.geodata.zoom
+
 
 Get local data
 --------------
@@ -33,8 +37,6 @@ Get local data
 .. autofunction:: pynsee.localdata.get_local_data
 
 .. autofunction:: pynsee.localdata.get_population
-
-.. autofunction:: pynsee.localdata.get_included_area
 
 .. autofunction:: pynsee.localdata.get_old_city
 
@@ -58,7 +60,7 @@ Get sirene data
 
 .. autofunction:: pynsee.sirene.get_sirene_relatives
 
-.. autoclass:: pynsee.sirene.sirenedataframe.sirenedataframe
+.. autoclass:: pynsee.sirene.sirenedataframe.SireneDataFrame
 
     .. automethod:: get_location
 
