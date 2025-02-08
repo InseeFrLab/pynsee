@@ -565,18 +565,18 @@ class PynseeAPISession(requests.Session):
 
                 self.get(api_url, verify=False, stream=True)
             except requests.exceptions.RequestException as exc:
-                try:
-                    exc.response.status_code
-                except AttributeError:
+                # raise error only if 404 or not status code was returned
+                if not hasattr(exc.response, "status_code"):
                     raise requests.exceptions.RequestException(
                         f"Could not reach {api} at {api_url}, please control "
                         "your proxy configuration "
                         f"- proxies were {self.proxies}."
                     ) from exc
-                if exc.response.status_code == 404:
+                elif exc.response.status_code == 404:
                     raise requests.exceptions.RequestException(
-                        f"Could not reach {api} at {api_url}, please get in "
-                        "touch if the issue persists."
+                        f"Could not reach {api} at {api_url}, the server "
+                        "returned 404 (not found); please get in touch if "
+                        "the issue persists."
                     ) from exc
 
                 invalid_requests[api] = exc.response.status_code

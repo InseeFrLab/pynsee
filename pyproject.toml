@@ -1,6 +1,65 @@
+# SPDX-FileCopyrightText: 2022 Tanguy Fardet
+# SPDX-License-Identifier: CC0-1.0
+
 [build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
-]
+requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "pynsee"
+authors = [
+  { name="Hadrien Leclerc", email="leclerc.hadrien@gmail.com" },
+  { name="Lino Galiana", email="lino.galiana@insee.fr" },
+  { name="Thomas Grandjean", email="thomas.grandjean@developpement-durable.gouv.fr" },
+  { name="Tanguy Fardet", email="tanguy.fardet@ens-lyon.org" },
+]
+license = {file = "LICENSE.md"}
+description = "Tools to Easily Search and Download French Data From INSEE and IGN APIs."
+readme = "README.md"
+keywords = [
+    "INSEE", "IGN", "statistics", "demography", "geospatial", "France", "GIS",
+    "statistique", "démographie", "géospatial", "SIG"
+]
+requires-python = ">=3.9"
+dynamic = ["dependencies", "optional-dependencies", "version"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Education",
+    "Intended Audience :: Other Audience",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Scientific/Engineering :: GIS"
+]
+
+[project.urls]
+repository = "https://github.com/InseeFrLab/pynsee"
+bug-tracker = "https://github.com/InseeFrLab/pynsee/issues"
+documentation = "https://pynsee.readthedocs.io"
+
+
+[tool.setuptools]
+package-dir = {"" = "."}
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pynsee*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.md", "*.zip"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+optional-dependencies.full = {file = ["requirements.txt", "requirements-extra.txt"]}
+version = {attr = "pynsee.__version__"}
+
+
+[tool.black]
+include = '\.py$'
+line-length = 79
