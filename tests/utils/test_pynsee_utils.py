@@ -5,14 +5,72 @@ import json
 import os
 import unittest
 from unittest import TestCase
+import re
 
-from platformdirs import user_config_dir
 import requests
 
-from pynsee.utils._get_credentials import _get_credentials_from_configfile
+
 from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.clear_all_cache import clear_all_cache
-from pynsee.utils.init_conn import init_conn
+from pynsee.utils import init_conn
+import pynsee.constants
+
+
+def patch_configfile_os_keys(func):
+    """
+    patch the session with a no-retry policy to speed-up tests intended to get
+    http failures
+    """
+
+    def wrapper(*args, **kwargs):
+        import pynsee.utils._get_credentials
+
+        patched_values = {
+            "CONFIG_FILE": "./dummy_config.json",
+            "SIRENE_KEY": "DUMMY_SIRENE_KEY",
+            "HTTP_PROXY_KEY": "DUMMY_HTTP_PROXY_KEY",
+            "HTTPS_PROXY_KEY": "DUMMY_HTTPS_PROXY_KEY",
+        }
+        init_attrs = {k: getattr(pynsee.constants, k) for k in patched_values}
+
+        for module in [
+            pynsee.constants,
+            pynsee.utils._get_credentials,
+            pynsee.utils.init_connection,
+            pynsee.utils.requests_session,
+        ]:
+            for key, patched in patched_values.items():
+                try:
+                    getattr(module, key)
+                except AttributeError:
+                    continue
+                setattr(module, key, patched)
+
+        try:
+            func(*args, **kwargs)
+        except Exception:
+            raise
+        finally:
+
+            for module in [
+                pynsee.constants,
+                pynsee.utils._get_credentials,
+                pynsee.utils.init_connection,
+                pynsee.utils.requests_session,
+            ]:
+                for key, init in init_attrs.items():
+                    try:
+                        getattr(module, key)
+                    except AttributeError:
+                        continue
+                    setattr(module, key, init)
+
+            try:
+                os.remove(patched_values["CONFIG_FILE"])
+            except FileNotFoundError:
+                pass
+
+    return wrapper
 
 
 def patch_retries(func):
@@ -52,13 +110,51 @@ def patch_test_connections(func):
     return wrapper
 
 
+def patch_test_connections_and_failure_for_sirene(func):
+    """
+    patch the session to simulate a valid connection for each API except SIRENE
+    """
+
+    def wrapper(*args, **kwargs):
+        init = PynseeAPISession._request_api_insee
+
+        def _request_api_insee(url, *args, **kwargs):
+            if re.match(".*api-sirene.*", url):
+                dummy_response = object()
+                dummy_response.status_code = 400
+                raise requests.exceptions.RequestException(
+                    response=dummy_response
+                )
+            else:
+
+                return
+
+        PynseeAPISession._request_api_insee = _request_api_insee
+        try:
+            func(*args, **kwargs)
+        except Exception:
+            raise
+        finally:
+            PynseeAPISession._request_api_insee = init
+
+    return wrapper
+
+
 def clean_os_patch(func):
     """
     clean/restore the os variables
     """
 
     def wrapper(*args, **kwargs):
-        keys = "sirene_key", "https_proxy", "http_proxy"
+        keys = (
+            "sirene_key",
+            "https_proxy",
+            "http_proxy",
+            "dummy_sirene_key",
+            "dummy_https_proxy_key",
+            "dummy_http_proxy_key",
+        )
+
         keys = list(keys) + [x.upper() for x in keys]
         init = {k: os.environ[k] for k in keys if k in os.environ}
         for k in init:
@@ -80,24 +176,24 @@ def clean_os_patch(func):
 
 class TestFunction(TestCase):
 
-    StartKeys = _get_credentials_from_configfile()
-
     def test_request_insee_1(self):
         # if api is not well provided but sdmx url works
 
         clear_all_cache()
 
         sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
-        api_url = (
-            "https://api.insee.dummy/series/BDM/V1/data/SERIES_BDM/001688370"
-        )
+        api_url = "dummy"
 
         with PynseeAPISession(
             http_proxy="", https_proxy="", sirene_key=""
         ) as session:
+
+            def patch_error_request_api_insee(*args, **kwargs):
+                raise requests.exceptions.RequestException
+
+            session._request_api_insee = patch_error_request_api_insee
             results = session.request_insee(api_url=api_url, sdmx_url=sdmx_url)
-        test = results.status_code == 200
-        self.assertTrue(test)
+        self.assertEqual(results.status_code, 200)
 
     def test_clear_all_cache(self):
 
@@ -110,76 +206,99 @@ class TestFunction(TestCase):
         "Check that a wrong proxy configuration raises a RequestException"
 
         with self.assertRaises(requests.exceptions.RequestException):
-            os.environ["http_proxy"] = "spam"
-            os.environ["https_proxy"] = "bacon"
-            init_conn(sirene_key="eggs")
+            init_conn(
+                sirene_key="eggs", http_proxy="spam", https_proxy="bacon"
+            )
 
-        del os.environ["http_proxy"], os.environ["https_proxy"]
-
-    @clean_os_patch
-    @patch_retries
+    @patch_configfile_os_keys
+    @patch_test_connections_and_failure_for_sirene
     def test_dummy_sirene_token_is_not_stored(self):
-        "Check that a wrong SIRENE token is never stored"
+        """
+        Check that a wrong SIRENE token is never stored and allows to use other
+        APIs still
+        """
 
-        config_file = os.path.join(
-            user_config_dir("pynsee", ensure_exists=True), "config.json"
-        )
-        with open(config_file, "w") as f:
-            json.dump({"sirene_key": "spam"}, f)
+        with open(pynsee.constants.CONFIG_FILE, "w") as f:
+            json.dump({"DUMMY_SIRENE_KEY": "spam"}, f)
 
         init_conn(sirene_key="eggs")
 
-        config_file = os.path.join(
-            user_config_dir("pynsee", ensure_exists=True), "config.json"
-        )
-        with open(config_file, "r") as f:
-            self.assertFalse(json.load(f)["sirene_key"] == "eggs")
+        with open(pynsee.constants.CONFIG_FILE, "r") as f:
+            self.assertNotEqual(json.load(f)["DUMMY_SIRENE_KEY"], "eggs")
 
+    @patch_configfile_os_keys
     @clean_os_patch
-    @patch_test_connections
     def test_overriding_insee_config_and_environ(self):
-        "check that the order of precedance for config keys is respected"
+        "check that os.environ has precendence over previous config"
 
-        config_file = os.path.join(
-            user_config_dir("pynsee", ensure_exists=True), "config.json"
-        )
-        with open(config_file, "w") as f:
-            json.dump({"sirene_key": "spam", "https_proxy": "sausage"}, f)
+        with open(pynsee.constants.CONFIG_FILE, "w") as f:
+            json.dump(
+                {
+                    "DUMMY_SIRENE_KEY": "spam",
+                    "DUMMY_HTTPS_PROXY_KEY": "sausage",
+                },
+                f,
+            )
 
-        os.environ["sirene_key"] = "eggs"
-        os.environ["https_proxy"] = "bacon"
+        os.environ["DUMMY_SIRENE_KEY"] = "eggs"
+        os.environ["DUMMY_HTTPS_PROXY_KEY"] = "bacon"
 
         with PynseeAPISession() as session:
-            # os.environ has precendence over previous config
-            self.assertTrue(session.sirene_key == "eggs")
-            self.assertTrue(session.proxies["https"] == "bacon")
+            self.assertEqual(session.sirene_key, "eggs")
+            self.assertEqual(session.proxies["https"], "bacon")
+
+    @patch_configfile_os_keys
+    @clean_os_patch
+    def test_overriding_insee_config_and_environ2(self):
+        "check that explicit arg has precendence over os.environ"
+
+        os.environ["DUMMY_SIRENE_KEY"] = "eggs"
+        os.environ["DUMMY_HTTPS_PROXY_KEY"] = "bacon"
 
         with PynseeAPISession(
             sirene_key="spam", https_proxy="sausage"
         ) as session:
             # explicit arg has precendence over os.environ
-            self.assertTrue(session.sirene_key == "spam")
-            self.assertTrue(session.proxies["https"] == "sausage")
+            self.assertEqual(session.sirene_key, "spam")
+            self.assertEqual(session.proxies["https"], "sausage")
 
-        for key in "sirene_key", "https_proxy", "http_proxy":
-            try:
-                del os.environ[key]
-            except KeyError:
-                pass
+    @patch_configfile_os_keys
+    @clean_os_patch
+    @patch_test_connections
+    def test_overriding_insee_config_and_environ3(self):
+        "check that init_conn ends with sirene_key/proxies correctly saved"
 
         init_conn(sirene_key="sausage", https_proxy="spam", http_proxy=None)
-        with open(config_file, "r") as f:
-            # confirm init_conn ends with sirene_key/proxies correctly saved
+
+        self.assertTrue(os.path.exists(pynsee.constants.CONFIG_FILE))
+
+        with open(pynsee.constants.CONFIG_FILE, "r") as f:
             config = json.load(f)
-        self.assertTrue(config["sirene_key"] == "sausage")
-        self.assertTrue(config["https_proxy"] == "spam")
-        self.assertTrue(config["http_proxy"] is None)
+
+        self.assertEqual(config["DUMMY_SIRENE_KEY"], "sausage")
+        self.assertEqual(config["DUMMY_HTTPS_PROXY_KEY"], "spam")
+        self.assertEqual(config["DUMMY_HTTP_PROXY_KEY"], None)
+
+    @patch_configfile_os_keys
+    @clean_os_patch
+    @patch_test_connections
+    def test_overriding_insee_config_and_environ4(self):
+        "check that previous config is restored"
+
+        with open(pynsee.constants.CONFIG_FILE, "w") as f:
+            json.dump(
+                {
+                    "DUMMY_SIRENE_KEY": "sausage",
+                    "DUMMY_HTTPS_PROXY_KEY": "spam",
+                    "DUMMY_HTTP_PROXY_KEY": None,
+                },
+                f,
+            )
 
         with PynseeAPISession() as session:
-            # confirm that previous config is restored
-            self.assertTrue(session.sirene_key == "sausage")
-            self.assertTrue(session.proxies["http"] is None)
-            self.assertTrue(session.proxies["https"] == "spam")
+            self.assertEqual(session.sirene_key, "sausage")
+            self.assertEqual(session.proxies["http"], None)
+            self.assertEqual(session.proxies["https"], "spam")
 
 
 if __name__ == "__main__":

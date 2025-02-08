@@ -1,4 +1,4 @@
-from .init_conn import init_conn
+from .init_connection import init_conn
 from .clear_all_cache import clear_all_cache
 from .requests_session import PynseeAPISession
 

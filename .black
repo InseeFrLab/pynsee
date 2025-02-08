@@ -1,3 +1,0 @@
-[tool.black]
-include = '\.py$'
-line-length = 79

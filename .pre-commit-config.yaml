@@ -15,4 +15,4 @@ repos:
     rev: 24.10.0
     hooks:
     -   id: black
-        args: [--config, .black]
+        args: [--config, pyproject.toml]
