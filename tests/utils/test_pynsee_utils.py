@@ -3,17 +3,21 @@
 
 import json
 import os
+import re
+import shutil
 import unittest
 from unittest import TestCase
-import re
 
 import requests
 
-
+import pynsee.constants
 from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.clear_all_cache import clear_all_cache
 from pynsee.utils import init_conn
-import pynsee.constants
+
+
+config_file = pynsee.constants.CONFIG_FILE
+config_backup = f"{config_file}.back"
 
 
 def patch_configfile_os_keys(func):
@@ -66,6 +70,7 @@ def patch_configfile_os_keys(func):
                     setattr(module, key, init)
 
             try:
+                print(patched_values["CONFIG_FILE"])
                 os.remove(patched_values["CONFIG_FILE"])
             except FileNotFoundError:
                 pass
@@ -175,6 +180,16 @@ def clean_os_patch(func):
 
 
 class TestFunction(TestCase):
+
+    @classmethod
+    def setup_class(cls):
+        """Save config.json"""
+        shutil.copy(config_file, config_backup)
+
+    @classmethod
+    def teardown_class(cls):
+        """Restore config.json"""
+        shutil.move(config_backup, config_file)
 
     def test_request_insee_1(self):
         # if api is not well provided but sdmx url works
