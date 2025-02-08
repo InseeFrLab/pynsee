@@ -74,6 +74,8 @@ class GeoFrDataFrame(GeoDataFrame):
     def translate(self, *args, **kwargs) -> "GeoFrDataFrame":
         """
         Deprecated alias of `transform_overseas`.
+        This will switch to the normal behavior of
+        :meth:`GeoDataFrame.translate` in ``pynsee >= 0.3``
 
         .. deprecated:: 0.2.0
 
