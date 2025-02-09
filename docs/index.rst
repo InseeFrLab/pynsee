@@ -16,9 +16,9 @@
    :caption: documentation
    :hidden:
 
-   utils
    search_data
    get_data
+   modules
 
 .. toctree::
    :maxdepth: 2
