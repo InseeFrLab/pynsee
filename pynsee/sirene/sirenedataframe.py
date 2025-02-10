@@ -1,21 +1,25 @@
 import logging
-import re
 import warnings
 
 from functools import lru_cache
 from typing import Union
 
+import geopandas as gpd
+import numpy as np
 import pandas as pd
 
-from tqdm import trange
-from shapely.geometry import Point
+from tqdm.auto import tqdm
 from shapely.errors import ShapelyDeprecationWarning
 
 from pynsee.geodata import GeoFrDataFrame
 from pynsee.utils.requests_session import PynseeAPISession
-from ._get_location_openstreetmap import _get_location_openstreetmap
+from pynsee.sirene._get_location_openstreetmap import (
+    _get_location_openstreetmap,
+)
 
 logger = logging.getLogger(__name__)
+
+tqdm.pandas(desc="Getting location")
 
 
 @lru_cache(maxsize=None)
@@ -33,6 +37,21 @@ def _warning_OSM():
         "contributors.\n"
         "Please comply with Openstreetmap's Copyright and ODbL Licence"
     )
+
+
+CONFIG_ADDRESSES = {
+    "address": [
+        "numeroVoieEtablissement",
+        "typeVoieEtablissementLibelle",
+        "libelleVoieEtablissement",
+        "codePostalEtablissement",
+        "libelleCommuneEtablissement",
+    ],
+    "address_backup": [
+        "codePostalEtablissement",
+        "libelleCommuneEtablissement",
+    ],
+}
 
 
 class SireneDataFrame(pd.DataFrame):
@@ -89,13 +108,6 @@ class SireneDataFrame(pd.DataFrame):
 
             df = self.reset_index(drop=True)
 
-            def clean(string):
-                if pd.isna(string):
-                    cleaned = ""
-                else:
-                    cleaned = string
-                return cleaned
-
             list_col = [
                 "siret",
                 "numeroVoieEtablissement",
@@ -106,127 +118,105 @@ class SireneDataFrame(pd.DataFrame):
             ]
 
             if set(list_col).issubset(df.columns):
-                res = {
-                    "siret": [],
-                    "geometry": [],
-                    "longitude": [],
-                    "latitude": [],
-                    "category": [],
-                    "type": [],
-                    "importance": [],
-                    "exact_location": [],
-                }
+
+                addresses = df[CONFIG_ADDRESSES["address"]].fillna("")
+
+                city = "libelleCommuneEtablissement"
+                addresses[city] = addresses[city].str.replace(
+                    "[0-9]|EME", "", case=False, regex=True
+                )
+                for field in [
+                    city,
+                    "libelleVoieEtablissement",
+                    "typeVoieEtablissementLibelle",
+                ]:
+                    addresses[field] = addresses[field].str.replace(
+                        r" (D|L) ", r" \1'", case=False, regex=True
+                    )
+
+                for field, config in CONFIG_ADDRESSES.items():
+                    addresses[field] = (
+                        pd.Series(addresses[config].values.tolist())
+                        .str.join(" ")
+                        .str.replace(" +", "+", regex=True)
+                        .str.replace(" ", "+", regex=False)
+                        .str.strip()
+                    )
+                    ix = addresses[addresses[field] != ""].index
+                    addresses.loc[ix, field] += "+FRANCE"
+                    ix = addresses[addresses[field] == ""].index
+                    addresses.loc[ix, field] = np.nan
 
                 with PynseeAPISession() as session:
-                    for i in trange(len(df.index), desc="Getting location"):
-                        siret = clean(df.loc[i, "siret"])
-                        nb = clean(df.loc[i, "numeroVoieEtablissement"])
-                        street_type = clean(
-                            df.loc[i, "typeVoieEtablissementLibelle"]
-                        )
-                        street_name = clean(
-                            df.loc[i, "libelleVoieEtablissement"]
-                        )
 
-                        postal_code = clean(
-                            df.loc[i, "codePostalEtablissement"]
-                        )
-                        city = clean(df.loc[i, "libelleCommuneEtablissement"])
-                        city = re.sub("[0-9]|EME", "", city)
-
-                        city = re.sub(" D ", " D'", re.sub(" L ", " L'", city))
-                        street_name = re.sub(
-                            " D ", " D'", re.sub(" L ", " L'", street_name)
-                        )
-                        street_type = re.sub(
-                            " D ", " D'", re.sub(" L ", " L'", street_type)
-                        )
-
-                        list_var = []
-
-                        variables = [
-                            nb,
-                            street_type,
-                            street_name,
-                            postal_code,
-                            city,
-                        ]
-
-                        for var in variables:
-                            if var != "":
-                                list_var += [re.sub(" ", "+", var)]
-
-                        query = "+".join(list_var)
-
-                        if query != "":
-                            query += "+FRANCE"
-
-                        list_var_backup = []
-
-                        for var in [postal_code, city]:
-                            if var != "":
-                                list_var_backup += [re.sub(" ", "+", var)]
-
-                        query_backup = "+".join(list_var_backup)
-
-                        if query_backup != "":
-                            query_backup += "+FRANCE"
-
-                        exact_location = True
-
+                    def query_func(x):
                         try:
-                            (
-                                lat,
-                                lon,
-                                category,
-                                typeLoc,
-                                importance,
-                            ) = _get_location_openstreetmap(
-                                query=query, session=session, update=update
+                            return _get_location_openstreetmap(
+                                x,
+                                session=session,
+                                update=update,
                             )
                         except Exception:
-                            exact_location = False
+                            return None
 
-                            try:
-                                (
-                                    lat,
-                                    lon,
-                                    category,
-                                    typeLoc,
-                                    importance,
-                                ) = _get_location_openstreetmap(
-                                    query=query_backup,
-                                    session=session,
-                                    update=update,
-                                )
-                                importance = None
-                            except Exception:
-                                lat, lon, category, typeLoc, importance = (
-                                    None,
-                                    None,
-                                    None,
-                                    None,
-                                    None,
-                                )
-                            else:
-                                _warning_get_location()
-
-                        res["siret"].append(siret)
-                        res["latitude"].append(lat)
-                        res["longitude"].append(lon)
-                        res["category"].append(category)
-                        res["type"].append(typeLoc)
-                        res["importance"].append(importance)
-                        res["exact_location"].append(exact_location)
-                        res["geometry"].append(
-                            Point(lon, lat) if None not in (lon, lat) else None
+                    ix = addresses.index
+                    for field in CONFIG_ADDRESSES:
+                        sample = (
+                            addresses.loc[ix, [field]]
+                            .drop_duplicates()
+                            .dropna()
                         )
+                        sample["result"] = sample[field].progress_apply(
+                            query_func
+                        )
+                        if "result" in addresses:
+                            sample = sample.rename(
+                                {"result": "result2"}, axis=1
+                            )
+                            sample["exact_location"] = False
+                        addresses = addresses.merge(
+                            sample, on=field, how="left"
+                        )
+                        ix = addresses[addresses["result"].isnull()].index
+                addresses["result"] = addresses["result"].combine_first(
+                    addresses["result2"]
+                )
+                addresses = addresses.drop("result2", axis=1)
+                addresses["exact_location"] = (
+                    addresses["exact_location"].fillna(1).astype("bool")
+                )
 
-                df_loc = pd.DataFrame(res).dropna(axis=1, how="all")
+                def extract_data(tup):
+                    try:
+                        lat, lon, category, typeLoc, importance = tup
+                        return {
+                            "latitude": lat,
+                            "longitude": lon,
+                            "category": category,
+                            "type": typeLoc,
+                            "importance": importance,
+                        }
+                    except TypeError:
+                        return {}
+
+                results = pd.DataFrame(
+                    addresses["result"].apply(extract_data).values.tolist()
+                )
+                addresses = addresses.drop("result", axis=1).join(results)
+                addresses["geometry"] = gpd.points_from_xy(
+                    x=addresses["longitude"], y=addresses["latitude"], crs=4326
+                )
+                addresses = addresses.drop(["latitude", "longitude"], axis=1)
+                cols = [
+                    "exact_location",
+                    "category",
+                    "type",
+                    "importance",
+                    "geometry",
+                ]
 
                 return GeoFrDataFrame(
-                    pd.merge(self, df_loc, on="siret", how="left"),
-                    crs="EPSG:4326",
+                    self.join(addresses.loc[:, cols], how="left"), crs=4326
                 )
 
             return df
