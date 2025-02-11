@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
 import multiprocessing
 import warnings
@@ -7,7 +8,7 @@ from typing import Any, Optional, Union
 from xml.etree import ElementTree
 
 import requests
-import tqdm
+from tqdm import tqdm
 from pyproj.crs import CRS
 from shapely import MultiPolygon, Polygon
 
@@ -153,13 +154,15 @@ def _get_geodata(
                 (link, session, count, num_hits, i) for i in range(num_calls)
             )
 
-            with multiprocessing.Pool(processes=Nproc) as pool:
-                list_req = list(
-                    tqdm.tqdm(
-                        pool.imap_unordered(_make_request, args),
-                        total=num_calls,
+            with ThreadPoolExecutor(max_workers=Nproc) as pool:
+
+                submitted = [pool.submit(_make_request, x) for x in args]
+                list_req = [
+                    future.result()
+                    for future in tqdm(
+                        as_completed(submitted), total=num_calls
                     )
-                )
+                ]
 
             for r, link in list_req:
                 _check_request_update_data(data, r, link, polygon)

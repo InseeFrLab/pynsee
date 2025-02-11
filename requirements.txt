@@ -6,6 +6,5 @@ platformdirs >= 4
 unidecode >= 1.3
 urllib3 >= 2.2
 shapely >= 2
-pebble >= 5.0.7
 requests >= 2.32
 requests-ratelimiter >= 0.7
