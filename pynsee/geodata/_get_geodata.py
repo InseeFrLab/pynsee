@@ -19,7 +19,7 @@ from .geofrdataframe import GeoFrDataFrame
 logger = logging.getLogger(__name__)
 
 
-@save_df(obj=GeoFrDataFrame, day_lapse_max=90)
+@save_df(cls=GeoFrDataFrame, day_lapse_max=90)
 def _get_geodata(
     dataset_id: str,
     polygon: Optional[Union[MultiPolygon, Polygon]] = None,

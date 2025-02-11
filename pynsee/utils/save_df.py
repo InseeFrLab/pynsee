@@ -35,7 +35,7 @@ def _warning_cached_data(file, mdate=None, day_lapse=None):
 
 
 def save_df(
-    obj: Type[pd.DataFrame] = pd.DataFrame,
+    cls: Type[pd.DataFrame] = pd.DataFrame,
     parquet: bool = True,
     day_lapse_max: Optional[int] = None,
 ):
@@ -89,7 +89,7 @@ def save_df(
             else:
                 try:
                     try:
-                        mod = gpd if issubclass(obj, gpd.GeoDataFrame) else pd
+                        mod = gpd if issubclass(cls, gpd.GeoDataFrame) else pd
                         df = mod.read_parquet(file_name)
                     except Exception:
                         df = pd.read_pickle(file_name)
@@ -118,7 +118,7 @@ def save_df(
                             file_name, mdate=mdate, day_lapse=day_lapse
                         )
 
-            df.__class__ = obj
+            df.__class__ = cls
 
             return df
 

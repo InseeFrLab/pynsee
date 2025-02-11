@@ -32,7 +32,7 @@ def _warning_data_save():
     )
 
 
-@save_df(day_lapse_max=30, obj=SireneDataFrame)
+@save_df(day_lapse_max=30, cls=SireneDataFrame)
 def search_sirene(
     variable,
     pattern,
