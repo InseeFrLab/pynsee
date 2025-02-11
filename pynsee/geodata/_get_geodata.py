@@ -85,7 +85,7 @@ def _get_geodata(
                 "urn:ogc:def:crs:" + crsPolygon,
             ]
 
-        bbox = f"&BBOX={bounds}"
+        bbox = f"&BBOX={','.join(bounds)}"
 
     geoportail = "https://data.geopf.fr"
     fmt = "application/json"
