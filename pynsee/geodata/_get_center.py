@@ -1,19 +1,26 @@
+from typing import Optional
 from geopandas import GeoDataFrame, GeoSeries
 
 
-def _get_center(gdf: GeoDataFrame, geocol="geometry"):
-    """Get the center of the geometries in a GeoDataFrame"""
+def _get_center(
+    gdf: GeoDataFrame, geocol: Optional[str] = None
+) -> tuple[float, float]:
+    """
+    Get the center of the geometries in a GeoDataFrame.
+
+    Note
+    ----
+    This function may be applied on a column that is *not* the
+    default geometry (i.e. not a ``GeoSeries``).
+    """
+    geocol = geocol or gdf.geometry.name
+
     geoseries = (
-        gdf[geocol]
-        if geocol == "geometry"
+        gdf.geometry
+        if geocol == gdf.geometry.name
         else GeoSeries(gdf[geocol], crs=gdf.crs)
     )
 
-    bounds = geoseries.bounds
+    minxdf, maxydf, maxxdf, minydf = geoseries.total_bounds
 
-    maxxdf = bounds.maxx.max()
-    minxdf = bounds.minx.min()
-    maxydf = bounds.maxy.max()
-    minydf = bounds.miny.min()
-
-    return ((maxxdf + minxdf) / 2, (maxydf + minydf) / 2)
+    return (maxxdf + minxdf) / 2, (maxydf + minydf) / 2

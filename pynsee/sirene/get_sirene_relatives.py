@@ -72,7 +72,7 @@ def get_sirene_relatives(*siret):
                 del df[c]
 
         return df
-    else:
-        raise ValueError(
-            "Neither parent nor child entities were found for any entity"
-        )
+
+    raise ValueError(
+        "Neither parent nor child entities were found for any entity"
+    )

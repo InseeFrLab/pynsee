@@ -8,13 +8,13 @@ from shapely.geometry import Point, LineString
 
 def _make_offshore_points(
     center: Optional[Point] = None,
-    radius=8,
-    angle=1 / 17,
-    startAngle=math.pi * (1 - 1.5 * 1 / 17),
-    list_ovdep=["974", "971", "972", "973", "976"],
-):
-    if center is None:
-        center = Point(-1, 47.181903)
+    radius: float = 8,
+    angle: float = 1 / 17,
+    startAngle: float = math.pi * (1 - 1.5 * 1 / 17),
+    list_ovdep: tuple[str, ...] = ("974", "971", "972", "973", "976"),
+) -> list[Point]:
+    """Create the center points for French overseas departments"""
+    center = center or Point(-1, 47.181903)
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -28,6 +28,6 @@ def _make_offshore_points(
             line = LineString([center, end])
             line = rotate(line, angle_rotated, origin=center, use_radians=True)
 
-            list_points += [Point(line.coords[1])]
+            list_points.append(Point(line.coords[1]))
 
         return list_points

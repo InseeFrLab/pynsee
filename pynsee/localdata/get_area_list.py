@@ -77,8 +77,8 @@ def get_area_list(
                 f"Please choose area among:\n{area_string}"
             )
             raise ValueError(msg)
-        else:
-            list_available_area = [area]
+
+        list_available_area = [area]
 
     list_data = []
 

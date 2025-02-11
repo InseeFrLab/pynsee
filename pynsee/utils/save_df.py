@@ -142,4 +142,4 @@ def _save_dataframe(
         )
     else:
         if not silent:
-            logger.info(f"Data saved:\n{file_name}")
+            logger.info("Data saved:\n%s", file_name)

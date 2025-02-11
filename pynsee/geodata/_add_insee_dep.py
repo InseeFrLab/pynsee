@@ -73,7 +73,7 @@ def _add_insee_dep_region(gdf):
             dep = dep.rename(columns={"geometry": "insee_dep_geometry"})
             gdf = gdf.merge(dep, on="insee_reg", how="left")
     except Exception:
-        raise
+        pass
 
     return gdf
 
