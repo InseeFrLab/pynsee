@@ -1,9 +1,11 @@
-pandas>=0.24.2
-pyarrow
-tqdm>=4.56.0
-requests[security]>=2.23
-platformdirs
-unidecode>=1.1.0
-urllib3
-shapely>=1.8.0
-requests-ratelimiter
+pandas >= 2.2.0, < 3.0
+geopandas >= 1.0, < 2.0
+pyarrow >= 17.0
+tqdm >= 4.56
+platformdirs >= 4
+unidecode >= 1.3
+urllib3 >= 2.2
+shapely >= 2
+pebble >= 5.0.7
+requests >= 2.32
+requests-ratelimiter >= 0.7

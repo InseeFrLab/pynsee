@@ -30,8 +30,6 @@ If you have already made a commit and forgot to include the sign-off, you can am
 git commit --amend -s
 ```
 
-We use a DCO bot to enforce the DCO on each pull request and branch commits.
-
 ### Linting
 
 This project currently uses flake8 and black as pre-commit hooks and will check the code's conformity on the automated tests.
@@ -45,4 +43,4 @@ If you're using Github Desktop and experiencing difficulties with the precommit 
 
 ### Licence
 
-By contributing, you agree that your contributions will be licensed under the OPEN LICENSE 2.0.
+By contributing, you agree that your contributions will be licensed under the MIT License.

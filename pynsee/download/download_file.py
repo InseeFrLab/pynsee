@@ -1,5 +1,7 @@
 import tempfile
 
+from pandas import DataFrame
+
 from pynsee.download._download_store_file import _download_store_file
 from pynsee.download._load_data_from_schema import _load_data_from_schema
 
@@ -7,7 +9,7 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=90)
-def download_file(id, variables=None, update=False, silent=True):
+def download_file(id, variables=None, update=False, silent=False) -> DataFrame:
     """User level function to download files from insee.fr
 
     Args:
