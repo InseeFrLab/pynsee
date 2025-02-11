@@ -1,27 +1,32 @@
 # -*- coding: utf-8 -*-
+import logging
+
 import pandas as pd
+
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.geodata._geojson_parser import _geojson_parser
 from pynsee.geodata._distance import _distance
 
-import logging
 
 logger = logging.getLogger(__name__)
 
 
 def _set_global_var(args):
-    global link0, list_bbox_full, crsPolygon0
+    global link0, list_bbox_full, session, crsPolygon0
     link0 = args[0]
     list_bbox_full = args[1]
     crsPolygon0 = args[2]
 
+    session = PynseeAPISession()
 
-def _get_data_with_bbox2(session, i):
+
+def _get_data_with_bbox2(i):
     link = link0
     list_bbox = list_bbox_full[i]
-    return _get_data_with_bbox(session, link, list_bbox, crsPolygon0)
+    return _get_data_with_bbox(link, list_bbox, crsPolygon0)
 
 
-def _get_data_with_bbox(session, link, list_bbox, crsPolygon="EPSG:4326"):
+def _get_data_with_bbox(link, list_bbox, crsPolygon="EPSG:4326"):
     # list_bbox = (5.0, 43.0, 6.0, 44.5)
     # bounds = [str(b) for b in list_bbox]
     # bounds = [bounds[1], bounds[0], bounds[3], bounds[2]]
@@ -50,6 +55,9 @@ def _get_data_with_bbox(session, link, list_bbox, crsPolygon="EPSG:4326"):
 
     link_query = link + BBOX
 
+    if ("session" not in globals()) or ("session" not in locals()):
+        session = PynseeAPISession()
+
     with session.get(link_query) as r:
         try:
             data_json = r.json()
@@ -59,6 +67,8 @@ def _get_data_with_bbox(session, link, list_bbox, crsPolygon="EPSG:4326"):
                 f"{link_query}"
             )
             return pd.DataFrame()
+        finally:
+            session.close()
 
     if "features" in data_json.keys():
         json = data_json["features"]
@@ -105,9 +115,9 @@ def _get_data_with_bbox(session, link, list_bbox, crsPolygon="EPSG:4326"):
                         list_bbox[3],
                     ]
 
-                df1 = _get_data_with_bbox(session, link, list_bbox1)
+                df1 = _get_data_with_bbox(link, list_bbox1)
 
-                df2 = _get_data_with_bbox(session, link, list_bbox2)
+                df2 = _get_data_with_bbox(link, list_bbox2)
 
                 data_final = pd.concat([df1, df2]).reset_index(drop=True)
             else:
