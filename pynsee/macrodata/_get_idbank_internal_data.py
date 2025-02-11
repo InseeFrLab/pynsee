@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 @save_df(day_lapse_max=90)
-def _get_idbank_internal_data(update=False, silent=True):
+def _get_idbank_internal_data(update=False, silent=False):
 
     try:
         pkg_macrodata = importlib.resources.files(__name__)

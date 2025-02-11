@@ -14,7 +14,7 @@ from pynsee.utils.save_df import save_df
 def get_dataset(
     dataset,
     update=False,
-    silent=True,
+    silent=False,
     metadata=True,
     filter=None,
     startPeriod=None,

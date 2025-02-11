@@ -11,7 +11,7 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=30)
-def get_series_list(*datasets, update=False, silent=True):
+def get_series_list(*datasets, update=False, silent=False):
     """Download an INSEE's series key list for one or several datasets from BDM macroeconomic database
 
     Args:

@@ -14,7 +14,7 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=90)
-def get_geo_list(geo=None, date=None, update=False, silent=True):
+def get_geo_list(geo=None, date=None, update=False, silent=False):
     """Get a list of French geographic areas (communes, departements, regions ...)
 
     Args:

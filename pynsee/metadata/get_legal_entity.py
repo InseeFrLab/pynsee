@@ -10,7 +10,7 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=30)
-def get_legal_entity(codes, print_err_msg=True, update=False, silent=True):
+def get_legal_entity(codes, print_err_msg=True, update=False, silent=False):
     """Get legal entities labels
 
     Args:

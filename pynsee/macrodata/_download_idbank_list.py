@@ -8,7 +8,7 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=90)
-def _download_idbank_list(update=False, silent=True, insee_date_test=None):
+def _download_idbank_list(update=False, silent=False, insee_date_test=None):
 
     data = _dwn_idbank_files()
 
