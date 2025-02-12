@@ -122,7 +122,7 @@ def get_dataset(
             pass
 
         try:
-            data = _add_numeric_metadata(data)
+            data = _add_numeric_metadata(data, silent=silent)
         except Exception:
             pass
 

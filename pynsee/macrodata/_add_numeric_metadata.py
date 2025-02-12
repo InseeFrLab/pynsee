@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+import pandas as pd
 from pynsee.macrodata._get_dimension_values import _get_dimension_values
 
 
-def _add_numeric_metadata(data):
-
-    # data = get_dataset('CLIMAT-AFFAIRES')
+def _add_numeric_metadata(
+    data: pd.DataFrame, silent: bool = False
+) -> pd.DataFrame:
 
     list_numeric_col_metadata = [
         "OBS_STATUS",
@@ -18,7 +19,7 @@ def _add_numeric_metadata(data):
 
     for col in list_numeric_col_metadata:
         cl_col = "CL_" + col
-        df = _get_dimension_values(cl_col, silent=False)
+        df = _get_dimension_values(cl_col, silent=silent)
 
         df = df[df["id"] != cl_col]
 
