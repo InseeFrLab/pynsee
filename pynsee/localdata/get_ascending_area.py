@@ -38,7 +38,7 @@ def get_ascending_area(
 
         update (bool): locally saved data is used by default. Trigger an update with update=True.
 
-        silent (bool, optional): Set to True, to disable messages printed in log info
+        silent (bool, optional): Set to True to disable messages printed in log info
 
     Examples:
         >>> from pynsee.localdata import get_ascending_area

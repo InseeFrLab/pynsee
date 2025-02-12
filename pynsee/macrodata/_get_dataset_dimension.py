@@ -11,7 +11,7 @@ from pynsee.utils.save_df import save_df
 
 @save_df(day_lapse_max=90)
 def _get_dataset_dimension(
-    dataset, update=False, silent=True, insee_date_test=None
+    dataset, update=False, silent=False, insee_date_test=None
 ):
 
     INSEE_sdmx_link_datastructure = (

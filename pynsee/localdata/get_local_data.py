@@ -54,7 +54,7 @@ def get_local_data(
 
         update (bool): data is saved locally, set update=True to trigger an update
 
-        silent (bool, optional): Set to True, to disable messages printed in log info
+        silent (bool, optional): Set to True to disable messages printed in log info
 
         backwardperiod (int, optional): this arg is used only whenever the latest data is searched, it specifies the number of past years the loop should run through.
 

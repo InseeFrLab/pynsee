@@ -36,7 +36,7 @@ def get_series_list(*datasets, update=False, silent=False):
         >>> dataset_list = get_dataset_list()
         >>> idbank_ipc = get_series_list('IPC-2015', 'CLIMAT-AFFAIRES')
     """
-    insee_dataset = get_dataset_list(silent=True)
+    insee_dataset = get_dataset_list(silent=silent)
     insee_dataset_list = insee_dataset["id"].to_list()
 
     if len(datasets) == 1:
@@ -53,7 +53,9 @@ def get_series_list(*datasets, update=False, silent=False):
     idbank_list_dataset = []
 
     for dt in datasets:
-        idbank_list_dt = _get_dataset_metadata(dt, update=update, silent=True)
+        idbank_list_dt = _get_dataset_metadata(
+            dt, update=update, silent=silent
+        )
 
         idbank_list_dataset.append(idbank_list_dt)
 

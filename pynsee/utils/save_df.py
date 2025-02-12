@@ -36,10 +36,26 @@ def _warning_cached_data(file, mdate=None, day_lapse=None):
 
 def save_df(
     cls: Type[pd.DataFrame] = pd.DataFrame,
-    parquet: bool = True,
     day_lapse_max: Optional[int] = None,
 ):
-    """Autosave object to reload from file unless it's empty"""
+    """
+    Autosave object to reload from file unless it's empty.
+
+    Note that if PYNSEE_SILENT_MODE is present in os.environ and set to "true",
+    no logging.info are displayed to warn about the dataframe's storage nor the
+    dataframe's retrieval from disk.
+
+    Parameters
+    ----------
+    cls : Type[pd.DataFrame], optional
+        The class used (should either be pd.DataFrame, SireneDataFrame,
+        gpd.GeoDataFrame or GeoFrDataFrame). The default is pd.DataFrame.
+    day_lapse_max : Optional[int], optional
+        The maximum number of days to keep a file on disk before forcing a new
+        download, whether or not update has been set to True. The default is
+        None.
+
+    """
 
     def decorator(func):
         @functools.wraps(func)
@@ -58,14 +74,13 @@ def save_df(
                 data_folder, _hash("".join(string_file_arg))
             )
 
-            if parquet:
-                file_name += ".parquet"
-            else:
-                file_name += ".pkl"
-
+            file_name += ".parquet"
             update = kwargs.get("update", False)
 
-            silent = kwargs.get("silent", False)
+            silent_env = os.environ.get("PYNSEE_SILENT_MODE", "")
+            silent = kwargs.get("silent", False) or (
+                silent_env.lower() == "true"
+            )
 
             if os.path.exists(file_name):
                 file_date_last_modif = datetime.datetime.fromtimestamp(
@@ -85,7 +100,7 @@ def save_df(
             if (not os.path.exists(file_name)) or update:
                 df = func(*args, **kwargs)
 
-                _save_dataframe(df, file_name, parquet, silent)
+                _save_dataframe(df, file_name, silent)
             else:
                 try:
                     try:
@@ -107,7 +122,7 @@ def save_df(
 
                     df = func(*args, **kwargs2)
 
-                    _save_dataframe(df, file_name, parquet, silent)
+                    _save_dataframe(df, file_name, silent)
                 else:
                     if not silent:
                         mdate = insee_date_time_now - datetime.timedelta(
@@ -127,15 +142,27 @@ def save_df(
     return decorator
 
 
-def _save_dataframe(
-    df: pd.DataFrame, file_name: str, parquet: bool, silent: bool
-) -> None:
+def _save_dataframe(df: pd.DataFrame, file_name: str, silent: bool) -> None:
+    """
+    Triggers the storage of a dataframe on disk.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Dataset to store as a parquet file.
+    file_name : str
+        Dataset's filename.
+    silent : bool
+        If silent, will not log the storage.
+
+    Returns
+    -------
+    None
+
+    """
     try:
         if not df.empty:
-            if parquet:
-                df.to_parquet(file_name)
-            else:
-                df.to_pickle(file_name, index=False)
+            df.to_parquet(file_name)
     except Exception as e:
         warnings.warn(
             f"{e}\nError, file not saved:\n{file_name}\n{df}\n", stacklevel=2
