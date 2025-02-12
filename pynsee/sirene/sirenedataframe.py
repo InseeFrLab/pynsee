@@ -53,6 +53,8 @@ CONFIG_ADDRESSES = {
     ],
 }
 
+NOMINATIM_RESULTS = ["latitude", "longitude", "category", "type", "importance"]
+
 
 class SireneDataFrame(pd.DataFrame):
     """Class for handling dataframes built from INSEE SIRENE API's data"""
@@ -170,6 +172,7 @@ class SireneDataFrame(pd.DataFrame):
                             query_func
                         )
                         if "result" in addresses:
+                            # simple hack to rename column for second config
                             sample = sample.rename(
                                 {"result": "result2"}, axis=1
                             )
@@ -188,14 +191,7 @@ class SireneDataFrame(pd.DataFrame):
 
                 def extract_data(tup):
                     try:
-                        lat, lon, category, typeLoc, importance = tup
-                        return {
-                            "latitude": lat,
-                            "longitude": lon,
-                            "category": category,
-                            "type": typeLoc,
-                            "importance": importance,
-                        }
+                        return dict(zip(NOMINATIM_RESULTS, tup))
                     except TypeError:
                         return {}
 
@@ -203,20 +199,14 @@ class SireneDataFrame(pd.DataFrame):
                     addresses["result"].apply(extract_data).values.tolist()
                 )
                 addresses = addresses.drop("result", axis=1).join(results)
+
+                addresses = addresses[["exact_location"] + NOMINATIM_RESULTS]
                 addresses["geometry"] = gpd.points_from_xy(
                     x=addresses["longitude"], y=addresses["latitude"], crs=4326
                 )
                 addresses = addresses.drop(["latitude", "longitude"], axis=1)
-                cols = [
-                    "exact_location",
-                    "category",
-                    "type",
-                    "importance",
-                    "geometry",
-                ]
-
                 return GeoFrDataFrame(
-                    self.join(addresses.loc[:, cols], how="left"), crs=4326
+                    self.join(addresses, how="left"), crs=4326
                 )
 
             return df
