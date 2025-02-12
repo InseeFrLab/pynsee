@@ -7,6 +7,7 @@ import warnings
 from typing import Optional, Type
 
 import pandas as pd
+import geopandas as gpd
 
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
@@ -34,11 +35,27 @@ def _warning_cached_data(file, mdate=None, day_lapse=None):
 
 
 def save_df(
-    obj: Type[pd.DataFrame] = pd.DataFrame,
-    parquet: bool = True,
+    cls: Type[pd.DataFrame] = pd.DataFrame,
     day_lapse_max: Optional[int] = None,
 ):
-    """Autosave object to reload from file unless it's empty"""
+    """
+    Autosave object to reload from file unless it's empty.
+
+    Note that if PYNSEE_SILENT_MODE is present in os.environ and set to "true",
+    no logging.info are displayed to warn about the dataframe's storage nor the
+    dataframe's retrieval from disk.
+
+    Parameters
+    ----------
+    cls : Type[pd.DataFrame], optional
+        The class used (should either be pd.DataFrame, SireneDataFrame,
+        gpd.GeoDataFrame or GeoFrDataFrame). The default is pd.DataFrame.
+    day_lapse_max : Optional[int], optional
+        The maximum number of days to keep a file on disk before forcing a new
+        download, whether or not update has been set to True. The default is
+        None.
+
+    """
 
     def decorator(func):
         @functools.wraps(func)
@@ -57,14 +74,13 @@ def save_df(
                 data_folder, _hash("".join(string_file_arg))
             )
 
-            if parquet:
-                file_name += ".parquet"
-            else:
-                file_name += ".pkl"
-
+            file_name += ".parquet"
             update = kwargs.get("update", False)
 
-            silent = kwargs.get("silent", False)
+            silent_env = os.environ.get("PYNSEE_SILENT_MODE", "")
+            silent = kwargs.get("silent", False) or (
+                silent_env.lower() == "true"
+            )
 
             if os.path.exists(file_name):
                 file_date_last_modif = datetime.datetime.fromtimestamp(
@@ -84,30 +100,29 @@ def save_df(
             if (not os.path.exists(file_name)) or update:
                 df = func(*args, **kwargs)
 
-                _save_dataframe(df, file_name, parquet, silent)
+                _save_dataframe(df, file_name, silent)
             else:
                 try:
-                    if parquet:
-                        df = pd.read_parquet(file_name)
-                    else:
+                    try:
+                        mod = gpd if issubclass(cls, gpd.GeoDataFrame) else pd
+                        df = mod.read_parquet(file_name)
+                    except Exception:
                         df = pd.read_pickle(file_name)
-
-                    if "Unnamed: 0" in df.columns:
-                        del df["Unnamed: 0"]
                 except Exception as e:
-                    warnings.warn(str(e))
+                    warnings.warn(str(e), stacklevel=2)
 
                     kwargs2 = kwargs
                     kwargs2["update"] = True
 
                     warnings.warn(
                         "!!! Unable to load data, recalling function "
-                        "with `update` set to True !!!"
+                        "with `update` set to True !!!",
+                        stacklevel=2,
                     )
 
                     df = func(*args, **kwargs2)
 
-                    _save_dataframe(df, file_name, parquet, silent)
+                    _save_dataframe(df, file_name, silent)
                 else:
                     if not silent:
                         mdate = insee_date_time_now - datetime.timedelta(
@@ -118,25 +133,40 @@ def save_df(
                             file_name, mdate=mdate, day_lapse=day_lapse
                         )
 
-            return obj(df)
+            df.__class__ = cls
+
+            return df
 
         return wrapper
 
     return decorator
 
 
-def _save_dataframe(
-    df: pd.DataFrame, file_name: str, parquet: bool, silent: bool
-) -> None:
+def _save_dataframe(df: pd.DataFrame, file_name: str, silent: bool) -> None:
+    """
+    Triggers the storage of a dataframe on disk.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Dataset to store as a parquet file.
+    file_name : str
+        Dataset's filename.
+    silent : bool
+        If silent, will not log the storage.
+
+    Returns
+    -------
+    None
+
+    """
     try:
         if not df.empty:
-            if parquet:
-                df.to_parquet(file_name)
-            else:
-                df.to_pickle(file_name, index=False)
+            df.to_parquet(file_name)
     except Exception as e:
-        warnings.warn(str(e))
-        warnings.warn(f"Error, file not saved:\n{file_name}\n{df}\n")
+        warnings.warn(
+            f"{e}\nError, file not saved:\n{file_name}\n{df}\n", stacklevel=2
+        )
     else:
         if not silent:
-            logger.info(f"Data saved:\n{file_name}")
+            logger.info("Data saved:\n%s", file_name)

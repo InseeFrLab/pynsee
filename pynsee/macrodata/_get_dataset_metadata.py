@@ -33,12 +33,12 @@ def _warning_error():
 
 @save_df(day_lapse_max=90)
 def _get_dataset_metadata(
-    dataset, update=False, silent=True, insee_date_test=None
+    dataset, update=False, silent=False, insee_date_test=None
 ):
 
     try:
         idbank_list_dataset = _get_dataset_metadata_core(
-            dataset=dataset, update=update, silent=True
+            dataset=dataset, update=update, silent=silent
         )
     except Exception:
         # if the download of the idbank file and the build of the metadata fail

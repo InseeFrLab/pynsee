@@ -7,22 +7,26 @@ Get macroeconomic data
     :no-index:
 
 .. autofunction:: pynsee.macrodata.get_dataset
-:no-index:
+    :no-index:
 
 .. autofunction:: pynsee.macrodata.get_series_title
-:no-index:
+    :no-index:
 
 
-Get geographical data
----------------------
+Get and analyze geographical data
+---------------------------------
 
 .. autofunction:: pynsee.geodata.get_geodata
     :no-index:
 
-.. autoclass:: pynsee.geodata.GeoFrDataFrame.GeoFrDataFrame
+.. autoclass:: pynsee.geodata.geofrdataframe.GeoFrDataFrame
     :no-index:
+    :inherited-members: geometry
 
     .. automethod:: get_geom
+        :no-index:
+
+    .. automethod:: transform_overseas
         :no-index:
 
     .. automethod:: translate
@@ -30,6 +34,12 @@ Get geographical data
 
     .. automethod:: zoom
         :no-index:
+
+.. autofunction:: pynsee.geodata.transform_overseas
+    :no-index:
+
+.. autofunction:: pynsee.geodata.zoom
+    :no-index:
 
 
 Get local data
@@ -73,14 +83,15 @@ Get sirene data
 .. autofunction:: pynsee.sirene.get_sirene_relatives
     :no-index:
 
-.. autoclass:: pynsee.sirene.SireneDataFrame.SireneDataFrame
+.. autoclass:: pynsee.sirene.sirenedataframe.SireneDataFrame
     :no-index:
 
     .. automethod:: get_location
         :no-index:
 
-Get data from insee.fr files
-----------------------------
+
+Get data from INSEE files
+-------------------------
 
 .. autofunction:: pynsee.download.download_file
     :no-index:

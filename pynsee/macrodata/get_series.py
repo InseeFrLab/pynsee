@@ -22,7 +22,7 @@ def get_series(
     endPeriod=None,
     firstNObservations=None,
     lastNObservations=None,
-    updatedAfter=None
+    updatedAfter=None,
 ):
     """Get data from INSEE series idbank
 

@@ -10,13 +10,13 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=90)
-def _get_dataset_metadata_core(dataset, update=False, silent=True):
+def _get_dataset_metadata_core(dataset, update=False, silent=False):
 
-    idbank_list = _download_idbank_list(update=update, silent=True)
+    idbank_list = _download_idbank_list(update=update, silent=silent)
 
     # get dataset's dimensions
     dataset_dimension = _get_dataset_dimension(
-        dataset, update=update, silent=True
+        dataset, update=update, silent=silent
     ).reset_index(drop=True)
 
     # select only the idbanks corresponding to the dataset
@@ -51,7 +51,7 @@ def _get_dataset_metadata_core(dataset, update=False, silent=True):
 
         # get dimension values #
         dim_values = _get_dimension_values(
-            dim_local_rep, update=update, silent=True
+            dim_local_rep, update=update, silent=silent
         )
 
         # drop dimension label

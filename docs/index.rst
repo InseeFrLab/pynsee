@@ -18,6 +18,7 @@
 
    search_data
    get_data
+   utils
    modules
 
 .. toctree::
