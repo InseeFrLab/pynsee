@@ -26,7 +26,7 @@ def get_area_projection(
     code: str,
     date: str,
     dateProjection: str = None,
-    silent: bool = True,
+    silent: bool = False,
 ):
     """
     Get data about the area (valid at given `date` datetime) projected
