@@ -6,10 +6,10 @@ import itertools
 import re
 from unidecode import unidecode
 
-from pynsee.sirene._clean_data import _clean_data
-from pynsee.sirene._request_sirene import _request_sirene
-from pynsee.sirene.SireneDataFrame import SireneDataFrame
 from pynsee.utils.save_df import save_df
+from ._clean_data import _clean_data
+from ._request_sirene import _request_sirene
+from .sirenedataframe import SireneDataFrame
 
 import logging
 
@@ -32,7 +32,7 @@ def _warning_data_save():
     )
 
 
-@save_df(day_lapse_max=30, obj=SireneDataFrame)
+@save_df(day_lapse_max=30, cls=SireneDataFrame)
 def search_sirene(
     variable,
     pattern,
@@ -143,19 +143,17 @@ def search_sirene(
             phntc_list = [False] * len(variable)
     else:
         check_phonetic_search = all(
-            [(x in [True, False]) for x in phonetic_search]
+            isinstance(x, bool) for x in phonetic_search
         )
         if check_phonetic_search is False:
             raise ValueError(
-                "!!! phonetic_search must be True, False or a list of True and False !!!"
+                "!!! phonetic_search must be True, False or a list of True "
+                "and False !!!"
             )
-        else:
-            phntc_list = phonetic_search
 
-    if closed is False:
-        alive = True
-    else:
-        alive = False
+        phntc_list = phonetic_search
+
+    alive = not closed
 
     if isinstance(variable, str):
         variable = [variable]
