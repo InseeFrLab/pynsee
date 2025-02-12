@@ -13,7 +13,7 @@ from shapely.errors import ShapelyDeprecationWarning
 
 from pynsee.geodata import GeoFrDataFrame
 from pynsee.utils.requests_session import PynseeAPISession
-from pynsee.sirene._get_location_openstreetmap import (
+from ._get_location_openstreetmap import (
     _get_location_openstreetmap,
 )
 
