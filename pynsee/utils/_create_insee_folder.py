@@ -42,5 +42,5 @@ def _create_insee_folder():
             "session and you ARE responsible to clean the following temporary "
             "folder (at " + insee_folder + ") once you've finished!\n"
         )
-    finally:
-        return insee_folder
+
+    return insee_folder
