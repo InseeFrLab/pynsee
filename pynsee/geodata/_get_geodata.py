@@ -139,7 +139,7 @@ def _get_geodata(
             if num_calls * count < num_hits:
                 num_calls += 1
 
-            Nproc = min(num_calls, 6, multiprocessing.cpu_count())
+            n_proc = min(num_calls, 7, multiprocessing.cpu_count())
 
             link = urldata.format(
                 url=geoportail,
@@ -154,7 +154,7 @@ def _get_geodata(
                 (link, session, count, num_hits, i) for i in range(num_calls)
             )
 
-            with ThreadPoolExecutor(max_workers=Nproc) as pool:
+            with ThreadPoolExecutor(max_workers=n_proc) as pool:
 
                 submitted = [pool.submit(_make_request, x) for x in args]
                 list_req = [
