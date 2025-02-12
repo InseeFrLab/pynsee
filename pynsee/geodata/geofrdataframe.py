@@ -49,21 +49,28 @@ class GeoFrDataFrame(GeoDataFrame):
 
     def get_geom(self):
         """
-        Deprecated alias for `geometry`.
+        Return the combination of all geometries in the
+        :class:`GeoFrDataFrame`.
 
         .. deprecated:: 0.2.0
 
-            Use :attr:`~geopandas.GeoDataFrame.geometry` instead.
+            Use :attr:`~geopandas.GeoDataFrame.geometry` instead and call
+            :func:`~geopandas.GeoSeries.union_all` on it.
 
+        Example
+        -------
+
+        >>> geo = gdf.geometry.union_all()
         """
         warnings.warn(
             "`get_geom` is deprecated, please use the `geometry` "
-            "property of the `GeoFrDataFrame` instead.",
+            "property of the `GeoFrDataFrame` instead. Then call "
+            ":func:`~geopandas.GeoSeries.union_all` on it.",
             category=DeprecationWarning,
             stacklevel=2,
         )
 
-        return self.geometry
+        return self.geometry.union_all()
 
     def transform_overseas(self, *args, **kwargs) -> "GeoFrDataFrame":
         """
