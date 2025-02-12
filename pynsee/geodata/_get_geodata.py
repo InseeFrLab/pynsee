@@ -29,6 +29,7 @@ def _get_geodata(
     silent: bool = False,
     crs: Any = "EPSG:3857",
     crs_polygon: Any = "EPSG:4326",
+    crsPolygon: Any = "EPSG:4326",
     ignore_error: bool = True,
 ) -> GeoFrDataFrame:
     """

@@ -5,7 +5,7 @@ import pandas as pd
 import pytest
 from geopandas import GeoSeries
 from requests import RequestException
-from shapely.geometry import Polygon, MultiPolygon, Point
+from shapely.geometry import Polygon, MultiPolygon, MultiPoint, Point
 
 from pynsee.geodata import GeoFrDataFrame
 from pynsee.geodata.get_geodata import get_geodata
@@ -47,7 +47,7 @@ def test_get_geodata_dep_polygon_crs_4326():
     com29 = _get_geodata(
         dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune",
         polygon=geo29.union_all(),
-        crs_polygon="EPSG:4326",
+        crsPolygon="EPSG:4326",
         update=True,
     )
     assert com29.insee_com.str.startswith("29").any()
@@ -110,7 +110,7 @@ def test_get_geodata_overseas():
 
     with pytest.warns(DeprecationWarning):
         geo = chflieu.get_geom()
-        assert isinstance(geo, GeoSeries)
+        assert isinstance(geo, MultiPoint)
 
     geo_chflieu = chflieu.transform_overseas().zoom().geometry
     assert isinstance(geo_chflieu, GeoSeries)
