@@ -35,7 +35,7 @@ def _warning_cached_data(file, mdate=None, day_lapse=None):
 
 
 def save_df(
-    obj: Optional[Type[pd.DataFrame]] = None,
+    cls: Type[pd.DataFrame] = pd.DataFrame,
     parquet: bool = True,
     day_lapse_max: Optional[int] = None,
 ):
@@ -88,24 +88,11 @@ def save_df(
                 _save_dataframe(df, file_name, parquet, silent)
             else:
                 try:
-                    if parquet:
-                        rt = func.__annotations__.get("return")
-
-                        mod = (
-                            gpd
-                            if (
-                                rt is not None
-                                and issubclass(rt, gpd.GeoDataFrame)
-                            )
-                            else pd
-                        )
-
+                    try:
+                        mod = gpd if issubclass(cls, gpd.GeoDataFrame) else pd
                         df = mod.read_parquet(file_name)
-                    else:
+                    except Exception:
                         df = pd.read_pickle(file_name)
-
-                    if "Unnamed: 0" in df.columns:
-                        del df["Unnamed: 0"]
                 except Exception as e:
                     warnings.warn(str(e), stacklevel=2)
 
@@ -131,8 +118,7 @@ def save_df(
                             file_name, mdate=mdate, day_lapse=day_lapse
                         )
 
-            if obj is not None:
-                df.__class__ = obj
+            df.__class__ = cls
 
             return df
 
@@ -156,4 +142,4 @@ def _save_dataframe(
         )
     else:
         if not silent:
-            logger.info(f"Data saved:\n{file_name}")
+            logger.info("Data saved:\n%s", file_name)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
+from typing import Any, Optional
 
 from geopandas import GeoDataFrame
 
@@ -11,7 +11,7 @@ from ._get_geodata import _get_geodata
 def get_geodata(
     dataset_id: str,
     update: bool = False,
-    crs: str = "EPSG:3857",
+    crs: Any = "EPSG:3857",
     constrain_area: Optional[GeoDataFrame] = None,
 ) -> GeoFrDataFrame:
     """Get geographical data with identifier and from IGN API
@@ -21,15 +21,13 @@ def get_geodata(
 
         update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
 
-        crs (str, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
+        crs (any valid :class:`pyproj.CRS` input, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
 
-        polygon (Polygon, optional): Polygon used to constrain the area of interest. Defaults to None.
-
-        crsPolygon (str, optional): CRS used for `polygon`. Defaults to 'EPSG:4326'.
+        constrain_area (:class:`~geopandas.GeoDataFrame`, optional): GeoDataFrame used to constrain the area of interest. Defaults to None.
 
     .. versionchanged: 0.2.0
 
-        Added `constrain_area` argument.
+        Changed `polygon` and `crsPolygon` into a `constrain_area` :class:`~geopandas.GeoDataFrame`.
 
     Examples:
         >>> from pynsee.geodata import get_geodata_list, get_geodata

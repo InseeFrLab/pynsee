@@ -74,7 +74,7 @@ def transform_overseas(
 
         if "id" in gdf and gdf["id"].str.match("DEPARTEM").all():
             # this is already the departments, work on geometry
-            geocol = "geometry"
+            geocol = gdf.geometry.name
         else:
             gdf = _add_insee_dep(gdf.copy())
 
@@ -93,30 +93,21 @@ def transform_overseas(
             ovdep = gdf.loc[gdf.insee_dep.values == d].reset_index(drop=True)
 
             if ovdep.empty:
-                logger.warning(f"{d} is missing from insee_dep column !")
+                logger.warning("%s is missing from insee_dep column !", d)
             else:
+                # get the center of the department to rescale the geometry
+                # properly
                 center = _get_center(ovdep, geocol=geocol)
 
                 if factor[i] is not None:
-                    # get the center of the department to rescale the
-                    # geometry properly
-
                     _rescale_geom(ovdep, factor=factor[i], center=center)
-
-                    if geocol != "geometry":
-                        _rescale_geom(
-                            ovdep,
-                            factor=factor[i],
-                            geocol=geocol,
-                            center=center,
-                        )
 
                 center_x, center_y = center
 
                 xoff = offshore_points[i].coords.xy[0][0] - center_x
                 yoff = offshore_points[i].coords.xy[1][0] - center_y
 
-                ovdep.loc[:, "geometry"] = ovdep.geometry.translate(
+                ovdep.loc[:, ovdep.geometry.name] = ovdep.geometry.translate(
                     xoff=xoff, yoff=yoff
                 )
 
@@ -124,10 +115,7 @@ def transform_overseas(
 
         gdf = pd.concat(list_new_dep, ignore_index=True)
 
-        if "insee_dep_geometry" in gdf:
-            return gdf.drop(columns=["insee_dep_geometry"])
-
-        return gdf
+        return gdf.drop(columns=["insee_dep_geometry"], errors="ignore")
 
 
 def zoom(

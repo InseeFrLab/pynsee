@@ -3,11 +3,12 @@
 import logging
 import multiprocessing
 import warnings
-from typing import Optional, Union
+from typing import Any, Optional, Union
 from xml.etree import ElementTree
 
 import requests
 import tqdm
+from pyproj.crs import CRS
 from shapely import MultiPolygon, Polygon
 
 from pynsee.utils.save_df import save_df
@@ -19,14 +20,14 @@ from .geofrdataframe import GeoFrDataFrame
 logger = logging.getLogger(__name__)
 
 
-@save_df(obj=GeoFrDataFrame, day_lapse_max=90)
+@save_df(cls=GeoFrDataFrame, day_lapse_max=90)
 def _get_geodata(
     dataset_id: str,
     polygon: Optional[Union[MultiPolygon, Polygon]] = None,
     update: bool = False,
     silent: bool = False,
-    crs: str = "EPSG:3857",
-    crsPolygon: str = "EPSG:4326",
+    crs: Any = "EPSG:3857",
+    crsPolygon: Any = "EPSG:4326",
     ignore_error: bool = True,
 ) -> GeoFrDataFrame:
     """
@@ -36,8 +37,9 @@ def _get_geodata(
         id (str): _description_
         polygon (Polygon, optional): Polygon used to constrain the area of interest. Defaults to None.
         update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
-        crs (str, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
-        crsPolygon (str, optional): CRS used for `polygon`. Defaults to 'EPSG:4326'.
+        silent (bool, optional): whether to print warnings or not. Defaults to False.
+        crs (any valid pyproj CRS entry, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
+        crsPolygon (any valid pyproj CRS entry, optional): CRS used for `polygon`. Defaults to 'EPSG:4326'.
         ignore_error (boo, optional): whether to ignore errors and return an empty GeoDataFrame. Defaults to True.
 
     Examples:
@@ -51,6 +53,8 @@ def _get_geodata(
 
     Returns: GeoFrDataFrame
     """
+    crs = CRS.from_user_input(crs).to_string()
+    crsPolygon = CRS.from_user_input(crsPolygon).to_string()
 
     if crsPolygon not in ("EPSG:3857", "EPSG:4326"):
         raise ValueError(
@@ -81,7 +85,7 @@ def _get_geodata(
                 "urn:ogc:def:crs:" + crsPolygon,
             ]
 
-        bbox = "&BBOX={}".format(",".join(bounds))
+        bbox = f"&BBOX={','.join(bounds)}"
 
     geoportail = "https://data.geopf.fr"
     fmt = "application/json"
@@ -134,8 +138,6 @@ def _get_geodata(
             if num_calls * count < num_hits:
                 num_calls += 1
 
-            maxstart = num_calls * count
-
             Nproc = min(num_calls, 6, multiprocessing.cpu_count())
 
             link = urldata.format(
@@ -148,8 +150,7 @@ def _get_geodata(
             )
 
             args = (
-                (link, session, count, maxstart, num_hits, i)
-                for i in range(num_calls)
+                (link, session, count, num_hits, i) for i in range(num_calls)
             )
 
             with multiprocessing.Pool(processes=Nproc) as pool:
@@ -202,14 +203,13 @@ def _get_geodata(
 
 
 def _make_request(
-    arg: tuple[str, requests.Session, int, int, int, int]
+    arg: tuple[str, requests.Session, int, int, int]
 ) -> tuple[requests.Response, str]:
     """Make the request inside the multiprocessing.Pool"""
-    urldata, session, count, maxstart, num_hits, i = arg
+    urldata, session, count, num_hits, i = arg
 
     start = i * count
-    cnt = num_hits - start if num_hits - start <= count else count
-    link = urldata.format(start=start, count=cnt)
+    link = urldata.format(start=start, count=count)
 
     return session.get(link, verify=False), link
 
@@ -220,7 +220,9 @@ def _check_request_update_data(
     link: str,
     polygon: Optional[Union[MultiPolygon, Polygon]],
 ) -> None:
-    """Check that the request succeeded and update"""
+    """
+    Check that the request succeeded and update `data` inplace.
+    """
     if not r.ok:
         raise requests.RequestException(
             f"The following query raise an error {r.status_code}: {link}"
