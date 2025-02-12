@@ -47,7 +47,7 @@ def test_get_geodata_dep_polygon_crs_4326():
     com29 = _get_geodata(
         dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:commune",
         polygon=geo29.union_all(),
-        crsPolygon="EPSG:4326",
+        crs_polygon="EPSG:4326",
         update=True,
     )
     assert com29.insee_com.str.startswith("29").any()
