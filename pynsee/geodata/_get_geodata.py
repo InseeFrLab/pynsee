@@ -28,7 +28,7 @@ def _get_geodata(
     update: bool = False,
     silent: bool = False,
     crs: Any = "EPSG:3857",
-    crsPolygon: Any = "EPSG:4326",
+    crs_polygon: Any = "EPSG:4326",
     ignore_error: bool = True,
 ) -> GeoFrDataFrame:
     """
@@ -40,7 +40,7 @@ def _get_geodata(
         update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
         silent (bool, optional): whether to print warnings or not. Defaults to False.
         crs (any valid pyproj CRS entry, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
-        crsPolygon (any valid pyproj CRS entry, optional): CRS used for `polygon`. Defaults to 'EPSG:4326'.
+        crs_polygon (any valid pyproj CRS entry, optional): CRS used for `polygon`. Defaults to 'EPSG:4326'.
         ignore_error (boo, optional): whether to ignore errors and return an empty GeoDataFrame. Defaults to True.
 
     Examples:
@@ -55,11 +55,11 @@ def _get_geodata(
     Returns: GeoFrDataFrame
     """
     crs = CRS.from_user_input(crs).to_string()
-    crsPolygon = CRS.from_user_input(crsPolygon).to_string()
+    crs_polygon = CRS.from_user_input(crs_polygon).to_string()
 
-    if crsPolygon not in ("EPSG:3857", "EPSG:4326"):
+    if crs_polygon not in ("EPSG:3857", "EPSG:4326"):
         raise ValueError(
-            "crsPolygon must be either 'EPSG:3857' or 'EPSG:4326'"
+            "crs_polygon must be either 'EPSG:3857' or 'EPSG:4326'"
         )
 
     bbox = ""
@@ -69,13 +69,13 @@ def _get_geodata(
         bounds = polygon.bounds
         bounds = [str(b) for b in bounds]
 
-        if crsPolygon == "EPSG:3857":
+        if crs_polygon == "EPSG:3857":
             bounds = [
                 bounds[0],
                 bounds[1],
                 bounds[2],
                 bounds[3],
-                "urn:ogc:def:crs:" + crsPolygon,
+                "urn:ogc:def:crs:" + crs_polygon,
             ]
         else:
             bounds = [
@@ -83,7 +83,7 @@ def _get_geodata(
                 bounds[0],
                 bounds[3],
                 bounds[2],
-                "urn:ogc:def:crs:" + crsPolygon,
+                "urn:ogc:def:crs:" + crs_polygon,
             ]
 
         bbox = f"&BBOX={','.join(bounds)}"
@@ -150,9 +150,7 @@ def _get_geodata(
                 crs=crs,
             )
 
-            args = (
-                (link, session, count, num_hits, i) for i in range(num_calls)
-            )
+            args = ((link, session, count, i) for i in range(num_calls))
 
             with ThreadPoolExecutor(max_workers=n_proc) as pool:
 
@@ -193,8 +191,8 @@ def _get_geodata(
 
     # drop data outside polygon
     if polygon is not None:
-        if gdf.crs != crsPolygon:
-            gdf = gdf.to_crs(crsPolygon)
+        if gdf.crs != crs_polygon:
+            gdf = gdf.to_crs(crs_polygon)
 
         return (
             gdf.iloc[gdf.sindex.query(polygon, predicate="intersects")]
@@ -209,7 +207,7 @@ def _make_request(
     arg: tuple[str, requests.Session, int, int, int]
 ) -> tuple[requests.Response, str]:
     """Make the request inside the multiprocessing.Pool"""
-    urldata, session, count, num_hits, i = arg
+    urldata, session, count, i = arg
 
     start = i * count
     link = urldata.format(start=start, count=count)
@@ -240,7 +238,7 @@ def _check_request_update_data(
 
         if polygon is not None:
             msg += (
-                "\nCheck that crsPolygon argument corresponds "
+                "\nCheck that crs_polygon argument corresponds "
                 "to polygon data!"
             )
 
