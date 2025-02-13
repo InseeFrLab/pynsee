@@ -10,16 +10,26 @@ The INSEE APIs were changed, including
 
 **New features**
 
-* ``GeoFrDataFrame`` inherits from ``geopandas.GeoDataFrame`` so you can use all the included methods directly on it (#)
+* ``GeoFrDataFrame`` inherits from ``geopandas.GeoDataFrame`` so you can use all the included methods directly on it (#246)
 * the tranlation and zoom of overseas department has be renamed ``transform_overseas``, ``translate`` is still available but deprecated.
 * the configuration file is no longer stored in the middle of the home directory (#210)
 
+**Documentation** (# #250 #251)
+
+* updated examples and user guides
+* internal links for functions and classes
+* link to pandas/geopandas/pyproj and request documentations
+
 **Under the hood**
 
+* use data from Melodi api (#229)
 * backend function update in the utils module + sirene functions update
 * cleanup of temporary files handling (#206)
 * subsequent doc and test update
 * all cached data is now saved as parquet for faster read/write operations (#199 #208 #)
+* switch to multithreading instead of multiprocessing (#216)
+* move to pyproject.toml only (#243)
+* fix tests (many commits)
 
 # pynsee 0.1.8
 
@@ -93,6 +103,6 @@ The INSEE APIs were changed, including
     * activity classification (naf rev2 2008)
     * list of definitions
     * list of files on insee.fr
-* full documentation made with docstring and hosted by ReadTheDocs
-* hands-on examples covering all modules displayed in the documentation
-* test coverage >90%
+    * full documentation made with docstring and hosted by ReadTheDocs
+    * hands-on examples covering all modules displayed in the documentation
+    * test coverage >90%
