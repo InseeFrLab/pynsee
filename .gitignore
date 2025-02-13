@@ -12,8 +12,8 @@ settings.json
 *.pickle
 *.stylelog
 *.pdf
-docs/_build/
-docs/_build/html/
+docs/_build/*
+docs/build/*
 docs/auto_examples/
 .idea/
 .ipynb_checkpoints/
@@ -25,3 +25,4 @@ poetry.lock
 docs/examples/*.csv
 docs/examples/*.svg
 .env
+docs/examples/*.parquet
