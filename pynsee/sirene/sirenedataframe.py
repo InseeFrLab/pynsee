@@ -64,8 +64,8 @@ def clean_cities(s: pd.Series) -> pd.Series:
         .str.replace(r" \(.*\)$", "", regex=True)
         .str.replace(r"(^|\s)(ST)\s", " SAINT ", regex=True)
         .str.replace(r"(^|\s)(STE)\s", " SAINTE ", regex=True)
-        # PARIS 4, PARIS 1er, LE TAMPON 14EME KM, etc. :
-        .str.replace(r"[0-9]+(ER?|EME)?( KM)?(\s|$)", "", regex=True)
+        # PARIS 4, PARIS 1er etc., but do not capture "LE TAMPON 14EME KM" from La Réunion noqa: E501
+        .str.replace(r"[0-9]+(ER?|EME)?(\s(?!KM(\s|$)|$)|$)", "", regex=True)
         .str.strip()
         .str.replace(r" ?CEDEX$", "", regex=True)
     )

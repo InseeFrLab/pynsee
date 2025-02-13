@@ -1,6 +1,5 @@
 import json
 import os
-from typing import Tuple
 
 import requests
 from pynsee.utils._create_insee_folder import _create_insee_folder
@@ -10,7 +9,7 @@ from pynsee.utils._warning_cached_data import _warning_cached_data
 
 def _get_location_openstreetmap(
     query: str, session: requests.Session, update: bool = False
-) -> Tuple[float, float, str, str, float]:
+) -> tuple[float, float, str, str, float]:
     """
     Query a location using Nominatim and cache it on local disk.
 
@@ -26,7 +25,7 @@ def _get_location_openstreetmap(
 
     Returns
     -------
-    Tuple[float, float, str, str, float]
+    tuple[float, float, str, str, float]
         latitude, longitude, location category, location type, importance
 
     """
