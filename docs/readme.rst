@@ -72,7 +72,7 @@ Data Search and Collection Advice
    Alternatively, you can make a keyword-based search with :func:`~pynsee.macrodata.search_macrodata`, e.g. ``search_macrodata('GDP')``.
    Then, get the data with :func:`~pynsee.macrodata.get_dataset` or :func:`~pynsee.macrodata.get_series`
 * **Local data** : use first :func:`~pynsee.localdata.get_local_metadata`, then get data with :func:`~pynsee.localdata.get_local_data`
-* **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) :func:`~pynsee.metadaat.get_activity_list`
+* **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) :func:`~pynsee.metadata.get_activity_list`
 * **Sirene (French companies database)** : use first :func:`~pynsee.sirene.get_dimension_list`, then use :func:`~pynsee.sirene.search_sirene` with dimensions as filtering variables
 * **Geodata** : get the list of available geographical data with :func:`~pynsee.geodata.get_geodata_list` and then retrieve it with :func:`~pynsee.geodata.get_geodata`
 * **Files on insee.fr**: get the list of available files on insee.fr with :func:`~pynsee.download.get_file_list` and then download it with :func:`~pynsee.download.download_file`

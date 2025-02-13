@@ -21,7 +21,7 @@ def get_geodata(
 
         update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
 
-        crs (any valid :class:`pyproj.CRS` input, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
+        crs (any valid :class:`~pyproj.crs.CRS` input, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
 
         constrain_area (:class:`~geopandas.GeoDataFrame`, optional): GeoDataFrame used to constrain the area of interest. Defaults to None.
 

@@ -18,7 +18,6 @@ Examples
    examples/example_empl_sector_dep.ipynb
    examples/example_population_pyramid.ipynb
    examples/example_insee_premises_sirene.ipynb
-   examples/example_download_website.ipynb
    examples/example_cadre_iris_idf.ipynb
    examples/example_rp_logement_2017.ipynb
    examples/example_marie_firstname.ipynb

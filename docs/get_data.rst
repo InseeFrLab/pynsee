@@ -21,7 +21,6 @@ Get and analyze geographical data
 
 .. autoclass:: pynsee.geodata.geofrdataframe.GeoFrDataFrame
     :no-index:
-    :inherited-members: geometry
 
     .. automethod:: get_geom
         :no-index:
