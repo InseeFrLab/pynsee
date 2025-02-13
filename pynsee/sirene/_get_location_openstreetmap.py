@@ -1,21 +1,35 @@
 import json
 import os
+from typing import Tuple
 
-import pandas as pd
-
+import requests
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._hash import _hash
-from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.utils._warning_cached_data import _warning_cached_data
 
-from pynsee.utils.requests_session import PynseeAPISession
 
+def _get_location_openstreetmap(
+    query: str, session: requests.Session, update: bool = False
+) -> Tuple[float, float, str, str, float]:
+    """
+    Query a location using Nominatim and cache it on local disk.
 
-def _get_location_openstreetmap(query, session=None, update=False):
+    Parameters
+    ----------
+    query : str
+        query, fo instance '2+Rue+DES+FRERES+BERTRAND+69200+VENISSIEUX+FRANCE'
+    session : requests.Session
+        requests.Session object used for the connection.
+    update : bool, optional
+        If False, will first try to restore previous data from disk. The
+        default is False.
 
-    if session is None:
-        session = PynseeAPISession()
+    Returns
+    -------
+    Tuple[float, float, str, str, float]
+        latitude, longitude, location category, location type, importance
 
+    """
     api_link = (
         "https://nominatim.openstreetmap.org/search.php?"
         f"q={query}&format=jsonv2&limit=1"
@@ -23,8 +37,6 @@ def _get_location_openstreetmap(query, session=None, update=False):
 
     insee_folder = _create_insee_folder()
     filename = os.path.join(insee_folder, f"{_hash(api_link)}.json")
-
-    data = None
 
     if update or not os.path.isfile(filename):
         results = session.get(api_link)
@@ -38,21 +50,11 @@ def _get_location_openstreetmap(query, session=None, update=False):
 
         _warning_cached_data(filename)
 
-    list_dataframe = []
-
-    for i in range(len(data)):
-        idata = data[i]
-        data_final = _make_dataframe_from_dict(idata)
-        list_dataframe.append(data_final)
-
-    data_final = pd.concat(list_dataframe).reset_index(drop=True)
-
-    lat, lon, category, typeLoc, importance = (
-        data_final["lat"][0],
-        data_final["lon"][0],
-        data_final["category"][0],
-        data_final["type"][0],
-        data_final["importance"][0],
+    data = data[0]
+    return (
+        float(data["lat"]),
+        float(data["lon"]),
+        data["category"],
+        data["type"],
+        data["importance"],
     )
-
-    return lat, lon, category, typeLoc, importance
