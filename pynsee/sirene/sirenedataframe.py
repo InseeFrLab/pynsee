@@ -1,19 +1,18 @@
-import logging
-import warnings
-
 from functools import lru_cache
+import logging
 from typing import Union
+import warnings
 
 import geopandas as gpd
 import numpy as np
 import pandas as pd
-
-from tqdm.auto import tqdm
 from shapely.errors import ShapelyDeprecationWarning
+from tqdm.auto import tqdm
+from unidecode import unidecode
 
 from pynsee.geodata import GeoFrDataFrame
 from pynsee.utils.requests_session import PynseeAPISession
-from ._get_location_openstreetmap import (
+from pynsee.sirene._get_location_openstreetmap import (
     _get_location_openstreetmap,
 )
 
@@ -54,6 +53,23 @@ CONFIG_ADDRESSES = {
 }
 
 NOMINATIM_RESULTS = ["latitude", "longitude", "category", "type", "importance"]
+
+
+def clean_cities(s: pd.Series) -> pd.Series:
+    "Do some precleaning for cities names"
+    s = (
+        s.str.upper()
+        .apply(unidecode)
+        # Neuville-Housset (La) -> Neuville-Housset:
+        .str.replace(r" \(.*\)$", "", regex=True)
+        .str.replace(r"(^|\s)(ST)\s", " SAINT ", regex=True)
+        .str.replace(r"(^|\s)(STE)\s", " SAINTE ", regex=True)
+        # PARIS 4, PARIS 1er, LE TAMPON 14EME KM, etc. :
+        .str.replace(r"[0-9]+(ER?|EME)?( KM)?(\s|$)", "", regex=True)
+        .str.strip()
+        .str.replace(r" ?CEDEX$", "", regex=True)
+    )
+    return s
 
 
 class SireneDataFrame(pd.DataFrame):
@@ -124,16 +140,14 @@ class SireneDataFrame(pd.DataFrame):
                 addresses = df[CONFIG_ADDRESSES["address"]].fillna("")
 
                 city = "libelleCommuneEtablissement"
-                addresses[city] = addresses[city].str.replace(
-                    "[0-9]|EME", "", case=False, regex=True
-                )
+                addresses[city] = clean_cities(addresses[city])
                 for field in [
                     city,
                     "libelleVoieEtablissement",
                     "typeVoieEtablissementLibelle",
                 ]:
                     addresses[field] = addresses[field].str.replace(
-                        r" (D|L) ", r" \1'", case=False, regex=True
+                        " (D|L) ", r" \1'", case=False, regex=True
                     )
 
                 for field, config in CONFIG_ADDRESSES.items():
@@ -141,7 +155,6 @@ class SireneDataFrame(pd.DataFrame):
                         pd.Series(addresses[config].values.tolist())
                         .str.join(" ")
                         .str.replace(" +", "+", regex=True)
-                        .str.replace(" ", "+", regex=False)
                         .str.strip()
                     )
                     ix = addresses[addresses[field] != ""].index
@@ -168,6 +181,9 @@ class SireneDataFrame(pd.DataFrame):
                             .drop_duplicates()
                             .dropna()
                         )
+
+                        # Use TQDM extension
+                        # see https://tqdm.github.io/docs/tqdm/#pandas
                         sample["result"] = sample[field].progress_apply(
                             query_func
                         )
