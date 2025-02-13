@@ -1,9 +1,25 @@
+# pynsee 0.2.0
 
-# pynsee 0.1.9
+**Breaking changes**
+
+The INSEE APIs were changed, including
+
 * new API portal: portail-api.insee.fr
-* no token generation is needed anymore, only a key is needed to use SIRENE API
+* no token generation is needed for all APIs except SIRENE
+* for SIRENE API, it is now provided via the ``sirene_key`` argument in ``init_conn``.
+
+**New features**
+
+* ``GeoFrDataFrame`` inherits from ``geopandas.GeoDataFrame`` so you can use all the included methods directly on it (#)
+* the tranlation and zoom of overseas department has be renamed ``transform_overseas``, ``translate`` is still available but deprecated.
+* the configuration file is no longer stored in the middle of the home directory (#210)
+
+**Under the hood**
+
 * backend function update in the utils module + sirene functions update
+* cleanup of temporary files handling (#206)
 * subsequent doc and test update
+* all cached data is now saved as parquet for faster read/write operations (#199 #208 #)
 
 # pynsee 0.1.8
 
