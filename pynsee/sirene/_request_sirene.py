@@ -4,7 +4,7 @@ import pandas as pd
 import math
 from functools import lru_cache
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.sirene._make_dataframe import _make_dataframe
 
 import logging
@@ -14,13 +14,6 @@ logger = logging.getLogger(__name__)
 
 @lru_cache(maxsize=None)
 def _request_sirene(query, kind, number=1001):
-    # , query_limit=20
-
-    # query = '?q=denominationUniteLegale:pizza'
-    # query = '?q=periode(activitePrincipaleEtablissement:56.30Z) AND codePostalEtablissement:83*'
-    # query = '?q=(periode(activitePrincipaleEtablissement:56.30Z) AND codePostalEtablissement:83*) OR (periode(activitePrincipaleEtablissement:56.30Z) AND codePostalEtablissement:82*))'
-    # kind = 'siret'
-    # number = 4500
 
     if kind == "siren":
         main_key = "unitesLegales"
@@ -46,9 +39,11 @@ def _request_sirene(query, kind, number=1001):
     if number > number_query_limit:
         link = link + "&curseur=*"
 
-    request = _request_insee(
-        api_url=link, file_format="application/json;charset=utf-8"
-    )
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=link,
+            file_format="application/json;charset=utf-8",
+        )
 
     list_dataframe = []
 
@@ -90,10 +85,11 @@ def _request_sirene(query, kind, number=1001):
                     + following_cursor
                 )
 
-                request_new = _request_insee(
-                    api_url=new_query,
-                    file_format="application/json;charset=utf-8",
-                )
+                with PynseeAPISession() as session:
+                    request_new = session.request_insee(
+                        api_url=new_query,
+                        file_format="application/json;charset=utf-8",
+                    )
 
                 request_status = request_new.status_code
 
@@ -131,7 +127,8 @@ def _request_sirene(query, kind, number=1001):
 
                     if df_nrows == number:
                         logger.warning(
-                            "maximum reached, increase value of number argument !"
+                            "maximum reached, "
+                            "increase value of number argument !"
                         )
 
         data_final = pd.concat(list_dataframe)

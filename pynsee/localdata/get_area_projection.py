@@ -4,12 +4,14 @@ import pandas as pd
 import datetime
 from functools import lru_cache
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.save_df import save_df
 
 import logging
 
 logger = logging.getLogger(__name__)
+
+
 @lru_cache(maxsize=None)
 def _warning_get_area_projection():
     logger.info(
@@ -20,7 +22,11 @@ def _warning_get_area_projection():
 
 @save_df(day_lapse_max=90)
 def get_area_projection(
-    area: str, code: str, date: str, dateProjection: str = None
+    area: str,
+    code: str,
+    date: str,
+    dateProjection: str = None,
+    silent: bool = False,
 ):
     """
     Get data about the area (valid at given `date` datetime) projected
@@ -43,6 +49,8 @@ def get_area_projection(
             format : 'AAAA-MM-JJ'.  If dateProjection is None, by default it
             is supposed to be the current date (ie projection into today's
             value)
+
+        silent (bool, optional): Set to True, to disable messages printed in log info
 
     Examples:
         >>> from pynsee.localdata import get_area_projection
@@ -78,9 +86,11 @@ def get_area_projection(
     api_link += f"&dateProjection={dateProjection}"
 
     try:
-        request = _request_insee(
-            api_url=api_link, file_format="application/json"
-        )
+        with PynseeAPISession() as session:
+            request = session.request_insee(
+                api_url=api_link, file_format="application/json"
+            )
+
         data = pd.DataFrame(request.json())
 
     except Exception:

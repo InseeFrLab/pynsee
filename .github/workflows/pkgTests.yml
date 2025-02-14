@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.12"]
 
     steps:
     - uses: actions/checkout@v2
@@ -22,31 +22,28 @@ jobs:
       run: |
         #sudo apt-get install libgeos-dev
         python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-xdist pytest-cov geopandas nbconvert matplotlib descartes parameterized 
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        if [ -f requirements-extra.txt ]; then pip install -r requirements-extra.txt; fi
+        pip install flake8 black pytest pytest-xdist pytest-cov geopandas nbconvert matplotlib descartes parameterized
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --ignore=E722,C901 --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 . --config .flake8
+    - name: Lint with black
+      run: |
+        black . --config pyproject.toml
     - name: Test examples
       env:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
         pip install jupytext
-        pip install -r requirements.txt
-        pip install .[full]     
-        pip install -r requirements-extra.txt
-        # test all notebooks        
-        cd docs/examples 
+        pip install .[full]
+        # test all notebooks
+        cd docs/examples
         jupytext --to py *.md
         # run all py files
         # for f in *.py; do python "$f"; done
         cd ../..
-    - name: Test with pytest
-      env:      
+    - name: Test with pytest and xdist
+      env:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
         pytest -v --cov -n auto
@@ -56,5 +53,3 @@ jobs:
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         fail_ci_if_error: true
-        
-   

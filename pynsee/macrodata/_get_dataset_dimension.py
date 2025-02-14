@@ -5,17 +5,17 @@ import io
 import xml.etree.ElementTree as ET
 import pandas as pd
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=90)
 def _get_dataset_dimension(
-    dataset, update=False, silent=True, insee_date_test=None
+    dataset, update=False, silent=False, insee_date_test=None
 ):
 
     INSEE_sdmx_link_datastructure = (
-        "https://www.bdm.insee.fr/series/sdmx/datastructure/FR1"
+        "https://bdm.insee.fr/series/sdmx/datastructure/FR1"
     )
     INSEE_api_link_datastructure = (
         "https://api.insee.fr/series/BDM/V1/datastructure/FR1"
@@ -28,10 +28,11 @@ def _get_dataset_dimension(
         INSEE_api_link_datastructure + "/" + dataset
     )
 
-    results = _request_insee(
-        sdmx_url=INSEE_sdmx_link_datastructure_dataset,
-        api_url=INSEE_api_link_datastructure_dataset,
-    )
+    with PynseeAPISession() as session:
+        results = session.request_insee(
+            sdmx_url=INSEE_sdmx_link_datastructure_dataset,
+            api_url=INSEE_api_link_datastructure_dataset,
+        )
 
     dataset_dimension_file = io.BytesIO(results.content)
 
@@ -46,7 +47,7 @@ def _get_dataset_dimension(
     def extract_local_rep(data, i):
         try:
             local_rep = next(iter(data[i][1][0][0].attrib.values()))
-        except:
+        except Exception:
             local_rep = None
         finally:
             return local_rep
@@ -54,7 +55,7 @@ def _get_dataset_dimension(
     def extract_id(data, i):
         try:
             id_val = next(iter(data[i].attrib.values()))
-        except:
+        except Exception:
             id_val = None
         finally:
             return id_val

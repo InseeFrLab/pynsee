@@ -2,14 +2,16 @@
 # Copyright : INSEE, 2021
 
 import pandas as pd
-import os
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils._paste import _paste
 from pynsee.utils.save_df import save_df
 
+
 @save_df(day_lapse_max=90)
-def get_area_list(area=None, date=None, update=False, silent=False):
+def get_area_list(
+    area=None, date=None, update=False, silent=False
+) -> pd.DataFrame:
     """Get an exhaustive list of administrative areas : communes, departments, and urban, employment or functional areas
 
     Args:
@@ -35,7 +37,7 @@ def get_area_list(area=None, date=None, update=False, silent=False):
     list_available_area = [
         "departements",
         "regions",
-        # "communes",
+        "communes",
         "communesAssociees",
         "communesDeleguees",
         "arrondissementsMunicipaux",
@@ -70,32 +72,31 @@ def get_area_list(area=None, date=None, update=False, silent=False):
         if area not in list_available_area + [
             x.lower() for x in list_available_area
         ]:
-            msg = "!!! {} is not available\nPlease choose area among:\n{}".format(
-                area, area_string
+            msg = (
+                f"!!! {area} is not available\n"
+                f"Please choose area among:\n{area_string}"
             )
             raise ValueError(msg)
-        else:
-            list_available_area = [area]
+
+        list_available_area = [area]
 
     list_data = []
 
-    for a in list_available_area:
-        api_url = "https://api.insee.fr/metadonnees/geo/" + a
-        print(api_url)
-        if date:
-            api_url += f"?date={date}"
+    with PynseeAPISession() as session:
 
-        request = _request_insee(
-            api_url=api_url, file_format="application/json"
-        )
+        for a in list_available_area:
+            api_url = "https://api.insee.fr/metadonnees/geo/" + a
+            if date:
+                api_url += f"?date={date}"
 
-        data = request.json()
+            request = session.request_insee(
+                api_url=api_url, file_format="application/json"
+            )
 
-        for i in range(len(data)):
-            df = pd.DataFrame(data[i], index=[0])
-            list_data.append(df)
+            data = request.json()
+            list_data += data
 
-    data_all = pd.concat(list_data).reset_index(drop=True)
+    data_all = pd.DataFrame(list_data)
 
     data_all.rename(
         columns={

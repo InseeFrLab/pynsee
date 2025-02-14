@@ -5,13 +5,14 @@ import pandas as pd
 from functools import lru_cache
 import re
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.utils.HiddenPrints import HiddenPrints
 
-from pynsee.sirene.SireneDataFrame import SireneDataFrame
+from .sirenedataframe import SireneDataFrame
 
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -57,23 +58,24 @@ def get_sirene_data(*id):
             elif kind == "siret":
                 main_key = "etablissement"
 
-            INSEE_api_sirene = (
-                "https://api.insee.fr/api-sirene/3.11/" + kind
-            )
+            INSEE_api_sirene = "https://api.insee.fr/api-sirene/3.11/" + kind
             link = (
                 INSEE_api_sirene + "/" + re.sub(r"\s+", "", str(list_ids[i]))
             )
 
             try:
                 with HiddenPrints():
-                    request = _request_insee(
-                        api_url=link, file_format="application/json;charset=utf-8"
-                    )
-    
+                    with PynseeAPISession() as session:
+                        request = session.request_insee(
+                            api_url=link,
+                            file_format="application/json;charset=utf-8",
+                            raise_if_not_ok=True,
+                        )
+
                     data_request = request.json()
                 try:
                     data = data_request[main_key]
-                except:
+                except Exception:
                     main_key_list = [
                         key
                         for key in list(data_request.keys())
@@ -83,7 +85,7 @@ def get_sirene_data(*id):
                     data = data_request[main_key]
 
                 data_final = _make_dataframe_from_dict(data)
-            except:
+            except Exception:
                 pass
             else:
                 list_data.append(data_final)

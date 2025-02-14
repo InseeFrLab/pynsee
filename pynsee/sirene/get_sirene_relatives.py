@@ -1,10 +1,11 @@
-
 import pandas as pd
 import re
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.utils.HiddenPrints import HiddenPrints
+from .sirenedataframe import SireneDataFrame
+
 
 def get_sirene_relatives(*siret):
     """Find parent or child entities for one siret entity (etablissement)
@@ -43,25 +44,35 @@ def get_sirene_relatives(*siret):
         for i in range(len(types)):
 
             criteria = types[i] + ":" + re.sub(r"\s+", "", list_siret[s])
-            query = f"https://api.insee.fr/api-sirene/3.11/siret/liensSuccession?q={criteria}"
+            query = (
+                "https://api.insee.fr/api-sirene/3.11/siret/liensSuccession"
+                f"?q={criteria}"
+            )
             try:
                 with HiddenPrints():
-                    result = _request_insee(
-                        api_url=query, file_format="application/json;charset=utf-8"
-                    )
+                    with PynseeAPISession() as session:
+                        result = session.request_insee(
+                            api_url=query,
+                            file_format="application/json;charset=utf-8",
+                            raise_if_not_ok=True,
+                            print_msg=False,
+                        )
+
                     json = result.json()
-            except:
+            except Exception:
                 pass
             else:
                 list_df += [_make_dataframe_from_dict(json)]
 
     if len(list_df) > 0:
-        df = pd.concat(list_df).reset_index(drop=True)
+        df = SireneDataFrame(pd.concat(list_df).reset_index(drop=True))
 
         for c in ["statut", "message", "nombre", "total", "debut"]:
             if c in df.columns:
                 del df[c]
 
         return df
-    else:
-        raise ValueError("Neither parent nor child entities were found for any entity")
+
+    raise ValueError(
+        "Neither parent nor child entities were found for any entity"
+    )

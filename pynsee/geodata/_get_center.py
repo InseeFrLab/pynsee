@@ -1,22 +1,26 @@
-from pynsee.geodata._extract_bounds import _extract_bounds
-from pynsee.geodata._get_geom import _get_geom
+from typing import Optional
+from geopandas import GeoDataFrame, GeoSeries
 
 
-def _get_center(df, col="geometry"):
+def _get_center(
+    gdf: GeoDataFrame, geocol: Optional[str] = None
+) -> tuple[float, float]:
+    """
+    Get the center of the geometries in a GeoDataFrame.
 
-    geo = _get_geom(df, col=col)
+    Note
+    ----
+    This function may be applied on a column that is *not* the
+    default geometry (i.e. not a ``GeoSeries``).
+    """
+    geocol = geocol or gdf.geometry.name
 
-    center = _extract_center(geo)
+    geoseries = (
+        gdf.geometry
+        if geocol == gdf.geometry.name
+        else GeoSeries(gdf[geocol], crs=gdf.crs)
+    )
 
-    return center
+    minxdf, maxydf, maxxdf, minydf = geoseries.total_bounds
 
-
-def _extract_center(geo):
-
-    maxxdf = max(_extract_bounds(geom=geo, var="maxx"))
-    minxdf = min(_extract_bounds(geom=geo, var="minx"))
-    maxydf = max(_extract_bounds(geom=geo, var="maxy"))
-    minydf = min(_extract_bounds(geom=geo, var="miny"))
-    center = ((maxxdf + minxdf) / 2, (maxydf + minydf) / 2)
-
-    return center
+    return (maxxdf + minxdf) / 2, (maxydf + minydf) / 2

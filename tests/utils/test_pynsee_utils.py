@@ -1,70 +1,159 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import unittest
-from unittest import TestCase
-import requests
-import re
+import json
 import os
-import sys
 
-from requests.exceptions import RequestException
+import pytest
+import requests
 
-from pynsee.utils._get_credentials import _get_credentials
-from pynsee.utils._request_insee import _request_insee
+import pynsee.constants
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.clear_all_cache import clear_all_cache
-from pynsee.utils.init_conn import init_conn
+from pynsee.utils import init_conn
 
-test_SDMX = True
+from .patches import (
+    clean_os_patch,
+    patch_configfile_os_keys,
+    patch_retries,
+    patch_test_connections,
+    patch_test_connections_and_failure_for_sirene,
+    save_restore_config,
+)
 
 
-class TestFunction(TestCase):
-    
-    version = (sys.version_info[0] == 3) & (sys.version_info[1] == 9)
+def test_request_insee_1():
+    # if api is not well provided but sdmx url works
+    clear_all_cache()
 
-    test_onyxia = re.match(".*onyxia.*", os.getcwd())
-    version = version or test_onyxia
+    sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
+    api_url = "dummy"
 
-    if version:
-        StartKeys = _get_credentials()
+    with PynseeAPISession(
+        http_proxy="", https_proxy="", sirene_key=""
+    ) as session:
 
-        def test_request_insee_1(self):
+        def patch_error_request_api_insee(*args, **kwargs):
+            raise requests.exceptions.RequestException
 
-            # test both api and sdmx queries fail but token is not none
-            sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/test"
-            api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/test"
+        session._request_api_insee = patch_error_request_api_insee
+        results = session.request_insee(api_url=api_url, sdmx_url=sdmx_url)
 
-            fail = False
+    assert results.status_code == 200
 
-            try:
-                _request_insee(sdmx_url=sdmx_url, api_url=api_url)
-            except requests.exceptions.RequestException:
-                fail = True
 
-            self.assertTrue(fail)
+def test_clear_all_cache():
+    clear_all_cache()
 
-        if test_SDMX:
 
-            def test_request_insee_2(self):
-                # if credentials are not well provided but sdmx url works
-                clear_all_cache()
+@save_restore_config
+@clean_os_patch
+@patch_retries
+def test_init_conn_with_dummy_proxy():
+    """Check that a wrong proxy configuration raises a RequestException"""
+    with pytest.raises(requests.exceptions.RequestException):
+        init_conn(sirene_key="eggs", http_proxy="spam", https_proxy="bacon")
 
-                os.environ["sirene_key"] = "key"
-                sdmx_url = "https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/001688370"
-                api_url = "https://api.insee.fr/series/BDM/V1/data/SERIES_BDM/001688370"
 
-                results = _request_insee(api_url=api_url, sdmx_url=sdmx_url)
-                test = results.status_code == 200
-                self.assertTrue(test)
+@patch_configfile_os_keys
+@patch_test_connections_and_failure_for_sirene
+def test_dummy_sirene_token_is_not_stored():
+    """
+    Check that a wrong SIRENE token is never stored and allows to use other
+    APIs still
+    """
 
-        def test_clear_all_cache(self):
-            test = True
-            try:
-                clear_all_cache()
-            except BaseException:
-                test = False
-            self.assertTrue(test)
+    with open(pynsee.constants.CONFIG_FILE, "w") as f:
+        json.dump({"DUMMY_SIRENE_KEY": "spam"}, f)
+
+    init_conn(sirene_key="eggs")
+
+    with open(pynsee.constants.CONFIG_FILE, "r") as f:
+        assert json.load(f)["DUMMY_SIRENE_KEY"] == "spam"
+
+
+@patch_configfile_os_keys
+@clean_os_patch
+def test_overriding_insee_config_and_environ():
+    "check that os.environ has precendence over previous config"
+
+    with open(pynsee.constants.CONFIG_FILE, "w") as f:
+        json.dump(
+            {
+                "DUMMY_SIRENE_KEY": "spam",
+                "DUMMY_HTTPS_PROXY_KEY": "sausage",
+            },
+            f,
+        )
+
+    os.environ["DUMMY_SIRENE_KEY"] = "eggs"
+    os.environ["DUMMY_HTTPS_PROXY_KEY"] = "bacon"
+
+    with PynseeAPISession() as session:
+        assert session.sirene_key == "eggs"
+        assert session.proxies["https"] == "bacon"
+
+
+@patch_configfile_os_keys
+@clean_os_patch
+def test_overriding_insee_config_and_environ2():
+    "check that explicit arg has precendence over os.environ"
+
+    os.environ["DUMMY_SIRENE_KEY"] = "eggs"
+    os.environ["DUMMY_HTTPS_PROXY_KEY"] = "bacon"
+
+    with PynseeAPISession(sirene_key="spam", https_proxy="sausage") as session:
+        # explicit arg has precendence over os.environ
+        assert session.sirene_key == "spam"
+        assert session.proxies["https"] == "sausage"
+
+
+@patch_configfile_os_keys
+@clean_os_patch
+@patch_test_connections
+def test_overriding_insee_config_and_environ3():
+    "check that init_conn ends with sirene_key/proxies correctly saved"
+
+    init_conn(sirene_key="sausage", https_proxy="spam", http_proxy=None)
+
+    assert os.path.exists(pynsee.constants.CONFIG_FILE)
+
+    with open(pynsee.constants.CONFIG_FILE, "r") as f:
+        config = json.load(f)
+
+    assert config["DUMMY_SIRENE_KEY"] == "sausage"
+    assert config["DUMMY_HTTPS_PROXY_KEY"] == "spam"
+    assert config["DUMMY_HTTP_PROXY_KEY"] is None
+
+
+@patch_configfile_os_keys
+@clean_os_patch
+@patch_test_connections
+def test_overriding_insee_config_and_environ4():
+    "check that previous config is restored"
+
+    with open(pynsee.constants.CONFIG_FILE, "w") as f:
+        json.dump(
+            {
+                "DUMMY_SIRENE_KEY": "sausage",
+                "DUMMY_HTTPS_PROXY_KEY": "spam",
+                "DUMMY_HTTP_PROXY_KEY": None,
+            },
+            f,
+        )
+
+    with PynseeAPISession() as session:
+        assert session.sirene_key == "sausage"
+        assert session.proxies["http"] is None
+        assert session.proxies["https"] == "spam"
 
 
 if __name__ == "__main__":
-    unittest.main()
+    test_request_insee_1()
+    test_clear_all_cache()
+    test_init_conn_with_dummy_proxy()
+    test_dummy_sirene_token_is_not_stored()
+    test_overriding_insee_config_and_environ()
+    test_overriding_insee_config_and_environ2()
+    test_overriding_insee_config_and_environ3()
+    test_overriding_insee_config_and_environ4()

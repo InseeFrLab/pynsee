@@ -14,15 +14,17 @@ logger = logging.getLogger(__name__)
 
 
 @save_df(day_lapse_max=90)
-def _get_idbank_internal_data(update=False, silent=True):
+def _get_idbank_internal_data(update=False, silent=False):
 
     try:
         pkg_macrodata = importlib.resources.files(__name__)
         zip_file = str(pkg_macrodata) + "/data/idbank_list_internal.zip"
-    except:
+    except Exception:
         import pkg_resources
-        zip_file = pkg_resources.resource_stream(__name__, "data/idbank_list_internal.zip")
 
+        zip_file = pkg_resources.resource_stream(
+            __name__, "data/idbank_list_internal.zip"
+        )
 
     with zipfile.ZipFile(zip_file, "r") as zip_ref:
         data_file = io.BytesIO(zip_ref.read("idbank_list_internal.csv"))

@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import pandas as pd
-import os
+
 import functools
 
 from pynsee.macrodata._get_dataset_metadata_core import (
@@ -17,29 +16,34 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 @functools.lru_cache(maxsize=None)
 def _warning_error():
     logger.error(
-            "Package's internal data has been used !\n"
-            "Idbank file download failed, have a look at the following page "
-            "and find the new link !\n"
-            "https://www.insee.fr/en/information/2868055\n\n"
-            "You may change the downloaded file changing the following "
-            "environment variable !\n"
-            "import os; os.environ['pynsee_idbank_file'] = 'my_new_idbank_file'\n"
-            "Please contact the package maintainer if this error persists !"
-        )
+        "Package's internal data has been used !\n"
+        "Idbank file download failed, have a look at the following page "
+        "and find the new link !\n"
+        "https://www.insee.fr/en/information/2868055\n\n"
+        "You may change the downloaded file changing the following "
+        "environment variable !\n"
+        "import os; os.environ['pynsee_idbank_file'] = 'my_new_idbank_file'\n"
+        "Please contact the package maintainer if this error persists !"
+    )
 
-@save_df(day_lapse_max = 90)
-def _get_dataset_metadata(dataset, update=False, silent=True, insee_date_test=None):
+
+@save_df(day_lapse_max=90)
+def _get_dataset_metadata(
+    dataset, update=False, silent=False, insee_date_test=None
+):
 
     try:
         idbank_list_dataset = _get_dataset_metadata_core(
-                dataset=dataset, update=update, silent=True
-            )
-    except:
+            dataset=dataset, update=update, silent=silent
+        )
+    except Exception:
         # if the download of the idbank file and the build of the metadata fail
-        # package's internal data is provided to the user, should be exceptional, used as a backup
+        # package's internal data is provided to the user, should be
+        # exceptional, used as a backup
         _warning_error()
 
         idbank_list_dataset = _get_idbank_internal_data(update=update)

@@ -6,13 +6,14 @@ Created on Wed Feb  1 13:52:54 2023
 """
 
 import pandas as pd
-import os
 
-from pynsee.utils._request_insee import _request_insee
+from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.save_df import save_df
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @save_df(day_lapse_max=90)
 def get_descending_area(
@@ -21,6 +22,7 @@ def get_descending_area(
     date: str = None,
     type: str = None,
     update: bool = False,
+    silent: bool = False,
 ):
     """
     Get information about areas contained in a given area
@@ -35,6 +37,8 @@ def get_descending_area(
         date (str, optional): date used to analyse the data, format : 'AAAA-MM-JJ'. If date is None, by default the current date is used/
 
         update (bool): locally saved data is used by default. Trigger an update with update=True.
+
+        silent (bool, optional): Set to True to disable messages printed in log info
 
     Examples:
         >>> from pynsee.localdata import get_area_descending
@@ -59,7 +63,7 @@ def get_descending_area(
 
     params_hash = ["get_descending_area", area, code, date, type]
     params_hash = [x if x else "_" for x in params_hash]
-    
+
     INSEE_localdata_api_link = "https://api.insee.fr/metadonnees/geo/"
 
     api_link = INSEE_localdata_api_link + area + f"/{code}/descendants?"
@@ -72,9 +76,10 @@ def get_descending_area(
 
     api_link = api_link + "&".join(params)
 
-    request = _request_insee(
-        api_url=api_link, file_format="application/json"
-    )
+    with PynseeAPISession() as session:
+        request = session.request_insee(
+            api_url=api_link, file_format="application/json"
+        )
 
     try:
         data = request.json()
@@ -89,6 +94,6 @@ def get_descending_area(
 
     except Exception:
         logger.error("No data found !")
-        data_final = pd.DataFrame()    
+        data_final = pd.DataFrame()
 
     return data_final

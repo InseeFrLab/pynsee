@@ -1,29 +1,21 @@
-from shapely.affinity import scale
-import warnings
-from shapely.errors import ShapelyDeprecationWarning
+from typing import Optional
 
-from pynsee.geodata._get_center import _get_center
+from geopandas import GeoDataFrame
+
+from ._get_center import _get_center
 
 
-def _rescale_geom(df, factor, col="geometry"):
+def _rescale_geom(
+    gdf: GeoDataFrame,
+    factor: float,
+    center: Optional[tuple[float, float]] = None,
+) -> None:
+    """Rescale geometries of a GeoDataFrame inplace."""
+    center = center or _get_center(gdf)
 
-    with warnings.catch_warnings():
-        warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
-
-        center = _get_center(df, col=col)
-
-        list_geoms = []
-        for i in range(len(df["geometry"])):
-            list_geoms += [
-                scale(
-                    geom=df.loc[i, "geometry"],
-                    xfact=factor,
-                    yfact=factor,
-                    zfact=1.0,
-                    origin=center,
-                )
-            ]
-
-        df["geometry"] = list_geoms
-
-        return df
+    gdf.loc[:, gdf.geometry.name] = gdf.geometry.scale(
+        xfact=factor,
+        yfact=factor,
+        zfact=1.0,
+        origin=center,
+    )

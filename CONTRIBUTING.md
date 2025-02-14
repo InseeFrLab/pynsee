@@ -30,10 +30,17 @@ If you have already made a commit and forgot to include the sign-off, you can am
 git commit --amend -s
 ```
 
-We use a DCO bot to enforce the DCO on each pull request and branch commits.
+### Linting
 
+This project currently uses flake8 and black as pre-commit hooks and will check the code's conformity on the automated tests.
+These can be installed via ``pip install flake8 black pre-commit``.
+
+To run the pre-commit hooks on your machine, please run `pre-commit install` locally.
+
+You can then run the pre-commit manually using `pre-commit run --all-files` if you want but it will be run every time you try to commit anyway and commiting will not go through until all issues are fixed.
+
+If you're using Github Desktop and experiencing difficulties with the precommit hooks (some error about a GIT_CONFIG_VALUE_0), you may find a workaround [here](https://stackoverflow.com/questions/78695471/pre-commit-error-missing-config-value-git-config-value-0#answer-78862203).
 
 ### Licence
 
-By contributing, you agree that your contributions will be licensed under the OPEN LICENSE 2.0.
-
+By contributing, you agree that your contributions will be licensed under the MIT License.

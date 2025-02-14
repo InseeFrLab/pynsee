@@ -7,14 +7,20 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=90)
-def _get_dataset_list_internal():
+def _get_dataset_list_internal(silent=False):
+    """
+    silent (bool, optional): Set to True, to disable messages printed in log info
+    """
 
     try:
         pkg_macrodata = importlib.resources.files(__name__)
         zip_file = str(pkg_macrodata) + "/data/dataset_list_internal.zip"
-    except:
+    except Exception:
         import pkg_resources
-        zip_file = pkg_resources.resource_stream(__name__, "data/dataset_list_internal.zip")
+
+        zip_file = pkg_resources.resource_stream(
+            __name__, "data/dataset_list_internal.zip"
+        )
 
     with zipfile.ZipFile(zip_file, "r") as zip_ref:
         dataset_file = io.BytesIO(zip_ref.read("dataset_list_internal.csv"))

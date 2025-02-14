@@ -26,11 +26,11 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 COPY requirements.txt .
 COPY requirements-extra.txt .
-COPY docs/requirements.txt /docs/requirements.txt 
+COPY docs/requirements.txt /docs/requirements.txt
 
 RUN pip install -r requirements.txt
 RUN pip install -r requirements-extra.txt
-RUN pip install -r docs/requirements.txt 
+RUN pip install -r docs/requirements.txt
 RUN pip install pylint
 
 # Copy project files on the Docker image

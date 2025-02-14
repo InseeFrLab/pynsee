@@ -64,7 +64,7 @@ def _import_options(
     import_args.update({"dtype": list_cols})
     try:
         encoding = caract["encoding"]
-    except:
+    except Exception:
         encoding = "Nan"
     import_args.update({"encoding": encoding})
 

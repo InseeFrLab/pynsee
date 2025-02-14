@@ -25,8 +25,7 @@ def _create_insee_folder():
 
         # create insee folder
         insee_folder = os.path.join(local_appdata_folder, "pynsee")
-        if not os.path.exists(insee_folder):
-            os.mkdir(insee_folder)
+        os.makedirs(insee_folder, exist_ok=True)
 
         # test if saving a file is possible
         test_file = os.path.join(insee_folder, _hash("test_file"))
@@ -34,7 +33,7 @@ def _create_insee_folder():
             f.write("")
         # testing requires restricted rights on the machine
 
-    except:
+    except Exception:
         # if error temporary folder is returned
         insee_folder = _get_temp_dir()
         logger.warning(
@@ -43,5 +42,5 @@ def _create_insee_folder():
             "session and you ARE responsible to clean the following temporary "
             "folder (at " + insee_folder + ") once you've finished!\n"
         )
-    finally:
-        return insee_folder
+
+    return insee_folder
