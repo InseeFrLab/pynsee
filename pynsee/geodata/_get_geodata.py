@@ -39,8 +39,8 @@ def _get_geodata(
         polygon (Polygon, optional): Polygon used to constrain the area of interest. Defaults to None.
         update (bool, optional): data is saved locally, set update=True to trigger an update. Defaults to False.
         silent (bool, optional): whether to print warnings or not. Defaults to False.
-        crs (any valid pyproj CRS entry, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
-        crs_polygon (any valid pyproj CRS entry, optional): CRS used for `polygon`. Defaults to 'EPSG:4326'.
+        crs (any valid :class:`~pyproj.crs.CRS` entry, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
+        crs_polygon (any valid :class:`~pyproj.crs.CRS` entry, optional): CRS used for `polygon`. Defaults to 'EPSG:4326'.
         ignore_error (boo, optional): whether to ignore errors and return an empty GeoDataFrame. Defaults to True.
 
     Examples:

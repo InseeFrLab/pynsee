@@ -1,7 +1,3 @@
-
-.. role:: raw-html-m2r(raw)
-   :format: html
-
 .. role:: raw-html(raw)
     :format: html
 
@@ -50,7 +46,7 @@ Pynsee python package contains tools to easily search and download French data f
 
 :raw-html:`<br />`
 
-`pynsee` gives a quick access to more than 150 000 macroeconomic series,
+``pynsee`` gives a quick access to more than 150 000 macroeconomic series,
 a dozen datasets of local data, numerous sources available on `insee.fr <https://www.insee.fr>`_
 as well as key metadata and SIRENE database containing data on all French companies.
 Have a look at the detailed API page `portail-api.insee.fr <https://portail-api.insee.fr/>`_.
@@ -61,7 +57,7 @@ It benefits from the developments made by teams working on APIs at INSEE and IGN
 Installation & API subscription
 -------------------------------
 
-Credentials are necessary to access SIRENE API available through `pynsee` by the module `sirene`. API credentials can be created here : `portail-api.insee.fr <https://portail-api.insee.fr/>`_. All other modules are freely accessible.
+Credentials are necessary to access SIRENE API available through ``pynsee`` by the :mod:`~pynsee.sirene` module. API credentials can be created here: `portail-api.insee.fr <https://portail-api.insee.fr/>`_. All other modules are freely accessible.
 
 .. literalinclude:: ../README.md
     :lines: 30-44
@@ -72,14 +68,16 @@ Data Search and Collection Advice
 ---------------------------------
 
 * **Macroeconomic data** :
-   First, use ``get_dataset_list`` to search what are your datasets of interest and then get the series list with ``get_series_list``.
-   Alternatively, you can make a keyword-based search with ``search_macrodata``, e.g. ``search_macrodata('GDP')``.
-   Then, get the data with ``get_dataset`` or ``get_series``
-* **Local data** : use first ``get_local_metadata``, then get data with ``get_local_data``
-* **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list``
-* **Sirene (French companies database)** : use first ``get_dimension_list``, then use ``search_sirene`` with dimensions as filtering variables
-* **Geodata** : get the list of available geographical data with ``get_geodata_list`` and then retrieve it with ``get_geodata``
-* **Files on insee.fr**: get the list of available files on insee.fr with ``get_file_list`` and then download it with ``download_file``
+   First, use :func:`~pynsee.macrodata.get_dataset_list` to search what are your datasets of interest and then get the series list with :func:`~pynsee.macrodata.get_series_list`.
+   Alternatively, you can make a keyword-based search with :func:`~pynsee.macrodata.search_macrodata`, e.g. ``search_macrodata('GDP')``.
+   Then, get the data with :func:`~pynsee.macrodata.get_dataset` or :func:`~pynsee.macrodata.get_series`
+* **Local data** : use first :func:`~pynsee.localdata.get_local_metadata`, then get data with :func:`~pynsee.localdata.get_local_data`
+* **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) :func:`~pynsee.metadata.get_activity_list`
+* **Sirene (French companies database)** : use first :func:`~pynsee.sirene.get_dimension_list`, then use :func:`~pynsee.sirene.search_sirene` with dimensions as filtering variables
+* **Geodata** : get the list of available geographical data with :func:`~pynsee.geodata.get_geodata_list` and then retrieve it with :func:`~pynsee.geodata.get_geodata`
+* **Files on insee.fr**: get the list of available files on insee.fr with :func:`~pynsee.download.get_file_list` and then download it with :func:`~pynsee.download.download_file`
+
+There is also the list of all modules and functions in :doc:`modules`, and more information about :doc:`utils`.
 
 For further advice, have a look at the documentation and gallery of the `examples <https://pynsee.readthedocs.io/en/latest/examples.html>`_.
 

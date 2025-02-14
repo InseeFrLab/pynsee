@@ -11,13 +11,14 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import re
 import sys
-import sphinx_copybutton
-import sphinx_rtd_theme
-import m2r2
 
 os.chdir("../")
 sys.path.insert(0, os.path.abspath("./"))
+
+
+import pynsee
 
 
 # -- Project information -----------------------------------------------------
@@ -27,10 +28,12 @@ copyright = "2021, INSEE"
 author = "Hadrien Leclerc"
 
 # The short X.Y version
-version = "0.0.1"
+version = re.match(r"\d+\.\d+\.\d+", pynsee.__version__).group()
 
 # The full version, including alpha/beta/rc tags
-release = "0.0.1"
+release = pynsee.__version__
+
+version_selector = True
 
 
 # -- General configuration ---------------------------------------------------
@@ -44,12 +47,12 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx_copybutton",
     "nbsphinx",
-    "m2r2",
-    #'sphinx.ext.imgconverter',
     "sphinxcontrib.rsvgconverter",
     "sphinx.ext.mathjax",
     "IPython.sphinxext.ipython_console_highlighting",
     "sphinx_gallery.load_style",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.napoleon",
 ]
 
 # 'sphinx_gallery.gen_gallery'
@@ -81,8 +84,6 @@ nbsphinx_thumbnails = {
     "examples/example_rp_logement_2017": "_static/housing.png",
 }
 
-# 'm2r2',
-# "rinoh.frontend.sphinx"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -104,7 +105,6 @@ html_theme = "sphinx_rtd_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
-# html_static_path = []
 
 # exclude from copy button code snippet
 copybutton_prompt_text = ">>> "
@@ -115,5 +115,15 @@ def setup(app):
     app.add_css_file("my_theme.css")
 
 
-# include alos md doc
-source_suffix = [".rst"]
+# -- Options for extensions --------------------------------------------------
+
+napoleon_use_admonition_for_notes = True
+napoleon_use_rtype = False
+
+# links to GeoPandas' documentation
+intersphinx_mapping = {
+    "gpd": ("https://geopandas.org/en/stable/", None),
+    "pd": ("https://pandas.pydata.org/docs", None),
+    "requests": ("https://requests.readthedocs.io/en/stable/", None),
+    "pyproj": ("https://pyproj4.github.io/pyproj/stable/", None),
+}

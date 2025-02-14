@@ -22,7 +22,7 @@ class GeoFrDataFrame(GeoDataFrame):
     def _constructor_from_mgr(
         self, mgr, axes
     ) -> Union[DataFrame, "GeoFrDataFrame"]:
-        """Patch to avoid class change"""
+        """Patch to avoid class change."""
         obj = super()._constructor_from_mgr(mgr, axes)
 
         if isinstance(obj, GeoDataFrame):
@@ -31,9 +31,7 @@ class GeoFrDataFrame(GeoDataFrame):
         return obj
 
     def __getitem__(self, key):
-        """
-        Patch to avoid class change.
-        """
+        """Patch to avoid class change."""
         result = super().__getitem__(key)
 
         if isinstance(result, GeoDataFrame):
@@ -42,7 +40,8 @@ class GeoFrDataFrame(GeoDataFrame):
         return result
 
     def copy(self, deep: bool = True) -> "GeoFrDataFrame":
-        """Patch to avoid class change"""
+        """Copy the :class:`GeoFrDataFrame` object."""
+        # Patch to avoid class change
         copied = super().copy(deep=deep)
         copied.__class__ = GeoFrDataFrame
         return copied
@@ -56,6 +55,7 @@ class GeoFrDataFrame(GeoDataFrame):
 
             Use :attr:`~geopandas.GeoDataFrame.geometry` instead and call
             :func:`~geopandas.GeoSeries.union_all` on it.
+            See also the `documentation of geopandas <https://geopandas.org/en/stable/docs/user_guide/data_structures.html#geodataframe>`_.
 
         Example
         -------
@@ -94,8 +94,8 @@ class GeoFrDataFrame(GeoDataFrame):
         .. warning::
 
             Starting with ``pynsee >= 0.3.0``, this function will only
-            run :meth:`GeoDataFrame.translate`. Do switch to
-            :meth:`GeoFrDataFrame.transform_overseas` if this is what
+            run :meth:`GeoSeries.translate`. Do switch to
+            :meth:`~GeoFrDataFrame.transform_overseas` if this is what
             you wanted to run.
         """
         run_super_translate = False

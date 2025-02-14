@@ -7,9 +7,9 @@ version: 2
 
 # Set the version of Python
 build:
-  os: ubuntu-20.04  # <- add this line
+  os: ubuntu-22.04  # <- add this line
   tools:
-    python: "3.10"
+    python: "3.12"
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
