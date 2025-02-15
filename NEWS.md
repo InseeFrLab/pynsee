@@ -1,9 +1,41 @@
+# pynsee 0.2.0
 
-# pynsee 0.1.9
+**Breaking changes**
+
+The INSEE APIs were changed, including
+
 * new API portal: portail-api.insee.fr
-* no token generation is needed anymore, only a key is needed to use SIRENE API
+* no token generation is needed for all APIs except SIRENE
+* for SIRENE API, it is now provided via the ``sirene_key`` argument in ``init_conn``
+* ``get_included_area`` was removed
+
+**Deprecations**
+
+* ``GeoFrDataFrame.translate`` is deprecated in favor of ``GeoFrDataFrame.transform_overseas``
+* ``GeoFrDataFrame.get_geom`` is deprecated in favor of ``GeoFrDataFrame.geometry.union_all``
+
+**New features**
+
+* ``GeoFrDataFrame`` inherits from ``geopandas.GeoDataFrame`` so you can use all the included methods directly on it (#246)
+* the tranlation and zoom of overseas department has be renamed ``transform_overseas``
+* the configuration file is no longer stored in the middle of the home directory (#210)
+
+**Documentation**
+
+* updated examples and user guides (#246 #250 #251)
+* internal links for functions and classes (#251)
+* link to pandas/geopandas/pyproj and request documentations (#251)
+
+**Under the hood**
+
+* use data from Melodi api (#229)
 * backend function update in the utils module + sirene functions update
-* subsequent doc and test update
+* cleanup of temporary files handling (#206)
+* all cached data is now saved as parquet for faster read/write operations (#199 #208 #224)
+* switch to multithreading instead of multiprocessing (#216)
+* move to pyproject.toml only (#243)
+* fix tests and cleanup imports (many commits)
+* enforce black formatting (#234)
 
 # pynsee 0.1.8
 
@@ -77,6 +109,6 @@
     * activity classification (naf rev2 2008)
     * list of definitions
     * list of files on insee.fr
-* full documentation made with docstring and hosted by ReadTheDocs
-* hands-on examples covering all modules displayed in the documentation
-* test coverage >90%
+    * full documentation made with docstring and hosted by ReadTheDocs
+    * hands-on examples covering all modules displayed in the documentation
+    * test coverage >90%
