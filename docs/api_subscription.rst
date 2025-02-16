@@ -29,7 +29,7 @@ Steps to access the SIRENE API via ``pynsee``
 
    # Subscribe to api.insee.fr and get your credentials!
    # Save your credentials with init_conn function :
-       from pynsee.utils.init_conn import init_conn
+       from pynsee.utils.init_connection import init_conn
        init_conn(sirene_key="my_sirene_key")
 
        # Beware: any change to the keys should be tested after having cleared the cache
