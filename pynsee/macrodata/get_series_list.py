@@ -37,46 +37,41 @@ def get_series_list(*datasets, update=False, silent=False):
         >>> idbank_ipc = get_series_list('IPC-2015', 'CLIMAT-AFFAIRES')
     """
     insee_dataset = get_dataset_list(silent=silent)
-    insee_dataset_list = insee_dataset["id"].to_list()
+    all_datasets = set(insee_dataset["id"])
 
     if len(datasets) == 1:
         if isinstance(datasets[0], list):
             datasets = datasets[0]
 
-    for dt in datasets:
-        if dt not in insee_dataset_list:
-            raise ValueError(
-                f"\n{dt} is not a dataset from INSEE\nGet a dataset "
-                "list with get_dataset_list function"
-            )
+    wrong_datasets = [ds for ds in datasets if ds not in all_datasets]
 
-    idbank_list_dataset = []
-
-    for dt in datasets:
-        idbank_list_dt = _get_dataset_metadata(
-            dt, update=update, silent=silent
+    if wrong_datasets:
+        raise ValueError(
+            "The following are not datasets from INSEE: "
+            f"{', '.join(wrong_datasets)}.\n"
+            "Get a dataset list from the `get_dataset_list` function."
         )
 
-        idbank_list_dataset.append(idbank_list_dt)
+    # get all datasets
+    df = pd.concat(
+        [
+            _get_dataset_metadata(dt, update=update, silent=silent)
+            for dt in datasets
+        ],
+        ignore_index=True,
+    )
 
-    idbank_list = pd.concat(idbank_list_dataset)
-
-    # label columns at the end
-
+    # put label columns at the end and set names properly
     r = re.compile(".*_label_.*")
-    column_all = idbank_list.columns.to_list()
+    column_all = df.columns.to_list()
     column_label = list(filter(r.match, column_all))
     column_other = [col for col in column_all if col not in column_label]
     new_column_order = column_other + column_label
 
-    idbank_list = pd.DataFrame(idbank_list, columns=new_column_order)
-
-    idbank_list = idbank_list.rename(
+    df = df.reindex(columns=new_column_order).rename(
         columns={"nomflow": "DATASET", "idbank": "IDBANK", "cleFlow": "KEY"}
     )
 
-    idbank_list.columns = [
-        col.replace("-", "_") for col in idbank_list.columns
-    ]
+    df.columns = [col.replace("-", "_") for col in df.columns]
 
-    return idbank_list
+    return df
