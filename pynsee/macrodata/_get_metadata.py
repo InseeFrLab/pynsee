@@ -8,8 +8,7 @@ import pandas as pd
 
 from ..utils.save_df import save_df
 from ._download_idbanks import _download_idbank_list
-from ._get_dimension_vals import _get_dimension_values
-from ._get_dimensions import _get_dataset_dimension
+from ._get_dimensions import _get_dataset_dimension, _get_dimension_values
 from ._get_idbank_internal_data import _get_idbank_internal_data
 
 

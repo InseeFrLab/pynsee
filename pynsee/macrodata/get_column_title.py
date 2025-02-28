@@ -5,8 +5,7 @@ import pandas as pd
 from tqdm import trange
 
 from .get_dataset_list import get_dataset_list
-from ._get_dimension_vals import _get_dimension_values
-from ._get_dimensions import _get_dataset_dimension
+from ._get_dimensions import _get_dataset_dimension, _get_dimension_values
 
 
 def get_column_title(dataset=None, update=True):
