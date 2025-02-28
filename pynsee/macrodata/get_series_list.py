@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import pandas as pd
 import re
 
-from pynsee.macrodata.get_dataset_list import get_dataset_list
-from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
+import pandas as pd
 
-from pynsee.utils.save_df import save_df
+from ..utils.save_df import save_df
+from ._get_metadata import _get_dataset_metadata
+from .get_dataset_list import get_dataset_list
 
 
 @save_df(day_lapse_max=30)
