@@ -56,6 +56,7 @@ class MyTests(unittest.TestCase):
         "FILOSOFI_DISP_IRIS_2017",
         "BPE_ENS",
         "RP_MOBSCO_2016",
+        "RP_MOBSCO_2021",  # parquet format
     ]
 
     @parameterized.expand([[f] for f in list_file_check])

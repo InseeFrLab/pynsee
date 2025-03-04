@@ -40,6 +40,7 @@ def _load_data_from_schema(
     Returns:
         pd.DataFrame -- The required dataset is returned as pd.DataFrame object
     """
+    df_insee = None
     file_to_import = telechargementFichier["file_to_import"]
 
     if telechargementFichier["result"]["zip"] is True:
@@ -126,7 +127,6 @@ def _load_data_from_schema(
                         engine="python",
                         encoding=encoding,
                     )
-
     elif telechargementFichier["result"]["type"] in ["xls", "xlsx"]:
         df_insee = pd.read_excel(
             file_to_import,
@@ -137,6 +137,8 @@ def _load_data_from_schema(
             dtype="str",
             usecols=variables,
         )
+    elif telechargementFichier["result"]["type"] == "parquet":
+        df_insee = pd.read_parquet(file_to_import, columns=variables)
 
     list_files = [file_to_import]
 
@@ -155,5 +157,10 @@ def _load_data_from_schema(
                 os.remove(f)
             except Exception:
                 pass
+
+    if df_insee is None:
+        raise RuntimeError(
+            f"Unexpected download data:\n{telechargementFichier}"
+        )
 
     return df_insee
