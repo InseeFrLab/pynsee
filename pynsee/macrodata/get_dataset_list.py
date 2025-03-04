@@ -2,18 +2,16 @@
 # Copyright : INSEE, 2021
 
 import io
+import logging
 import xml.etree.ElementTree as ET
+
 import pandas as pd
 from tqdm import trange
 
-from pynsee.macrodata._get_dataset_list_internal import (
-    _get_dataset_list_internal,
-)
+from ..utils.requests_session import PynseeAPISession
+from ..utils.save_df import save_df
+from ._get_dataset_list_internal import _get_dataset_list_internal
 
-from pynsee.utils.requests_session import PynseeAPISession
-from pynsee.utils.save_df import save_df
-
-import logging
 
 logger = logging.getLogger(__name__)
 

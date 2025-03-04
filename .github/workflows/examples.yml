@@ -50,4 +50,4 @@ jobs:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
         pip install .
-        python -c "from pynsee.macrodata._dwn_idbank_files import _dwn_idbank_files;_dwn_idbank_files()"
+        python -c "from pynsee.macrodata._download_idbanks import _dwn_idbank_files; _dwn_idbank_files()"
