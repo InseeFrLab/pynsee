@@ -15,10 +15,12 @@ from pynsee.macrodata._get_idbank_internal_data_harmonized import (
 from pynsee.macrodata._get_idbank_internal_data import (
     _get_idbank_internal_data,
 )
-from pynsee.macrodata._get_dataset_metadata import _get_dataset_metadata
-from pynsee.macrodata._get_dataset_dimension import _get_dataset_dimension
-from pynsee.macrodata._get_dimension_values import _get_dimension_values
-from pynsee.macrodata._download_idbank_list import _download_idbank_list
+from pynsee.macrodata._get_metadata import _get_dataset_metadata
+from pynsee.macrodata._get_dimensions import (
+    _get_dataset_dimension,
+    _get_dimension_values,
+)
+from pynsee.macrodata._download_idbanks import _download_idbank_list
 from pynsee.macrodata._get_dataset_list_internal import (
     _get_dataset_list_internal,
 )
@@ -35,6 +37,7 @@ from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
 
 from pynsee.utils._clean_insee_folder import _clean_insee_folder
+
 
 test_SDMX = True
 
@@ -67,16 +70,15 @@ class TestFunction(TestCase):
         self.assertTrue(isinstance(data, pd.DataFrame))
 
     def test_get_column_title_1(self):
-        # _clean_insee_folder()
+        # this takes too long
         # data1 = get_column_title()
-        # test1 = isinstance(data1, pd.DataFrame)
+        # self.assertTrue(isinstance(data1, pd.DataFrame))
 
         data2 = get_column_title(["CLIMAT-AFFAIRES"])
-        test2 = isinstance(data2, pd.DataFrame)
-        self.assertTrue(test2)
+        self.assertTrue(isinstance(data2, pd.DataFrame))
 
-    # def test_get_column_title_2(self):
-    #     self.assertRaises(ValueError, get_column_title, dataset=['a'])
+    def test_get_column_title_2(self):
+        self.assertRaises(ValueError, get_column_title, dataset=["a"])
 
     def test_get_series_list_1(self):
         test = True
@@ -88,28 +90,33 @@ class TestFunction(TestCase):
 
         self.assertTrue(test)
 
-    # def test_get_series_list_2(self):
-    #     self.assertRaises(ValueError, get_series_list, 'a')
+    def test_get_series_list_2(self):
+        self.assertRaises(ValueError, get_series_list, "a")
 
-    # def test_get_series_1(self):
-    #     idbank_list = get_series_list('IPC-2015').iloc[:50]
-    #     data = get_series(idbank_list.IDBANK)
-    #     self.assertTrue(isinstance(data, pd.DataFrame))
+    def test_get_series_1(self):
+        idbank_list = get_series_list("IPC-2015").iloc[:5]
+        data = get_series(idbank_list.IDBANK)
+        self.assertTrue(isinstance(data, pd.DataFrame))
 
     def test_get_series_2(self):
         data = get_series("001769682", "001769683")
         self.assertTrue(isinstance(data, pd.DataFrame))
 
-    # def test_get_series_3(self):
-    #     data = get_series(["001769683", "001769682"], lastNObservations=1)
-    #     self.assertTrue(isinstance(data, pd.DataFrame))
+    def test_get_series_3(self):
+        data = get_series(["001769683", "001769682"], lastNObservations=1)
+        self.assertTrue(isinstance(data, pd.DataFrame))
 
-    # def test_get_date(self):
-    #     data = get_series("001694056", "001691912",
-    #                       "001580062", "001688370", "010565692", "001580394")
-    #     test1 = isinstance(data, pd.DataFrame)
-    #     test2 = (_get_date(freq='TEST', time_period=3) == 3)
-    #     self.assertTrue(test1 & test2)
+    def test_get_date(self):
+        data = get_series(
+            "001694056",
+            "001691912",
+            "001580062",
+            "001688370",
+            "010565692",
+            "001580394",
+        )
+        assert isinstance(data, pd.DataFrame)
+        assert _get_date(freq="TEST", time_period=3) == 3
 
     def test_get_dataset_metadata_1(self):
 
@@ -133,11 +140,12 @@ class TestFunction(TestCase):
         self.assertTrue(test2)
 
     # def test_get_dataset_metadata_2(self):
-    #     # crash download_idbank_list and test the result on get_dataset_metadata
-    #     _clean_insee_folder()
-    #     df = _get_dataset_metadata('CLIMAT-AFFAIRES')
-    #     test1 = isinstance(df, pd.DataFrame)
-    #     self.assertTrue(test1)
+    # # this takes too long
+    # # crash download_idbank_list and test the result on get_dataset_metadata
+    # _clean_insee_folder()
+    # df = _get_dataset_metadata('CLIMAT-AFFAIRES')
+    # test1 = isinstance(df, pd.DataFrame)
+    # self.assertTrue(test1)
 
     # def test_get_insee(self):
     #     data = _get_insee(

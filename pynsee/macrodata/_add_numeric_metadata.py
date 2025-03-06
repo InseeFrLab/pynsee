@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from pynsee.macrodata._get_dimension_values import _get_dimension_values
+from ._get_dimensions import _get_dimension_values
 
 
 def _add_numeric_metadata(data):
