@@ -13,6 +13,7 @@ def get_geodata(
     update: bool = False,
     crs: Any = "EPSG:3857",
     constrain_area: Optional[GeoDataFrame] = None,
+    silent: bool = False,
 ) -> GeoFrDataFrame:
     """Get geographical data with identifier and from IGN API
 
@@ -24,6 +25,8 @@ def get_geodata(
         crs (any valid :class:`~pyproj.crs.CRS` input, optional): CRS used for the geodata output. Defaults to 'EPSG:3857'.
 
         constrain_area (:class:`~geopandas.GeoDataFrame`, optional): GeoDataFrame used to constrain the area of interest. Defaults to None.
+
+        silence (bool, optional): whether to print warnings or not. Defaults to False.
 
     .. versionchanged: 0.2.0
 
@@ -40,14 +43,14 @@ def get_geodata(
 
     """
     polygon = None
-    crsPolygon = "EPSG:4326"
+    crs_polygon = "EPSG:4326"
 
     if constrain_area is not None:
         if constrain_area.crs.to_string() not in ("EPSG:3857", "EPSG:4326"):
             constrain_area = constrain_area.to_crs("EPSG:4326")
 
         polygon = constrain_area.union_all()
-        crsPolygon = constrain_area.crs.to_string()
+        crs_polygon = constrain_area.crs.to_string()
 
     return _get_geodata(
         dataset_id=dataset_id,
@@ -55,5 +58,6 @@ def get_geodata(
         crs=crs,
         ignore_error=False,
         polygon=polygon,
-        crs_polygon=crsPolygon,
+        crs_polygon=crs_polygon,
+        silent=silent,
     )
