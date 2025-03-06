@@ -26,19 +26,10 @@ def _download_idbank_list(
     update: bool = False,
     silent: bool = False,
     insee_date_test: Optional[datetime] = None,
-    include_list_var: bool = False,
 ):
-
     data = _dwn_idbank_files()
 
-    columns = ["nomflow", "idbank", "cleFlow"]
-
-    if not include_list_var:
-        data = data.iloc[:, 0:3]
-    else:
-        columns.append("list_var")
-
-    data.columns = columns
+    data.columns = ["nomflow", "idbank", "cleFlow", "list_var"]
 
     data = data.sort_values("nomflow").reset_index(drop=True)
 
@@ -84,16 +75,12 @@ def _dwn_idbank_files():
 
     try:
         pynsee_idbank_loop_url = os.environ["pynsee_idbank_loop_url"]
-        if (pynsee_idbank_loop_url == "False") or (
-            pynsee_idbank_loop_url == "FALSE"
-        ):
+        if pynsee_idbank_loop_url.upper() == "FALSE":
             pynsee_idbank_loop_url = False
     except Exception:
         try:
             pynsee_idbank_loop_url = os.environ["PYNSEE_IDBANK_LOOP_URL"]
-            if (pynsee_idbank_loop_url == "False") or (
-                pynsee_idbank_loop_url == "FALSE"
-            ):
+            if pynsee_idbank_loop_url.upper() == "FALSE":
                 pynsee_idbank_loop_url = False
         except Exception:
             pass

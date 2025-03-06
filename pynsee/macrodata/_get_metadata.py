@@ -59,9 +59,7 @@ def _get_dataset_metadata(
 @save_df(day_lapse_max=90)
 def _get_dataset_metadata_core(dataset, update=False, silent=False):
     """Get metadata from idbanks"""
-    idbank_list = _download_idbank_list(
-        update=update, silent=silent, include_list_var=True
-    )
+    idbank_list = _download_idbank_list(update=update, silent=silent)
 
     # get dataset's dimensions
     dataset_dimension = _get_dataset_dimension(

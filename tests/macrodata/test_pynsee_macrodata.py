@@ -115,9 +115,8 @@ class TestFunction(TestCase):
             "010565692",
             "001580394",
         )
-        test1 = isinstance(data, pd.DataFrame)
-        test2 = _get_date(freq="TEST", time_period=3) == 3
-        self.assertTrue(test1 & test2)
+        assert isinstance(data, pd.DataFrame)
+        assert _get_date(freq="TEST", time_period=3) == 3
 
     def test_get_dataset_metadata_1(self):
 
