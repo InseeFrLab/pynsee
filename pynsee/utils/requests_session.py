@@ -76,7 +76,7 @@ class PynseeAPISession(requests.Session):
         **This function should only be loaded with arguments through
         pynsee.utils.init_conn**.
 
-        See pynsee.utils.init_conn to create a new configuration.
+        See :func:`~pynsee.utils.init_conn` to create a new configuration.
 
         Parameters
         ----------

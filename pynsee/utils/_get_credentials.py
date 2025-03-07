@@ -37,7 +37,7 @@ def _get_credentials_from_configfile() -> Dict[str, str]:
 def _missing_credentials() -> None:
     logger.critical(
         "INSEE API credentials have not been found: please try to reuse "
-        "pynsee.utils.init_conn to save them locally.\n"
+        "pynsee.init_conn to save them locally.\n"
         "Otherwise, you can still use environment variables as follow:\n\n"
         "import os\n"
         "os.environ['sirene_key'] = 'my_sirene_key'"

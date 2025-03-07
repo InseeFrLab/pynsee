@@ -37,7 +37,7 @@ pip install pynsee[full]
 
 # Subscribe to portail-api.insee.fr and get your credentials!
 # Save your credentials with init_conn function :
-from pynsee.utils.init_conn import init_conn
+from pynsee.utils import init_conn
 init_conn(sirene_key="my_sirene_key")
 
 # Beware : any change to the keys should be tested after having cleared the cache
@@ -134,7 +134,7 @@ fig.savefig('pop_france.svg',
 ```python
 
 # Use the proxy_server argument of the init_conn function to change the proxy server address
-from pynsee.utils.init_conn import init_conn
+from pynsee.utils import init_conn
 init_conn(sirene_key="my_sirene_key",
           http_proxy="http://my_proxy_server:port",
           https_proxy="http://my_proxy_server:port")
