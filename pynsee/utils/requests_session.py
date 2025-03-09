@@ -219,6 +219,15 @@ class PynseeAPISession(requests.Session):
             adapter = LimiterAdapter(**config["rates"], **kw_adapter(api))
             self.mount(config["url"], adapter)
 
+        # add retry on 400 for geoplatform
+        retry_adapt = Retry(
+            total=7,
+            backoff_factor=1,
+            status_forcelist=[400],
+        )
+        adapter = HTTPAdapter(max_retries=retry_adapt)
+        self.mount("https://data.geopf.fr", adapter)
+
     def request(
         self,
         method: str,
