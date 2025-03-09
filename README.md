@@ -1,15 +1,12 @@
 
-[![](https://badge.fury.io/py/pynsee.svg)](https://pypi.org/project/pynsee/)
-![Tests Status](https://raw.githubusercontent.com/InseeFrLab/pynsee/refs/heads/master/reports/tests-badge.svg)
-![Coverage Status](https://raw.githubusercontent.com/InseeFrLab/pynsee/refs/heads/master/reports/coverage-badge.svg)
+[![PyPi version](https://badge.fury.io/py/pynsee.svg)](https://pypi.org/project/pynsee/)
+[![Tests status](https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
+[![Coverage status](https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK)](https://codecov.io/gh/InseeFrLab/pynsee?branch=master)
 
-<!-- [![](https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
-[![](https://github.com/InseeFrLab/pynsee/actions/workflows/examples.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions) -->
-<!-- [![](https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK)](https://codecov.io/gh/InseeFrLab/pynsee?branch=master) -->
-[![](https://readthedocs.org/projects/pynsee/badge/?version=latest)](https://pynsee.readthedocs.io/en/latest/?badge=latest)
-[![](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
-[![](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
-[![](https://img.shields.io/pypi/dm/pynsee)](https://pypistats.org/packages/pynsee)
+[![Documentation](https://readthedocs.org/projects/pynsee/badge/?version=latest)](https://pynsee.readthedocs.io/en/latest/?badge=latest)
+[![Supported python versions](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
+[![PyPi stats](https://img.shields.io/pypi/dm/pynsee)](https://pypistats.org/packages/pynsee)
 
 
 ``pynsee`` gives a quick access to more than 150 000 macroeconomic series,
