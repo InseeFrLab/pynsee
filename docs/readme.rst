@@ -12,12 +12,12 @@ Pynsee python package contains tools to easily search and download French data f
    :target: https://anaconda.org/conda-forge/pynsee
    :alt: Conda Forge Version
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/refs/heads/master/reports/coverage-badge.svg
+.. image:: https://codecov.io/gh/InseeFrLab/pynsee/branch/main/graph/badge.svg
    :target: https://pypi.org/project/pynsee/
    :alt: Coverage Status
 
-.. image:: https://raw.githubusercontent.com/InseeFrLab/pynsee/refs/heads/master/reports/tests-badge.svg
-   :target: https://pypi.org/project/pynsee/
+.. image:: https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg
+   :target: https://github.com/InseeFrLab/pynsee/actions?query=branch%3Amaster+
    :alt: Tests Status
 
 .. image:: https://readthedocs.org/projects/pynsee/badge/?version=latest
