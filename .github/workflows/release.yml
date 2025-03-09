@@ -46,24 +46,6 @@ jobs:
           name: artifact
           path: dist
 
-      - name: Check if Release Exists
-        id: check_release
-        run: |
-          if gh release view ${{ github.ref }}; then echo "exists=true" >> $GITHUB_ENV; else echo "exists=false" >> $GITHUB_ENV; fi
-
-      - name: Create GitHub Release
-        id: create_release
-        if: env.exists == 'false'
-        uses: actions/create-release@v1
-        env:
-          # This token is provided by Actions, you do not need to create your own token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
-          prerelease: false
-
       - name: Get Asset name
         run: |
           export PKG=$(ls dist/ | grep tar)
