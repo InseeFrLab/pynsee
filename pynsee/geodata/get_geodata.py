@@ -32,6 +32,11 @@ def get_geodata(
 
         Changed `polygon` and `crsPolygon` into a `constrain_area` :class:`~geopandas.GeoDataFrame`.
 
+    .. versionchanged: 0.3.0
+
+        Added silent parameter.
+
+
     Examples:
         >>> from pynsee.geodata import get_geodata_list, get_geodata
         >>> #
