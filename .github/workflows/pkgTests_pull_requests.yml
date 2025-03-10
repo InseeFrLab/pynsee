@@ -48,7 +48,7 @@ jobs:
       env:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
-        pytest -v --cov -n auto
+        pytest -v --cov --cov-report=xml -n auto
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v5
       if: github.ref == 'refs/heads/master'

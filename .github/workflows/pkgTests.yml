@@ -20,7 +20,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        #sudo apt-get install libgeos-dev
         python -m pip install --upgrade pip
         pip install flake8 black pytest pytest-xdist pytest-cov geopandas nbconvert matplotlib descartes parameterized
     - name: Lint with flake8
@@ -46,7 +45,7 @@ jobs:
       env:
         sirene_key: ${{ secrets.SIRENE_KEY }}
       run: |
-        pytest -v --cov -n auto
+        pytest -v --cov --cov-report=xml -n auto
     - name: "Upload coverage to Codecov"
       uses: codecov/codecov-action@v5
       if: github.ref == 'refs/heads/master'

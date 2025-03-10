@@ -1,8 +1,0 @@
-# test commands
-pip install -r requirements-dev.txt
-pytest --junitxml=reports/junit/junit.xml --html=reports/junit/report.html -v --cov -n 5
-genbadge tests --output-file=./reports/tests-badge.svg
-coverage report
-coverage xml
-coverage html
-genbadge coverage --input-file=./coverage.xml --output-file=./reports/coverage-badge.svg
