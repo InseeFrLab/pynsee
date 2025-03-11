@@ -2,10 +2,13 @@
 # Copyright : INSEE, 2021
 
 import io
-from functools import lru_cache
-import pandas as pd
+
+# from functools import lru_cache
 import xml.dom.minidom
+from lxml import etree
+import pandas as pd
 from tqdm import trange
+
 
 from pynsee.macrodata._get_date import _get_date
 from pynsee.utils.requests_session import PynseeAPISession
@@ -15,13 +18,111 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-@lru_cache(maxsize=None)
+# @lru_cache(maxsize=None)
+# def get_file(api_query, sdmx_query):
+#     with PynseeAPISession() as session:
+#         results = session.request_insee(sdmx_url=sdmx_query, api_url=api_query)
+
+#     return results.content
+
+
+# @lru_cache(maxsize=None)
 def _get_insee(api_query, sdmx_query, step="1/1"):
 
     with PynseeAPISession() as session:
         results = session.request_insee(sdmx_url=sdmx_query, api_url=api_query)
 
+    # parse the xml file
+    root = etree.fromstring(results.content)
+
+    #
+    # for all series, observations and attributes (depending on time)
+    # collect the data (3 loops)
+    #
+
+    # %%
+    obs_series = []
+    series = root.findall(".//Series")
+    for serie in series:
+        dict_attr = serie.attrib
+        obs = [obs.attrib for obs in serie.iterfind("./")]
+        [x.update(dict_attr) for x in obs]
+        obs_series += obs
+    data = pd.DataFrame(obs_series)
+
+    freq = data.FREQ.iloc[0]
+    time = data.TIME_PERIOD
+
+    if freq == "M":
+        data["DATE"] = time + "-01"
+
+    elif freq == "A":
+        data["DATE"] = time + "-01-01"
+
+    elif freq in {"T", "S", "B"}:
+
+        if freq == "T":
+            pat = "-Q[1234]"
+            repl = {
+                "-Q1": "-01-01",
+                "-Q2": "-04-01",
+                "-Q3": "-07-01",
+                "-Q4": "-10-01",
+            }
+        elif freq == "S":
+            pat = "-S[12]"
+            repl = {"-S1": "-01-01", "-S2": "-07-01"}
+        elif freq == "B":
+            pat = "-B[123456]"
+            repl = {
+                "-B1": "-01-01",
+                "-B2": "-03-01",
+                "-B3": "-05-01",
+                "-B4": "-07-01",
+                "-B5": "-09-01",
+                "-B6": "-11-01",
+            }
+
+        data["DATE"] = time.str[:-3] + time.str.extract(pat).map(repl)
+    else:
+        data["DATE"] = time
+
+    if freq in {"M", "A", "S", "T", "B"}:
+        data["DATE"] = pd.to_datetime(data["DATE"], format="%Y-%m-%d")
+
+    # place DATE column in the first position
+    data = data[["DATE"] + [c for c in data if c not in ["DATE"]]]
+
+    if "DATE" in data.columns:
+        data = data.sort_values(["IDBANK", "DATE"]).reset_index(drop=True)
+
+    # harmonise column names
+    colnames = data.columns
+
+    def replace_hyphen(x):
+        return str(x).replace("-", "_")
+
+    newcolnames = list(map(replace_hyphen, colnames))
+    data.columns = newcolnames
+
+    if "OBS_VALUE" in data.columns:
+        data["OBS_VALUE"] = data["OBS_VALUE"].apply(
+            pd.to_numeric, errors="coerce"
+        )
+
+    logger.debug("Data has been cached")
+
+    return data
+
+
+# # @lru_cache(maxsize=None)
+def _get_insee_old(api_query, sdmx_query, step="1/1"):
+
+    with PynseeAPISession() as session:
+        results = session.request_insee(sdmx_url=sdmx_query, api_url=api_query)
+
     raw_data_file = io.BytesIO(results.content)
+    # raw_data_file = io.BytesIO(get_file(api_query, sdmx_query))
 
     # parse the xml file
     root = xml.dom.minidom.parse(raw_data_file)
@@ -35,6 +136,7 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
 
     list_series = []
 
+    # TODO : à optimiser !!
     for j in trange(n_series, desc="%s - Getting series" % step):
         data = root.getElementsByTagName("Series")[j]
 
@@ -129,3 +231,19 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
     logger.debug("Data has been cached")
 
     return data_final
+
+
+if __name__ == "__main__":
+    # TODO : trouver une série avec freq in "TSB" + time profiler
+
+    logging.basicConfig(level=logging.INFO)
+    df1 = _get_insee(
+        api_query="https://api.insee.fr/series/BDM/V1/data/IPC-2015/M......ENSEMBLE...CVS.2015.?updatedAfter=2017-07-11T08:45:00",
+        sdmx_query="https://bdm.insee.fr/series/sdmx/data/IPC-2015/M......ENSEMBLE...CVS.2015.?updatedAfter=2017-07-11T08:45:00",
+    )
+    print(df1)
+
+    # df2 = _get_insee_old(
+    #     api_query="https://api.insee.fr/series/BDM/V1/data/IPC-2015/M......ENSEMBLE...CVS.2015.?updatedAfter=2017-07-11T08:45:00",
+    #     sdmx_query="https://bdm.insee.fr/series/sdmx/data/IPC-2015/M......ENSEMBLE...CVS.2015.?updatedAfter=2017-07-11T08:45:00",
+    # )
