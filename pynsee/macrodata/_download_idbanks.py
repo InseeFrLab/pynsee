@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-from datetime import date, datetime
+from datetime import date
 import io
 import logging
 import os
@@ -9,10 +9,7 @@ import re
 import warnings
 import zipfile
 
-from typing import Optional
-
 import pandas as pd
-import urllib3
 
 from ..utils.requests_session import PynseeAPISession
 from ..utils.save_df import save_df
@@ -25,8 +22,25 @@ logger = logging.getLogger(__name__)
 def _download_idbank_list(
     update: bool = False,
     silent: bool = False,
-    insee_date_test: Optional[datetime] = None,
 ):
+    """
+    Retrieve the correspondance between idbank and its dimensions; the result
+    is cached.
+
+    Parameters
+    ----------
+    update : bool, optional
+        If True, a new download will be performed whatever the current cache's
+        status. The default is False.
+    silent : bool, optional
+        If silent, will not log the caching. The default is False.
+
+    Returns
+    -------
+    data : pd.DataFrame
+        correspondance between idbank and it's dimensions as DataFrame
+
+    """
     data = _dwn_idbank_files()
 
     data.columns = ["nomflow", "idbank", "cleFlow", "list_var"]
@@ -36,13 +50,28 @@ def _download_idbank_list(
     return data
 
 
-def _dwn_idbank_files():
-    # creating the date object of today's date
+def _dwn_idbank_files() -> pd.DataFrame:
+    """
+    Retrieve the correspondance between idbank and its dimensions of today's
+    date.
+
+    Note: if `pynsee_idbank_file` is set (through an os environment variable),
+    this value will be used to perform the download instead of the potential
+    URLs tested by the inner loop. This should only be used manually if the
+    current algorithm fails to retrieve the actual URL.
+
+    Returns
+    -------
+    data : pd.DataFrame
+        correspondance between idbank and it's dimensions as DataFrame
+    """
+
     todays_date = date.today()
 
     main_link_en = "https://www.insee.fr/en/statistiques/fichier/2868055/"
     main_link_fr = "https://www.insee.fr/fr/statistiques/fichier/2862759/"
 
+    patterns = []
     curr_year = todays_date.year
     last_year = curr_year - 1
     years = [str(curr_year), str(last_year)]
@@ -51,62 +80,68 @@ def _dwn_idbank_files():
         "0" + str(x) for x in range(9, 0, -1)
     ]
 
+    today = todays_date.strftime("%Y%m")
     patt = "_correspondance_idbank_dimension"
-    patterns = [y + x + patt for y in years for x in months]
+    patterns = [
+        y + x + patt for y in years for x in months if not y + x > today
+    ]
     files_en = [main_link_en + f + ".zip" for f in patterns]
     files_fr = [main_link_fr + f + ".zip" for f in patterns]
     files = files_fr + files_en
 
+    idbank_file_not_found = True
     try:
         file_to_dwn = os.environ["pynsee_idbank_file"]
     except KeyError:
-        file_to_dwn = "https://www.insee.fr/fr/statistiques/fichier/2862759/202407_correspondance_idbank_dimension.zip"
-
-    with PynseeAPISession() as session:
-        try:
-            data = _dwn_idbank_file(file_to_dwn=file_to_dwn, session=session)
-            idbank_file_not_found = False
-        except Exception:
-            idbank_file_not_found = True
+        pass
+    else:
+        with PynseeAPISession() as session:
+            try:
+                data = _dwn_idbank_file(
+                    file_to_dwn=file_to_dwn, session=session
+                )
+                idbank_file_not_found = False
+            except Exception:
+                pass
 
     i = 0
-
-    pynsee_idbank_loop_url = True
-
-    try:
-        pynsee_idbank_loop_url = os.environ["pynsee_idbank_loop_url"]
-        if pynsee_idbank_loop_url.upper() == "FALSE":
-            pynsee_idbank_loop_url = False
-    except Exception:
-        try:
-            pynsee_idbank_loop_url = os.environ["PYNSEE_IDBANK_LOOP_URL"]
-            if pynsee_idbank_loop_url.upper() == "FALSE":
-                pynsee_idbank_loop_url = False
-        except Exception:
-            pass
-
     with PynseeAPISession() as session:
 
-        if pynsee_idbank_loop_url:
-            while idbank_file_not_found & (i <= len(files) - 1):
-                try:
-                    data = _dwn_idbank_file(
-                        file_to_dwn=files[i], session=session
-                    )
-                except Exception:
-                    idbank_file_not_found = True
-                else:
-                    idbank_file_not_found = False
-                    strg_print = (
-                        f"Macrodata series update, file used:\n{files[i]}"
-                    )
-                    logger.info(strg_print)
-                i += 1
+        while idbank_file_not_found & (i <= len(files) - 1):
+            try:
+                data = _dwn_idbank_file(file_to_dwn=files[i], session=session)
+            except Exception:
+                idbank_file_not_found = True
+            else:
+                idbank_file_not_found = False
+                strg_print = f"Macrodata series update, file used:\n{files[i]}"
+                logger.info(strg_print)
+            i += 1
 
     return data
 
 
-def _dwn_idbank_file(file_to_dwn, session):
+def _dwn_idbank_file(
+    file_to_dwn: str, session: PynseeAPISession
+) -> pd.DataFrame:
+    """
+    Download and load the correspondance between idbank and its dimensions,
+    knowing it's actual URL.
+
+    Parameters
+    ----------
+    file_to_dwn : str
+        URL to download the file from.
+    session : PynseeAPISession
+        Current Session used to perform the http request (inherits from
+        requests.Session)
+
+    Returns
+    -------
+    data : pd.DataFrame
+        correspondance between idbank and it's dimensions as DataFrame
+
+    """
     separator = ";"
 
     proxies = {}
@@ -116,12 +151,7 @@ def _dwn_idbank_file(file_to_dwn, session):
         except KeyError:
             proxies[key] = ""
 
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
     with warnings.catch_warnings():
-        warnings.simplefilter(
-            "ignore", urllib3.exceptions.InsecureRequestWarning
-        )
         results = session.get(file_to_dwn, proxies=proxies, verify=False)
 
     idbank_zip_file = io.BytesIO(results.content)
