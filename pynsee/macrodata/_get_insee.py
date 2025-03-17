@@ -4,8 +4,8 @@
 
 from functools import lru_cache
 import logging
+import xml.etree.ElementTree as ET
 
-from lxml import etree
 import pandas as pd
 
 from pynsee.utils.requests_session import PynseeAPISession
@@ -91,7 +91,7 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
         results = session.request_insee(sdmx_url=sdmx_query, api_url=api_query)
 
     # parse the xml file
-    root = etree.fromstring(results.content)
+    root = ET.fromstring(results.content)
 
     obs_series = []
     series = root.findall(".//Series")
