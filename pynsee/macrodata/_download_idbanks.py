@@ -107,7 +107,7 @@ def _dwn_idbank_files() -> pd.DataFrame:
     i = 0
     with PynseeAPISession() as session:
 
-        while idbank_file_not_found & (i <= len(files) - 1):
+        while idbank_file_not_found and i < len(files):
             try:
                 data = _dwn_idbank_file(file_to_dwn=files[i], session=session)
             except Exception:
