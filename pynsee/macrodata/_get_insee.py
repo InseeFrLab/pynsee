@@ -21,7 +21,8 @@ def _set_date(df: pd.DataFrame) -> None:
     Adds a "DATE" column (computed from the "TIME_PERIOD" original column).
     The dataframe is changed in place.
 
-    Internal note: leave this as a distinctive function to to improve tests
+    Internal note: leave this as a separate function to to improve tests
+
     coverage.
 
     Parameters
