@@ -14,12 +14,12 @@ from pynsee.utils.requests_session import PynseeAPISession
 logger = logging.getLogger(__name__)
 
 
-def _set_date(df: pd.DataFrame) -> None:
+def _set_date(df: pd.DataFrame) -> pd.DataFrame:
     """
     Parse dates on a dataframe issued by macrodata module.
 
-    Adds a "DATE" column (computed from the "TIME_PERIOD" original column).
-    The dataframe is changed in place.
+    Adds a "DATE" first column (computed from the "TIME_PERIOD" original
+    column) and sort the dataframe according to it.
 
     Internal note: leave this as a separate function to to improve tests
 
@@ -33,7 +33,7 @@ def _set_date(df: pd.DataFrame) -> None:
 
     Returns
     -------
-    None.
+    df : pd.DataFrame
     """
 
     freqs = df.FREQ.unique()
@@ -84,6 +84,13 @@ def _set_date(df: pd.DataFrame) -> None:
                 df.loc[ix, "DATE"], format="%Y-%m-%d"
             )
 
+    if "DATE" in df.columns:
+        # place DATE column in the first position and sort
+        df[["DATE"] + [c for c in df.columns if c not in ["DATE"]]]
+        df = df.sort_values(["IDBANK", "DATE"]).reset_index(drop=True)
+
+    return df
+
 
 @lru_cache(maxsize=None)
 def _get_insee(api_query, sdmx_query, step="1/1"):
@@ -103,13 +110,7 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
         obs_series += obs
     data = pd.DataFrame(obs_series)
 
-    _set_date(data)
-
-    # place DATE column in the first position
-    data = data[["DATE"] + [c for c in data if c not in ["DATE"]]]
-
-    if "DATE" in data.columns:
-        data = data.sort_values(["IDBANK", "DATE"]).reset_index(drop=True)
+    data = _set_date(data)
 
     # harmonise column names
     colnames = data.columns

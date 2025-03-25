@@ -71,7 +71,6 @@ def _dwn_idbank_files() -> pd.DataFrame:
     main_link_en = "https://www.insee.fr/en/statistiques/fichier/2868055/"
     main_link_fr = "https://www.insee.fr/fr/statistiques/fichier/2862759/"
 
-    patterns = []
     curr_year = todays_date.year
     last_year = curr_year - 1
     years = [str(curr_year), str(last_year)]
@@ -90,11 +89,8 @@ def _dwn_idbank_files() -> pd.DataFrame:
     files = files_fr + files_en
 
     idbank_file_not_found = True
-    try:
+    if "pynsee_idbank_file" in os.environ:
         file_to_dwn = os.environ["pynsee_idbank_file"]
-    except KeyError:
-        pass
-    else:
         with PynseeAPISession() as session:
             try:
                 data = _dwn_idbank_file(
