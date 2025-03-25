@@ -117,8 +117,10 @@ class TestFunction(TestCase):
             "001580394",
         )
         assert isinstance(data, pd.DataFrame)
-        df = pd.DataFrame([[3, "blah"]], columns=["TIME_PERIOD", "FREQ"])
-        _set_date(df)
+        df = pd.DataFrame(
+            [[3, "blah", "blah"]], columns=["TIME_PERIOD", "IDBANK", "FREQ"]
+        )
+        df = _set_date(df)
         assert (
             df["DATE"].values == df["TIME_PERIOD"].values == np.array(3)
         ).all()
