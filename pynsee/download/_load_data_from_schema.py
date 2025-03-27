@@ -4,9 +4,38 @@ from functools import lru_cache
 import difflib
 import logging
 
+from openpyxl.styles.colors import WHITE, RGB, aRGB_REGEX
+
 from pynsee.download._unzip_pb import _unzip_pb
 
 logger = logging.getLogger(__name__)
+
+
+def _patch_read_excel_aRGB_hex_values(func):
+    """
+    patch openpyxl to avoid raising ValueError because of colors styling
+    """
+
+    def __patch_set__(self, instance, value):
+        if not self.allow_none:
+            m = aRGB_REGEX.match(value)
+            if m is None:
+                value = WHITE
+            if len(value) == 6:
+                value = "00" + value
+        super(RGB, self).__set__(instance, value)
+
+    def wrapper(*args, **kwargs):
+        __old_rgb_set__ = RGB.__set__
+        try:
+            RGB.__set__ = __patch_set__
+            func(*args, **kwargs)
+        except Exception:
+            raise
+        finally:
+            RGB.__set__ = __old_rgb_set__
+
+    return wrapper
 
 
 @lru_cache(maxsize=None)
@@ -23,6 +52,7 @@ def warning_file(missingFile, foundFile):
         getattr(logger, level)(msg)
 
 
+@_patch_read_excel_aRGB_hex_values
 def _load_data_from_schema(
     telechargementFichier: dict, variables=None, limit_chunk_size=1000000000
 ):
@@ -128,6 +158,7 @@ def _load_data_from_schema(
                         encoding=encoding,
                     )
     elif telechargementFichier["result"]["type"] in ["xls", "xlsx"]:
+
         df_insee = pd.read_excel(
             file_to_import,
             sheet_name=telechargementFichier["import_args"]["sheet"],
