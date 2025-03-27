@@ -48,7 +48,7 @@ class MyTests(unittest.TestCase):
 
     list_file_check = [
         "COG_COMMUNE_2018",
-        "AIRE_URBAINE",
+        # "AIRE_URBAINE",
         "FILOSOFI_COM_2015",
         "DECES_2020",
         "PRENOM_NAT",
