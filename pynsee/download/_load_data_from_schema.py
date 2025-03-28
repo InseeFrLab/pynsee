@@ -29,7 +29,7 @@ def _patch_read_excel_aRGB_hex_values(func):
         __old_rgb_set__ = RGB.__set__
         try:
             RGB.__set__ = __patch_set__
-            func(*args, **kwargs)
+            return func(*args, **kwargs)
         except Exception:
             raise
         finally:
