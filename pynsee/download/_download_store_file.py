@@ -36,21 +36,22 @@ def _download_store_file(tempdir: tempfile.TemporaryDirectory, id: str):
     caract = None
     if id in dict_data_source.keys():
         caract = dict_data_source[id]
-    else:
-
-        if id.rsplit("_", 1)[-1].lower() == "latest":
-            root = id.rsplit("_", 1)[0]
-            suggestions = {
-                x
-                for x in dict_data_source.keys()
-                if re.match(root + ".?[0-9]{4}", x)
-            }
-            if suggestions:
-                new_id = sorted(suggestions)[-1]
-                logger.warning(
-                    "File %s not found. Switching to %s instead", id, new_id
-                )
-                caract = dict_data_source[new_id]
+    elif id.rsplit("_", 1)[-1].lower() == "latest":
+        # allow to query a dataset with a custom "latest" TAG (for instance
+        # "TAG_COM_..." only exists as a vintaged dataset) for stability
+        # purposes
+        root = id.rsplit("_", 1)[0]
+        suggestions = {
+            x
+            for x in dict_data_source.keys()
+            if re.match(root + ".?[0-9]{4}", x)
+        }
+        if suggestions:
+            new_id = sorted(suggestions)[-1]
+            logger.warning(
+                "File %s not found. Switching to %s instead", id, new_id
+            )
+            caract = dict_data_source[new_id]
 
     if not caract:
         suggestions = difflib.get_close_matches(id, dict_data_source.keys())
