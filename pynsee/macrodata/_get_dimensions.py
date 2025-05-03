@@ -53,19 +53,14 @@ def _get_dataset_dimension(
         local_rep = _extract_local_rep(data, i)
 
         dimension_df = {
-            "dataset": [dataset],
-            "dimension": [dimension_id],
-            "local_representation": [local_rep],
+            "dataset": dataset,
+            "dimension": dimension_id,
+            "local_representation": local_rep,
         }
-
-        dimension_df = pd.DataFrame(
-            dimension_df,
-            columns=["dataset", "dimension", "local_representation"],
-        )
 
         list_dimension.append(dimension_df)
 
-    dimension_df_all = pd.concat(list_dimension)
+    dimension_df_all = pd.DataFrame(list_dimension)
     dimension_df_all = dimension_df_all.dropna()
 
     return dimension_df_all
