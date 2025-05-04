@@ -6,4 +6,4 @@ from pynsee.metadata import *
 from pynsee.utils import *
 from pynsee.download import *
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
