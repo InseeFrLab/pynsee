@@ -149,11 +149,10 @@ def get_series(
         try:
             list_dataset = list(
                 _download_idbank_list()
-                .loc[lambda x: x['idbank'].isin(list_idbank)]
-                .drop_duplicates(subset=['nomflow'])
-                ['nomflow']
-                     )
-            metadata_df = _load_dataset_data(datasets = list_dataset)
+                .loc[lambda x: x["idbank"].isin(list_idbank)]
+                .drop_duplicates(subset=["nomflow"])["nomflow"]
+            )
+            metadata_df = _load_dataset_data(datasets=list_dataset)
 
             if metadata_df is not None:
                 metadata_df = metadata_df.rename(columns={"idbank": "IDBANK"})
