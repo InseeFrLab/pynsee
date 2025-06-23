@@ -72,7 +72,7 @@ def transform_overseas(
 
         geocol = "insee_dep_geometry"
 
-        if "id" in gdf and gdf["id"].str.match("DEPARTEM").all():
+        if "cleabs" in gdf and gdf["cleabs"].str.match("DEPARTEM").all():
             # this is already the departments, work on geometry
             geocol = gdf.geometry.name
         else:
