@@ -87,13 +87,13 @@ def transform_overseas(
         )
 
         # keep only specific departements
-        list_new_dep = [gdf.loc[~gdf.insee_dep.isin(departement)]]
+        list_new_dep = [gdf.loc[~gdf.code_insee_du_departement.isin(departement)]]
 
         for i, d in enumerate(departement):
-            ovdep = gdf.loc[gdf.insee_dep.values == d].reset_index(drop=True)
+            ovdep = gdf.loc[gdf.code_insee_du_departement.values == d].reset_index(drop=True)
 
             if ovdep.empty:
-                logger.warning("%s is missing from insee_dep column !", d)
+                logger.warning("%s is missing from code_insee_du_departement column !", d)
             else:
                 # get the center of the department to rescale the geometry
                 # properly
@@ -157,8 +157,8 @@ def zoom(
         >>> # Zoom on parisian departements
         >>> dfZoom = df.zoom()
     """
-    if all([x in gdf.columns for x in ["insee_dep", "geometry"]]):
-        zoomDep = gdf[gdf["insee_dep"].isin(departement)].reset_index(
+    if all([x in gdf.columns for x in ["code_insee_du_departement", "geometry"]]):
+        zoomDep = gdf[gdf["code_insee_du_departement"].isin(departement)].reset_index(
             drop=True
         )
 
