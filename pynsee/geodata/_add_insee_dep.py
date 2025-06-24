@@ -1,5 +1,6 @@
 from tqdm import trange
 from pandas.api.types import CategoricalDtype
+import numpy as np
 
 from ._get_geodata_with_backup import _get_geodata_with_backup
 
@@ -26,37 +27,38 @@ def _add_insee_dep(gdf):
 
 def _add_insee_dep_from_id_com(gdf):
     # add insee_dep column
-    if "code_insee" in gdf.columns:
+    if "code_insee_du_departement" in gdf.columns:
+        
         gdf.loc[:, "code_insee_du_departement"] = [
             v[:3] if v.startswith("97") else v[:2]
-            for v in gdf.code_insee.values
+            for v in gdf.code_insee_du_departement.values
         ]
-    elif "id_com" in gdf.columns:
-        try:
-            dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:commune"
-            com = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
+    elif "cleabs" in gdf.columns:
+        
+        dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:commune"
+        com = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
 
-            com = com[["cleabs", "code_insee_du_departement"]]
-            com = com.rename(columns={"cleabs": "id_com"})
-            gdf = gdf.merge(com, on="id_com", how="left")
-        except Exception:
-            return gdf
+        com = com[["cleabs", "code_insee_du_departement"]]
+        com = com.rename(columns={"cleabs": "id_com"})
+        gdf = gdf.merge(com, on="cleabs", how="left")
 
     # get departments and add the geometry
-    try:
-        dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
-        dep = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
+    dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
+    dep = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
 
-        dep = dep[["code_insee", "geometry"]]
-        dep = dep.rename(columns={"geometry": "insee_dep_geometry",
-                                 "code_insee": "code_insee_du_departement"})
+    dep = dep[["code_insee", "geometry"]]
+    dep = dep.rename(columns={"geometry": "insee_dep_geometry",
+                             "code_insee": "code_insee_du_departement"})
 
-        gdf = gdf.merge(dep, on="code_insee_du_departement", how="left")
-    except Exception:
-        pass
-
+    gdf = (gdf.merge(dep, on="code_insee_du_departement", how="left")
+           .assign(insee_dep_geometry = 
+                lambda x: np.where(x['code_insee_du_departement'] == "NR",
+                                   x['geometry'],
+                                   x['insee_dep_geometry']
+                                  ))
+          )
+    
     return gdf
-
 
 def _add_insee_dep_region(gdf):
     try:

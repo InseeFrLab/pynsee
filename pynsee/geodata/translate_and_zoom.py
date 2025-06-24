@@ -19,12 +19,12 @@ logger = logging.getLogger(__name__)
 
 def transform_overseas(
     gdf: GeoDataFrame,
-    departement: tuple[str, ...] = ("971", "972", "974", "973", "976"),
+    departement: tuple[str, ...] = ("971", "972", "974", "973", "976", "NR"),
     factor: tuple[Optional[float], ...] = (None, None, None, 0.35, None),
     center: tuple[float, float] = (-133583.39, 5971815.98),
     radius: float = 650000,
     angle: float = 1 / 9 * math.pi,
-    startAngle: float = math.pi * (1 - 1.5 * 1 / 9),
+    startAngle: float = math.pi * (1 - 2 * 1 / 9),
 ) -> GeoDataFrame:
     """
     Move overseas departements closer to metropolitan France
@@ -123,7 +123,7 @@ def zoom(
     departement: tuple[str, ...] = ("75", "92", "93", "94"),
     center: tuple[float, float] = (-133583.39, 5971815.98),
     radius: float = 650000,
-    startAngle: float = math.pi * (1 - 2.5 * 1 / 9),
+    startAngle: float = math.pi * (1 - 3.5 * 1 / 9),
     factor: float = 2,
 ) -> GeoDataFrame:
     """Zoom on parisian departements
