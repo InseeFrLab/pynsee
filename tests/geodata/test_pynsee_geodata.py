@@ -38,7 +38,7 @@ def test_get_geodata_dep_polygon_crs_4326():
         update=True,
         crs="EPSG:4326",
     )
-    dep29 = dep29[dep29["insee_dep"] == "29"]
+    dep29 = dep29[dep29["code_insee"] == "29"]
     assert isinstance(dep29, GeoFrDataFrame)
     geo29 = dep29.geometry
     assert all(isinstance(p, (MultiPolygon, Polygon)) for p in geo29)
@@ -50,7 +50,7 @@ def test_get_geodata_dep_polygon_crs_4326():
         crs_polygon="EPSG:4326",
         update=True,
     )
-    assert com29.insee_com.str.startswith("29").any()
+    assert com29.code_insee.str.startswith("29").any()
 
     # query with polygon and non-default crs
     com29 = get_geodata(
@@ -58,7 +58,7 @@ def test_get_geodata_dep_polygon_crs_4326():
         constrain_area=dep29,
         update=True,
     )
-    assert com29.insee_com.str.startswith("29").any()
+    assert com29.code_insee.str.startswith("29").any()
 
 
 def test_get_geodata_dep_crs_3857():
@@ -69,7 +69,7 @@ def test_get_geodata_dep_crs_3857():
         update=True,
         crs="EPSG:3857",
     )
-    dep29 = dep29[dep29["insee_dep"] == "29"].to_crs("EPSG:4121")
+    dep29 = dep29[dep29["code_insee"] == "29"].to_crs("EPSG:4121")
     assert isinstance(dep29, GeoFrDataFrame)
 
     # test conversion from non default crs
@@ -78,7 +78,7 @@ def test_get_geodata_dep_crs_3857():
         update=True,
         constrain_area=dep29,
     )
-    assert com29.insee_com.str.startswith("29").any()
+    assert com29.code_insee.str.startswith("29").any()
 
 
 def test_get_geodata_empty():
@@ -101,7 +101,7 @@ def test_get_geodata_empty():
 
 def test_get_geodata_overseas():
     chflieu = get_geodata(
-        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune",
+        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:chef_lieu_de_commune",
         update=True,
     )
 
@@ -160,7 +160,7 @@ def test_get_geodata_bbox_list():
         dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:departement",
         crs="EPSG:4326",
     )
-    dep13 = dep[dep["insee_dep"] == "13"]
+    dep13 = dep[dep["code_insee"] == "13"]
     geo13 = dep13.union_all()
 
     bbox = _get_bbox_list(polygon=geo13, update=True, crsPolygon="EPSG:4326")
