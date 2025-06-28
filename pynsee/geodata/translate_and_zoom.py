@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def transform_overseas(
     gdf: GeoDataFrame,
     departement: tuple[str, ...] = ("971", "972", "974", "973", "976", "NR"),
-    factor: tuple[Optional[float], ...] = (None, None, None, 0.35, None),
+    factor: tuple[Optional[float], ...] = (None, None, None, 0.35, None, None),
     center: tuple[float, float] = (-133583.39, 5971815.98),
     radius: float = 650000,
     angle: float = 1 / 9 * math.pi,
@@ -71,10 +71,10 @@ def transform_overseas(
     if "cleabs" in gdf and gdf["cleabs"].str.match("DEPARTEM").all():
         # this is already the departments, work on geometry
         geocol = gdf.geometry.name
-        gdf['code_insee_du_departement'] = gdf['code_insee']
-        gdf['insee_dep_geometry'] = gdf['geometry']
+        gdf["code_insee_du_departement"] = gdf["code_insee"]
+        gdf["insee_dep_geometry"] = gdf["geometry"]
     else:
-        gdf = _add_insee_dep(gdf.copy())
+        gdf = _add_insee_dep(gdf.copy()).reset_index(drop=True)
 
     offshore_points = _make_offshore_points(
         center=Point(center),
@@ -88,10 +88,14 @@ def transform_overseas(
     list_new_dep = [gdf.loc[~gdf.code_insee_du_departement.isin(departement)]]
 
     for i, d in enumerate(departement):
-        ovdep = gdf.loc[gdf.code_insee_du_departement.values == d].reset_index(drop=True)
+        ovdep = gdf.loc[gdf.code_insee_du_departement.values == d].reset_index(
+            drop=True
+        )
 
         if ovdep.empty:
-            logger.warning("%s is missing from code_insee_du_departement column !", d)
+            logger.warning(
+                "%s is missing from code_insee_du_departement column !", d
+            )
         else:
             # get the center of the department to rescale the geometry
             # properly
@@ -155,10 +159,12 @@ def zoom(
         >>> # Zoom on parisian departements
         >>> dfZoom = df.zoom()
     """
-    if all([x in gdf.columns for x in ["code_insee_du_departement", "geometry"]]):
-        zoomDep = gdf[gdf["code_insee_du_departement"].isin(departement)].reset_index(
-            drop=True
-        )
+    if all(
+        [x in gdf.columns for x in ["code_insee_du_departement", "geometry"]]
+    ):
+        zoomDep = gdf[
+            gdf["code_insee_du_departement"].isin(departement)
+        ].reset_index(drop=True)
 
         if len(zoomDep.index) > 0:
             _rescale_geom(zoomDep, factor=factor)

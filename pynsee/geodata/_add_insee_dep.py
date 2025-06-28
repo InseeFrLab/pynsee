@@ -29,32 +29,39 @@ def _add_insee_dep_from_id_com(gdf):
     # add insee_dep column
     if "cleabs" in gdf.columns:
         if all(gdf.cleabs.str.match("^COMMUNE")):
-        
-            dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:commune"
-            com = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
-    
-            com = com[["cleabs", "code_insee_du_departement"]]
-            com = com.rename(columns={"cleabs": "id_com"})
-            gdf = gdf.merge(com, on="cleabs", how="left")
+            if "code_insee_du_departement" not in gdf.columns:
+
+                dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:commune"
+                com = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
+
+                com = com[["cleabs", "code_insee_du_departement"]]
+                gdf = gdf.merge(com, on="cleabs", how="left")
 
         if "code_insee_du_departement" in gdf.columns:
             # get departments and add the geometry
             dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
             dep = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
-        
+
             dep = dep[["code_insee", "geometry"]]
-            dep = dep.rename(columns={"geometry": "insee_dep_geometry",
-                                     "code_insee": "code_insee_du_departement"})
-        
-            gdf = (gdf.merge(dep, on="code_insee_du_departement", how="left")
-                   .assign(insee_dep_geometry = 
-                        lambda x: np.where(x['code_insee_du_departement'] == "NR",
-                                           x['geometry'],
-                                           x['insee_dep_geometry']
-                                          ))
-                  )
-                
+            dep = dep.rename(
+                columns={
+                    "geometry": "insee_dep_geometry",
+                    "code_insee": "code_insee_du_departement",
+                }
+            )
+
+            gdf = gdf.merge(
+                dep, on="code_insee_du_departement", how="left"
+            ).assign(
+                insee_dep_geometry=lambda x: np.where(
+                    x["code_insee_du_departement"] == "NR",
+                    x["geometry"],
+                    x["insee_dep_geometry"],
+                )
+            )
+
     return gdf
+
 
 def _add_insee_dep_region(gdf):
     try:
@@ -64,7 +71,9 @@ def _add_insee_dep_region(gdf):
             # get departments, keep only one for each region
             dep = (
                 _get_geodata_with_backup(dataset_id)
-                .drop_duplicates(subset="code_insee_de_la_region", keep="first")
+                .drop_duplicates(
+                    subset="code_insee_de_la_region", keep="first"
+                )
                 .to_crs("EPSG:3857")
             )
 
