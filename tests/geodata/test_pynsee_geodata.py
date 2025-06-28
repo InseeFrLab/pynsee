@@ -38,7 +38,7 @@ def test_get_geodata_dep_polygon_crs_4326():
         update=True,
         crs="EPSG:4326",
     )
-    dep29 = dep29[dep29["code_insee_du_departement"] == "29"]
+    dep29 = dep29[dep29["code_insee"] == "29"]
     assert isinstance(dep29, GeoFrDataFrame)
     geo29 = dep29.geometry
     assert all(isinstance(p, (MultiPolygon, Polygon)) for p in geo29)
@@ -69,7 +69,7 @@ def test_get_geodata_dep_crs_3857():
         update=True,
         crs="EPSG:3857",
     )
-    dep29 = dep29[dep29["code_insee_du_departement"] == "29"].to_crs("EPSG:4121")
+    dep29 = dep29[dep29["code_insee"] == "29"].to_crs("EPSG:4121")
     assert isinstance(dep29, GeoFrDataFrame)
 
     # test conversion from non default crs
@@ -160,7 +160,7 @@ def test_get_geodata_bbox_list():
         dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:departement",
         crs="EPSG:4326",
     )
-    dep13 = dep[dep["code_insee_du_departement"] == "13"]
+    dep13 = dep[dep["code_insee"] == "13"]
     geo13 = dep13.union_all()
 
     bbox = _get_bbox_list(polygon=geo13, update=True, crsPolygon="EPSG:4326")
