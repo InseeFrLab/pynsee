@@ -101,7 +101,7 @@ def test_get_geodata_empty():
 
 def test_get_geodata_overseas():
     chflieu = get_geodata(
-        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:chflieu_commune",
+        dataset_id="ADMINEXPRESS-COG-CARTO.LATEST:chef_lieu_de_commune",
         update=True,
     )
 
