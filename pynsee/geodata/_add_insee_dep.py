@@ -61,7 +61,6 @@ def _add_insee_dep_from_id_com(gdf):
                 )
             )
 
-
     return gdf
 
 
@@ -73,7 +72,6 @@ def _add_insee_dep_region(gdf):
             # get departments, keep only one for each region
             dep = (
                 _get_geodata_with_backup(dataset_id)
-
                 .drop_duplicates(
                     subset="code_insee_de_la_region", keep="first"
                 )
@@ -112,7 +110,6 @@ def _add_insee_dep_from_geodata(gdf):
             )
 
             dep_list = dep_list.sort_values(["code_insee"]).reset_index(
-
                 drop=True
             )
 
