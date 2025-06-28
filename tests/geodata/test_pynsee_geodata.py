@@ -60,7 +60,7 @@ def test_get_geodata_dep_polygon_crs_4326():
         constrain_area=dep29,
         update=True,
     )
-    assert com29.insee_com.str.startswith("29").any()
+    assert com29.code_insee.str.startswith("29").any()
 
 
 def test_get_geodata_dep_crs_3857():
