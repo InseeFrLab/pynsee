@@ -1,18 +1,95 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import io
-from functools import lru_cache
-import pandas as pd
-import xml.dom.minidom
-from tqdm import trange
 
-from pynsee.macrodata._get_date import _get_date
+from functools import lru_cache
+import logging
+import xml.etree.ElementTree as ET
+
+import pandas as pd
+
 from pynsee.utils.requests_session import PynseeAPISession
 
-import logging
 
 logger = logging.getLogger(__name__)
+
+
+def _set_date(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Parse dates on a dataframe issued by macrodata module.
+
+    Adds a "DATE" first column (computed from the "TIME_PERIOD" original
+    column) and sort the dataframe according to it.
+
+    Internal note: leave this as a separate function to to improve tests
+
+    coverage.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame containing at least two columns: "FREQ" and "TIME_PERIOD".
+        The FREQ column should contain only one homogeneous value.
+
+    Returns
+    -------
+    df : pd.DataFrame
+    """
+
+    freqs = df.FREQ.unique()
+    if "DATE" not in df.columns:
+        df["DATE"] = None
+
+    for freq in freqs:
+        ix = df[df.FREQ == freq].index
+        time = df.loc[ix, "TIME_PERIOD"]
+        if freq == "M":
+            df.loc[ix, "DATE"] = time + "-01"
+
+        elif freq == "A":
+            df.loc[ix, "DATE"] = time + "-01-01"
+
+        elif freq in {"T", "S", "B"}:
+
+            if freq == "T":
+                pat = "(-Q[1234])"
+                repl = {
+                    "-Q1": "-01-01",
+                    "-Q2": "-04-01",
+                    "-Q3": "-07-01",
+                    "-Q4": "-10-01",
+                }
+            elif freq == "S":
+                pat = "(-S[12])"
+                repl = {"-S1": "-01-01", "-S2": "-07-01"}
+            elif freq == "B":
+                pat = "(-B[123456])"
+                repl = {
+                    "-B1": "-01-01",
+                    "-B2": "-03-01",
+                    "-B3": "-05-01",
+                    "-B4": "-07-01",
+                    "-B5": "-09-01",
+                    "-B6": "-11-01",
+                }
+
+            df.loc[ix, "DATE"] = time.str[:-3] + time.str.extract(
+                pat, expand=False
+            ).map(repl)
+        else:
+            df.loc[ix, "DATE"] = time
+
+        if freq in {"M", "A", "S", "T", "B"}:
+            df.loc[ix, "DATE"] = pd.to_datetime(
+                df.loc[ix, "DATE"], format="%Y-%m-%d"
+            )
+
+    if "DATE" in df.columns:
+        # place DATE column in the first position and sort
+        df[["DATE"] + [c for c in df.columns if c not in ["DATE"]]]
+        df = df.sort_values(["IDBANK", "DATE"]).reset_index(drop=True)
+
+    return df
 
 
 @lru_cache(maxsize=None)
@@ -21,111 +98,34 @@ def _get_insee(api_query, sdmx_query, step="1/1"):
     with PynseeAPISession() as session:
         results = session.request_insee(sdmx_url=sdmx_query, api_url=api_query)
 
-    raw_data_file = io.BytesIO(results.content)
-
     # parse the xml file
-    root = xml.dom.minidom.parse(raw_data_file)
+    root = ET.fromstring(results.content)
 
-    n_series = len(root.getElementsByTagName("Series"))
+    obs_series = []
+    series = root.findall(".//Series")
+    for serie in series:
+        dict_attr = serie.attrib
+        obs = [obs.attrib for obs in serie.iterfind("./")]
+        [x.update(dict_attr) for x in obs]
+        obs_series += obs
+    data = pd.DataFrame(obs_series)
 
-    #
-    # for all series, observations and attributes (depending on time)
-    # collect the data (3 loops)
-    #
-
-    list_series = []
-
-    for j in trange(n_series, desc="%s - Getting series" % step):
-        data = root.getElementsByTagName("Series")[j]
-
-        n_obs = len(data.getElementsByTagName("Obs"))
-
-        #
-        # collect the obsevation values from the series
-        #
-
-        list_obs = []
-
-        for i in range(n_obs):
-            obs = data.getElementsByTagName("Obs")[i]._attrs
-
-            dict_obs = {}
-            for a in obs:
-                dict_obs[a] = obs[a]._value
-
-            col = list(dict_obs.keys())
-
-            df = pd.DataFrame(dict_obs, columns=col, index=[0])
-
-            list_obs.append(df)
-
-        if len(list_obs) > 0:
-            obs_series = pd.concat(list_obs).reset_index(drop=True)
-
-        #
-        # collect attributes values from the series
-        #
-
-        attr_series = data._attrs
-
-        dict_attr = {}
-        for a in attr_series:
-            dict_attr[a] = attr_series[a]._value
-
-        col_attr = list(dict_attr.keys())
-        attr_series = pd.DataFrame(
-            dict_attr, columns=col_attr, index=[0]
-        ).reset_index(drop=True)
-
-        if len(list_obs) > 0:
-            data_series = obs_series
-            if len(dict_attr.keys()) > 0:
-                for k in dict_attr.keys():
-                    data_series[k] = dict_attr[k]
-            # data_series = pd.concat([obs_series, attr_series], axis=1)
-        else:
-            data_series = pd.concat([attr_series], axis=1)
-
-        #
-        # add date column
-        #
-
-        if len(list_obs) > 0:
-            freq = attr_series.FREQ[0]
-            time_period = obs_series.TIME_PERIOD.to_list()
-
-            dates = _get_date(freq, time_period)
-            # new column
-            data_series = data_series.assign(DATE=dates)
-            # place DATE column in the first position
-            data_series = data_series[
-                ["DATE"] + [c for c in data_series if c not in ["DATE"]]
-            ]
-
-        # append series dataframe to final list
-        list_series.append(data_series)
-
-    data_final = pd.concat(list_series)
-
-    # index and sort dataframe by date
-    # data_final = data_final.set_index('DATE')
-    if "DATE" in data_final.columns:
-        data_final = data_final.sort_values(["IDBANK", "DATE"])
+    data = _set_date(data)
 
     # harmonise column names
-    colnames = data_final.columns
+    colnames = data.columns
 
     def replace_hyphen(x):
         return str(x).replace("-", "_")
 
     newcolnames = list(map(replace_hyphen, colnames))
-    data_final.columns = newcolnames
+    data.columns = newcolnames
 
-    if "OBS_VALUE" in data_final.columns:
-        data_final["OBS_VALUE"] = data_final["OBS_VALUE"].apply(
+    if "OBS_VALUE" in data.columns:
+        data["OBS_VALUE"] = data["OBS_VALUE"].apply(
             pd.to_numeric, errors="coerce"
         )
 
     logger.debug("Data has been cached")
 
-    return data_final
+    return data
