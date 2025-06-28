@@ -1,7 +1,7 @@
 from tqdm import trange
 from pandas.api.types import CategoricalDtype
 import numpy as np
-import pandas as pd 
+import pandas as pd
 
 from ._get_geodata_with_backup import _get_geodata_with_backup
 
@@ -100,13 +100,20 @@ def _add_insee_dep_from_geodata(gdf):
             dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
             dep_list = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
 
-            com = _get_geodata_with_backup("ADMINEXPRESS-COG-CARTO.LATEST:commune").to_crs("EPSG:3857")
-            stpm = com.loc[lambda x: x['code_insee'].str.contains('^975')]
+            com = _get_geodata_with_backup(
+                "ADMINEXPRESS-COG-CARTO.LATEST:commune"
+            ).to_crs("EPSG:3857")
+            stpm = com.loc[lambda x: x["code_insee"].str.contains("^975")]
             stpmGeo = stpm.geometry.union_all()
-            
-            dep_list = pd.concat([
-                pd.DataFrame({'code_insee': 'NR', 'geometry': stpmGeo}, index = [0]),
-                dep_list])
+
+            dep_list = pd.concat(
+                [
+                    pd.DataFrame(
+                        {"code_insee": "NR", "geometry": stpmGeo}, index=[0]
+                    ),
+                    dep_list,
+                ]
+            )
 
             list_ovdep = ["971", "972", "974", "NR", "973", "976"]
             list_other_dep = [
