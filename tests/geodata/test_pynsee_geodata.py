@@ -52,7 +52,7 @@ def test_get_geodata_dep_polygon_crs_4326():
         crs_polygon="EPSG:4326",
         update=True,
     )
-    assert com29.insee_com.str.startswith("29").any()
+    assert com29.code_insee.str.startswith("29").any()
 
     # query with polygon and non-default crs
     com29 = get_geodata(
@@ -82,7 +82,7 @@ def test_get_geodata_dep_crs_3857():
         update=True,
         constrain_area=dep29,
     )
-    assert com29.insee_com.str.startswith("29").any()
+    assert com29.code_insee.str.startswith("29").any()
 
 
 def test_get_geodata_empty():
