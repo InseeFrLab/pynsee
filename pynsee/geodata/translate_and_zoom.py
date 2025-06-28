@@ -1,6 +1,5 @@
 import logging
 import math
-import warnings
 from typing import Optional
 
 import pandas as pd
@@ -63,59 +62,58 @@ def transform_overseas(
     """
     init_crs = gdf.crs
 
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
+    if init_crs != "EPSG:3857":
+        logging.warning("Converting GeoDataFrame to EPSG:3857.")
+        gdf = gdf.to_crs("EPSG:3857")
 
-        if init_crs != "EPSG:3857":
-            logging.warning("Converting GeoDataFrame to EPSG:3857.")
-            gdf = gdf.to_crs("EPSG:3857")
+    geocol = "insee_dep_geometry"
 
-        geocol = "insee_dep_geometry"
+    if "cleabs" in gdf and gdf["cleabs"].str.match("DEPARTEM").all():
+        # this is already the departments, work on geometry
+        geocol = gdf.geometry.name
+        gdf['code_insee_du_departement'] = gdf['code_insee']
+        gdf['insee_dep_geometry'] = gdf['geometry']
+    else:
+        gdf = _add_insee_dep(gdf.copy())
 
-        if "cleabs" in gdf and gdf["cleabs"].str.match("DEPARTEM").all():
-            # this is already the departments, work on geometry
-            geocol = gdf.geometry.name
+    offshore_points = _make_offshore_points(
+        center=Point(center),
+        list_ovdep=departement,
+        radius=radius,
+        angle=angle,
+        startAngle=startAngle,
+    )
+
+    # keep only specific departements
+    list_new_dep = [gdf.loc[~gdf.code_insee_du_departement.isin(departement)]]
+
+    for i, d in enumerate(departement):
+        ovdep = gdf.loc[gdf.code_insee_du_departement.values == d].reset_index(drop=True)
+
+        if ovdep.empty:
+            logger.warning("%s is missing from code_insee_du_departement column !", d)
         else:
-            gdf = _add_insee_dep(gdf.copy())
+            # get the center of the department to rescale the geometry
+            # properly
+            center = _get_center(ovdep, geocol=geocol)
 
-        offshore_points = _make_offshore_points(
-            center=Point(center),
-            list_ovdep=departement,
-            radius=radius,
-            angle=angle,
-            startAngle=startAngle,
-        )
+            if factor[i] is not None:
+                _rescale_geom(ovdep, factor=factor[i], center=center)
 
-        # keep only specific departements
-        list_new_dep = [gdf.loc[~gdf.code_insee_du_departement.isin(departement)]]
+            center_x, center_y = center
 
-        for i, d in enumerate(departement):
-            ovdep = gdf.loc[gdf.code_insee_du_departement.values == d].reset_index(drop=True)
+            xoff = offshore_points[i].coords.xy[0][0] - center_x
+            yoff = offshore_points[i].coords.xy[1][0] - center_y
 
-            if ovdep.empty:
-                logger.warning("%s is missing from code_insee_du_departement column !", d)
-            else:
-                # get the center of the department to rescale the geometry
-                # properly
-                center = _get_center(ovdep, geocol=geocol)
+            ovdep.loc[:, ovdep.geometry.name] = ovdep.geometry.translate(
+                xoff=xoff, yoff=yoff
+            )
 
-                if factor[i] is not None:
-                    _rescale_geom(ovdep, factor=factor[i], center=center)
+            list_new_dep.append(ovdep)
 
-                center_x, center_y = center
+    gdf = pd.concat(list_new_dep, ignore_index=True)
 
-                xoff = offshore_points[i].coords.xy[0][0] - center_x
-                yoff = offshore_points[i].coords.xy[1][0] - center_y
-
-                ovdep.loc[:, ovdep.geometry.name] = ovdep.geometry.translate(
-                    xoff=xoff, yoff=yoff
-                )
-
-                list_new_dep.append(ovdep)
-
-        gdf = pd.concat(list_new_dep, ignore_index=True)
-
-        return gdf.drop(columns=["insee_dep_geometry"], errors="ignore")
+    return gdf.drop(columns=["insee_dep_geometry"], errors="ignore")
 
 
 def zoom(
