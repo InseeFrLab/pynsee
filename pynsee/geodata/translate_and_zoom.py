@@ -92,6 +92,7 @@ def transform_overseas(
             drop=True
         )
 
+
         if ovdep.empty:
             logger.warning(
                 "%s is missing from code_insee_du_departement column !", d
@@ -100,6 +101,7 @@ def transform_overseas(
             # get the center of the department to rescale the geometry
             # properly
             center = _get_center(ovdep, geocol=geocol)
+
 
             if factor[i] is not None:
                 _rescale_geom(ovdep, factor=factor[i], center=center)
@@ -159,12 +161,14 @@ def zoom(
         >>> # Zoom on parisian departements
         >>> dfZoom = df.zoom()
     """
+
     if all(
         [x in gdf.columns for x in ["code_insee_du_departement", "geometry"]]
     ):
         zoomDep = gdf[
             gdf["code_insee_du_departement"].isin(departement)
         ].reset_index(drop=True)
+
 
         if len(zoomDep.index) > 0:
             _rescale_geom(zoomDep, factor=factor)
