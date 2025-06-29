@@ -20,20 +20,23 @@ def get_column_metadata(id):
         >>> rp_logement_metadata = get_column_metadata("RP_LOGEMENT_2016")
 
     """
-    id = id.upper()
     dict_data_source = _get_dict_data_source()
 
     list_keys_with_metadata = [
         d
-        for d in dict_data_source.keys()
-        if ("val_col" in dict_data_source[d].keys())
-        | ("label_col" in dict_data_source[d].keys())
+        for d in dict_data_source
+        if ("val_col" in dict_data_source[d])
+        or ("label_col" in dict_data_source[d])
     ]
 
-    if id in dict_data_source.keys():
+    id = id.upper()
+    id_used = id
+
+    if id not in dict_data_source:
         suggestions = difflib.get_close_matches(
             id, list_keys_with_metadata, n=1, cutoff=0.8
         )
+
         if len(suggestions) > 0:
             id_used = suggestions[0]
             if not id == id_used:
@@ -41,15 +44,11 @@ def get_column_metadata(id):
                     f"Metadata for {id} has not been found, metadata for "
                     f"{id_used} is provided instead"
                 )
-        else:
-            id_used = id
-    else:
-        id_used = id
 
-    if id_used in dict_data_source.keys():
+    if id_used in dict_data_source:
         dict_data = dict_data_source[id_used]
 
-        if "label_col" in dict_data.keys():
+        if "label_col" in dict_data:
             labels = pd.DataFrame(dict_data["label_col"], index=[0]).T
             labels["column"] = labels.index
             labels.columns = ["column_label_fr", "column"]
@@ -64,7 +63,7 @@ def get_column_metadata(id):
         if val_col is not None:
             list_val_col = []
 
-            for k in val_col.keys():
+            for k in val_col:
                 val_col_df = pd.DataFrame(val_col[k], index=[0]).T
                 val_col_df[k] = val_col_df.index
                 val_col_df.columns = ["value" + "_label_fr", "value"]
