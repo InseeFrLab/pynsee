@@ -2,9 +2,7 @@
 # Copyright : INSEE, 2021
 
 from functools import lru_cache
-import io
 import pandas as pd
-import xml.etree.ElementTree as ET
 
 from pynsee.utils._paste import _paste
 from pynsee.utils.requests_session import PynseeAPISession
