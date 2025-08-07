@@ -96,7 +96,7 @@ class PynseeAPISession(requests.Session):
             HTTPS_PROXY_KEY: https_proxy,
             SIRENE_KEY: sirene_key,
         }
-        
+
         stored_config = _get_credentials_from_configfile(url)
 
         for k, v in config.items():
