@@ -45,11 +45,12 @@ def _add_insee_dep_from_id_com(gdf):
             dep = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
 
             dep = dep[["code_insee", "geometry"]]
-            dep = dep.rename(
+            dep.rename(
                 columns={
                     "geometry": "insee_dep_geometry",
                     "code_insee": "code_insee_du_departement",
-                }
+                },
+                inplace=True
             )
 
             gdf = gdf.merge(
@@ -80,8 +81,13 @@ def _add_insee_dep_region(gdf):
             )
 
             dep = dep[["code_insee", "code_insee_de_la_region", "geometry"]]
+            dep.rename(
+                columns={
+                    "geometry": "insee_dep_geometry",
+                },
+                inplace=True
+            )
 
-            dep = dep.rename(columns={"geometry": "insee_dep_geometry"})
             gdf = gdf.merge(dep, on="insee_reg", how="left")
     except Exception:
         pass
