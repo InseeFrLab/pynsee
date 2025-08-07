@@ -30,7 +30,7 @@ def test_request_insee_1():
     api_url = "dummy"
 
     with PynseeAPISession(
-        http_proxy="", https_proxy="", sirene_key=""
+        url="test", http_proxy="", https_proxy="", sirene_key=""
     ) as session:
 
         def patch_error_request_api_insee(*args, **kwargs):
@@ -89,7 +89,7 @@ def test_overriding_insee_config_and_environ():
     os.environ["DUMMY_SIRENE_KEY"] = "eggs"
     os.environ["DUMMY_HTTPS_PROXY_KEY"] = "bacon"
 
-    with PynseeAPISession() as session:
+    with PynseeAPISession(url="test") as session:
         assert session.sirene_key == "eggs"
         assert session.proxies["https"] == "bacon"
 
@@ -142,7 +142,7 @@ def test_overriding_insee_config_and_environ4():
             f,
         )
 
-    with PynseeAPISession() as session:
+    with PynseeAPISession(url="test") as session:
         assert session.sirene_key == "sausage"
         assert session.proxies["http"] is None
         assert session.proxies["https"] == "spam"

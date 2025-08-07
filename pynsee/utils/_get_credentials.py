@@ -3,6 +3,7 @@
 
 import json
 import logging
+import re
 
 from functools import lru_cache
 from typing import Dict
@@ -13,7 +14,7 @@ from pynsee.constants import CONFIG_FILE
 logger = logging.getLogger(__name__)
 
 
-def _get_credentials_from_configfile() -> Dict[str, str]:
+def _get_credentials_from_configfile(url) -> Dict[str, str]:
     """
     Try to load credentials and proxy configuration from config file.
 
@@ -26,8 +27,9 @@ def _get_credentials_from_configfile() -> Dict[str, str]:
             key_dict = json.load(f)
 
     except FileNotFoundError:
-        # no credentials/config stored
-        _missing_credentials()
+        if re.match(".*api-sirene.*", url):
+            # no credentials/config stored
+            _missing_credentials()
         return key_dict
 
     return key_dict

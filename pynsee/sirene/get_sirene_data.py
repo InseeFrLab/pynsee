@@ -65,7 +65,7 @@ def get_sirene_data(*id):
 
             try:
                 with HiddenPrints():
-                    with PynseeAPISession() as session:
+                    with PynseeAPISession(url=link) as session:
                         request = session.request_insee(
                             api_url=link,
                             file_format="application/json;charset=utf-8",

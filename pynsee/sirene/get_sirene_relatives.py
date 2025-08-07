@@ -50,7 +50,7 @@ def get_sirene_relatives(*siret):
             )
             try:
                 with HiddenPrints():
-                    with PynseeAPISession() as session:
+                    with PynseeAPISession(url=query) as session:
                         result = session.request_insee(
                             api_url=query,
                             file_format="application/json;charset=utf-8",

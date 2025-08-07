@@ -60,6 +60,7 @@ class PynseeAPISession(requests.Session):
 
     def __init__(
         self,
+        url: Optional[str] = "",
         sirene_key: Optional[str] = None,
         http_proxy: Optional[str] = None,
         https_proxy: Optional[str] = None,
@@ -95,8 +96,8 @@ class PynseeAPISession(requests.Session):
             HTTPS_PROXY_KEY: https_proxy,
             SIRENE_KEY: sirene_key,
         }
-
-        stored_config = _get_credentials_from_configfile()
+        
+        stored_config = _get_credentials_from_configfile(url)
 
         for k, v in config.items():
             venv = get_env_case_insensitive(k)
@@ -106,7 +107,8 @@ class PynseeAPISession(requests.Session):
                 # which is **not** the same as None
                 if venv is not None:
                     config[k] = venv
-                    _warn_env_credentials(k)
+                    if re.match(".*api-sirene.*", url):
+                        _warn_env_credentials(k)
                 else:
                     config[k] = stored_config.get(k)
 
