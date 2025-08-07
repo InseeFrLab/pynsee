@@ -83,15 +83,15 @@ mapcom = get_geodata("ADMINEXPRESS-COG-CARTO.LATEST:commune").to_crs(epsg=3035)
 mapcom.attrs["area"] = mapcom.area / 10**6
 mapcom = mapcom.to_crs(epsg=3857)
 
-mapcom['REF_AREA'] = 'D' + mapcom['insee_dep']
+mapcom['REF_AREA'] = 'D' + mapcom['code_insee']
 mapcom['density'] = mapcom['population'] / mapcom.attrs["area"]
 
-mapcom = mapcom.translate(departement=['971', '972', '974', '973', '976'],
-                          factor=[1.5, 1.5, 1.5, 0.35, 1.5])
+mapcom = mapcom.transform_overseas(departement=['971', '972', '974', '973', '976', 'NR'],
+                          factor=[1.5, 1.5, 1.5, 0.35, 1.5, 1.5])
 
 mapcom = mapcom.zoom(
     departement=["75","92", "93", "91", "77", "78", "95", "94"],
-    factor=1.5, startAngle = math.pi * (1 - 3 * 1/9))
+    factor=1.5, startAngle = math.pi * (1 - 3.5 * 1/9))
 
 density_ranges = [
     40, 80, 100, 120, 150, 200, 250, 400, 600, 1000, 2000, 5000, 10000, 20000
