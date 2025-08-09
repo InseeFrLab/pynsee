@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
-import pandas as pd
-from functools import lru_cache
+import logging
 import re
+from functools import lru_cache
+
+import pandas as pd
+from requests import RequestException
 
 from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
 from pynsee.utils.HiddenPrints import HiddenPrints
 
 from .sirenedataframe import SireneDataFrame
-
-import logging
 
 
 logger = logging.getLogger(__name__)
@@ -51,7 +52,7 @@ def get_sirene_data(*id):
 
     list_data = []
 
-    for i in range(len(list_ids)):
+    for sid in list_ids:
         for kind in ["siret", "siren"]:
             if kind == "siren":
                 main_key = "uniteLegale"
@@ -59,13 +60,11 @@ def get_sirene_data(*id):
                 main_key = "etablissement"
 
             INSEE_api_sirene = "https://api.insee.fr/api-sirene/3.11/" + kind
-            link = (
-                INSEE_api_sirene + "/" + re.sub(r"\s+", "", str(list_ids[i]))
-            )
+            link = INSEE_api_sirene + "/" + re.sub(r"\s+", "", str(sid))
 
             try:
                 with HiddenPrints():
-                    with PynseeAPISession(url=link) as session:
+                    with PynseeAPISession() as session:
                         request = session.request_insee(
                             api_url=link,
                             file_format="application/json;charset=utf-8",
@@ -85,19 +84,20 @@ def get_sirene_data(*id):
                     data = data_request[main_key]
 
                 data_final = _make_dataframe_from_dict(data)
+            except RequestException as e:
+                if e.response.status_code == 401:
+                    raise
             except Exception:
                 pass
             else:
                 list_data.append(data_final)
                 break
 
-    if len(list_data) > 0:
+    if list_data:
         data_final = pd.concat(list_data).reset_index(drop=True)
-    else:
-        raise ValueError("!!! No data found for the provided identifiers !!!")
 
-    _warning_get_data()
+        _warning_get_data()
 
-    SireneDF = SireneDataFrame(data_final)
+        return SireneDataFrame(data_final)
 
-    return SireneDF
+    raise ValueError("!!! No data found for the provided identifiers !!!")
