@@ -9,7 +9,7 @@ import numpy as np
 from pandas import pandas as pd
 
 
-from pynsee.macrodata._get_insee import _get_insee, _set_date
+from pynsee.macrodata._get_insee import _set_date
 from pynsee.macrodata._get_idbank_internal_data_harmonized import (
     _get_idbank_internal_data_harmonized,
 )
@@ -36,8 +36,6 @@ from pynsee.macrodata.get_dataset import get_dataset
 from pynsee.macrodata.get_column_title import get_column_title
 from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
-
-from pynsee.utils._clean_insee_folder import _clean_insee_folder
 
 
 test_SDMX = True

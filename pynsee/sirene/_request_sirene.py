@@ -38,7 +38,7 @@ def _request_sirene(query, kind, number=1001):
     if number > number_query_limit:
         link = link + "&curseur=*"
 
-    with PynseeAPISession(url=link) as session:
+    with PynseeAPISession() as session:
         request = session.request_insee(
             api_url=link,
             file_format="application/json;charset=utf-8",
@@ -84,7 +84,7 @@ def _request_sirene(query, kind, number=1001):
                     + following_cursor
                 )
 
-                with PynseeAPISession(url=new_query) as session:
+                with PynseeAPISession() as session:
                     request_new = session.request_insee(
                         api_url=new_query,
                         file_format="application/json;charset=utf-8",

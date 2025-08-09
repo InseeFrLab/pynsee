@@ -1,9 +1,10 @@
 import pandas as pd
 import re
 
+from requests import RequestException
+
 from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils._make_dataframe_from_dict import _make_dataframe_from_dict
-from pynsee.utils.HiddenPrints import HiddenPrints
 from .sirenedataframe import SireneDataFrame
 
 
@@ -24,7 +25,6 @@ def get_sirene_relatives(*siret):
         >>> data = get_sirene_relatives('00555008200027')
         >>> data = get_sirene_relatives(['39860733300059', '00555008200027'])
     """
-
     list_siret = []
 
     for id in range(len(siret)):
@@ -40,38 +40,44 @@ def get_sirene_relatives(*siret):
     types = ["siretEtablissementPredecesseur", "siretEtablissementSuccesseur"]
     list_df = []
 
-    for s in range(len(list_siret)):
-        for i in range(len(types)):
-
-            criteria = types[i] + ":" + re.sub(r"\s+", "", list_siret[s])
+    for s in list_siret:
+        for t in types:
+            criteria = t + ":" + re.sub(r"\s+", "", s)
             query = (
                 "https://api.insee.fr/api-sirene/3.11/siret/liensSuccession"
                 f"?q={criteria}"
             )
-            try:
-                with HiddenPrints():
-                    with PynseeAPISession(url=query) as session:
-                        result = session.request_insee(
-                            api_url=query,
-                            file_format="application/json;charset=utf-8",
-                            raise_if_not_ok=True,
-                            print_msg=False,
-                        )
 
-                    json = result.json()
+            try:
+                with PynseeAPISession() as session:
+                    result = session.request_insee(
+                        api_url=query,
+                        file_format="application/json;charset=utf-8",
+                        raise_if_not_ok=True,
+                        print_msg=False,
+                    )
+
+                json = result.json()
+            except RequestException as e:
+                if e.response.status_code == 401:
+                    raise
             except Exception:
                 pass
             else:
                 list_df += [_make_dataframe_from_dict(json)]
 
-    if len(list_df) > 0:
-        df = SireneDataFrame(pd.concat(list_df).reset_index(drop=True))
+    if list_df:
+        df = SireneDataFrame(
+            pd.concat(list_df)
+            .drop(
+                columns=["statut", "message", "nombre", "total", "debut"],
+                errors="ignore",
+            )
+            .reset_index(drop=True)
+        )
 
-        for c in ["statut", "message", "nombre", "total", "debut"]:
-            if c in df.columns:
-                del df[c]
-
-        return df
+        if df.columns.any():
+            return df
 
     raise ValueError(
         "Neither parent nor child entities were found for any entity"
