@@ -4,6 +4,8 @@
 from functools import lru_cache
 import itertools
 import re
+
+import pandas as pd
 from unidecode import unidecode
 
 from pynsee.utils.save_df import save_df
@@ -251,7 +253,7 @@ def search_sirene(
     data_final = _request_sirene(query=query, kind=kind, number=number)
 
     df = _clean_data(
-        data_final.copy(),
+        data_final.copy() if data_final is not None else pd.DataFrame(),
         kind=kind,
         clean=False,
         activity=activity,
