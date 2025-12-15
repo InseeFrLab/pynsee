@@ -47,7 +47,7 @@ SEPARATORS = {
     "complementAdresseEtablissement": " ?'*/:!()[]",
     "typeVoieEtablissement": " ?'*/:!()[]",
     # Note : for the following fields, the "punctuation+blanc*" rule is managed
-    # directly in the code, see "encode" func
+    # directly in the code, see "safe_encode" func
     "numeroVoieEtablissement": " ",
     "dernierNumeroVoieEtablissement": " ",
 }
