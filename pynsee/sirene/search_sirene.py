@@ -3,7 +3,10 @@
 
 from functools import lru_cache
 import itertools
+import logging
 import re
+import string
+import urllib.parse
 
 import pandas as pd
 from unidecode import unidecode
@@ -13,9 +16,42 @@ from ._clean_data import _clean_data
 from ._request_sirene import _request_sirene
 from .sirenedataframe import SireneDataFrame
 
-import logging
 
 logger = logging.getLogger(__name__)
+
+SEPARATORS = {
+    # See doc : https://portail-api.insee.fr/catalog/api/2ba0e549-5587-3ef1-9082-99cd865de66f/doc?page=66396595-39c0-44b2-b965-9539c004b244#variables-%C3%A9tablissement
+    "enseigne1Etablissement": " -'*/()",
+    "enseigne2Etablissement": " -'*/()",
+    "enseigne3Etablissement": " -'*/()",
+    "denominationUsuelleEtablissement": " -'*/()",
+    "libelleVoieEtablissement": " -?'*/:!()[]",
+    "libelleCommuneEtablissement": " -?'*/:!()[]",
+    "libelleCommuneEtrangerEtablissement": " -?'*/:!()[]",
+    "distributionSpecialeEtablissement": " -?'*/:!()[]",
+    "libellePaysEtrangerEtablissement": " -?'*/:!()[]",
+    "libelleCedexEtablissement": " -?'*/:!()[]",
+    "nomUsageUniteLegale": " -?'/",
+    "prenom1UniteLegale": " -?'/",
+    "prenom2UniteLegale": " -?'/",
+    "prenom3UniteLegale": " -?'/",
+    "prenom4UniteLegale": " -?'/",
+    "prenomUsuelUniteLegale": " -?'/",
+    "nomUniteLegale": " -?'/",
+    "denominationUniteLegale": " -?'/",
+    "pseudonymeUniteLegale": " -?'/",
+    "libelleNationaliteUniteLegale": " -?'/",
+    "denominationUsuelle1UniteLegale": " -?'/",
+    "denominationUsuelle2UniteLegale": " -?'/",
+    "denominationUsuelle3UniteLegale": " -?'/",
+    "sigleUniteLegale": " .-?'/",
+    "complementAdresseEtablissement": " ?'*/:!()[]",
+    "typeVoieEtablissement": " ?'*/:!()[]",
+    # Note : for the following fields, the "punctuation+blanc*" rule is managed
+    # directly in the code, see "safe_encode" func
+    "numeroVoieEtablissement": " ",
+    "dernierNumeroVoieEtablissement": " ",
+}
 
 
 @lru_cache(maxsize=None)
@@ -32,6 +68,46 @@ def _warning_data_save():
         "Locally saved data has been used\n"
         "Set update=True to trigger an update"
     )
+
+
+def safe_encode(field: str, val: str) -> str:
+    """
+    Encode any special characters in a pattern, except for characters
+    mentionned as separators in the API's doc.
+
+    See doc : https://portail-api.insee.fr/catalog/api/2ba0e549-5587-3ef1-9082-99cd865de66f/doc?page=66396595-39c0-44b2-b965-9539c004b244#variables-%C3%A9tablissement
+
+    Parameters
+    ----------
+    field : str
+        Target field of the query (ex. 'denominationUniteLegale').
+    val : str
+        Subquery targetting this field (ex. "ART & CLIM SARL")
+
+    Returns
+    -------
+    str
+        Cleaned val.
+
+    Example
+    -------
+    safe_encode("denominationUniteLegale", "ART & CLIM SARL")
+    >>> 'ART %26 CLIM SARL'
+
+    """
+    if field in {
+        "numeroVoieEtablissement",
+        "dernierNumeroVoieEtablissement",
+    }:
+        # "ponctuation+blanc*" rule -> replace by single whitespace which
+        # will be preserved anyway (and then used by the API to split
+        # the query)
+        safe = "( |([" + string.punctuation + "] +))"
+        val = re.sub(safe, " ", val)
+    try:
+        return urllib.parse.quote(val, safe=SEPARATORS[field])
+    except KeyError:
+        return val
 
 
 @save_df(day_lapse_max=30, cls=SireneDataFrame)
@@ -162,6 +238,10 @@ def search_sirene(
 
     if isinstance(pattern, str):
         pattern = [pattern]
+
+    pattern = [
+        safe_encode(field, val) for field, val in zip(variable, pattern)
+    ]
 
     list_siren_hist_variable = [
         "nomUniteLegale",  #
