@@ -8,7 +8,6 @@ import re
 import string
 import urllib.parse
 
-import pandas as pd
 from unidecode import unidecode
 
 from pynsee.utils.save_df import save_df
@@ -331,9 +330,11 @@ def search_sirene(
     query = "?q=" + string_query
 
     data_final = _request_sirene(query=query, kind=kind, number=number)
+    if data_final is None:
+        return SireneDataFrame()
 
     df = _clean_data(
-        data_final.copy() if data_final is not None else pd.DataFrame(),
+        data_final.copy(),
         kind=kind,
         clean=False,
         activity=activity,
