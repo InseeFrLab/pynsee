@@ -330,6 +330,8 @@ def search_sirene(
     query = "?q=" + string_query
 
     data_final = _request_sirene(query=query, kind=kind, number=number)
+    if data_final is None:
+        return SireneDataFrame()
 
     df = _clean_data(
         data_final.copy(),
