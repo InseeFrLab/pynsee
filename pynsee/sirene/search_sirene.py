@@ -101,7 +101,7 @@ def safe_encode(field: str, val: str) -> str:
         # "ponctuation+blanc*" rule -> replace by single whitespace which
         # will be preserved anyway (and then used by the API to split
         # the query)
-        safe = "( |([" + string.punctuation + "] *))"
+        safe = "( |([" + string.punctuation + "] +))"
         val = re.sub(safe, " ", val)
     try:
         return urllib.parse.quote(val, safe=SEPARATORS[field])
