@@ -94,10 +94,10 @@ def _get_dataset_metadata_core(dataset, update=False, silent=False):
         [idbank_list_dataset, df_cleflow_splitted], axis=1
     )
 
-    n_dimensions = len(dataset_dimension.index)
+    for irow, dim_id in dataset_dimension["dimension"].items():
+        if dim_id not in idbank_list_dataset.columns:
+            continue
 
-    for irow in range(n_dimensions):
-        dim_id = dataset_dimension["dimension"].iloc[irow]
         dim_local_rep = dataset_dimension["local_representation"].iloc[irow]
 
         # get dimension values
@@ -114,10 +114,8 @@ def _get_dataset_metadata_core(dataset, update=False, silent=False):
             dim_id + "_label_fr",
             dim_id + "_label_en",
         ]
-
-        if dim_id in idbank_list_dataset.columns:
-            idbank_list_dataset = idbank_list_dataset.merge(
-                dim_values, on=dim_id, how="left"
-            )
+        idbank_list_dataset = idbank_list_dataset.merge(
+            dim_values, on=dim_id, how="left"
+        )
 
     return idbank_list_dataset.drop(columns=["list_var"])

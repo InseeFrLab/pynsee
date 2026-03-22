@@ -204,7 +204,7 @@ def _get_geodata(
 
 
 def _make_request(
-    arg: tuple[str, requests.Session, int, int, int]
+    arg: tuple[str, requests.Session, int, int, int],
 ) -> tuple[requests.Response, str]:
     """Make the request inside the multiprocessing.Pool"""
     urldata, session, count, i = arg

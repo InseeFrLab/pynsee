@@ -26,3 +26,4 @@ docs/examples/*.csv
 docs/examples/*.svg
 .env
 docs/examples/*.parquet
+coverage.xml

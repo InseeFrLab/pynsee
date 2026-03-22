@@ -1,15 +1,12 @@
 
-[![](https://badge.fury.io/py/pynsee.svg)](https://pypi.org/project/pynsee/)
-![Tests Status](https://raw.githubusercontent.com/InseeFrLab/pynsee/refs/heads/master/reports/tests-badge.svg)
-![Coverage Status](https://raw.githubusercontent.com/InseeFrLab/pynsee/refs/heads/master/reports/coverage-badge.svg)
+[![PyPi version](https://badge.fury.io/py/pynsee.svg)](https://pypi.org/project/pynsee/)
+[![Tests status](https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
+[![Coverage status](https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK)](https://codecov.io/gh/InseeFrLab/pynsee?branch=master)
 
-<!-- [![](https://github.com/InseeFrLab/pynsee/actions/workflows/pkgTests.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions)
-[![](https://github.com/InseeFrLab/pynsee/actions/workflows/examples.yml/badge.svg)](https://github.com/InseeFrLab/pynsee/actions) -->
-<!-- [![](https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK)](https://codecov.io/gh/InseeFrLab/pynsee?branch=master) -->
-[![](https://readthedocs.org/projects/pynsee/badge/?version=latest)](https://pynsee.readthedocs.io/en/latest/?badge=latest)
-[![](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
-[![](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
-[![](https://img.shields.io/pypi/dm/pynsee)](https://pypistats.org/packages/pynsee)
+[![Documentation](https://readthedocs.org/projects/pynsee/badge/?version=latest)](https://pynsee.readthedocs.io/en/latest/?badge=latest)
+[![Supported python versions](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
+[![PyPi stats](https://img.shields.io/pypi/dm/pynsee)](https://pypistats.org/packages/pynsee)
 
 
 ``pynsee`` gives a quick access to more than 150 000 macroeconomic series,
@@ -86,15 +83,15 @@ mapcom = get_geodata("ADMINEXPRESS-COG-CARTO.LATEST:commune").to_crs(epsg=3035)
 mapcom.attrs["area"] = mapcom.area / 10**6
 mapcom = mapcom.to_crs(epsg=3857)
 
-mapcom['REF_AREA'] = 'D' + mapcom['insee_dep']
+mapcom['REF_AREA'] = 'D' + mapcom['code_insee']
 mapcom['density'] = mapcom['population'] / mapcom.attrs["area"]
 
-mapcom = mapcom.translate(departement=['971', '972', '974', '973', '976'],
-                          factor=[1.5, 1.5, 1.5, 0.35, 1.5])
+mapcom = mapcom.transform_overseas(departement=['971', '972', '974', '973', '976', 'NR'],
+                          factor=[1.5, 1.5, 1.5, 0.35, 1.5, 1.5])
 
 mapcom = mapcom.zoom(
     departement=["75","92", "93", "91", "77", "78", "95", "94"],
-    factor=1.5, startAngle = math.pi * (1 - 3 * 1/9))
+    factor=1.5, startAngle = math.pi * (1 - 3.5 * 1/9))
 
 density_ranges = [
     40, 80, 100, 120, 150, 200, 250, 400, 600, 1000, 2000, 5000, 10000, 20000

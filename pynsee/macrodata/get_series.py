@@ -7,6 +7,7 @@ import math
 from pynsee.macrodata._get_insee import _get_insee
 from pynsee.macrodata._add_numeric_metadata import _add_numeric_metadata
 from pynsee.macrodata._load_dataset_data import _load_dataset_data
+from pynsee.macrodata._download_idbanks import _download_idbank_list
 
 from pynsee.utils._paste import _paste
 from pynsee.utils.save_df import save_df
@@ -146,7 +147,12 @@ def get_series(
 
     if metadata:
         try:
-            metadata_df = _load_dataset_data()
+            list_dataset = list(
+                _download_idbank_list()
+                .loc[lambda x: x["idbank"].isin(list_idbank)]
+                .drop_duplicates(subset=["nomflow"])["nomflow"]
+            )
+            metadata_df = _load_dataset_data(datasets=list_dataset)
 
             if metadata_df is not None:
                 metadata_df = metadata_df.rename(columns={"idbank": "IDBANK"})

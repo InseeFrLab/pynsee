@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 # Copyright : INSEE, 2021
 
+from datetime import datetime, timedelta
 import unittest
 from unittest import TestCase
-from pandas import pandas as pd
-from datetime import datetime
-from datetime import timedelta
 
-from pynsee.macrodata._get_insee import _get_insee
-from pynsee.macrodata._get_date import _get_date
+import numpy as np
+from pandas import pandas as pd
+
+
+from pynsee.macrodata._get_insee import _set_date
 from pynsee.macrodata._get_idbank_internal_data_harmonized import (
     _get_idbank_internal_data_harmonized,
 )
@@ -35,8 +36,6 @@ from pynsee.macrodata.get_dataset import get_dataset
 from pynsee.macrodata.get_column_title import get_column_title
 from pynsee.macrodata.get_series_title import get_series_title
 from pynsee.macrodata.search_macrodata import search_macrodata
-
-from pynsee.utils._clean_insee_folder import _clean_insee_folder
 
 
 test_SDMX = True
@@ -116,7 +115,13 @@ class TestFunction(TestCase):
             "001580394",
         )
         assert isinstance(data, pd.DataFrame)
-        assert _get_date(freq="TEST", time_period=3) == 3
+        df = pd.DataFrame(
+            [[3, "blah", "blah"]], columns=["TIME_PERIOD", "IDBANK", "FREQ"]
+        )
+        df = _set_date(df)
+        assert (
+            df["DATE"].values == df["TIME_PERIOD"].values == np.array(3)
+        ).all()
 
     def test_get_dataset_metadata_1(self):
 
@@ -232,7 +237,6 @@ class TestFunction(TestCase):
 
         try:
             df = _download_idbank_list()
-            # df = _download_idbank_list(insee_date_test=future_date)
         except Exception:
             df = pd.DataFrame({"test_backup": ["test_backup"]})
 

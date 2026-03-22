@@ -32,6 +32,7 @@ class MyTests(unittest.TestCase):
         clear_all_cache()
         df = get_file_list()
         clear_all_cache()
+        del os.environ["pynsee_file_list"]
 
         self.assertTrue(isinstance(df, pd.DataFrame))
 
@@ -48,7 +49,7 @@ class MyTests(unittest.TestCase):
 
     list_file_check = [
         "COG_COMMUNE_2018",
-        "AIRE_URBAINE",
+        "TAG_COM_2025",
         "FILOSOFI_COM_2015",
         "DECES_2020",
         "PRENOM_NAT",
@@ -73,6 +74,14 @@ class MyTests(unittest.TestCase):
             checkLabel = False
 
         self.assertTrue(checkLabel)
+        self.assertTrue(isinstance(df, pd.DataFrame))
+        self.assertTrue((len(df.columns) > 2))
+
+    def test_latest_tag(self):
+        """
+        test only that 'latest' is working, this does not need to force update
+        """
+        df = download_file("TAG_COM_LATEST")
         self.assertTrue(isinstance(df, pd.DataFrame))
         self.assertTrue((len(df.columns) > 2))
 

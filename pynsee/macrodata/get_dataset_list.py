@@ -6,7 +6,6 @@ import logging
 import xml.etree.ElementTree as ET
 
 import pandas as pd
-from tqdm import trange
 
 from ..utils.requests_session import PynseeAPISession
 from ..utils.save_df import save_df
@@ -51,29 +50,18 @@ def get_dataset_list(update=False, silent=False):
         root = ET.parse(dataflow_file).getroot()
 
         data = root[1][0]
-
-        n_dataflow = len(data)
-
-        list_df = []
-
-        for i in trange(n_dataflow, desc="Getting datasets list"):
-
-            dataset = {
-                "id": [next(iter(data[i].attrib.values()))],
-                "Name.fr": [data[i][1].text],
-                "Name.en": [data[i][2].text],
-                "url": [data[i][0][0][0].text],
-                "n_series": [data[i][0][1][0].text],
-            }
-
-            dt = pd.DataFrame(
-                dataset,
-                columns=["id", "Name.fr", "Name.en", "url", "n_series"],
-            )
-            list_df.append(dt)
-
-        # concatenate list of dataframes
-        df = pd.concat(list_df)
+        df = pd.DataFrame(
+            [
+                {
+                    "id": next(iter(node.attrib.values())),
+                    "Name.fr": node[1].text,
+                    "Name.en": node[2].text,
+                    "url": node[0][0][0].text,
+                    "n_series": node[0][1][0].text,
+                }
+                for node in data
+            ]
+        )
 
         # clean up columns
         df = df.astype(str)

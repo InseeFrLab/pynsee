@@ -1,3 +1,8 @@
+# pynsee 0.2.4
+
+* bug fixes after IGN API changes + St-Pierre et Miquelon islands included
+* bug fixes after INSEE API changes 
+
 # pynsee 0.2.1
 
 **Bugfixes**
