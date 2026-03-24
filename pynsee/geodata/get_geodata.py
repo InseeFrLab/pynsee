@@ -15,7 +15,8 @@ def get_geodata(
     constrain_area: Optional[GeoDataFrame] = None,
     silent: bool = False,
 ) -> GeoFrDataFrame:
-    """Get geographical data with identifier and from IGN API
+    """
+    Get geographical data with identifier and from IGN API
 
     Args:
         id (str): data identifier from get_geodata_list function
