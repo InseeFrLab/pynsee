@@ -22,7 +22,7 @@ from pynsee.geodata._find_wfs_closest_match import _find_wfs_closest_match
 
 
 def test_find_wfs_closest_match():
-    assert isinstance(_find_wfs_closest_match(), str)
+    assert isinstance(_find_wfs_closest_match(), list)
 
 
 def test_get_geodata_with_backup():
