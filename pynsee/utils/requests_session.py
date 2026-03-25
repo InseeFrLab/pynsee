@@ -286,6 +286,15 @@ class PynseeAPISession(requests.Session):
             HTTP response from the requests package.
 
         """
+
+        if "api.insee.fr/donnees-locales" in url:
+            logger.warning(
+                "You are using INSEE's DDL (diffusion de données locales) API."
+                " This API is outdated and datasets are NOT updated anymore. "
+                "INSEE states that users should instead use MELODI API, which "
+                "is not yet covered by pynsee."
+            )
+
         logger.info(url)
         with warnings.catch_warnings():
             warnings.simplefilter(
