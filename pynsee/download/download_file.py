@@ -10,7 +10,13 @@ from pynsee.utils.save_df import save_df
 
 @save_df(day_lapse_max=90)
 def download_file(id, variables=None, update=False, silent=False) -> DataFrame:
-    """User level function to download files from insee.fr
+    """
+    User level function to download files from insee.fr
+
+    Note: in the case of vintaged ids (ie. TAG_COM_2025), it should be safe to
+    use a _LATEST tag instead if you just want the latest available dataset
+    (ie TAG_COM_LATEST). In case of side-effects, pay attention to the log
+    entries and revert to the vintaged id.
 
     Args:
         id (str): file id, check get_file_list to have a full list of available files
@@ -28,7 +34,7 @@ def download_file(id, variables=None, update=False, silent=False) -> DataFrame:
 
     Examples:
         >>> from pynsee.download import download_file
-        >>> df = download_file("AIRE_URBAINE")
+        >>> df = download_file("TAG_COM_LATEST")
 
     """
 

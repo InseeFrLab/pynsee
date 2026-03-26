@@ -1,3 +1,16 @@
+# pynsee 0.2.4
+
+* bug fixes after IGN API changes + St-Pierre et Miquelon islands included
+* bug fixes after INSEE API changes 
+
+# pynsee 0.2.1
+
+**Bugfixes**
+
+* support parquet files in downloads (#257)
+* correct column handling in ``get_series_list`` (#259)
+* correct documentation about ``init_conn`` (#260)
+
 # pynsee 0.2.0
 
 **Breaking changes**

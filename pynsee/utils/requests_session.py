@@ -18,6 +18,7 @@ from pynsee.utils._get_credentials import _get_credentials_from_configfile
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.constants import SIRENE_KEY, HTTPS_PROXY_KEY, HTTP_PROXY_KEY
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -28,6 +29,24 @@ def _warn_env_credentials(var) -> None:
         "saved credentials",
         var,
     )
+
+
+def _invalid_sirene_key(raise_error: bool = False) -> None:
+    commands = "\n\ninit_conn(sirene_key='my_sirene_key')\n"
+    msg = (
+        "Sirene key is invalid or missing, please check your credentials "
+        "on portail-api.insee.fr !\n"
+        f"Please do the following to use your credentials: {commands}\n\n"
+        "If your token still does not work, please try to clear the cache :\n"
+        "from pynsee.utils import clear_all_cache; clear_all_cache()\n"
+    )
+
+    if raise_error:
+        res = requests.Response()
+        res.status_code = 401
+        raise requests.exceptions.HTTPError(msg, response=res)
+
+    logger.warning(msg)
 
 
 def get_env_case_insensitive(x: str):
@@ -76,7 +95,7 @@ class PynseeAPISession(requests.Session):
         **This function should only be loaded with arguments through
         pynsee.utils.init_conn**.
 
-        See pynsee.utils.init_conn to create a new configuration.
+        See :func:`~pynsee.utils.init_conn` to create a new configuration.
 
         Parameters
         ----------
@@ -86,7 +105,6 @@ class PynseeAPISession(requests.Session):
             default is None.
 
         """
-
         super().__init__()
         self._mount_adapters()
 
@@ -219,6 +237,15 @@ class PynseeAPISession(requests.Session):
             adapter = LimiterAdapter(**config["rates"], **kw_adapter(api))
             self.mount(config["url"], adapter)
 
+        # add retry on 400 for geoplatform
+        retry_adapt = Retry(
+            total=7,
+            backoff_factor=1,
+            status_forcelist=[400],
+        )
+        adapter = HTTPAdapter(max_retries=retry_adapt)
+        self.mount("https://data.geopf.fr", adapter)
+
     def request(
         self,
         method: str,
@@ -259,6 +286,14 @@ class PynseeAPISession(requests.Session):
             HTTP response from the requests package.
 
         """
+
+        if "api.insee.fr/donnees-locales" in url:
+            logger.warning(
+                "You are using INSEE's DDL (diffusion de données locales) API."
+                " This API is outdated and datasets are NOT updated anymore. "
+                "INSEE states that users should instead use MELODI API, which "
+                "is not yet covered by pynsee."
+            )
 
         logger.info(url)
         with warnings.catch_warnings():
@@ -314,22 +349,10 @@ class PynseeAPISession(requests.Session):
             HTTP response from the requests package.
 
         """
-
         try:
-            if api_url and self._query_is_valid_sirene_call(api_url):
+            if api_url and self._called_sirene(api_url):
                 if not self.sirene_key:
-                    commands = "\n\ninit_conn(sirene_key='my_sirene_key')\n"
-                    msg = (
-                        "Sirene key is missing, please check your credentials "
-                        "on portail-api.insee.fr !\n"
-                        "Please do the following to use your "
-                        f"credentials: {commands}\n\n"
-                        "If your token still does not work, please try to "
-                        "clear the cache :\n "
-                        "from pynsee.utils import clear_all_cache;"
-                        " clear_all_cache()\n"
-                    )
-                    raise requests.exceptions.RequestException(msg)
+                    _invalid_sirene_key(raise_error=True)
 
             if api_url:
                 result = self._request_api_insee(
@@ -360,23 +383,6 @@ class PynseeAPISession(requests.Session):
                 raise
 
         return result
-
-    def _query_is_valid_sirene_call(self, url: str) -> bool:
-        """
-        Check if an URL is a valid API call to SIRENE.
-
-        Parameters
-        ----------
-        url : str
-            Url to check.
-
-        Returns
-        -------
-        bool
-            True if the API is a SIRENE api query. False if not.
-
-        """
-        return bool(re.match(".*api-sirene.*", url))
 
     def _request_sdmx_insee(
         self, url: str, raise_if_not_ok: bool = True
@@ -449,80 +455,78 @@ class PynseeAPISession(requests.Session):
             HTTP response from the requests package.
 
         """
-
         headers = {"Accept": file_format}
 
-        try:
-            results = self.get(
-                url,
-                headers=headers,
-                verify=False,
-                raise_if_not_ok=raise_if_not_ok,
-            )
-        except Exception:
-            results = None
-            success = False
-        else:
+        results = self.get(
+            url,
+            headers=headers,
+            verify=False,
+            raise_if_not_ok=False,
+        )
 
-            code = results.status_code
+        code = results.status_code
 
-            if "status_code" not in dir(results):
-                success = False
-            elif code == 429:
-
-                display_warnings = os.environ.get(
-                    "PYNSEE_DISPLAY_ALL_WARNINGS", ""
-                ).lower()
-                if display_warnings == "true":
-                    msg = (
-                        "API query number limit reached - "
-                        "function might be slowed down"
-                    )
-                    logger.warning(msg)
-
-                time.sleep(10)
-
-                request_again = self._request_api_insee(
-                    url=url, file_format=file_format
-                )
-
-                return request_again
-
-            elif code in self.INSEE_API_CODES and raise_if_not_ok:
-                msg = (
-                    f"Error {code} - {self.INSEE_API_CODES[code]}\n"
-                    f"Query:\n{url}"
-                )
-                raise requests.exceptions.RequestException(
-                    msg, response=results
-                )
-            elif code not in (200, 404) and raise_if_not_ok:
-                # Note : 404 means no results from API, this should not trigger
-                # any exception
-                success = False
-            else:
-                success = True
-
-        if success is True:
+        if code in (200, 404):
             return results
 
-        else:
+        if code == 429:
+            display_warnings = os.environ.get(
+                "PYNSEE_DISPLAY_ALL_WARNINGS", ""
+            ).lower()
 
-            try:
-                results = results.text
-            except Exception:
-                results = ""
-
-            if print_msg:
+            if display_warnings == "true":
                 msg = (
-                    "An error occurred !\n"
-                    f"Query : {url}\nResults : {results}\n"
+                    "API query number limit reached - "
+                    "function might be slowed down"
                 )
-
                 logger.warning(msg)
-            raise requests.exceptions.RequestException(
-                "An error occured", response=results
+
+            time.sleep(10)
+
+            request_again = self._request_api_insee(
+                url=url, file_format=file_format
             )
+
+            return request_again
+
+        if code == 401 and self._called_sirene(url):
+            _invalid_sirene_key(raise_error=False)
+
+        if code in self.INSEE_API_CODES and raise_if_not_ok:
+            msg = (
+                f"Error {code} - {self.INSEE_API_CODES[code]}\n"
+                f"Query:\n{url}"
+            )
+
+            raise requests.exceptions.HTTPError(msg, response=results)
+
+        # if the request failed, try to say something about what happened
+        res_text = getattr(results, "text", "none")
+
+        if raise_if_not_ok:
+            msg = (
+                "An error occurred!\n"
+                f"Query: {url}\nCode: {code}\nResults: {res_text}\n"
+            )
+
+            raise requests.exceptions.RequestException(msg, response=results)
+
+        return results
+
+    def _called_sirene(self, url: str) -> bool:
+        """
+        Check if an URL is a valid API call to SIRENE.
+
+        Parameters
+        ----------
+        url : str
+            Url to check.
+
+        Returns
+        -------
+        True if the API is a SIRENE api query. False if not.
+        """
+        return re.match(".*api-sirene.*", url) is not None
 
     def _test_connections(self) -> dict:
         """

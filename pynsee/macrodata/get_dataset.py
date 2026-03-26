@@ -108,7 +108,9 @@ def get_dataset(
     # add metadata
     if metadata:
         try:
-            idbank_list = get_series_list(dataset, silent=silent)
+            idbank_list = get_series_list(
+                dataset, silent=silent, update=update
+            )
 
             newcol = [
                 col for col in idbank_list.columns if col not in data.columns

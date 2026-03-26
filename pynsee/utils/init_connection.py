@@ -40,11 +40,11 @@ def init_conn(
         Environment variables can be used instead of init_conn function
 
     Examples:
-        >>> from pynsee.utils.init_conn import init_conn
+        >>> from pynsee.utils import init_conn
         >>> init_conn(sirene_key="my_sirene_key")
         >>> #
         >>> # if the user has to use a proxy server use http_proxy and https_proxy arguments as follows:
-        >>> from pynsee.utils.init_conn import init_conn
+        >>> from pynsee.utils import init_conn
         >>> init_conn(sirene_key="my_sirene_key",
         >>>           http_proxy="http://my_proxy_server:port",
         >>>           https_proxy="http://my_proxy_server:port")

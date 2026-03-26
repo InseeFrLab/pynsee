@@ -2,9 +2,7 @@
 # Copyright : INSEE, 2021
 
 from functools import lru_cache
-import io
 import pandas as pd
-import xml.etree.ElementTree as ET
 
 from pynsee.utils._paste import _paste
 from pynsee.utils.requests_session import PynseeAPISession
@@ -45,29 +43,24 @@ def _get_geo_relation(geo, code, relation, date=None, type=None):
         api_url = api_url + added_param_string
 
     with PynseeAPISession() as session:
-        results = session.request_insee(api_url=api_url)
+        results = session.request_insee(
+            api_url=api_url, file_format="application/json"
+        )
 
-    raw_data_file = io.BytesIO(results.content)
-
-    root = ET.parse(raw_data_file).getroot()
-
-    n_geo = len(root)
-
-    list_geo_relation = []
-
-    for igeo in range(n_geo):
-        n_var = len(root[igeo])
-
-        dict_var = {}
-
-        for ivar in range(n_var):
-            dict_var[root[igeo][ivar].tag] = root[igeo][ivar].text
-
-        dict_var = {**dict_var, **root[igeo].attrib}
-        df_relation = pd.DataFrame(dict_var, index=[0])
-        list_geo_relation.append(df_relation)
-
-    df_relation_all = pd.concat(list_geo_relation)
+    df_relation_all = pd.DataFrame(results.json())
     df_relation_all = df_relation_all.assign(geo_init=code)
+    df_relation_all = df_relation_all.rename(
+        {
+            "code": "CODE",
+            "uri": "URI",
+            "chefLieu": "CHEFLIEU",
+            "type": "TYPE",
+            "intitule": "TITLE",
+            "dateCreation": "DATECREATION",
+            "dateSuppression": "DATESUPPRESSION",
+            "intituleSansArticle": "TITLE_SHORT",
+        },
+        axis=1,
+    ).drop("typeArticle", axis=1)
 
     return df_relation_all

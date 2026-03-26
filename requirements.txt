@@ -8,3 +8,4 @@ urllib3 >= 2.2
 shapely >= 2
 requests >= 2.32
 requests-ratelimiter >= 0.7
+openpyxl

@@ -58,21 +58,8 @@ def get_geo_list(geo=None, date=None, update=False, silent=False):
         msg = "!!! Please choose geo among:\n{}".format(geo_string)
         raise ValueError(msg)
 
-    RENAME = {
-        "Intitule": "TITLE",
-        "Type": "TYPE",
-        "DateCreation": "DATECREATION",
-        "DateSuppression": "DATESUPPRESSION",
-        "IntituleSansArticle": "TITLE_SHORT",
-        "ChefLieu": "CHEFLIEU",
-        "code": "CODE",
-        "uri": "URI",
-    }
-
     reg = _get_geo_list_simple("regions", date=date, progress_bar=True)
-    reg["DateSuppression"] = reg.get("DateSuppression", np.nan)
-
-    reg = reg.rename(RENAME, axis=1)
+    reg["DATESUPPRESSION"] = reg.get("DATESUPPRESSION", np.nan)
 
     if geo != "regions":
         list_reg = list(reg.CODE)
@@ -107,8 +94,6 @@ def get_geo_list(geo=None, date=None, update=False, silent=False):
                 list_data_reg.append(df)
 
         data_all = pd.concat(list_data_reg)
-
-        data_all = data_all.rename(RENAME, axis=1)
 
         reg_short = reg[["TITLE", "CODE"]]
         reg_short.columns = ["TITLE_REG", "CODE_REG"]
@@ -152,7 +137,6 @@ def get_geo_list(geo=None, date=None, update=False, silent=False):
             dep = _get_geo_list_simple(
                 "departements", date=date, progress_bar=True
             )
-            dep = dep.rename(RENAME, axis=1)
             dep_short = dep[["CODE", "TITLE"]]
             dep_short.columns = ["CODE_dep", "TITLE_DEP1"]
 
