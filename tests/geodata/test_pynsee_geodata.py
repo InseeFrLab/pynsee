@@ -188,7 +188,7 @@ def test_get_geodata_short_failure():
         assert isinstance(data, GeoFrDataFrame)
         assert data.empty
 
-    with pytest.raises(RequestException):
+    with pytest.raises(ValueError):
         get_geodata(dataset_id="test", update=True)
 
     with pytest.raises(RequestException):
