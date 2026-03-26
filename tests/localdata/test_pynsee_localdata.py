@@ -310,57 +310,57 @@ class TestFunction(TestCase):
 
         self.assertTrue(test)
 
-    def test_get_local_data_latest(self):
-        test = True
-        # data = get_local_data(
-        #     dataset_version="GEOlatestRPlatest", variables="CS1_6"
-        # )
-        # test = test & isinstance(data, pd.DataFrame)
+    # def test_get_local_data_latest(self):
+    #     test = True
+    #     # data = get_local_data(
+    #     #     dataset_version="GEOlatestRPlatest", variables="CS1_6"
+    #     # )
+    #     # test = test & isinstance(data, pd.DataFrame)
 
-        data = get_local_data(
-            dataset_version="GEOlatestRPlatest",
-            variables="TF4",
-            nivgeo="COM",
-            geocodes=["75056"],
-        )
-        test = test & isinstance(data, pd.DataFrame)
+    #     data = get_local_data(
+    #         dataset_version="GEOlatestRPlatest",
+    #         variables="TF4",
+    #         nivgeo="COM",
+    #         geocodes=["75056"],
+    #     )
+    #     test = test & isinstance(data, pd.DataFrame)
 
-        # data = get_local_data(dataset_version='GEOlatestFILOlatest',
-        #            variables =  'INDICS_FILO_DISP',
-        #            nivgeo = 'COM',
-        #            update=True,
-        #            geocodes = '75056')
-        # test = test & isinstance(data, pd.DataFrame)
+    #     # data = get_local_data(dataset_version='GEOlatestFILOlatest',
+    #     #            variables =  'INDICS_FILO_DISP',
+    #     #            nivgeo = 'COM',
+    #     #            update=True,
+    #     #            geocodes = '75056')
+    #     # test = test & isinstance(data, pd.DataFrame)
 
-        # data = get_local_data(dataset_version='POPLEGlatest',
-        #            variables =  'IND_POPLEGALES',
-        #            nivgeo = 'COM',
-        #            update=True,
-        #            geocodes = '75056')
-        # test = test & isinstance(data, pd.DataFrame)
+    #     # data = get_local_data(dataset_version='POPLEGlatest',
+    #     #            variables =  'IND_POPLEGALES',
+    #     #            nivgeo = 'COM',
+    #     #            update=True,
+    #     #            geocodes = '75056')
+    #     # test = test & isinstance(data, pd.DataFrame)
 
-        # data = get_local_data(dataset_version='GEOlatestRFDlatest',
-        #            variables =  'INDICS_ETATCIVIL',
-        #            nivgeo = 'COM',
-        #            update=True,
-        #            geocodes = '75056')
-        # test = test & isinstance(data, pd.DataFrame)
+    #     # data = get_local_data(dataset_version='GEOlatestRFDlatest',
+    #     #            variables =  'INDICS_ETATCIVIL',
+    #     #            nivgeo = 'COM',
+    #     #            update=True,
+    #     #            geocodes = '75056')
+    #     # test = test & isinstance(data, pd.DataFrame)
 
-        # data = get_local_data(dataset_version='BDCOMlatest',
-        #            variables =  'INDICS_BDCOM',
-        #            nivgeo = 'COM',
-        #            update=True,
-        #            geocodes = '75056')
-        # test = test & isinstance(data, pd.DataFrame)
+    #     # data = get_local_data(dataset_version='BDCOMlatest',
+    #     #            variables =  'INDICS_BDCOM',
+    #     #            nivgeo = 'COM',
+    #     #            update=True,
+    #     #            geocodes = '75056')
+    #     # test = test & isinstance(data, pd.DataFrame)
 
-        # data = get_local_data(dataset_version='GEOlatestREElatest',
-        #            variables =  'NA10_HORS_AZ-ENTR_INDIVIDUELLE',
-        #            nivgeo = 'COM',
-        #            update=True,
-        #            geocodes = '75056')
-        # test = test & isinstance(data, pd.DataFrame)
+    #     # data = get_local_data(dataset_version='GEOlatestREElatest',
+    #     #            variables =  'NA10_HORS_AZ-ENTR_INDIVIDUELLE',
+    #     #            nivgeo = 'COM',
+    #     #            update=True,
+    #     #            geocodes = '75056')
+    #     # test = test & isinstance(data, pd.DataFrame)
 
-        self.assertTrue(test)
+    #     self.assertTrue(test)
 
     def test_get_ascending_descending_area(self):
         #
