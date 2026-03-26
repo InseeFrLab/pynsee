@@ -95,7 +95,11 @@ def patch_test_connections(func):
 
     def wrapper(*args, **kwargs):
         init = PynseeAPISession._test_connections
-        PynseeAPISession._test_connections = lambda x: {}
+
+        def patched_test_connections(self, raise_if_not_ok=False):
+            return {}
+
+        PynseeAPISession._test_connections = patched_test_connections
         try:
             func(*args, **kwargs)
         except Exception:
