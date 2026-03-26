@@ -1,3 +1,4 @@
+from functools import lru_cache
 import logging
 import math
 from typing import Optional
@@ -10,10 +11,36 @@ from shapely.geometry import Point, LineString
 from ._make_offshore_points import _make_offshore_points
 from ._rescale_geom import _rescale_geom
 from ._get_center import _get_center
-from ._add_insee_dep import _add_insee_dep
+from ._get_geodata_with_backup import _get_geodata_with_backup
 
 
 logger = logging.getLogger(__name__)
+
+
+@lru_cache(maxsize=None)
+def deps_with_negative_500meters_buffer() -> GeoDataFrame:
+    """
+    # TODO
+
+    Returns
+    -------
+    GeoDataFrame
+        DESCRIPTION.
+
+    """
+    dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
+    dep = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
+    dep = dep[["code_insee", "geometry"]].rename(
+        columns={
+            "code_insee": "code_insee_du_departement",
+            "geometry": "insee_dep_geometry",
+        }
+    )
+    # do a negative buffer of 500meters to prevent accidental spatial join
+    # duplications
+    dep["geometry"] = dep["insee_dep_geometry"].buffer(-500)
+    dep = dep.set_geometry("geometry")
+    return dep
 
 
 def transform_overseas(
@@ -74,7 +101,11 @@ def transform_overseas(
         gdf["code_insee_du_departement"] = gdf["code_insee"]
         gdf["insee_dep_geometry"] = gdf["geometry"]
     else:
-        gdf = _add_insee_dep(gdf.copy()).reset_index(drop=True)
+
+        # retrieve deps geometries using a spatial join
+        dep = deps_with_negative_500meters_buffer()
+        gdf = gdf.sjoin(dep, how="left")
+        # TODO : NR
 
     offshore_points = _make_offshore_points(
         center=Point(center),
