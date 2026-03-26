@@ -26,7 +26,7 @@ def test_find_wfs_closest_match():
 
 
 def test_get_geodata_with_backup():
-    gdf = _get_geodata_with_backup("ADMINEXPRESS-COG.LATEST:departement")
+    gdf = _get_geodata_with_backup("ADMINEXPRESS-COG-CARTO.LATEST:departement")
     assert isinstance(gdf, GeoFrDataFrame)
 
 
