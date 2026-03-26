@@ -18,6 +18,7 @@ def get_geodata(
     update: bool = False,
     crs: Any = "EPSG:3857",
     constrain_area: Optional[GeoDataFrame] = None,
+    silent: bool = False,
 ) -> GeoFrDataFrame:
     """
     Get geographical data with identifier and from IGN API
@@ -31,13 +32,20 @@ def get_geodata(
 
         constrain_area (:class:`~geopandas.GeoDataFrame`, optional): GeoDataFrame used to constrain the area of interest. Defaults to None.
 
-    .. versionchanged: 0.2.5
-        Check if a dataset is discovered in the available datasets before querying the server.
-        Querying a unavailable dataset now triggers a ValueError.
+        silence (bool, optional): whether to print warnings or not. Defaults to False.
 
     .. versionchanged: 0.2.0
 
         Changed `polygon` and `crsPolygon` into a `constrain_area` :class:`~geopandas.GeoDataFrame`.
+
+    .. versionchanged: 0.2.5
+        Check if a dataset is discovered in the available datasets before querying the server.
+        Querying a unavailable dataset now triggers a ValueError.
+
+        Added silent parameter.
+
+
+
 
     Examples:
         >>> from pynsee.geodata import get_geodata_list, get_geodata
@@ -50,7 +58,7 @@ def get_geodata(
 
     """
     polygon = None
-    crsPolygon = "EPSG:4326"
+    crs_polygon = "EPSG:4326"
 
     # check if dataset is available to ensure faster failure and helpful hints
     dsets = get_geodata_list()
@@ -74,7 +82,7 @@ def get_geodata(
             constrain_area = constrain_area.to_crs("EPSG:4326")
 
         polygon = constrain_area.union_all()
-        crsPolygon = constrain_area.crs.to_string()
+        crs_polygon = constrain_area.crs.to_string()
 
     return _get_geodata(
         dataset_id=dataset_id,
@@ -82,5 +90,6 @@ def get_geodata(
         crs=crs,
         ignore_error=False,
         polygon=polygon,
-        crs_polygon=crsPolygon,
+        crs_polygon=crs_polygon,
+        silent=silent,
     )
