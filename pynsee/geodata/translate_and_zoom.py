@@ -1,4 +1,3 @@
-from functools import lru_cache
 import logging
 import math
 from typing import Optional
@@ -12,20 +11,29 @@ from ._make_offshore_points import _make_offshore_points
 from ._rescale_geom import _rescale_geom
 from ._get_center import _get_center
 from ._get_geodata_with_backup import _get_geodata_with_backup
+from pynsee.utils.save_df import save_df
 
 
 logger = logging.getLogger(__name__)
 
 
-@lru_cache(maxsize=None)
-def deps_with_negative_500meters_buffer() -> GeoDataFrame:
+@save_df(cls=GeoDataFrame, day_lapse_max=30)
+def _deps_with_valid_coverage() -> GeoDataFrame:
     """
-    # TODO
+    Inner function used to create a geodataframe of french departments, safe to
+    use for a spatial join.
+
+    First, a valid coverage is enforced (meaning polygons do not overlap and
+    are sharing edges) with a simplification of 10 meters, then a negative
+    10 meters buffer is applied to prevent duplicates when running a spatial
+    join.
+    This function uses a 30 day cache storage.
 
     Returns
     -------
     GeoDataFrame
-        DESCRIPTION.
+        Departments' geodataset
+        Only two columns : code_insee_du_departement, insee_dep_geometry
 
     """
     dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
@@ -36,10 +44,12 @@ def deps_with_negative_500meters_buffer() -> GeoDataFrame:
             "geometry": "insee_dep_geometry",
         }
     )
-    # do a negative buffer of 500meters to prevent accidental spatial join
-    # duplications
-    dep["geometry"] = dep["insee_dep_geometry"].buffer(-500)
-    dep = dep.set_geometry("geometry")
+
+    dep = dep.set_geometry("insee_dep_geometry")
+
+    # force coverage validity (non-overlapping, edge-matched polygons)
+    dep["insee_dep_geometry"] = dep.simplify_coverage(0.01).buffer(-0.01)
+
     return dep
 
 
@@ -102,10 +112,37 @@ def transform_overseas(
         gdf["insee_dep_geometry"] = gdf["geometry"]
     else:
 
-        # retrieve deps geometries using a spatial join
-        dep = deps_with_negative_500meters_buffer()
-        gdf = gdf.sjoin(dep, how="left")
-        # TODO : NR
+        # retrieve safe deps geometries
+        dep = _deps_with_valid_coverage()
+
+        if "code_insee_du_departement" not in gdf.columns:
+
+            # retrieve department's codes using a spatial join. The negative
+            # buffer on deps should be safe to be used without any duplication
+            # of gdf; just to be sure, raise an exception in case user encounters
+            # an unexpected duplication and ask to report this
+
+            shape_init = gdf.shape
+            gdf = gdf.sjoin(dep, how="left")
+            if not len(gdf) == shape_init[0]:
+                raise ValueError(
+                    "duplication occured, please get in touch and report this !"
+                )
+            gdf = gdf.drop("index_right", axis=1)
+
+        gdf["code_insee_du_departement"] = gdf[
+            "code_insee_du_departement"
+        ].fillna("NR")
+
+        # Retrieve simplified geometries for deps. Note that it used a negative
+        # buffer (10 meters) which should not alter geographic transformations
+        # given it's range
+        gdf = gdf.merge(dep, on="code_insee_du_departement", how="left")
+
+        # where dep geom is still missing, use initial geometry
+        gdf["insee_dep_geometry"] = gdf["insee_dep_geometry"].combine_first(
+            gdf.geometry
+        )
 
     offshore_points = _make_offshore_points(
         center=Point(center),
