@@ -23,10 +23,10 @@ def _deps_with_valid_coverage() -> GeoDataFrame:
     Inner function used to create a geodataframe of french departments, safe to
     use for a spatial join.
 
-    First, a valid coverage is enforced (meaning polygons do not overlap and
-    are sharing edges) with a simplification of 10 meters, then a negative
-    10 meters buffer is applied to prevent duplicates when running a spatial
-    join.
+    First (if overlaps detected) a valid coverage is enforced (meaning polygons
+    do not overlap and are sharing edges) with a simplification of 10 meters.
+    After that, a negative 10 meters buffer is applied to prevent duplicates
+    when running a spatial join with intersects predicate.
     This function uses a 30 day cache storage.
 
     Returns
@@ -44,11 +44,17 @@ def _deps_with_valid_coverage() -> GeoDataFrame:
             "geometry": "insee_dep_geometry",
         }
     )
-
     dep = dep.set_geometry("insee_dep_geometry")
 
-    # force coverage validity (non-overlapping, edge-matched polygons)
-    dep["insee_dep_geometry"] = dep.simplify_coverage(0.01).buffer(-0.01)
+    x = dep.sjoin(dep, how="left", predicate="overlaps").query(
+        "~code_insee_du_departement_right.isnull()"
+    )
+    if not x.empty:
+        # Force coverage validity (non-overlapping, edge-matched polygons)
+        # (This shouldn't be necessary with modern ADMINEXPRESS datasets and
+        # is here as a backup safe)
+        dep["insee_dep_geometry"] = dep.simplify_coverage(0.01)
+    dep["insee_dep_geometry"] = dep["insee_dep_geometry"].buffer(-0.01)
 
     return dep
 
