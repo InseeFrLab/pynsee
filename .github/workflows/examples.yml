@@ -14,11 +14,11 @@ jobs:
         python-version: ["3.11"]
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         ref: doc
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
 

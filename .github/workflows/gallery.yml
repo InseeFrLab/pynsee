@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     container: inseefrlab/pynsee:latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
       - name: Render site
         env:
           insee_key: ${{ secrets.INSEE_KEY }}
@@ -27,7 +27,7 @@ jobs:
           MC_HOST_s3: ${{ secrets.MC_HOST_s3 }}
         run: |
           find docs/examples/ -name \*.ipynb -exec mc cp {} s3/projet-pynsee/diffusion/examples/notebooks/ \;
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v6
         with:
           name: Report
           path: docs/examples/
