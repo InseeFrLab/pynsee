@@ -71,7 +71,6 @@ def get_geodata(
             "`from pynsee import get_geodata_list;get_geodata_list()`\n"
         )
         logger.error(msg, dataset_id)
-        logger.warning("Closests datasets are %s", closests)
 
         raise ValueError(
             f"{dataset_id} was not found, did you meant any of {closests} ?"
