@@ -4,7 +4,7 @@
 [![Coverage status](https://codecov.io/gh/InseeFrLab/pynsee/branch/master/graph/badge.svg?token=TO96FMWRHK)](https://codecov.io/gh/InseeFrLab/pynsee?branch=master)
 
 [![Documentation](https://readthedocs.org/projects/pynsee/badge/?version=latest)](https://pynsee.readthedocs.io/en/latest/?badge=latest)
-[![Supported python versions](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
+[![Supported python versions](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%7C%203.13%7C%203.14-blue.svg)](https://www.python.org/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://pypi.org/project/black/)
 [![PyPi stats](https://img.shields.io/pypi/dm/pynsee)](https://pypistats.org/packages/pynsee)
 
