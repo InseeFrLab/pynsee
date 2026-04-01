@@ -7,7 +7,7 @@ version: 2
 
 # Set the version of Python
 build:
-  os: ubuntu-22.04  # <- add this line
+  os: ubuntu-lts-latest  # <- add this line
   tools:
     python: "3.14"
 
