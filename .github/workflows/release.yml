@@ -14,7 +14,7 @@ on:
 jobs:
   build_wheels:
     name: Build wheel and source dist
-    runs-on: ubuntu-lts-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v6
@@ -36,7 +36,7 @@ jobs:
   publish:
     name: Publish on GitHub and PyPI
     needs: [build_wheels]
-    runs-on: ubuntu-lts-latest
+    runs-on: ubuntu-latest
     # release on every tag
     if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v')
 
