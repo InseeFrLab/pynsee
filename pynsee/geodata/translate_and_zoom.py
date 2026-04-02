@@ -10,10 +10,53 @@ from shapely.geometry import Point, LineString
 from ._make_offshore_points import _make_offshore_points
 from ._rescale_geom import _rescale_geom
 from ._get_center import _get_center
-from ._add_insee_dep import _add_insee_dep
+from ._get_geodata_with_backup import _get_geodata_with_backup
+from pynsee.utils.save_df import save_df
 
 
 logger = logging.getLogger(__name__)
+
+
+@save_df(cls=GeoDataFrame, day_lapse_max=30)
+def _deps_with_valid_coverage() -> GeoDataFrame:
+    """
+    Inner function used to create a geodataframe of french departments, safe to
+    use for a spatial join.
+
+    First (if overlaps detected) a valid coverage is enforced (meaning polygons
+    do not overlap and are sharing edges) with a simplification of 10 meters.
+    After that, a negative 10 meters buffer is applied to prevent duplicates
+    when running a spatial join with intersects predicate.
+    This function uses a 30 day cache storage.
+
+    Returns
+    -------
+    GeoDataFrame
+        Departments' geodataset
+        Only two columns : code_insee_du_departement, insee_dep_geometry
+
+    """
+    dataset_id = "ADMINEXPRESS-COG-CARTO.LATEST:departement"
+    dep = _get_geodata_with_backup(dataset_id).to_crs("EPSG:3857")
+    dep = dep[["code_insee", "geometry"]].rename(
+        columns={
+            "code_insee": "code_insee_du_departement",
+            "geometry": "insee_dep_geometry",
+        }
+    )
+    dep = dep.set_geometry("insee_dep_geometry")
+
+    x = dep.sjoin(dep, how="left", predicate="overlaps").query(
+        "~code_insee_du_departement_right.isnull()"
+    )
+    if not x.empty:
+        # Force coverage validity (non-overlapping, edge-matched polygons)
+        # (This shouldn't be necessary with modern ADMINEXPRESS datasets and
+        # is here as a backup safe)
+        dep["insee_dep_geometry"] = dep.simplify_coverage(0.01)
+    dep["insee_dep_geometry"] = dep["insee_dep_geometry"].buffer(-0.01)
+
+    return dep
 
 
 def transform_overseas(
@@ -74,7 +117,38 @@ def transform_overseas(
         gdf["code_insee_du_departement"] = gdf["code_insee"]
         gdf["insee_dep_geometry"] = gdf["geometry"]
     else:
-        gdf = _add_insee_dep(gdf.copy()).reset_index(drop=True)
+
+        # retrieve safe deps geometries
+        dep = _deps_with_valid_coverage()
+
+        if "code_insee_du_departement" not in gdf.columns:
+
+            # retrieve department's codes using a spatial join. The negative
+            # buffer on deps should be safe to be used without any duplication
+            # of gdf; just to be sure, raise an exception in case user encounters
+            # an unexpected duplication and ask to report this
+
+            shape_init = gdf.shape
+            gdf = gdf.sjoin(dep, how="left")
+            if not len(gdf) == shape_init[0]:
+                raise ValueError(
+                    "duplication occured, please get in touch and report this !"
+                )
+            gdf = gdf.drop("index_right", axis=1)
+
+        gdf["code_insee_du_departement"] = gdf[
+            "code_insee_du_departement"
+        ].fillna("NR")
+
+        # Retrieve simplified geometries for deps. Note that it used a negative
+        # buffer (10 meters) which should not alter geographic transformations
+        # given it's range
+        gdf = gdf.merge(dep, on="code_insee_du_departement", how="left")
+
+        # where dep geom is still missing, use initial geometry
+        gdf["insee_dep_geometry"] = gdf["insee_dep_geometry"].combine_first(
+            gdf.geometry
+        )
 
     offshore_points = _make_offshore_points(
         center=Point(center),
