@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-lts-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.10", "3.14"]

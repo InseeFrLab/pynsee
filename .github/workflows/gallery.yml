@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-lts-latest
+    runs-on: ubuntu-latest
     container: inseefrlab/pynsee:latest
     steps:
       - uses: actions/checkout@v6
