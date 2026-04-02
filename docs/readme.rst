@@ -24,7 +24,7 @@ Pynsee python package contains tools to easily search and download French data f
    :target: https://pynsee.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 
-.. image:: https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue.svg
+.. image:: https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%7C%203.13%7C%203.14-blue.svg
    :target: https://www.python.org/
    :alt: Python versions
 

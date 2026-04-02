@@ -1,7 +1,22 @@
+# pynsee 0.2.5
+
+**SIRENE bugfixes**
+
+* Fix pattern encoding by @tgrandje in https://github.com/InseeFrLab/pynsee/pull/288
+* Fix empty search bug by @tgrandje in https://github.com/InseeFrLab/pynsee/pull/287
+
+**Other improvements**
+
+* Geodata:
+  * expose silent arg in get_geodata by @tgrandje in https://github.com/InseeFrLab/pynsee/pull/261
+  * check geodata availability before queries by @tgrandje in https://github.com/InseeFrLab/pynsee/pull/298
+* Localdata: warn of localdata deprecation & skip test_get_local_data_latest test by @tgrandje in https://github.com/InseeFrLab/pynsee/pull/297
+* maximize setuptools version by @tgrandje in https://github.com/InseeFrLab/pynsee/pull/302
+
 # pynsee 0.2.4
 
 * bug fixes after IGN API changes + St-Pierre et Miquelon islands included
-* bug fixes after INSEE API changes 
+* bug fixes after INSEE API changes
 
 # pynsee 0.2.1
 
