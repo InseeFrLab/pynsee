@@ -1,64 +1,52 @@
-# SPDX-FileCopyrightText: 2022 Tanguy Fardet
-# SPDX-License-Identifier: CC0-1.0
-
-[build-system]
-requires = ["setuptools>=61.0,<82.0"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "pynsee"
+version = "0.1.0"
+description = ""
 authors = [
-  { name="Hadrien Leclerc", email="leclerc.hadrien@gmail.com" },
-  { name="Lino Galiana", email="lino.galiana@insee.fr" },
-  { name="Thomas Grandjean", email="thomas.grandjean@developpement-durable.gouv.fr" },
-  { name="Tanguy Fardet", email="tanguy.fardet@ens-lyon.org" },
+    {name = "Your Name",email = "you@example.com"}
 ]
-license = {file = "LICENSE.md"}
-description = "Tools to Easily Search and Download French Data From INSEE and IGN APIs."
 readme = "README.md"
-keywords = [
-    "INSEE", "IGN", "statistics", "demography", "geospatial", "France", "GIS",
-    "statistique", "démographie", "géospatial", "SIG"
-]
-requires-python = ">=3.9"
-dynamic = ["dependencies", "optional-dependencies", "version"]
-classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Science/Research",
-    "Intended Audience :: Information Technology",
-    "Intended Audience :: Education",
-    "Intended Audience :: Other Audience",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
-    "Natural Language :: English",
-    "Topic :: Scientific/Engineering :: Information Analysis",
-    "Topic :: Scientific/Engineering :: GIS"
-]
-
-[project.urls]
-repository = "https://github.com/InseeFrLab/pynsee"
-bug-tracker = "https://github.com/InseeFrLab/pynsee/issues"
-documentation = "https://pynsee.readthedocs.io"
+requires-python = ">=3.10,<4.0"
 
 
-[tool.setuptools]
-package-dir = {"" = "."}
-include-package-data = false
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["pynsee*"]
+[tool.poetry.dependencies]
+pandas = ">=2.3.3,< 3.0"
+geopandas = ">=1.1.3,< 2.0"
+pyarrow = ">=23.0.1"
+# pyogrio = ">=0.12.1"
+tqdm = ">=4.56"
+platformdirs = ">=4"
+unidecode = ">=1.3"
+urllib3 = ">=2.2"
+shapely = ">=2.1.2"
+requests = ">=2.32"
+requests-ratelimiter = ">=0.7"
+openpyxl = "^3.1.5"
+xlrd = ">2.0"
 
-[tool.setuptools.package-data]
-"*" = ["*.md", "*.zip"]
 
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}
-optional-dependencies.full = {file = ["requirements.txt", "requirements-extra.txt"]}
-version = {attr = "pynsee.__version__"}
-
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.2.0"
+setuptools ="<82.0"
+spyder = "^6.1.3"
+pytest = "^9.0.2"
+matplotlib = "^3.10.8"
+parameterized = "^0.9.0"
+aiohttp = ">=3.13.4"
+cffi = ">=2.0.0"
+jellyfish = ">= 1.2.1"
+pyqt5-sip = ">=12.18.0"
+ujson = ">= 5.12.0"
+pytest-xdist = "^3.8.0"
+black = "^26.3.1"
+pytest-cov = "^7.1.0"
+nbconvert = "^7.17.0"
+descartes = "^1.1.0"
+flake8 = "7.1.2"
 
 [tool.black]
 include = '\.py$'
