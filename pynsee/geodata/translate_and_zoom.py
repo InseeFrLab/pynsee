@@ -1,5 +1,6 @@
 import logging
 import math
+import re
 from typing import Optional
 
 import pandas as pd
@@ -13,7 +14,6 @@ from ._get_center import _get_center
 from ._get_geodata_with_backup import _get_geodata_with_backup
 from pynsee.utils.save_df import save_df
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -24,7 +24,7 @@ def _deps_with_valid_coverage() -> GeoDataFrame:
     use for a spatial join.
 
     First (if overlaps detected) a valid coverage is enforced (meaning polygons
-    do not overlap and are sharing edges) with a simplification of 10 meters.
+    do not overlap and are sharing edges) with a simplification of 1 meter.
     After that, a negative 10 meters buffer is applied to prevent duplicates
     when running a spatial join with intersects predicate.
     This function uses a 30 day cache storage.
@@ -50,11 +50,12 @@ def _deps_with_valid_coverage() -> GeoDataFrame:
         "~code_insee_du_departement_right.isnull()"
     )
     if not x.empty:
+        # Geometries overlap:
         # Force coverage validity (non-overlapping, edge-matched polygons)
         # (This shouldn't be necessary with modern ADMINEXPRESS datasets and
         # is here as a backup safe)
-        dep["insee_dep_geometry"] = dep.simplify_coverage(0.01)
-    dep["insee_dep_geometry"] = dep["insee_dep_geometry"].buffer(-0.01)
+        dep["insee_dep_geometry"] = dep.simplify_coverage(1)
+    dep["insee_dep_geometry"] = dep["insee_dep_geometry"].buffer(-1)
 
     return dep
 
@@ -119,21 +120,29 @@ def transform_overseas(
     else:
 
         # retrieve safe deps geometries
-        dep = _deps_with_valid_coverage()
+        dep_cov = _deps_with_valid_coverage()
 
-        if "code_insee_du_departement" not in gdf.columns:
+        # detect INSEE department's codes
+        # (available in some of IGN's geodatasets, but with different patterns)
+        pattern = "codes?.*?insee.*?departement"
+        dep = gdf.columns[gdf.columns.str.match(pattern, flags=re.IGNORECASE)]
+        if not dep.empty:
+            dep = dep[0]
+            deps = gdf[dep].str.extractall("([0-9AB]{2,3})")
+            deps.index = deps.index.droplevel(-1)
+            deps = deps.loc[~deps.index.duplicated(keep="first")]
+            gdf["code_insee_du_departement"] = deps[0]
+
+        else:
 
             # retrieve department's codes using a spatial join. The negative
             # buffer on deps should be safe to be used without any duplication
-            # of gdf; just to be sure, raise an exception in case user encounters
-            # an unexpected duplication and ask to report this
-
-            shape_init = gdf.shape
-            gdf = gdf.sjoin(dep, how="left")
-            if not len(gdf) == shape_init[0]:
-                raise ValueError(
-                    "duplication occured, please get in touch and report this !"
-                )
+            # of gdf, except when there is a valid overlapping (ie regions
+            # covering multiple deps, interdep epcis...).
+            # In case of duplication (for instance, starting from REGION) keep
+            # only first dep geometry
+            gdf = gdf.sjoin(dep_cov, how="left")
+            gdf = gdf.loc[~gdf.index.duplicated(keep="first")]
             gdf = gdf.drop("index_right", axis=1)
 
         gdf["code_insee_du_departement"] = gdf[
@@ -143,7 +152,7 @@ def transform_overseas(
         # Retrieve simplified geometries for deps. Note that it used a negative
         # buffer (10 meters) which should not alter geographic transformations
         # given it's range
-        gdf = gdf.merge(dep, on="code_insee_du_departement", how="left")
+        gdf = gdf.merge(dep_cov, on="code_insee_du_departement", how="left")
 
         # where dep geom is still missing, use initial geometry
         gdf["insee_dep_geometry"] = gdf["insee_dep_geometry"].combine_first(
