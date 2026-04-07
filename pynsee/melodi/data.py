@@ -108,10 +108,8 @@ def get_melodi_dataset(
         # parse metadata only once to reduce RAM consumption
         metadata = _parse_metadata(r, language=language)
 
-        data = r.json()
-        count_pages = data["paging"]["count"] // SIZE + (
-            0 if data["paging"]["count"] % SIZE == 0 else 1
-        )
+        count = r.json()["paging"]["count"]
+        count_pages = count // SIZE + (0 if count % SIZE == 0 else 1)
 
         # download
         data = {"paging": {"next": url_api}}
@@ -128,13 +126,19 @@ def get_melodi_dataset(
             observations.append(_parse_dataset_observations(r))
 
         if not data["paging"]["isLast"]:
-            raise ValueError
+            raise ValueError(
+                "An unexpected error occured, please get in touch"
+            )
 
     observations = pd.concat(observations).assign(**metadata)
+    if len(observations) != count:
+        raise ValueError("An unexpected error occured, please get in touch")
 
     return observations
 
 
 if __name__ == "__main__":
-    test = get_melodi_dataset("DS_POPULATIONS_REFERENCE")
+
+    # test = get_melodi_dataset("DS_TICM_PRATIQUES")
+    test = get_melodi_dataset("DS_RP_POPULATION_PRINC")
     print(test)
