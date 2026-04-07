@@ -11,6 +11,7 @@ import pynsee.constants
 from pynsee.utils.requests_session import PynseeAPISession
 from pynsee.utils.clear_all_cache import clear_all_cache
 from pynsee.utils import init_conn
+from pynsee.metadata.get_definition import get_definition
 
 from .patches import (
     clean_os_patch,
@@ -66,7 +67,8 @@ def test_dummy_sirene_token_is_not_stored():
     with open(pynsee.constants.CONFIG_FILE, "w") as f:
         json.dump({"DUMMY_SIRENE_KEY": "spam"}, f)
 
-    init_conn(sirene_key="eggs")
+    init_conn(sirene_key="eggs", raise_if_not_ok=False)
+    get_definition(ids=["c1020", "c1601"])
 
     with open(pynsee.constants.CONFIG_FILE, "r") as f:
         assert json.load(f)["DUMMY_SIRENE_KEY"] == "spam"
