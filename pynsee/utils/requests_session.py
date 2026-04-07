@@ -18,7 +18,6 @@ from pynsee.utils._get_credentials import _get_credentials_from_configfile
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.constants import SIRENE_KEY, HTTPS_PROXY_KEY, HTTP_PROXY_KEY
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -584,7 +583,9 @@ class PynseeAPISession(requests.Session):
                         "your proxy configuration "
                         f"- proxies were {self.proxies}."
                     ) from exc
-                if exc.response.status_code >= 400:
+                if exc.response.status_code == 401:
+                    _invalid_sirene_key(raise_error=raise_if_not_ok)
+                elif exc.response.status_code >= 400:
                     msg = (
                         f"Could not reach {api} at {api_url}, the server "
                         "returned {exc.response.status_code}; please get "

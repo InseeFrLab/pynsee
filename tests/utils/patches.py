@@ -7,7 +7,6 @@ import requests
 import pynsee.constants
 from pynsee.utils.requests_session import PynseeAPISession
 
-
 config_file = pynsee.constants.CONFIG_FILE
 config_backup = f"{config_file}.back"
 
@@ -118,7 +117,7 @@ def patch_test_connections_and_failure_for_sirene(func):
     def wrapper(*args, **kwargs):
         init = PynseeAPISession._request_api_insee
 
-        def _request_api_insee(url, *args, **kwargs):
+        def _request_api_insee(self, url, *args, **kwargs):
             if re.match(".*api-sirene.*", url):
                 dummy_response = object()
                 dummy_response.status_code = 400
