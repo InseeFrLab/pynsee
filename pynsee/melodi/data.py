@@ -56,9 +56,7 @@ def _parse_metadata(
     return metadata
 
 
-def _parse_dataset_observations(
-    response: requests.Response, language: str = "all"
-):
+def _parse_dataset_observations(response: requests.Response):
 
     data = response.json()
 
@@ -137,8 +135,96 @@ def get_melodi_dataset(
     return observations
 
 
+@save_df(day_lapse_max=90)
+def get_range(id_dataset, language="all", include_values=False):
+
+    url = f"https://api.insee.fr/melodi/range/{id_dataset}"
+
+    with PynseeAPISession() as session:
+        r = session.request_insee(url, file_format="application/json")
+
+    ranges = r.json()["range"]
+
+    ranges = pd.DataFrame(ranges)
+
+    concepts = (
+        ranges["concept"]
+        .str["code"]
+        .to_frame("concept_code")
+        .join(pd.DataFrame(ranges["concept"].str["label"].values.tolist()))
+    )
+    languages = [
+        x
+        for x in concepts.columns.tolist()
+        if "_" not in x and (language == "all" or x == language)
+    ]
+
+    concepts = (
+        concepts[["concept_code"] + languages]
+        .rename(columns={x: f"concept_{x}" for x in languages})
+        .join(ranges["type"])
+    )
+
+    if include_values:
+        values = ranges.explode("values", ignore_index=False)["values"]
+        values = values.to_frame().reset_index(drop=False)
+
+        values = pd.DataFrame(
+            values["values"].tolist(), index=values.index
+        ).join(values["index"])
+
+        labels = pd.DataFrame(values["label"].tolist())
+
+        values = (
+            values.drop("label", axis=1)
+            .join(labels[languages])
+            .rename(
+                columns={
+                    x: f"value_{x}"
+                    for x in languages
+                    if x in set(labels.columns)
+                }
+            )
+        )
+
+        if "type" in values.columns:
+            ix = values[~values.type.isnull()].index
+            types = pd.DataFrame(
+                values.loc[ix, "type"].values.tolist(), index=ix
+            )[["code"] + languages]
+            types = types.rename(
+                columns={x: f"type_{x}" for x in types.columns}
+            )
+
+            values = values.drop("type", axis=1).join(types)
+
+        if "measureType" in values.columns:
+            ix = values[~values.measureType.isnull()].index
+            measure_types = pd.DataFrame(
+                values.loc[ix, "measureType"].values.tolist(), index=ix
+            )  # [["code"] + languages]
+            labels = pd.DataFrame(
+                measure_types["libelle"].tolist(), index=labels.index
+            )[languages]
+            labels = labels.rename(
+                columns={x: f"measure_type_{x}" for x in labels.columns},
+            )
+
+            measure_types = measure_types.drop("libelle", axis=1)
+            measure_types = measure_types.rename(
+                columns={x: f"measure_type_{x}" for x in measure_types.columns}
+            ).join(labels)
+
+            values = values.drop("measureType", axis=1).join(measure_types)
+
+        values = values.set_index("index")
+        concepts = concepts.join(values)
+    return concepts
+
+
 if __name__ == "__main__":
 
     # test = get_melodi_dataset("DS_TICM_PRATIQUES")
-    test = get_melodi_dataset("DS_RP_POPULATION_PRINC")
+    # test = get_range("DS_RP_POPULATION_PRINC", include_values=True)
+    test = get_range("DS_TICM_PRATIQUES", include_values=True)
     print(test)
