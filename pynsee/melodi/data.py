@@ -77,16 +77,226 @@ def _parse_dataset_observations(response: requests.Response):
 
 @save_df(day_lapse_max=90)
 def get_melodi_dataset(
-    id_dataset, language="all", raise_if_not_ok: bool = True, **filters
+    id_dataset, language: str = "all", raise_if_not_ok: bool = True, **filters
 ) -> pd.DataFrame:
+    """
+    Get a MELODI dataset (pagination is handled by pynsee if need be).
+
+    Note: as pagination is handled, `page`, `maxResult` and `totalCount`
+    arguments should NOT be added to the kwargs and will be ignored. `range`
+    will also be ignored : to retrieve a dataset's dimensions, have a look at
+    `pynsee.melodi.get_range`.
+
+    Parameters
+    ----------
+    id_dataset : str
+        Dataset's identifier.
+    language : str, optional
+        If set to "all", will keep metadata's labels in every available language.
+        Can be used to keep only one desired language label (API covered
+        languages include either "en" of "fr"). The default is "all".
+    raise_if_not_ok : bool, optional
+        If set to True, a RequestException will automatically be raised if
+        the response is not ok (= `status_code` < 400).
+        The default is True.
+    **filters :
+        Optional filters to be used on MELODI. To get the available filters,
+        please look at `pynsee.melodi.get_range`. Note that even if MELODI's
+        filters' labels are UPPERCASE, pynsee handles lowercase in consistence
+        with python's conventions.
+
+    Raises
+    ------
+    RequestException
+        If the JSON cannot be parsed.
+    ValueError
+        If the result after pagination is incoherent with the estimated
+        results' shape. This should NOT happen and is triggered to warn users
+        to get in touch if this arises.
+
+    Returns
+    -------
+    observations : pd.DataFrame
+        Dataset's as a DataFrame.
+
+    Examples
+    -------
+    >>> get_melodi_dataset("DS_TICM_PRATIQUES")
+
+    #           TICM_MEASURE SEX FREQ EMPSTA TIME_PERIOD   EDUC PCS_ESE     AGE  \
+    # 0               PROFIL  _T    A     _T        2022     _T      _T  Y60T74
+    # 1          TEL_PAR_INT   F    A     _T        2023     _T      _T  Y_GE60
+    # 2    WEB_12MOIS_X_EGOV   F    A     _T        2015     _T      _T  Y_GE60
+    # 3              LECTURE  _T    A     _T        2012  2_353      _T  Y15T44
+    # 4            WEB_3MOIS   F    A     _T        2025     _T      _T  Y45T59
+    # ..                 ...  ..  ...    ...         ...    ...     ...     ...
+    # 331        VENTE_3MOIS  _T    A     _T        2010    4T8      _T  Y45T59
+    # 332  WEB_12MOIS_X_EGOV  _T    A     _T        2009    0T1      _T  Y15T44
+    # 333      NO_WEB_12MOIS   M    A     _T        2015     _T      _T  Y_GE60
+    # 334            LECTURE  _T    A     _T        2018    0T1      _T  Y15T44
+    # 335          WEB_3MOIS  _T    A     _T        2013  2_353      _T  Y15T44
+
+    #     OBS_STATUS  OBS_VALUE_NIVEAU                     title_en  \
+    # 0            A              19.4  Internet use of individuals
+    # 1            A              38.6  Internet use of individuals
+    # 2            L               NaN  Internet use of individuals
+    # 3            L               NaN  Internet use of individuals
+    # 4            A              96.4  Internet use of individuals
+    # ..         ...               ...                          ...
+    # 331          L               NaN  Internet use of individuals
+    # 332          L               NaN  Internet use of individuals
+    # 333          L               NaN  Internet use of individuals
+    # 334          L               NaN  Internet use of individuals
+    # 335          A              93.9  Internet use of individuals
+
+    #                               title_fr         identifier publisher_id  \
+    # 0    Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 1    Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 2    Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 3    Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 4    Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # ..                                 ...                ...          ...
+    # 331  Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 332  Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 333  Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 334  Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 335  Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+
+    #                                           publisher_fr  \
+    # 0    Institut national de la statistique et des etu...
+    # 1    Institut national de la statistique et des etu...
+    # 2    Institut national de la statistique et des etu...
+    # 3    Institut national de la statistique et des etu...
+    # 4    Institut national de la statistique et des etu...
+    # ..                                                 ...
+    # 331  Institut national de la statistique et des etu...
+    # 332  Institut national de la statistique et des etu...
+    # 333  Institut national de la statistique et des etu...
+    # 334  Institut national de la statistique et des etu...
+    # 335  Institut national de la statistique et des etu...
+
+    #                                           publisher_en
+    # 0    National Institute of Statistics and Economic ...
+    # 1    National Institute of Statistics and Economic ...
+    # 2    National Institute of Statistics and Economic ...
+    # 3    National Institute of Statistics and Economic ...
+    # 4    National Institute of Statistics and Economic ...
+    # ..                                                 ...
+    # 331  National Institute of Statistics and Economic ...
+    # 332  National Institute of Statistics and Economic ...
+    # 333  National Institute of Statistics and Economic ...
+    # 334  National Institute of Statistics and Economic ...
+    # 335  National Institute of Statistics and Economic ...
+
+    # [10336 rows x 16 columns]
+
+    >>> get_melodi_dataset("DS_TICM_PRATIQUES", language="fr").head(2)
+
+    #   TICM_MEASURE SEX FREQ EMPSTA TIME_PERIOD EDUC PCS_ESE     AGE OBS_STATUS  \
+    # 0       PROFIL  _T    A     _T        2022   _T      _T  Y60T74          A
+    # 1  TEL_PAR_INT   F    A     _T        2023   _T      _T  Y_GE60          A
+
+    #    OBS_VALUE_NIVEAU                           title_fr         identifier  \
+    # 0              19.4  Pratiques en ligne des personnes   DS_TICM_PRATIQUES
+    # 1              38.6  Pratiques en ligne des personnes   DS_TICM_PRATIQUES
+
+    #   publisher_id                                       publisher_fr
+    # 0        INSEE  Institut national de la statistique et des etu...
+    # 1        INSEE  Institut national de la statistique et des etu...
+
+    >>> get_melodi_dataset(
+        "DS_TICM_PRATIQUES",
+        language="fr",
+        time_period=2025,
+        sex="F",
+        age="Y45T59"
+        )
+
+    #          TICM_MEASURE SEX FREQ EMPSTA TIME_PERIOD EDUC PCS_ESE     AGE  \
+    # 0           WEB_3MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 1         RESEAUX_SOC   F    A     _T        2025   _T      _T  Y45T59
+    # 2          ACHA_3MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 3   WEB_12MOIS_X_EGOV   F    A     _T        2025   _T      _T  Y45T59
+    # 4     COMPTE_BANCAIRE   F    A     _T        2025   _T      _T  Y45T59
+    # 5         ACHA_12MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 6         EGOV_12MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 7         TEL_PAR_INT   F    A     _T        2025   _T      _T  Y45T59
+    # 8         VENTE_3MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 9       NO_WEB_12MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 10              EMAIL   F    A     _T        2025   _T      _T  Y45T59
+    # 11            LECTURE   F    A     _T        2025   _T      _T  Y45T59
+    # 12             PROFIL   F    A     _T        2025   _T      _T  Y45T59
+    # 13          QUOTIDIEN   F    A     _T        2025   _T      _T  Y45T59
+    # 14      INFO_PRODUITS   F    A     _T        2025   _T      _T  Y45T59
+    # 15            NO_EGOV   F    A     _T        2025   _T      _T  Y45T59
+
+    #    OBS_STATUS  OBS_VALUE_NIVEAU                           title_fr  \
+    # 0           A              96.4  Pratiques en ligne des personnes
+    # 1           A              71.5  Pratiques en ligne des personnes
+    # 2           A              71.6  Pratiques en ligne des personnes
+    # 3           A               5.1  Pratiques en ligne des personnes
+    # 4           A              80.0  Pratiques en ligne des personnes
+    # 5           A              83.2  Pratiques en ligne des personnes
+    # 6           A              92.1  Pratiques en ligne des personnes
+    # 7           A              75.1  Pratiques en ligne des personnes
+    # 8           A              25.7  Pratiques en ligne des personnes
+    # 9           A               2.9  Pratiques en ligne des personnes
+    # 10          A              92.2  Pratiques en ligne des personnes
+    # 11          A              54.8  Pratiques en ligne des personnes
+    # 12          L               NaN  Pratiques en ligne des personnes
+    # 13          A              91.1  Pratiques en ligne des personnes
+    # 14          A              70.2  Pratiques en ligne des personnes
+    # 15          A               7.9  Pratiques en ligne des personnes
+
+    #            identifier publisher_id  \
+    # 0   DS_TICM_PRATIQUES        INSEE
+    # 1   DS_TICM_PRATIQUES        INSEE
+    # 2   DS_TICM_PRATIQUES        INSEE
+    # 3   DS_TICM_PRATIQUES        INSEE
+    # 4   DS_TICM_PRATIQUES        INSEE
+    # 5   DS_TICM_PRATIQUES        INSEE
+    # 6   DS_TICM_PRATIQUES        INSEE
+    # 7   DS_TICM_PRATIQUES        INSEE
+    # 8   DS_TICM_PRATIQUES        INSEE
+    # 9   DS_TICM_PRATIQUES        INSEE
+    # 10  DS_TICM_PRATIQUES        INSEE
+    # 11  DS_TICM_PRATIQUES        INSEE
+    # 12  DS_TICM_PRATIQUES        INSEE
+    # 13  DS_TICM_PRATIQUES        INSEE
+    # 14  DS_TICM_PRATIQUES        INSEE
+    # 15  DS_TICM_PRATIQUES        INSEE
+
+    #                                          publisher_fr
+    # 0   Institut national de la statistique et des etu...
+    # 1   Institut national de la statistique et des etu...
+    # 2   Institut national de la statistique et des etu...
+    # 3   Institut national de la statistique et des etu...
+    # 4   Institut national de la statistique et des etu...
+    # 5   Institut national de la statistique et des etu...
+    # 6   Institut national de la statistique et des etu...
+    # 7   Institut national de la statistique et des etu...
+    # 8   Institut national de la statistique et des etu...
+    # 9   Institut national de la statistique et des etu...
+    # 10  Institut national de la statistique et des etu...
+    # 11  Institut national de la statistique et des etu...
+    # 12  Institut national de la statistique et des etu...
+    # 13  Institut national de la statistique et des etu...
+    # 14  Institut national de la statistique et des etu...
+    # 15  Institut national de la statistique et des etu...
+
+    """
 
     url = f"https://api.insee.fr/melodi/data/{id_dataset}"
+
+    # set to uppercase if need be
+    filters = {k.upper(): v for k, v in filters.items()}
 
     params = filters.copy()
     params["totalCount"] = True
     # params["range"] = True
 
     params["maxResult"] = 0
+    params["page"] = 1
 
     if params:
         url_api_count = f"{url}?{urlencode(params)}"
@@ -133,7 +343,9 @@ def get_melodi_dataset(
                 "An unexpected error occured, please get in touch"
             )
 
-    observations = pd.concat(observations).assign(**metadata)
+    observations = pd.concat(observations, ignore_index=True).assign(
+        **metadata
+    )
     if len(observations) != count:
         raise ValueError("An unexpected error occured, please get in touch")
 
@@ -380,9 +592,11 @@ if __name__ == "__main__":
 
     # print(get_range("DS_RP_POPULATION_PRINC"))
 
-    df = get_melodi_dataset(
-        "DS_RP_POPULATION_PRINC", "all", GEO="2025-EPCI-200000172"
-    )
+    df = get_melodi_dataset("DS_TICM_PRATIQUES")
+
+    # df = get_melodi_dataset(
+    #     "DS_RP_POPULATION_PRINC", "all", GEO="2025-EPCI-200000172"
+    # )
 
     # cat = get_melodi_catalog()
     # for identifier in tqdm(cat["dataset_identifier"].drop_duplicates()):
