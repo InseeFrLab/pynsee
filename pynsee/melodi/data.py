@@ -77,7 +77,7 @@ def _parse_dataset_observations(response: requests.Response):
 
 @save_df(day_lapse_max=90)
 def get_melodi_dataset(
-    id_dataset, language="all", page=1, **filters
+    id_dataset, language="all", raise_if_not_ok: bool = True, **filters
 ) -> pd.DataFrame:
 
     url = f"https://api.insee.fr/melodi/data/{id_dataset}"
@@ -87,7 +87,6 @@ def get_melodi_dataset(
     # params["range"] = True
 
     params["maxResult"] = 0
-    params["page"] = page
 
     if params:
         url_api_count = f"{url}?{urlencode(params)}"
@@ -100,7 +99,9 @@ def get_melodi_dataset(
 
         # check iterations count
         r = session.request_insee(
-            url_api_count, file_format="application/json"
+            url_api_count,
+            file_format="application/json",
+            raise_if_not_ok=raise_if_not_ok,
         )
 
         # parse metadata only once to reduce RAM consumption
@@ -113,7 +114,11 @@ def get_melodi_dataset(
         data = {"paging": {"next": url_api}}
         for x in tqdm(range(count_pages), desc="Downloading"):
             url = data["paging"]["next"]
-            r = session.request_insee(url, file_format="application/json")
+            r = session.request_insee(
+                url,
+                file_format="application/json",
+                raise_if_not_ok=raise_if_not_ok,
+            )
             try:
                 data = r.json()
             except requests.exceptions.JSONDecodeError as e:
@@ -123,7 +128,7 @@ def get_melodi_dataset(
 
             observations.append(_parse_dataset_observations(r))
 
-        if not data["paging"]["isLast"]:
+        if not data["paging"].get("isLast", True):
             raise ValueError(
                 "An unexpected error occured, please get in touch"
             )
@@ -136,12 +141,156 @@ def get_melodi_dataset(
 
 
 @save_df(day_lapse_max=90)
-def get_range(id_dataset, language="all", include_values=False):
+def get_range(
+    id_dataset: str,
+    language: str = "all",
+    include_values: bool = False,
+    raise_if_not_ok: bool = True,
+) -> pd.DataFrame:
+    """
+    Get a dataset's available dimensions (ie "ranges").
+
+    Available dimensions can be retrieved in a sparse format (with only
+    the dimensions' descriptions) or a long format (including all available
+    values for each dimension).
+
+    Parameters
+    ----------
+    id_dataset : str
+        Dataset's identifier.
+    language : str, optional
+        If set to "all", will keep metadata's labels in every available language.
+        Can be used to keep only one desired language label (API covered
+        languages include either "en" of "fr"). The default is "all".
+    include_values : bool, optional
+        Whether to include each available value for each dimension. The default
+        is False, resulting to the sparse format. Set to True to get the long
+        format dataframe.
+    raise_if_not_ok : bool, optional
+        If set to True, a RequestException will automatically be raised if
+        the response is not ok (= `status_code` < 400).
+        The default is True.
+
+    Returns
+    -------
+    ranges : pd.DataFrame
+        DataFrame describing the available ranges.
+
+    Examples
+    -------
+    >>> get_range("DS_RP_POPULATION_PRINC")
+
+    #   concept_code      concept_en              concept_fr       type
+    # 0          GEO       Geography              Géographie        geo
+    # 1          SEX             Sex                    Sexe  modalites
+    # 2  TIME_PERIOD     Time period      Période temporelle       date
+    # 3   RP_MEASURE  Census measure  Mesure du recensement   modalites
+    # 4          AGE             Age                     Âge  modalites
+    # 5      MEASURE         Measure                  Mesure    mesures
+
+    >>> get_range("DS_RP_POPULATION_PRINC", language="fr")
+
+    #   concept_code              concept_fr       type
+    # 0          GEO              Géographie        geo
+    # 1          SEX                    Sexe  modalites
+    # 2  TIME_PERIOD      Période temporelle       date
+    # 3   RP_MEASURE  Mesure du recensement   modalites
+    # 4          AGE                     Âge  modalites
+    # 5      MEASURE                  Mesure    mesures
+
+    >>> get_range("DS_RP_POPULATION_PRINC", language="fr", include_values=True)
+
+    #       concept_code  concept_fr       type              code  \
+    # 0              GEO  Géographie        geo         200000172
+    # 1              GEO  Géographie        geo         200000438
+    # 2              GEO  Géographie        geo         200000545
+    # 3              GEO  Géographie        geo         200000628
+    # 4              GEO  Géographie        geo         200000800
+    #            ...         ...        ...               ...
+    # 41778          AGE         Âge  modalites            Y_GE80
+    # 41779          AGE         Âge  modalites            Y_LT15
+    # 41780          AGE         Âge  modalites            Y_LT20
+    # 41781          AGE         Âge  modalites                _T
+    # 41782      MEASURE      Mesure    mesures  OBS_VALUE_NIVEAU
+
+    #                         id                                                iri  \
+    # 0      2025-EPCI-200000172  http://id.insee.fr/geo/intercommunalite/f276d0...
+    # 1      2025-EPCI-200000438  http://id.insee.fr/geo/intercommunalite/fa17bc...
+    # 2      2025-EPCI-200000545  http://id.insee.fr/geo/intercommunalite/2afe50...
+    # 3      2025-EPCI-200000628  http://id.insee.fr/geo/intercommunalite/69572d...
+    # 4      2025-EPCI-200000800  http://id.insee.fr/geo/intercommunalite/934906...
+    #                    ...                                                ...
+    # 41778                  NaN                                                NaN
+    # 41779                  NaN                                                NaN
+    # 41780                  NaN                                                NaN
+    # 41781                  NaN                                                NaN
+    # 41782                  NaN                                                NaN
+
+    #                                                 value_fr type_code  \
+    # 0                Communauté de communes Faucigny-Glières      EPCI
+    # 1      Communauté de communes du Pays de Pontchâteau ...      EPCI
+    # 2      Communauté de communes des Portes de Romilly-s...      EPCI
+    # 3              Communauté de communes Rhône Lez Provence      EPCI
+    # 4                 Communauté de communes Cœur de Sologne      EPCI
+    #                                                  ...       ...
+    # 41778                                     80 ans ou plus       NaN
+    # 41779                                    Moins de 15 ans       NaN
+    # 41780                                    Moins de 20 ans       NaN
+    # 41781                                              Total       NaN
+    # 41782                                             Valeur       NaN
+
+    #                                                  type_fr measure_type_code  \
+    # 0      Etablissement public de coopération intercommunal               NaN
+    # 1      Etablissement public de coopération intercommunal               NaN
+    # 2      Etablissement public de coopération intercommunal               NaN
+    # 3      Etablissement public de coopération intercommunal               NaN
+    # 4      Etablissement public de coopération intercommunal               NaN
+    #                                                  ...               ...
+    # 41778                                                NaN               NaN
+    # 41779                                                NaN               NaN
+    # 41780                                                NaN               NaN
+    # 41781                                                NaN               NaN
+    # 41782                                                NaN            NIVEAU
+
+    #       measure_type_id  measure_type_ordreRmes measure_type_total  \
+    # 0                 NaN                     NaN                NaN
+    # 1                 NaN                     NaN                NaN
+    # 2                 NaN                     NaN                NaN
+    # 3                 NaN                     NaN                NaN
+    # 4                 NaN                     NaN                NaN
+    #               ...                     ...                ...
+    # 41778             NaN                     NaN                NaN
+    # 41779             NaN                     NaN                NaN
+    # 41780             NaN                     NaN                NaN
+    # 41781             NaN                     NaN                NaN
+    # 41782          NIVEAU                     1.0              False
+
+    #       measure_type_uri measure_type_fr
+    # 0                  NaN             NaN
+    # 1                  NaN             NaN
+    # 2                  NaN             NaN
+    # 3                  NaN             NaN
+    # 4                  NaN             NaN
+    #                ...             ...
+    # 41778              NaN             NaN
+    # 41779              NaN             NaN
+    # 41780              NaN             NaN
+    # 41781              NaN             NaN
+    # 41782           NIVEAU          Niveau
+
+    # [41783 rows x 15 columns]
+
+
+    """
 
     url = f"https://api.insee.fr/melodi/range/{id_dataset}"
 
     with PynseeAPISession() as session:
-        r = session.request_insee(url, file_format="application/json")
+        r = session.request_insee(
+            url,
+            file_format="application/json",
+            raise_if_not_ok=raise_if_not_ok,
+        )
 
     ranges = r.json()["range"]
 
@@ -218,13 +367,28 @@ def get_range(id_dataset, language="all", include_values=False):
             values = values.drop("measureType", axis=1).join(measure_types)
 
         values = values.set_index("index")
-        concepts = concepts.join(values)
-    return concepts
+        ranges = concepts.join(values).drop_duplicates().reset_index(drop=True)
+
+    else:
+        ranges = concepts
+
+    return ranges
 
 
 if __name__ == "__main__":
+    # from pynsee.melodi import get_melodi_catalog
+
+    # print(get_range("DS_RP_POPULATION_PRINC"))
+
+    df = get_melodi_dataset(
+        "DS_RP_POPULATION_PRINC", "all", GEO="2025-EPCI-200000172"
+    )
+
+    # cat = get_melodi_catalog()
+    # for identifier in tqdm(cat["dataset_identifier"].drop_duplicates()):
+    #     get_range(identifier, include_values=True)
 
     # test = get_melodi_dataset("DS_TICM_PRATIQUES")
     # test = get_range("DS_RP_POPULATION_PRINC", include_values=True)
-    test = get_range("DS_TICM_PRATIQUES", include_values=True)
-    print(test)
+    # test = get_range("DS_TICM_PRATIQUES", include_values=True)
+    # print(test)
