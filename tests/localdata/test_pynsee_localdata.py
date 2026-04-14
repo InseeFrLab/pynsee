@@ -14,7 +14,6 @@ from pynsee.localdata.get_geo_list import get_geo_list
 from pynsee.localdata.get_local_data import get_local_data
 from pynsee.localdata.get_nivgeo_list import get_nivgeo_list
 from pynsee.localdata.get_local_metadata import get_local_metadata
-from pynsee.localdata.get_population import get_population
 from pynsee.localdata.get_old_city import get_old_city
 from pynsee.localdata.get_new_city import get_new_city
 from pynsee.localdata.get_area_projection import get_area_projection
@@ -28,11 +27,6 @@ from pynsee.localdata.get_descending_area import get_descending_area
 
 
 class TestFunction(TestCase):
-
-    def test_get_population(self):
-        df = get_population()
-        test = isinstance(df, pd.DataFrame)
-        self.assertTrue(test)
 
     def test_get_insee_one_area_1(self):
         def get_insee_one_area_test(area_type="derf", codearea="c"):
