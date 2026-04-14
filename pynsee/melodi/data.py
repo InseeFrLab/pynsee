@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-#TODO
+Download MELODI's datasets & ranges.
 
-// Note: available functions in R package :
-    get_catalog
-    get_all_data
-    get_data
-    get_file
-    get_local_data
-    get_local_data_by_com
-    get_metadata
-    get_range
-    get_range_geo
+Only 3 endpoints are covered by pynsee: "data/{id}", "/range/{id}" and "data/series/idbanks"
 
-    https://github.com/InseeFrLab/melodi/tree/main/R
+The other endpoints seem redundant or impractible:
+    - "/data/{id}/to-csv" : you can use pandas to transform your retrieved
+      dataset to a CSV file of you choosing
+    - "/file/{idDataset}/{idFichier} : you can instead download the full
+      dataset with/without filters
+
+Please get in touch if you have a use-case needing one of those 2 endpoints.
 
 """
 
@@ -35,6 +32,7 @@ logger = logging.getLogger(__name__)
 def _parse_metadata(
     response: requests.Response, language: str = "all"
 ) -> dict:
+    # TODO: docstring
 
     data = response.json()
 
@@ -57,6 +55,7 @@ def _parse_metadata(
 
 
 def _parse_dataset_observations(response: requests.Response):
+    # TODO: docstring
 
     data = response.json()
 
@@ -75,8 +74,8 @@ def _parse_dataset_observations(response: requests.Response):
     return obs
 
 
-@save_df(day_lapse_max=90)
-def get_melodi_dataset(
+@save_df(day_lapse_max=30)
+def get_dataset(
     id_dataset, language: str = "all", raise_if_not_ok: bool = True, **filters
 ) -> pd.DataFrame:
     """
@@ -121,7 +120,7 @@ def get_melodi_dataset(
 
     Examples
     -------
-    >>> get_melodi_dataset("DS_TICM_PRATIQUES")
+    >>> get_dataset("DS_TICM_PRATIQUES")
 
     #           TICM_MEASURE SEX FREQ EMPSTA TIME_PERIOD   EDUC PCS_ESE     AGE  \
     # 0               PROFIL  _T    A     _T        2022     _T      _T  Y60T74
@@ -190,7 +189,7 @@ def get_melodi_dataset(
 
     # [10336 rows x 16 columns]
 
-    >>> get_melodi_dataset("DS_TICM_PRATIQUES", language="fr").head(2)
+    >>> get_dataset("DS_TICM_PRATIQUES", language="fr").head(2)
 
     #   TICM_MEASURE SEX FREQ EMPSTA TIME_PERIOD EDUC PCS_ESE     AGE OBS_STATUS  \
     # 0       PROFIL  _T    A     _T        2022   _T      _T  Y60T74          A
@@ -204,7 +203,7 @@ def get_melodi_dataset(
     # 0        INSEE  Institut national de la statistique et des etu...
     # 1        INSEE  Institut national de la statistique et des etu...
 
-    >>> get_melodi_dataset(
+    >>> get_dataset(
         "DS_TICM_PRATIQUES",
         language="fr",
         time_period=2025,
@@ -352,7 +351,7 @@ def get_melodi_dataset(
     return observations
 
 
-@save_df(day_lapse_max=90)
+@save_df(day_lapse_max=30)
 def get_range(
     id_dataset: str,
     language: str = "all",
@@ -587,14 +586,72 @@ def get_range(
     return ranges
 
 
+@save_df(day_lapse_max=30)
+def get_idbank(
+    id_banks: str, language: str = "all", raise_if_not_ok: bool = True
+):
+    # TODO: docstring
+
+    url = f"https://api.insee.fr/melodi/data/series/{id_banks}"
+
+    with PynseeAPISession() as session:
+        r = session.request_insee(
+            url,
+            file_format="application/json",
+            raise_if_not_ok=raise_if_not_ok,
+        )
+
+    data = []
+    for dset in r.json():
+
+        obs = pd.DataFrame(dset.pop("observations"))
+        for f in ["attributes", "dimensions", "measures"]:
+            unstacked = pd.DataFrame(obs[f].values.tolist())
+            if f == "measures":
+                for c in unstacked.columns:
+                    try:
+                        unstacked[c] = unstacked[c].str["value"]
+                    except KeyError:
+                        pass
+            obs = obs.drop(f, axis=1).join(unstacked)
+
+        assign = {}
+        for key, val in dset.items():
+            if isinstance(val, str):
+                assign[key] = val
+            elif isinstance(val, dict):
+                for key2, val2 in val.items():
+                    if key2 in {"en", "fr"}:
+                        if key2 in {"all", language}:
+                            assign[f"{key}_{key2}"] = val2
+                    else:
+                        assign[f"{key}_{key2}"] = val2
+            elif isinstance(val, list):
+                assign[key] = ", ".join(val)
+
+        obs = obs.assign(**assign)
+        data.append(obs)
+
+    if data:
+        df = (
+            pd.concat(data, ignore_index=True)
+            .drop_duplicates()
+            .reset_index(drop=True)
+        )
+
+        return df
+
+    return pd.DataFrame()
+
+
 if __name__ == "__main__":
     # from pynsee.melodi import get_melodi_catalog
 
     # print(get_range("DS_RP_POPULATION_PRINC"))
 
-    df = get_melodi_dataset("DS_TICM_PRATIQUES")
+    # df = get_dataset("DS_TICM_PRATIQUES")
 
-    # df = get_melodi_dataset(
+    # df = get_dataset(
     #     "DS_RP_POPULATION_PRINC", "all", GEO="2025-EPCI-200000172"
     # )
 
@@ -602,7 +659,13 @@ if __name__ == "__main__":
     # for identifier in tqdm(cat["dataset_identifier"].drop_duplicates()):
     #     get_range(identifier, include_values=True)
 
-    # test = get_melodi_dataset("DS_TICM_PRATIQUES")
+    # test = get_dataset("DS_TICM_PRATIQUES")
     # test = get_range("DS_RP_POPULATION_PRINC", include_values=True)
     # test = get_range("DS_TICM_PRATIQUES", include_values=True)
     # print(test)
+
+    # not working !
+    # get_idbank("001565530+001565531")
+
+    # print(get_idbank("010770930"))
+    print(get_idbank("010598544+010770930"))

@@ -16,7 +16,7 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=30)
-def get_melodi_catalog(language: str = "all") -> pd.DataFrame:
+def get_catalog(language: str = "all") -> pd.DataFrame:
     """
     Retrieve MELODI's full catalog.
 
@@ -117,8 +117,8 @@ def get_melodi_catalog(language: str = "all") -> pd.DataFrame:
 
     Examples
     ----------
-    >>> get_melodi_catalog()
-    >>> get_melodi_catalog(language="fr")
+    >>> get_catalog()
+    >>> get_catalog(language="fr")
     """
 
     url = "https://api.insee.fr/melodi/catalog/all"
