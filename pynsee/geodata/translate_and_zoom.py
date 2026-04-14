@@ -46,15 +46,16 @@ def _deps_with_valid_coverage() -> GeoDataFrame:
     )
     dep = dep.set_geometry("insee_dep_geometry")
 
+    # Check if geometries overlap
+    # (This shouldn't be necessary with modern ADMINEXPRESS datasets and
+    # is here as a backup safe)
     x = dep.sjoin(dep, how="left", predicate="overlaps").query(
         "~code_insee_du_departement_right.isnull()"
     )
     if not x.empty:
-        # Geometries overlap:
         # Force coverage validity (non-overlapping, edge-matched polygons)
-        # (This shouldn't be necessary with modern ADMINEXPRESS datasets and
-        # is here as a backup safe)
         dep["insee_dep_geometry"] = dep.simplify_coverage(1)
+
     dep["insee_dep_geometry"] = dep["insee_dep_geometry"].buffer(-1)
 
     return dep
@@ -124,6 +125,10 @@ def transform_overseas(
 
         # detect INSEE department's codes
         # (available in some of IGN's geodatasets, but with different patterns)
+        # ADMINEXPRESS-COG-CARTO.LATEST:commune -> code_insee_du_departement
+        # ADMINEXPRESS-COG-CARTO.LATEST:epci -> codes_insee_des_departements_membres
+        # ADMINEXPRESS-COG-CARTO.LATEST:canton -> code_insee_du_departement
+        # ADMINEXPRESS-COG-CARTO.LATEST:arrondissement -> code_insee_du_departement
         pattern = "codes?.*?insee.*?departement"
         dep = gdf.columns[gdf.columns.str.match(pattern, flags=re.IGNORECASE)]
         if not dep.empty:
@@ -134,7 +139,6 @@ def transform_overseas(
             gdf["code_insee_du_departement"] = deps[0]
 
         else:
-
             # retrieve department's codes using a spatial join. The negative
             # buffer on deps should be safe to be used without any duplication
             # of gdf, except when there is a valid overlapping (ie regions
@@ -149,9 +153,9 @@ def transform_overseas(
             "code_insee_du_departement"
         ].fillna("NR")
 
-        # Retrieve simplified geometries for deps. Note that it used a negative
-        # buffer (10 meters) which should not alter geographic transformations
-        # given it's range
+        # Retrieve simplified geometries for deps' transformations. Note that
+        # it uses a negative buffer (1 meter) which should not alter geographic
+        # transformations given it's range
         gdf = gdf.merge(dep_cov, on="code_insee_du_departement", how="left")
 
         # where dep geom is still missing, use initial geometry
