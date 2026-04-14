@@ -142,7 +142,6 @@ class PynseeAPISession(requests.Session):
         self.headers.update(useragent)
 
         self.sirene_key = config[SIRENE_KEY]
-        self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
 
     def _mount_adapters(self):
         """
@@ -293,6 +292,14 @@ class PynseeAPISession(requests.Session):
                 "INSEE states that users should instead use MELODI API, which "
                 "is not yet covered by pynsee."
             )
+
+        if "api-sirene" in url:
+            self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
+        else:
+            # for now, melodi returns 401 if setting an API key based on a
+            # SIRENE subscription
+            if "X-INSEE-Api-Key-Integration" in self.headers:
+                del self.headers["X-INSEE-Api-Key-Integration"]
 
         logger.info(url)
         with warnings.catch_warnings():
