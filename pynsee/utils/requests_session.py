@@ -18,6 +18,7 @@ from pynsee.constants import HTTP_PROXY_KEY, HTTPS_PROXY_KEY, SIRENE_KEY
 from pynsee.utils._create_insee_folder import _create_insee_folder
 from pynsee.utils._get_credentials import _get_credentials_from_configfile
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -268,7 +269,7 @@ class PynseeAPISession(requests.Session):
             info. The default is (10, 15).
         raise_if_not_ok : bool, optional
             If set to True, a RequestException will automatically be raised if
-            the response is not ok (= `status_code` < 400).
+            the response is not ok (= `status_code` >= 400).
             The default is True.
         **kwargs :
             Any other kwargs are passed directly to requests.Session.request
@@ -403,7 +404,7 @@ class PynseeAPISession(requests.Session):
             URL to query.
         raise_if_not_ok : bool, optional
             If set to True, a RequestException will automatically be raised if
-            the response is not ok (= `status_code` < 400).
+            the response is not ok (= `status_code` >= 400).
             The default is True.
 
         Raises
@@ -444,7 +445,7 @@ class PynseeAPISession(requests.Session):
             INSEE's APIs. The default is "application/xml".
         raise_if_not_ok : bool, optional
             If set to True, a RequestException will automatically be raised if
-            the response is not ok (= `status_code` < 400).
+            the response is not ok (= `status_code` >= 400).
             The default is False.
         print_msg : bool, optional
             If True, will log critical entries to warn that the call to
@@ -534,9 +535,16 @@ class PynseeAPISession(requests.Session):
         """
         return re.match(".*api-sirene.*", url) is not None
 
-    def _test_connections(self) -> dict:
+    def _test_connections(self, raise_if_not_ok: bool = True) -> dict:
         """
         Test the valid connection to each API.
+
+        Parameters
+        ----------
+        raise_if_not_ok : bool, optional
+            If set to True, a RequestException will automatically be raised if
+            the response is not ok (= `status_code` >= 400).
+            The default is True.
 
         Raises
         ------
@@ -551,6 +559,7 @@ class PynseeAPISession(requests.Session):
             Dict of {"api name": response.status_code} for invalid queries.
 
         """
+
         queries = {
             "BDM": "https://api.insee.fr/series/BDM/dataflow/FR1/all",
             "Metadata": "https://api.insee.fr/metadonnees/codes/cj/n3/5599",
@@ -582,19 +591,29 @@ class PynseeAPISession(requests.Session):
                         "your proxy configuration "
                         f"- proxies were {self.proxies}."
                     ) from exc
-                elif exc.response.status_code == 404:
-                    raise requests.exceptions.RequestException(
+                if exc.response.status_code == 401:
+                    _invalid_sirene_key(raise_error=raise_if_not_ok)
+                elif exc.response.status_code >= 400:
+                    msg = (
                         f"Could not reach {api} at {api_url}, the server "
-                        "returned 404 (not found); please get in touch if "
-                        "the issue persists."
-                    ) from exc
+                        "returned {exc.response.status_code}; please get "
+                        f"in touch if the issue persists."
+                    )
+                    if raise_if_not_ok:
+                        raise requests.exceptions.RequestException(
+                            msg
+                        ) from exc
+                    logger.warning(msg)
 
                 invalid_requests[api] = exc.response.status_code
 
         if len(invalid_requests) == len(queries):
-            raise ValueError(
+            msg = (
                 "No API was reached. That's strange, please get in touch if "
                 "the issue persists."
             )
+            if raise_if_not_ok:
+                raise ValueError(msg)
+            logger.warning(msg)
 
         return invalid_requests

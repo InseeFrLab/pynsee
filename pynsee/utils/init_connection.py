@@ -28,13 +28,19 @@ def init_conn(
     sirene_key: Optional[str] = None,
     http_proxy: Optional[str] = None,
     https_proxy: Optional[str] = None,
+    raise_if_not_ok: bool = True,
 ) -> None:
     """Save your credentials to connect to INSEE APIs, subscribe to api.insee.fr
+
+    In case of failure of an API outside your current usecase (ie. failure
+    of SIREN API server while you are actually interested in metadata) you
+    can bypass this `init_conn(raise_if_not_ok=False)`
 
     Args:
         sirene_key (str, optional): user's key for sirene API
         http_proxy (str, optional): Proxy server address, e.g. 'http://my_proxy_server:port'. Defaults to "".
         https_proxy (str, optional): Proxy server address, e.g. 'http://my_proxy_server:port'. Defaults to "".
+        raise_if_not_ok (bool, optional) : If set to True, a RequestException will automatically be raised if the response is not ok (= `status_code` >= 400). The default is True.
 
     Notes:
         Environment variables can be used instead of init_conn function
@@ -69,7 +75,9 @@ def init_conn(
         sirene_key=sirene_key, http_proxy=http_proxy, https_proxy=https_proxy
     ) as session:
         try:
-            invalid_requests = session._test_connections()
+            invalid_requests = session._test_connections(
+                raise_if_not_ok=raise_if_not_ok
+            )
         except (ValueError, requests.exceptions.RequestException):
             try:
                 os.remove(CONFIG_FILE)
@@ -80,15 +88,16 @@ def init_conn(
     if invalid_requests:
         logger.error(
             "Invalid credentials, the following APIs returned error codes, "
-            "please make sure you subscribed to them (if you need those):\n"
-            f"{invalid_requests}"
+            "please make sure you subscribed to them (if you need those):\n%s",
+            invalid_requests,
         )
     else:
         logger.info(
             "Subscription to all INSEE's APIs has been successfull\n"
             "Unless the user wants to change the key or secret, using this "
             "function is no longer needed as the credentials will be saved "
-            f"locally here:\n{CONFIG_FILE}"
+            "locally here:\n%s",
+            CONFIG_FILE,
         )
 
     if invalid_requests and ("Sirene" in invalid_requests):
