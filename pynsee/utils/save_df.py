@@ -62,16 +62,18 @@ def save_df(
         def wrapper(*args, **kwargs):
             data_folder = _create_insee_folder()
 
+            # keyword names and separators are part of the key, so that e.g.
+            # startPeriod="2023" and endPeriod="2023" don't share a cache file
             string_file_arg = [
-                str(kwargs[a])
-                for a in kwargs.keys()
+                f"{a}={kwargs[a]}"
+                for a in sorted(kwargs)
                 if a not in ("update", "silent")
             ]
 
             string_file_arg += [func.__name__] + [str(a) for a in args]
 
             file_name = os.path.join(
-                data_folder, _hash("".join(string_file_arg))
+                data_folder, _hash("\x1f".join(string_file_arg))
             )
 
             file_name += ".parquet"
