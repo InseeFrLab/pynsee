@@ -348,15 +348,12 @@ def get_dataset(
 
     params = filters.copy()
     params["totalCount"] = True
-    # params["range"] = True
-
     params["maxResult"] = 0
     params["page"] = 1
 
-    if params:
-        url_api_count = f"{url}?{urlencode(params)}"
-        del params["maxResult"]
-        url_api = f"{url}?{urlencode(params)}"
+    url_api_count = f"{url}?{urlencode(params)}"
+    del params["maxResult"]
+    url_api = f"{url}?{urlencode(params)}"
 
     observations = []
 
