@@ -443,7 +443,7 @@ def get_range(
         DataFrame describing the available ranges.
 
     Examples
-    -------
+    --------
     >>> get_range("DS_RP_POPULATION_PRINC")
 
     #   concept_code          concept_en               concept_fr       type
