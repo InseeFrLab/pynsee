@@ -145,7 +145,7 @@ def get_dataset(
     Parameters
     ----------
     id_dataset : str
-        Dataset's identifier.
+        Dataset's identifier (its "name", e.g. "DS_TICM_PRATIQUES").
     language : str, optional
         If set to "all", will keep metadata's labels in every available language.
         Can be used to keep only one desired language label (API covered
