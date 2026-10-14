@@ -555,7 +555,7 @@ class PynseeAPISession(requests.Session):
             "BDM": "https://api.insee.fr/series/BDM/dataflow/FR1/all",
             "Metadata": "https://api.insee.fr/metadonnees/codes/cj/n3/5599",
             "Sirene": "https://api.insee.fr/api-sirene/3.11/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
-            "Local Data": "https://api.insee.fr/donnees-locales/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
+            "Melodi": "https://api.insee.fr/melodi/catalog/DS_POPULATIONS_REFERENCE",
         }
         invalid_requests = {}
 
