@@ -296,11 +296,10 @@ class PynseeAPISession(requests.Session):
 
         if "api-sirene" in url:
             self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
-        else:
+        elif "X-INSEE-Api-Key-Integration" in self.headers:
             # for now, melodi returns 401 if setting an API key based on a
             # SIRENE subscription
-            if "X-INSEE-Api-Key-Integration" in self.headers:
-                del self.headers["X-INSEE-Api-Key-Integration"]
+            del self.headers["X-INSEE-Api-Key-Integration"]
 
         logger.info(url)
         with warnings.catch_warnings():
