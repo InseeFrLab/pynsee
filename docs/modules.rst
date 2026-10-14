@@ -29,10 +29,10 @@ Macro data
     :members:
 
 
-Metadata
---------
+MELODI
+------
 
-.. automodule:: pynsee.metadata
+.. automodule:: pynsee.melodi
     :members:
 
 
@@ -47,4 +47,11 @@ Utils
 -----
 
 .. automodule:: pynsee.utils
+    :members:
+
+
+Metadata (deprecated)
+---------------------
+
+.. automodule:: pynsee.metadata
     :members:

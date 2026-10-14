@@ -97,3 +97,18 @@ Get data from INSEE files
 
 .. autofunction:: pynsee.download.get_column_metadata
     :no-index:
+
+Get MELODI data
+---------------
+
+.. autofunction:: pynsee.melodi.get_catalog
+    :no-index:
+
+.. autofunction:: pynsee.melodi.get_dataset
+    :no-index:
+
+.. autofunction:: pynsee.melodi.get_range
+    :no-index:
+
+.. autofunction:: pynsee.melodi.get_idbank
+    :no-index:

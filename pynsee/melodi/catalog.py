@@ -16,7 +16,9 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=30)
-def get_catalog(language: str = "all") -> pd.DataFrame:
+def get_catalog(
+    language: str = "all", update: bool = False, silent: bool = False
+) -> pd.DataFrame:
     """
     Retrieve MELODI's full catalog.
 

@@ -32,7 +32,35 @@ logger = logging.getLogger(__name__)
 def _parse_metadata(
     response: requests.Response, language: str = "all"
 ) -> dict:
-    # TODO: docstring
+    """
+    Extract dataset-level metadata from a MELODI API response.
+
+    Reads title, identifier, and publisher from the JSON payload and
+    flattens them into a flat dict keyed by ``<field>_<lang>`` for
+    multilingual fields.
+
+    Parameters
+    ----------
+    response : requests.Response
+        Raw response from a ``/data/{id}`` MELODI endpoint.
+    language : str, optional
+        Language filter. ``"all"`` keeps every available language label.
+        Covered values are ``"fr"`` and ``"en"``. The default is ``"all"``.
+
+    Returns
+    -------
+    dict
+        Flat metadata dict, e.g.::
+
+            {
+                "title_fr": "Pratiques en ligne des personnes",
+                "title_en": "Internet use of individuals",
+                "identifier": "DS_TICM_PRATIQUES",
+                "publisher_id": "INSEE",
+                "publisher_fr": "Institut national de la statistique ...",
+                "publisher_en": "National Institute of Statistics ...",
+            }
+    """
 
     data = response.json()
 
@@ -55,7 +83,24 @@ def _parse_metadata(
 
 
 def _parse_dataset_observations(response: requests.Response):
-    # TODO: docstring
+    """
+    Parse observations from a MELODI ``/data/{id}`` response page.
+
+    Flattens the nested ``dimensions``, ``attributes``, and ``measures``
+    columns into a wide DataFrame. All measure keys are extracted
+    dynamically, whatever their name.
+
+    Parameters
+    ----------
+    response : requests.Response
+        Raw response from one page of a ``/data/{id}`` MELODI endpoint.
+
+    Returns
+    -------
+    pd.DataFrame
+        One row per observation with all dimensions, attributes, and
+        measure columns (e.g. ``OBS_VALUE_NIVEAU``, ``OBS_VALUE_INDICE_DE_PRIX``).
+    """
 
     data = response.json()
 
@@ -67,16 +112,27 @@ def _parse_dataset_observations(response: requests.Response):
             )
 
     if "measures" in obs.columns:
-        measures = obs.measures.str["OBS_VALUE_NIVEAU"].str["value"]
-        obs["OBS_VALUE_NIVEAU"] = measures
-        obs = obs.drop("measures", axis=1)
+        # Unpack the measure key(s) into columns (name varies by dataset,
+        # e.g. OBS_VALUE_NIVEAU, OBS_VALUE_INDICE_DE_PRIX). The key is the
+        # same across all observations of a dataset, so a single
+        # pd.DataFrame call on the list of dicts is enough to get one column
+        # per measure key, without a row-wise apply.
+        measures_expanded = pd.DataFrame(obs["measures"].values.tolist())
+        for c in measures_expanded.columns:
+            measures_expanded[c] = measures_expanded[c].str["value"]
+        obs = obs.drop("measures", axis=1).join(measures_expanded)
 
     return obs
 
 
 @save_df(day_lapse_max=30)
 def get_dataset(
-    id_dataset, language: str = "all", raise_if_not_ok: bool = True, **filters
+    id_dataset,
+    language: str = "all",
+    raise_if_not_ok: bool = True,
+    update: bool = False,
+    silent: bool = False,
+    **filters,
 ) -> pd.DataFrame:
     """
     Get a MELODI dataset (pagination is handled by pynsee if need be).
@@ -351,12 +407,14 @@ def get_dataset(
     return observations
 
 
-@save_df(day_lapse_max=30)
+@save_df(day_lapse_max=90)
 def get_range(
     id_dataset: str,
     language: str = "all",
     include_values: bool = False,
     raise_if_not_ok: bool = True,
+    update: bool = False,
+    silent: bool = False,
 ) -> pd.DataFrame:
     """
     Get a dataset's available dimensions (ie "ranges").
@@ -391,105 +449,68 @@ def get_range(
     -------
     >>> get_range("DS_RP_POPULATION_PRINC")
 
-    #   concept_code      concept_en              concept_fr       type
-    # 0          GEO       Geography              Géographie        geo
-    # 1          SEX             Sex                    Sexe  modalites
-    # 2  TIME_PERIOD     Time period      Période temporelle       date
-    # 3   RP_MEASURE  Census measure  Mesure du recensement   modalites
-    # 4          AGE             Age                     Âge  modalites
-    # 5      MEASURE         Measure                  Mesure    mesures
+    #   concept_code          concept_en               concept_fr       type
+    # 0   OBS_STATUS  Observation status  Statut de l'observation  modalites
+    # 1          GEO           Geography               Géographie        geo
+    # 2          SEX                 Sex                     Sexe  modalites
+    # 3         FREQ           Frequency                Fréquence  modalites
+    # 4  TIME_PERIOD         Time period       Période temporelle       date
+    # 5   RP_MEASURE      Census measure   Mesure du recensement   modalites
+    # 6          AGE                 Age                      Âge  modalites
 
     >>> get_range("DS_RP_POPULATION_PRINC", language="fr")
 
-    #   concept_code              concept_fr       type
-    # 0          GEO              Géographie        geo
-    # 1          SEX                    Sexe  modalites
-    # 2  TIME_PERIOD      Période temporelle       date
-    # 3   RP_MEASURE  Mesure du recensement   modalites
-    # 4          AGE                     Âge  modalites
-    # 5      MEASURE                  Mesure    mesures
+    #   concept_code               concept_fr       type
+    # 0   OBS_STATUS  Statut de l'observation  modalites
+    # 1          GEO               Géographie        geo
+    # 2          SEX                     Sexe  modalites
+    # 3         FREQ                Fréquence  modalites
+    # 4  TIME_PERIOD       Période temporelle       date
+    # 5   RP_MEASURE   Mesure du recensement   modalites
+    # 6          AGE                      Âge  modalites
 
     >>> get_range("DS_RP_POPULATION_PRINC", language="fr", include_values=True)
 
-    #       concept_code  concept_fr       type              code  \
-    # 0              GEO  Géographie        geo         200000172
-    # 1              GEO  Géographie        geo         200000438
-    # 2              GEO  Géographie        geo         200000545
-    # 3              GEO  Géographie        geo         200000628
-    # 4              GEO  Géographie        geo         200000800
-    #            ...         ...        ...               ...
-    # 41778          AGE         Âge  modalites            Y_GE80
-    # 41779          AGE         Âge  modalites            Y_LT15
-    # 41780          AGE         Âge  modalites            Y_LT20
-    # 41781          AGE         Âge  modalites                _T
-    # 41782      MEASURE      Mesure    mesures  OBS_VALUE_NIVEAU
+    #       concept_code               concept_fr       type    code            id  \
+    # 0       OBS_STATUS  Statut de l'observation  modalites       K          None
+    # 1       OBS_STATUS  Statut de l'observation  modalites       A          None
+    # 2       OBS_STATUS  Statut de l'observation  modalites       W          None
+    # 3              GEO               Géographie        geo     783  2026-ARR-783
+    # 4              GEO               Géographie        geo     791  2026-ARR-791
+    # ...            ...                      ...        ...     ...           ...
+    # 41786          AGE                      Âge  modalites  Y40T54          None
+    # 41787          AGE                      Âge  modalites  Y_GE65          None
+    # 41788          AGE                      Âge  modalites  Y15T24          None
+    # 41789          AGE                      Âge  modalites  Y65T79          None
+    # 41790          AGE                      Âge  modalites      _T          None
 
-    #                         id                                                iri  \
-    # 0      2025-EPCI-200000172  http://id.insee.fr/geo/intercommunalite/f276d0...
-    # 1      2025-EPCI-200000438  http://id.insee.fr/geo/intercommunalite/fa17bc...
-    # 2      2025-EPCI-200000545  http://id.insee.fr/geo/intercommunalite/2afe50...
-    # 3      2025-EPCI-200000628  http://id.insee.fr/geo/intercommunalite/69572d...
-    # 4      2025-EPCI-200000800  http://id.insee.fr/geo/intercommunalite/934906...
-    #                    ...                                                ...
-    # 41778                  NaN                                                NaN
-    # 41779                  NaN                                                NaN
-    # 41780                  NaN                                                NaN
-    # 41781                  NaN                                                NaN
-    # 41782                  NaN                                                NaN
+    #                                                     iri  \
+    # 0                                                   None
+    # 1                                                   None
+    # 2                                                   None
+    # 3      http://id.insee.fr/geo/arrondissement/c4d36a67...
+    # 4      http://id.insee.fr/geo/arrondissement/62f3a762...
+    # ...                                                  ...
+    # 41786                                               None
+    # 41787                                               None
+    # 41788                                               None
+    # 41789                                               None
+    # 41790                                               None
 
-    #                                                 value_fr type_code  \
-    # 0                Communauté de communes Faucigny-Glières      EPCI
-    # 1      Communauté de communes du Pays de Pontchâteau ...      EPCI
-    # 2      Communauté de communes des Portes de Romilly-s...      EPCI
-    # 3              Communauté de communes Rhône Lez Provence      EPCI
-    # 4                 Communauté de communes Cœur de Sologne      EPCI
-    #                                                  ...       ...
-    # 41778                                     80 ans ou plus       NaN
-    # 41779                                    Moins de 15 ans       NaN
-    # 41780                                    Moins de 20 ans       NaN
-    # 41781                                              Total       NaN
-    # 41782                                             Valeur       NaN
+    #                                       value_fr type_code         type_fr
+    # 0      Données inclues dans une autre catégorie      None            None
+    # 1                                       Normale      None            None
+    # 2      Inclut les données d'une autre catégorie      None            None
+    # 3                         Saint-Germain-en-Laye       ARR  Arrondissement
+    # 4                                     Bressuire       ARR  Arrondissement
+    # ...                                         ...       ...             ...
+    # 41786                            De 40 à 54 ans      None            None
+    # 41787                            65 ans ou plus      None            None
+    # 41788                            De 15 à 24 ans      None            None
+    # 41789                            De 65 à 79 ans      None            None
+    # 41790                                     Total      None            None
 
-    #                                                  type_fr measure_type_code  \
-    # 0      Etablissement public de coopération intercommunal               NaN
-    # 1      Etablissement public de coopération intercommunal               NaN
-    # 2      Etablissement public de coopération intercommunal               NaN
-    # 3      Etablissement public de coopération intercommunal               NaN
-    # 4      Etablissement public de coopération intercommunal               NaN
-    #                                                  ...               ...
-    # 41778                                                NaN               NaN
-    # 41779                                                NaN               NaN
-    # 41780                                                NaN               NaN
-    # 41781                                                NaN               NaN
-    # 41782                                                NaN            NIVEAU
-
-    #       measure_type_id  measure_type_ordreRmes measure_type_total  \
-    # 0                 NaN                     NaN                NaN
-    # 1                 NaN                     NaN                NaN
-    # 2                 NaN                     NaN                NaN
-    # 3                 NaN                     NaN                NaN
-    # 4                 NaN                     NaN                NaN
-    #               ...                     ...                ...
-    # 41778             NaN                     NaN                NaN
-    # 41779             NaN                     NaN                NaN
-    # 41780             NaN                     NaN                NaN
-    # 41781             NaN                     NaN                NaN
-    # 41782          NIVEAU                     1.0              False
-
-    #       measure_type_uri measure_type_fr
-    # 0                  NaN             NaN
-    # 1                  NaN             NaN
-    # 2                  NaN             NaN
-    # 3                  NaN             NaN
-    # 4                  NaN             NaN
-    #                ...             ...
-    # 41778              NaN             NaN
-    # 41779              NaN             NaN
-    # 41780              NaN             NaN
-    # 41781              NaN             NaN
-    # 41782           NIVEAU          Niveau
-
-    # [41783 rows x 15 columns]
+    # [41791 rows x 9 columns]
 
 
     """
@@ -588,9 +609,48 @@ def get_range(
 
 @save_df(day_lapse_max=30)
 def get_idbank(
-    id_banks: str, language: str = "all", raise_if_not_ok: bool = True
+    id_banks: str,
+    language: str = "all",
+    raise_if_not_ok: bool = True,
+    update: bool = False,
+    silent: bool = False,
 ):
-    # TODO: docstring
+    """
+    Get MELODI time series by idbank identifier(s).
+
+    Retrieves one or more series from the ``/data/series/{idbanks}``
+    endpoint. Multiple idbanks can be passed separated by ``+``.
+
+    Parameters
+    ----------
+    id_banks : str
+        One or more idbank identifiers, separated by ``+``.
+        Example: ``"010770930"`` or ``"010598544+010770930"``.
+    language : str, optional
+        If set to ``"all"``, keeps metadata labels in every available
+        language. Set to ``"fr"`` or ``"en"`` to keep only one.
+        The default is ``"all"``.
+    raise_if_not_ok : bool, optional
+        If ``True``, raises a ``RequestException`` when the response
+        status code is >= 400. The default is ``True``.
+
+    Returns
+    -------
+    pd.DataFrame
+        One row per observation across all requested series, with
+        dimensions, attributes, measures, and series metadata as columns.
+        Returns an empty DataFrame if the API returns no data, and logs a
+        warning in that case. MELODI does not validate the idbank itself,
+        so this occurs both for unknown idbanks and for idbanks that exist
+        in BDM but have no corresponding MELODI dataset yet.
+
+
+    Examples
+    --------
+    >>> get_idbank("010770930")
+    >>> get_idbank("010598544+010770930")
+    >>> get_idbank("010770930", language="fr")
+    """
 
     url = f"https://api.insee.fr/melodi/data/series/{id_banks}"
 
@@ -601,11 +661,23 @@ def get_idbank(
             raise_if_not_ok=raise_if_not_ok,
         )
 
+    response_data = r.json()
+    if not response_data:
+        logger.warning(
+            "No data was found for idbank(s) %s. MELODI returned no series "
+            "for this identifier: this is not a pynsee error, it may mean "
+            "the idbank does not exist, or exists in BDM without a "
+            "corresponding MELODI dataset yet.",
+            id_banks,
+        )
+
     data = []
-    for dset in r.json():
+    for dset in response_data:
 
         obs = pd.DataFrame(dset.pop("observations"))
         for f in ["attributes", "dimensions", "measures"]:
+            if f not in obs.columns:
+                continue
             unstacked = pd.DataFrame(obs[f].values.tolist())
             if f == "measures":
                 for c in unstacked.columns:
@@ -622,7 +694,10 @@ def get_idbank(
             elif isinstance(val, dict):
                 for key2, val2 in val.items():
                     if key2 in {"en", "fr"}:
-                        if key2 in {"all", language}:
+                        if language in {
+                            "all",
+                            key2,
+                        }:  # same logic as the other "language in {'all', ...}" checks
                             assign[f"{key}_{key2}"] = val2
                     else:
                         assign[f"{key}_{key2}"] = val2
@@ -642,30 +717,3 @@ def get_idbank(
         return df
 
     return pd.DataFrame()
-
-
-if __name__ == "__main__":
-    # from pynsee.melodi import get_melodi_catalog
-
-    # print(get_range("DS_RP_POPULATION_PRINC"))
-
-    # df = get_dataset("DS_TICM_PRATIQUES")
-
-    # df = get_dataset(
-    #     "DS_RP_POPULATION_PRINC", "all", GEO="2025-EPCI-200000172"
-    # )
-
-    # cat = get_melodi_catalog()
-    # for identifier in tqdm(cat["dataset_identifier"].drop_duplicates()):
-    #     get_range(identifier, include_values=True)
-
-    # test = get_dataset("DS_TICM_PRATIQUES")
-    # test = get_range("DS_RP_POPULATION_PRINC", include_values=True)
-    # test = get_range("DS_TICM_PRATIQUES", include_values=True)
-    # print(test)
-
-    # not working !
-    # get_idbank("001565530+001565531")
-
-    # print(get_idbank("010770930"))
-    print(get_idbank("010598544+010770930"))

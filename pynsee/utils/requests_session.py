@@ -1,22 +1,22 @@
-from functools import lru_cache
 import logging
 import os
 import re
 import time
-from typing import Optional, Union
 import warnings
+from functools import lru_cache
+from typing import Optional, Union
 
 import requests
-from requests.adapters import HTTPAdapter
 import urllib3
-from urllib3.util.retry import Retry
-from requests_ratelimiter import LimiterAdapter
 from pyrate_limiter import SQLiteBucket
+from requests.adapters import HTTPAdapter
+from requests_ratelimiter import LimiterAdapter
+from urllib3.util.retry import Retry
 
 import pynsee
-from pynsee.utils._get_credentials import _get_credentials_from_configfile
+from pynsee.constants import HTTP_PROXY_KEY, HTTPS_PROXY_KEY, SIRENE_KEY
 from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.constants import SIRENE_KEY, HTTPS_PROXY_KEY, HTTP_PROXY_KEY
+from pynsee.utils._get_credentials import _get_credentials_from_configfile
 
 logger = logging.getLogger(__name__)
 
@@ -289,8 +289,8 @@ class PynseeAPISession(requests.Session):
             logger.warning(
                 "You are using INSEE's DDL (diffusion de données locales) API."
                 " This API is outdated and datasets are NOT updated anymore. "
-                "INSEE states that users should instead use MELODI API, which "
-                "is not yet covered by pynsee."
+                "INSEE states that users should instead use MELODI API, "
+                "Please use pynsee.melodi functions for migrated datasets."
             )
 
         if "api-sirene" in url:
