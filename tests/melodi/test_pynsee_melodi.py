@@ -159,14 +159,14 @@ class TestFunction(TestCase):
         self.assertTrue(test)
 
     def test_get_catalog(self):
-        df = get_catalog()
+        df = get_catalog(update=True)
         self.assertTrue(isinstance(df, pd.DataFrame))
 
     def test_get_catalog_known_datasets_present(self):
         # dataset_identifier is not unique (one dataset can have multiple products).
         # Assert presence of stable, long-running datasets.
         test = True
-        df = get_catalog(language="fr")
+        df = get_catalog(language="fr", update=True)
         known = {"DS_IPC_PRINC", "DS_TICM_PRATIQUES", "DS_ICA"}
         test = test & isinstance(df, pd.DataFrame)
         test = test & known.issubset(set(df["dataset_identifier"]))
@@ -176,7 +176,7 @@ class TestFunction(TestCase):
         # Assert exact dimension set, not just column presence: fails
         # visibly if INSEE restructures the dataset.
         test = True
-        df = get_range("DS_TICM_PRATIQUES", language="fr")
+        df = get_range("DS_TICM_PRATIQUES", language="fr", update=True)
         test = test & isinstance(df, pd.DataFrame)
         test = test & (set(df["concept_code"]) == _TICM_CONCEPT_CODES)
         self.assertTrue(test)
@@ -185,7 +185,12 @@ class TestFunction(TestCase):
         # Assert exact measure set for TICM_MEASURE: fails visibly if
         # INSEE adds/removes one.
         test = True
-        df = get_range("DS_TICM_PRATIQUES", language="fr", include_values=True)
+        df = get_range(
+            "DS_TICM_PRATIQUES",
+            language="fr",
+            include_values=True,
+            update=True,
+        )
         test = test & isinstance(df, pd.DataFrame)
         measures = set(
             df[df["concept_code"] == "TICM_MEASURE"]["code"].dropna()
@@ -205,6 +210,7 @@ class TestFunction(TestCase):
             time_period=2025,
             sex="F",
             age="Y45T59",
+            update=True,
         )
         test = isinstance(df, pd.DataFrame)
         test = test & (df["TICM_MEASURE"].nunique() == len(df))
@@ -217,7 +223,11 @@ class TestFunction(TestCase):
         # End-to-end regression for the dynamic measure key fix.
         # freq="M", time_period=2024: keeps it to ~1 page (full year, published).
         df = get_dataset(
-            "DS_IPC_PRINC", language="fr", freq="M", time_period=2024
+            "DS_IPC_PRINC",
+            language="fr",
+            freq="M",
+            time_period=2024,
+            update=True,
         )
         test = isinstance(df, pd.DataFrame)
         test = test & ("OBS_VALUE_INDICE_DE_PRIX" in df.columns)
@@ -225,7 +235,7 @@ class TestFunction(TestCase):
         self.assertTrue(test)
 
     def test_get_idbank_1(self):
-        df = get_idbank("010770930")
+        df = get_idbank("010770930", update=True)
         self.assertTrue(isinstance(df, pd.DataFrame))
 
     def test_get_idbank_series_history_stable(self):
@@ -236,7 +246,7 @@ class TestFunction(TestCase):
         # 12 monthly observations, confirming the series is still updated
         # at a monthly frequency (the last, ongoing year is excluded).
         test = True
-        df = get_idbank("010770930", language="fr")
+        df = get_idbank("010770930", language="fr", update=True)
         test = test & isinstance(df, pd.DataFrame)
         test = test & (df["TIME_PERIOD"].min() == "1999-01")
         test = test & (df["idBank"] == "010770930").all()
@@ -248,14 +258,14 @@ class TestFunction(TestCase):
 
     def test_get_idbank_multi(self):
         # nunique == 2 confirms both series were returned, not one duplicated.
-        df = get_idbank("010598544+010770930")
+        df = get_idbank("010598544+010770930", update=True)
         test = isinstance(df, pd.DataFrame)
         test = test & (df["idBank"].nunique() == 2)
         self.assertTrue(test)
 
     def test_get_idbank_language_fr(self):
         # language="fr" must keep the "_fr" columns.
-        df = get_idbank("010770930", language="fr")
+        df = get_idbank("010770930", language="fr", update=True)
         test = isinstance(df, pd.DataFrame)
         test = test & any(c.endswith("_fr") for c in df.columns)
         self.assertTrue(test)
@@ -267,7 +277,7 @@ class TestFunction(TestCase):
         # pynsee error). Real-world case this covers: an idbank that exists
         # in BDM but has no corresponding MELODI dataset yet (e.g.
         # 001565530+001565531, "climat des affaires" indicators).
-        df = get_idbank("spam+eggs")
+        df = get_idbank("spam+eggs", update=True)
         test = isinstance(df, pd.DataFrame)
         test = test & df.empty
         self.assertTrue(test)
