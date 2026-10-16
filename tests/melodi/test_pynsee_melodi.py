@@ -7,7 +7,7 @@ from unittest.mock import MagicMock
 
 import pandas as pd
 
-from pynsee.melodi import get_catalog, get_dataset, get_idbank, get_range
+from pynsee.melodi import get_catalog, get_dataset, get_series, get_range
 from pynsee.melodi.data import _parse_dataset_observations, _parse_metadata
 
 # ---------------------------------------------------------------------------
@@ -234,11 +234,11 @@ class TestFunction(TestCase):
         test = test & df["OBS_VALUE_INDICE_DE_PRIX"].notna().any()
         self.assertTrue(test)
 
-    def test_get_idbank_1(self):
-        df = get_idbank("010770930", update=True)
+    def test_get_series_1(self):
+        df = get_series("010770930", update=True)
         self.assertTrue(isinstance(df, pd.DataFrame))
 
-    def test_get_idbank_series_history_stable(self):
+    def test_get_series_series_history_stable(self):
         # 010770930 = DS_ICA monthly series, sector 46.19A (non-food purchasing
         # centres), base 2021. Open series: do NOT assert len (grows monthly).
         # Start date 1999-01 is a historical fact and will not change.
@@ -246,7 +246,7 @@ class TestFunction(TestCase):
         # 12 monthly observations, confirming the series is still updated
         # at a monthly frequency (the last, ongoing year is excluded).
         test = True
-        df = get_idbank("010770930", language="fr", update=True)
+        df = get_series("010770930", language="fr", update=True)
         test = test & isinstance(df, pd.DataFrame)
         test = test & (df["TIME_PERIOD"].min() == "1999-01")
         test = test & (df["idBank"] == "010770930").all()
@@ -256,28 +256,28 @@ class TestFunction(TestCase):
         test = test & (yearly_counts.iloc[:-1] == 12).all()
         self.assertTrue(test)
 
-    def test_get_idbank_multi(self):
+    def test_get_series_multi(self):
         # nunique == 2 confirms both series were returned, not one duplicated.
-        df = get_idbank("010598544+010770930", update=True)
+        df = get_series("010598544+010770930", update=True)
         test = isinstance(df, pd.DataFrame)
         test = test & (df["idBank"].nunique() == 2)
         self.assertTrue(test)
 
-    def test_get_idbank_language_fr(self):
+    def test_get_series_language_fr(self):
         # language="fr" must keep the "_fr" columns.
-        df = get_idbank("010770930", language="fr", update=True)
+        df = get_series("010770930", language="fr", update=True)
         test = isinstance(df, pd.DataFrame)
         test = test & any(c.endswith("_fr") for c in df.columns)
         self.assertTrue(test)
 
-    def test_get_idbank_dead_bdm_ids(self):
+    def test_get_series_dead_bdm_ids(self):
         # Any unrecognized idbank returns HTTP 200 + an empty list from
-        # MELODI (no validation on the id itself) -> get_idbank returns an
+        # MELODI (no validation on the id itself) -> get_series returns an
         # empty df (a warning is logged, since this is expected and not a
         # pynsee error). Real-world case this covers: an idbank that exists
         # in BDM but has no corresponding MELODI dataset yet (e.g.
         # 001565530+001565531, "climat des affaires" indicators).
-        df = get_idbank("spam+eggs", update=True)
+        df = get_series("spam+eggs", update=True)
         test = isinstance(df, pd.DataFrame)
         test = test & df.empty
         self.assertTrue(test)

@@ -110,5 +110,5 @@ Get MELODI data
 .. autofunction:: pynsee.melodi.get_range
     :no-index:
 
-.. autofunction:: pynsee.melodi.get_idbank
+.. autofunction:: pynsee.melodi.get_series
     :no-index:

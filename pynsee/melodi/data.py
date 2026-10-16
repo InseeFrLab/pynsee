@@ -137,9 +137,11 @@ def get_dataset(
     """
     Get a MELODI dataset (pagination is handled by pynsee if need be).
 
-    Note: as pagination is handled, `page`, `maxResult` and `totalCount`
-    arguments should NOT be added to the kwargs and will be ignored. `range`
-    will also be ignored : to retrieve a dataset's dimensions, have a look at
+    Notes
+    -----
+    As pagination is handled internally, `page`, `maxResult` and
+    `totalCount` should NOT be passed in `**filters` and will be ignored.
+    `range` will also be ignored: to retrieve a dataset's dimensions, use
     `pynsee.melodi.get_range`.
 
     Parameters
@@ -159,15 +161,6 @@ def get_dataset(
         please look at `pynsee.melodi.get_range`. Note that even if MELODI's
         filters' labels are UPPERCASE, pynsee handles lowercase in consistence
         with python's conventions.
-
-    Raises
-    ------
-    RequestException
-        If the JSON cannot be parsed.
-    ValueError
-        If the result after pagination is incoherent with the estimated
-        results' shape. This should NOT happen and is triggered to warn users
-        to get in touch if this arises.
 
     Returns
     -------
@@ -339,6 +332,15 @@ def get_dataset(
     # 14  Institut national de la statistique et des etu...
     # 15  Institut national de la statistique et des etu...
 
+    Raises
+    ------
+    RequestException
+        If the JSON cannot be parsed.
+    ValueError
+        If the result after pagination is incoherent with the estimated
+        results' shape. This should NOT happen and is triggered to warn users
+        to get in touch if this arises.
+
     """
 
     url = f"https://api.insee.fr/melodi/data/{id_dataset}"
@@ -414,11 +416,11 @@ def get_range(
     silent: bool = False,
 ) -> pd.DataFrame:
     """
-    Get a dataset's available dimensions (ie "ranges").
+    Get a dataset's available columns' names (see "/range" endpoint of MELODI API).
 
-    Available dimensions can be retrieved in a sparse format (with only
-    the dimensions' descriptions) or a long format (including all available
-    values for each dimension).
+    Available columns' names (dimensions and modalities) can be retrieved in a
+    sparse format (with only the columns' descriptions) or a long format
+    (including all available values for each column).
 
     Parameters
     ----------
@@ -605,7 +607,7 @@ def get_range(
 
 
 @save_df(day_lapse_max=30)
-def get_idbank(
+def get_series(
     id_banks: str,
     language: str = "all",
     raise_if_not_ok: bool = True,
@@ -644,9 +646,9 @@ def get_idbank(
 
     Examples
     --------
-    >>> get_idbank("010770930")
-    >>> get_idbank("010598544+010770930")
-    >>> get_idbank("010770930", language="fr")
+    >>> get_series("010770930")
+    >>> get_series("010598544+010770930")
+    >>> get_series("010770930", language="fr")
     """
 
     url = f"https://api.insee.fr/melodi/data/series/{id_banks}"
