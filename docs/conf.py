@@ -20,7 +20,6 @@ sys.path.insert(0, os.path.abspath("./"))
 
 import pynsee
 
-
 # -- Project information -----------------------------------------------------
 
 project = "pynsee"
@@ -82,6 +81,7 @@ nbsphinx_thumbnails = {
     "examples/example_cadre_iris_idf": "_static/upper_middle_class_worker_idf.png",
     "examples/example_marie_firstname": "_static/firstname.png",
     "examples/example_rp_logement_2017": "_static/housing.png",
+    "examples/example_internet_usage_melodi": "_static/internet_usage_melodi.png",
 }
 
 

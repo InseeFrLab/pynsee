@@ -1,22 +1,23 @@
-from functools import lru_cache
 import logging
 import os
 import re
 import time
-from typing import Optional, Union
 import warnings
+from functools import lru_cache
+from typing import Optional, Union
 
 import requests
-from requests.adapters import HTTPAdapter
 import urllib3
-from urllib3.util.retry import Retry
-from requests_ratelimiter import LimiterAdapter
 from pyrate_limiter import SQLiteBucket
+from requests.adapters import HTTPAdapter
+from requests_ratelimiter import LimiterAdapter
+from urllib3.util.retry import Retry
 
 import pynsee
-from pynsee.utils._get_credentials import _get_credentials_from_configfile
+from pynsee.constants import HTTP_PROXY_KEY, HTTPS_PROXY_KEY, SIRENE_KEY
 from pynsee.utils._create_insee_folder import _create_insee_folder
-from pynsee.constants import SIRENE_KEY, HTTPS_PROXY_KEY, HTTP_PROXY_KEY
+from pynsee.utils._get_credentials import _get_credentials_from_configfile
+
 
 logger = logging.getLogger(__name__)
 
@@ -142,7 +143,6 @@ class PynseeAPISession(requests.Session):
         self.headers.update(useragent)
 
         self.sirene_key = config[SIRENE_KEY]
-        self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
 
     def _mount_adapters(self):
         """
@@ -290,9 +290,16 @@ class PynseeAPISession(requests.Session):
             logger.warning(
                 "You are using INSEE's DDL (diffusion de données locales) API."
                 " This API is outdated and datasets are NOT updated anymore. "
-                "INSEE states that users should instead use MELODI API, which "
-                "is not yet covered by pynsee."
+                "INSEE states that users should instead use MELODI API, "
+                "Please use pynsee.melodi functions for migrated datasets."
             )
+
+        if "api-sirene" in url:
+            self.headers["X-INSEE-Api-Key-Integration"] = self.sirene_key
+        elif "X-INSEE-Api-Key-Integration" in self.headers:
+            # for now, melodi returns 401 if setting an API key based on a
+            # SIRENE subscription
+            del self.headers["X-INSEE-Api-Key-Integration"]
 
         logger.info(url)
         with warnings.catch_warnings():
@@ -556,7 +563,7 @@ class PynseeAPISession(requests.Session):
             "BDM": "https://api.insee.fr/series/BDM/dataflow/FR1/all",
             "Metadata": "https://api.insee.fr/metadonnees/codes/cj/n3/5599",
             "Sirene": "https://api.insee.fr/api-sirene/3.11/siret?q=activitePrincipaleUniteLegale:86.10*&nombre=1000",
-            "Local Data": "https://api.insee.fr/donnees-locales/donnees/geo-SEXE-DIPL_19@GEO2020RP2017/FE-1.all.all",
+            "Melodi": "https://api.insee.fr/melodi/catalog/DS_POPULATIONS_REFERENCE",
         }
         invalid_requests = {}
 
