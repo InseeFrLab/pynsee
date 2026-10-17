@@ -4,7 +4,7 @@ Download MELODI's datasets & ranges.
 
 Only 3 endpoints are covered by pynsee: "data/{id}", "/range/{id}" and "data/series/idbanks"
 
-The other endpoints seem redundant or impractible:
+The other endpoints seem redundant or impractical:
     - "/data/{id}/to-csv" : you can use pandas to transform your retrieved
       dataset to a CSV file of you choosing
     - "/file/{idDataset}/{idFichier} : you can instead download the full
@@ -151,7 +151,7 @@ def get_dataset(
     language : str, optional
         If set to "all", will keep metadata's labels in every available language.
         Can be used to keep only one desired language label (API covered
-        languages include either "en" of "fr"). The default is "all".
+        languages include either "en" or "fr"). The default is "all".
     raise_if_not_ok : bool, optional
         If set to True, a RequestException will automatically be raised if
         the response is not ok (= `status_code` < 400).
@@ -429,7 +429,7 @@ def get_range(
     language : str, optional
         If set to "all", will keep metadata's labels in every available language.
         Can be used to keep only one desired language label (API covered
-        languages include either "en" of "fr"). The default is "all".
+        languages include either "en" or "fr"). The default is "all".
     include_values : bool, optional
         Whether to include each available value for each dimension. The default
         is False, resulting to the sparse format. Set to True to get the long
