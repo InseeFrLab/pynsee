@@ -1,0 +1,718 @@
+# -*- coding: utf-8 -*-
+"""
+Download MELODI's datasets & ranges.
+
+Only 3 endpoints are covered by pynsee: "data/{id}", "/range/{id}" and "data/series/idbanks"
+
+The other endpoints seem redundant or impractical:
+    - "/data/{id}/to-csv" : you can use pandas to transform your retrieved
+      dataset to a CSV file of you choosing
+    - "/file/{idDataset}/{idFichier} : you can instead download the full
+      dataset with/without filters
+
+Please get in touch if you have a use-case needing one of those 2 endpoints.
+
+"""
+
+import logging
+from urllib.parse import urlencode
+
+import pandas as pd
+import requests
+from tqdm import tqdm
+
+from pynsee.utils.requests_session import PynseeAPISession
+from pynsee.utils.save_df import save_df
+
+SIZE = 10_000
+
+logger = logging.getLogger(__name__)
+
+
+def _parse_metadata(
+    response: requests.Response, language: str = "all"
+) -> dict:
+    """
+    Extract dataset-level metadata from a MELODI API response.
+
+    Reads title, identifier, and publisher from the JSON payload and
+    flattens them into a flat dict keyed by ``<field>_<lang>`` for
+    multilingual fields.
+
+    Parameters
+    ----------
+    response : requests.Response
+        Raw response from a ``/data/{id}`` MELODI endpoint.
+    language : str, optional
+        Language filter. ``"all"`` keeps every available language label.
+        Covered values are ``"fr"`` and ``"en"``. The default is ``"all"``.
+
+    Returns
+    -------
+    dict
+        Flat metadata dict, e.g.::
+
+            {
+                "title_fr": "Pratiques en ligne des personnes",
+                "title_en": "Internet use of individuals",
+                "identifier": "DS_TICM_PRATIQUES",
+                "publisher_id": "INSEE",
+                "publisher_fr": "Institut national de la statistique ...",
+                "publisher_en": "National Institute of Statistics ...",
+            }
+    """
+
+    data = response.json()
+
+    metadata = {}
+    for lang, title in data["title"].items():
+        if language in {"all", lang}:
+            metadata[f"title_{lang}"] = title
+
+    metadata["identifier"] = data["identifier"]
+
+    metadata["publisher_id"] = data["publisher"]["id"]
+    for d in data["publisher"]["label"]:
+        if isinstance(d, dict) and all(
+            j in d.keys() for j in ["lang", "content"]
+        ):
+            if language in {"all", d["lang"]}:
+                metadata["publisher_" + d["lang"]] = d["content"]
+
+    return metadata
+
+
+def _parse_dataset_observations(response: requests.Response):
+    """
+    Parse observations from a MELODI ``/data/{id}`` response page.
+
+    Flattens the nested ``dimensions``, ``attributes``, and ``measures``
+    columns into a wide DataFrame. All measure keys are extracted
+    dynamically, whatever their name.
+
+    Parameters
+    ----------
+    response : requests.Response
+        Raw response from one page of a ``/data/{id}`` MELODI endpoint.
+
+    Returns
+    -------
+    pd.DataFrame
+        One row per observation with all dimensions, attributes, and
+        measure columns (e.g. ``OBS_VALUE_NIVEAU``, ``OBS_VALUE_INDICE_DE_PRIX``).
+    """
+
+    data = response.json()
+
+    obs = pd.DataFrame(data["observations"])
+    for f in "dimensions", "attributes":
+        if f in obs.columns:
+            obs = obs.drop(f, axis=1).join(
+                pd.DataFrame(obs[f].values.tolist())
+            )
+
+    if "measures" in obs.columns:
+        # Unpack the measure key(s) into columns (name varies by dataset,
+        # e.g. OBS_VALUE_NIVEAU, OBS_VALUE_INDICE_DE_PRIX). The key is the
+        # same across all observations of a dataset, so a single
+        # pd.DataFrame call on the list of dicts is enough to get one column
+        # per measure key, without a row-wise apply.
+        measures_expanded = pd.DataFrame(obs["measures"].values.tolist())
+        for c in measures_expanded.columns:
+            measures_expanded[c] = measures_expanded[c].str["value"]
+        obs = obs.drop("measures", axis=1).join(measures_expanded)
+
+    return obs
+
+
+@save_df(day_lapse_max=30)
+def get_dataset(
+    id_dataset,
+    language: str = "all",
+    raise_if_not_ok: bool = True,
+    update: bool = False,
+    silent: bool = False,
+    **filters,
+) -> pd.DataFrame:
+    """
+    Get a MELODI dataset (pagination is handled by pynsee if need be).
+
+    Notes
+    -----
+    As pagination is handled internally, `page`, `maxResult` and
+    `totalCount` should NOT be passed in `**filters` and will be ignored.
+    `range` will also be ignored: to retrieve a dataset's dimensions, use
+    `pynsee.melodi.get_range`.
+
+    Parameters
+    ----------
+    id_dataset : str
+        Dataset's identifier (its "name", e.g. "DS_TICM_PRATIQUES").
+    language : str, optional
+        If set to "all", will keep metadata's labels in every available language.
+        Can be used to keep only one desired language label (API covered
+        languages include either "en" or "fr"). The default is "all".
+    raise_if_not_ok : bool, optional
+        If set to True, a RequestException will automatically be raised if
+        the response is not ok (= `status_code` < 400).
+        The default is True.
+    **filters :
+        Optional filters to be used on MELODI. To get the available filters,
+        please look at `pynsee.melodi.get_range`. Note that even if MELODI's
+        filters' labels are UPPERCASE, pynsee handles lowercase in consistence
+        with python's conventions.
+
+    Returns
+    -------
+    observations : pd.DataFrame
+        Dataset's as a DataFrame.
+
+    Examples
+    -------
+    >>> get_dataset("DS_TICM_PRATIQUES")
+
+    #           TICM_MEASURE SEX FREQ EMPSTA TIME_PERIOD   EDUC PCS_ESE     AGE  \
+    # 0               PROFIL  _T    A     _T        2022     _T      _T  Y60T74
+    # 1          TEL_PAR_INT   F    A     _T        2023     _T      _T  Y_GE60
+    # 2    WEB_12MOIS_X_EGOV   F    A     _T        2015     _T      _T  Y_GE60
+    # 3              LECTURE  _T    A     _T        2012  2_353      _T  Y15T44
+    # 4            WEB_3MOIS   F    A     _T        2025     _T      _T  Y45T59
+    # ..                 ...  ..  ...    ...         ...    ...     ...     ...
+    # 331        VENTE_3MOIS  _T    A     _T        2010    4T8      _T  Y45T59
+    # 332  WEB_12MOIS_X_EGOV  _T    A     _T        2009    0T1      _T  Y15T44
+    # 333      NO_WEB_12MOIS   M    A     _T        2015     _T      _T  Y_GE60
+    # 334            LECTURE  _T    A     _T        2018    0T1      _T  Y15T44
+    # 335          WEB_3MOIS  _T    A     _T        2013  2_353      _T  Y15T44
+
+    #     OBS_STATUS  OBS_VALUE_NIVEAU                     title_en  \
+    # 0            A              19.4  Internet use of individuals
+    # 1            A              38.6  Internet use of individuals
+    # 2            L               NaN  Internet use of individuals
+    # 3            L               NaN  Internet use of individuals
+    # 4            A              96.4  Internet use of individuals
+    # ..         ...               ...                          ...
+    # 331          L               NaN  Internet use of individuals
+    # 332          L               NaN  Internet use of individuals
+    # 333          L               NaN  Internet use of individuals
+    # 334          L               NaN  Internet use of individuals
+    # 335          A              93.9  Internet use of individuals
+
+    #                               title_fr         identifier publisher_id  \
+    # 0    Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 1    Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 2    Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 3    Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 4    Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # ..                                 ...                ...          ...
+    # 331  Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 332  Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 333  Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 334  Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+    # 335  Pratiques en ligne des personnes   DS_TICM_PRATIQUES        INSEE
+
+    #                                           publisher_fr  \
+    # 0    Institut national de la statistique et des etu...
+    # 1    Institut national de la statistique et des etu...
+    # 2    Institut national de la statistique et des etu...
+    # 3    Institut national de la statistique et des etu...
+    # 4    Institut national de la statistique et des etu...
+    # ..                                                 ...
+    # 331  Institut national de la statistique et des etu...
+    # 332  Institut national de la statistique et des etu...
+    # 333  Institut national de la statistique et des etu...
+    # 334  Institut national de la statistique et des etu...
+    # 335  Institut national de la statistique et des etu...
+
+    #                                           publisher_en
+    # 0    National Institute of Statistics and Economic ...
+    # 1    National Institute of Statistics and Economic ...
+    # 2    National Institute of Statistics and Economic ...
+    # 3    National Institute of Statistics and Economic ...
+    # 4    National Institute of Statistics and Economic ...
+    # ..                                                 ...
+    # 331  National Institute of Statistics and Economic ...
+    # 332  National Institute of Statistics and Economic ...
+    # 333  National Institute of Statistics and Economic ...
+    # 334  National Institute of Statistics and Economic ...
+    # 335  National Institute of Statistics and Economic ...
+
+    # [10336 rows x 16 columns]
+
+    >>> get_dataset("DS_TICM_PRATIQUES", language="fr").head(2)
+
+    #   TICM_MEASURE SEX FREQ EMPSTA TIME_PERIOD EDUC PCS_ESE     AGE OBS_STATUS  \
+    # 0       PROFIL  _T    A     _T        2022   _T      _T  Y60T74          A
+    # 1  TEL_PAR_INT   F    A     _T        2023   _T      _T  Y_GE60          A
+
+    #    OBS_VALUE_NIVEAU                           title_fr         identifier  \
+    # 0              19.4  Pratiques en ligne des personnes   DS_TICM_PRATIQUES
+    # 1              38.6  Pratiques en ligne des personnes   DS_TICM_PRATIQUES
+
+    #   publisher_id                                       publisher_fr
+    # 0        INSEE  Institut national de la statistique et des etu...
+    # 1        INSEE  Institut national de la statistique et des etu...
+
+    >>> get_dataset(
+        "DS_TICM_PRATIQUES",
+        language="fr",
+        time_period=2025,
+        sex="F",
+        age="Y45T59"
+        )
+
+    #          TICM_MEASURE SEX FREQ EMPSTA TIME_PERIOD EDUC PCS_ESE     AGE  \
+    # 0           WEB_3MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 1         RESEAUX_SOC   F    A     _T        2025   _T      _T  Y45T59
+    # 2          ACHA_3MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 3   WEB_12MOIS_X_EGOV   F    A     _T        2025   _T      _T  Y45T59
+    # 4     COMPTE_BANCAIRE   F    A     _T        2025   _T      _T  Y45T59
+    # 5         ACHA_12MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 6         EGOV_12MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 7         TEL_PAR_INT   F    A     _T        2025   _T      _T  Y45T59
+    # 8         VENTE_3MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 9       NO_WEB_12MOIS   F    A     _T        2025   _T      _T  Y45T59
+    # 10              EMAIL   F    A     _T        2025   _T      _T  Y45T59
+    # 11            LECTURE   F    A     _T        2025   _T      _T  Y45T59
+    # 12             PROFIL   F    A     _T        2025   _T      _T  Y45T59
+    # 13          QUOTIDIEN   F    A     _T        2025   _T      _T  Y45T59
+    # 14      INFO_PRODUITS   F    A     _T        2025   _T      _T  Y45T59
+    # 15            NO_EGOV   F    A     _T        2025   _T      _T  Y45T59
+
+    #    OBS_STATUS  OBS_VALUE_NIVEAU                           title_fr  \
+    # 0           A              96.4  Pratiques en ligne des personnes
+    # 1           A              71.5  Pratiques en ligne des personnes
+    # 2           A              71.6  Pratiques en ligne des personnes
+    # 3           A               5.1  Pratiques en ligne des personnes
+    # 4           A              80.0  Pratiques en ligne des personnes
+    # 5           A              83.2  Pratiques en ligne des personnes
+    # 6           A              92.1  Pratiques en ligne des personnes
+    # 7           A              75.1  Pratiques en ligne des personnes
+    # 8           A              25.7  Pratiques en ligne des personnes
+    # 9           A               2.9  Pratiques en ligne des personnes
+    # 10          A              92.2  Pratiques en ligne des personnes
+    # 11          A              54.8  Pratiques en ligne des personnes
+    # 12          L               NaN  Pratiques en ligne des personnes
+    # 13          A              91.1  Pratiques en ligne des personnes
+    # 14          A              70.2  Pratiques en ligne des personnes
+    # 15          A               7.9  Pratiques en ligne des personnes
+
+    #            identifier publisher_id  \
+    # 0   DS_TICM_PRATIQUES        INSEE
+    # 1   DS_TICM_PRATIQUES        INSEE
+    # 2   DS_TICM_PRATIQUES        INSEE
+    # 3   DS_TICM_PRATIQUES        INSEE
+    # 4   DS_TICM_PRATIQUES        INSEE
+    # 5   DS_TICM_PRATIQUES        INSEE
+    # 6   DS_TICM_PRATIQUES        INSEE
+    # 7   DS_TICM_PRATIQUES        INSEE
+    # 8   DS_TICM_PRATIQUES        INSEE
+    # 9   DS_TICM_PRATIQUES        INSEE
+    # 10  DS_TICM_PRATIQUES        INSEE
+    # 11  DS_TICM_PRATIQUES        INSEE
+    # 12  DS_TICM_PRATIQUES        INSEE
+    # 13  DS_TICM_PRATIQUES        INSEE
+    # 14  DS_TICM_PRATIQUES        INSEE
+    # 15  DS_TICM_PRATIQUES        INSEE
+
+    #                                          publisher_fr
+    # 0   Institut national de la statistique et des etu...
+    # 1   Institut national de la statistique et des etu...
+    # 2   Institut national de la statistique et des etu...
+    # 3   Institut national de la statistique et des etu...
+    # 4   Institut national de la statistique et des etu...
+    # 5   Institut national de la statistique et des etu...
+    # 6   Institut national de la statistique et des etu...
+    # 7   Institut national de la statistique et des etu...
+    # 8   Institut national de la statistique et des etu...
+    # 9   Institut national de la statistique et des etu...
+    # 10  Institut national de la statistique et des etu...
+    # 11  Institut national de la statistique et des etu...
+    # 12  Institut national de la statistique et des etu...
+    # 13  Institut national de la statistique et des etu...
+    # 14  Institut national de la statistique et des etu...
+    # 15  Institut national de la statistique et des etu...
+
+    Raises
+    ------
+    RequestException
+        If the JSON cannot be parsed.
+    ValueError
+        If the result after pagination is incoherent with the estimated
+        results' shape. This should NOT happen and is triggered to warn users
+        to get in touch if this arises.
+
+    """
+
+    url = f"https://api.insee.fr/melodi/data/{id_dataset}"
+
+    # set to uppercase if need be
+    filters = {k.upper(): v for k, v in filters.items()}
+
+    params = filters.copy()
+    params["totalCount"] = True
+    params["maxResult"] = 0
+    params["page"] = 1
+
+    url_api_count = f"{url}?{urlencode(params)}"
+    del params["maxResult"]
+    url_api = f"{url}?{urlencode(params)}"
+
+    observations = []
+
+    with PynseeAPISession() as session:
+
+        # check iterations count
+        r = session.request_insee(
+            url_api_count,
+            file_format="application/json",
+            raise_if_not_ok=raise_if_not_ok,
+        )
+
+        # parse metadata only once to reduce RAM consumption
+        metadata = _parse_metadata(r, language=language)
+
+        count = r.json()["paging"]["count"]
+        count_pages = count // SIZE + (0 if count % SIZE == 0 else 1)
+
+        # download
+        data = {"paging": {"next": url_api}}
+        for x in tqdm(range(count_pages), desc="Downloading"):
+            url = data["paging"]["next"]
+            r = session.request_insee(
+                url,
+                file_format="application/json",
+                raise_if_not_ok=raise_if_not_ok,
+            )
+            try:
+                data = r.json()
+            except requests.exceptions.JSONDecodeError as e:
+                raise requests.exceptions.RequestException(
+                    f"an error occured on {url}"
+                ) from e
+
+            observations.append(_parse_dataset_observations(r))
+
+        if not data["paging"].get("isLast", True):
+            raise ValueError(
+                "An unexpected error occured, please get in touch"
+            )
+
+    observations = pd.concat(observations, ignore_index=True).assign(
+        **metadata
+    )
+    if len(observations) != count:
+        raise ValueError("An unexpected error occured, please get in touch")
+
+    return observations
+
+
+@save_df(day_lapse_max=90)
+def get_range(
+    id_dataset: str,
+    language: str = "all",
+    include_values: bool = False,
+    raise_if_not_ok: bool = True,
+    update: bool = False,
+    silent: bool = False,
+) -> pd.DataFrame:
+    """
+    Get a dataset's available columns' names (see "/range" endpoint of MELODI API).
+
+    Available columns' names (dimensions and modalities) can be retrieved in a
+    sparse format (with only the columns' descriptions) or a long format
+    (including all available values for each column).
+
+    Parameters
+    ----------
+    id_dataset : str
+        Dataset's identifier.
+    language : str, optional
+        If set to "all", will keep metadata's labels in every available language.
+        Can be used to keep only one desired language label (API covered
+        languages include either "en" or "fr"). The default is "all".
+    include_values : bool, optional
+        Whether to include each available value for each dimension. The default
+        is False, resulting to the sparse format. Set to True to get the long
+        format dataframe.
+    raise_if_not_ok : bool, optional
+        If set to True, a RequestException will automatically be raised if
+        the response is not ok (= `status_code` < 400).
+        The default is True.
+
+    Returns
+    -------
+    ranges : pd.DataFrame
+        DataFrame describing the available ranges.
+
+    Examples
+    --------
+    >>> get_range("DS_RP_POPULATION_PRINC")
+
+    #   concept_code          concept_en               concept_fr       type
+    # 0   OBS_STATUS  Observation status  Statut de l'observation  modalites
+    # 1          GEO           Geography               Géographie        geo
+    # 2          SEX                 Sex                     Sexe  modalites
+    # 3         FREQ           Frequency                Fréquence  modalites
+    # 4  TIME_PERIOD         Time period       Période temporelle       date
+    # 5   RP_MEASURE      Census measure   Mesure du recensement   modalites
+    # 6          AGE                 Age                      Âge  modalites
+
+    >>> get_range("DS_RP_POPULATION_PRINC", language="fr")
+
+    #   concept_code               concept_fr       type
+    # 0   OBS_STATUS  Statut de l'observation  modalites
+    # 1          GEO               Géographie        geo
+    # 2          SEX                     Sexe  modalites
+    # 3         FREQ                Fréquence  modalites
+    # 4  TIME_PERIOD       Période temporelle       date
+    # 5   RP_MEASURE   Mesure du recensement   modalites
+    # 6          AGE                      Âge  modalites
+
+    >>> get_range("DS_RP_POPULATION_PRINC", language="fr", include_values=True)
+
+    #       concept_code               concept_fr       type    code            id  \
+    # 0       OBS_STATUS  Statut de l'observation  modalites       K          None
+    # 1       OBS_STATUS  Statut de l'observation  modalites       A          None
+    # 2       OBS_STATUS  Statut de l'observation  modalites       W          None
+    # 3              GEO               Géographie        geo     783  2026-ARR-783
+    # 4              GEO               Géographie        geo     791  2026-ARR-791
+    # ...            ...                      ...        ...     ...           ...
+    # 41786          AGE                      Âge  modalites  Y40T54          None
+    # 41787          AGE                      Âge  modalites  Y_GE65          None
+    # 41788          AGE                      Âge  modalites  Y15T24          None
+    # 41789          AGE                      Âge  modalites  Y65T79          None
+    # 41790          AGE                      Âge  modalites      _T          None
+
+    #                                                     iri  \
+    # 0                                                   None
+    # 1                                                   None
+    # 2                                                   None
+    # 3      http://id.insee.fr/geo/arrondissement/c4d36a67...
+    # 4      http://id.insee.fr/geo/arrondissement/62f3a762...
+    # ...                                                  ...
+    # 41786                                               None
+    # 41787                                               None
+    # 41788                                               None
+    # 41789                                               None
+    # 41790                                               None
+
+    #                                       value_fr type_code         type_fr
+    # 0      Données inclues dans une autre catégorie      None            None
+    # 1                                       Normale      None            None
+    # 2      Inclut les données d'une autre catégorie      None            None
+    # 3                         Saint-Germain-en-Laye       ARR  Arrondissement
+    # 4                                     Bressuire       ARR  Arrondissement
+    # ...                                         ...       ...             ...
+    # 41786                            De 40 à 54 ans      None            None
+    # 41787                            65 ans ou plus      None            None
+    # 41788                            De 15 à 24 ans      None            None
+    # 41789                            De 65 à 79 ans      None            None
+    # 41790                                     Total      None            None
+
+    # [41791 rows x 9 columns]
+
+
+    """
+
+    url = f"https://api.insee.fr/melodi/range/{id_dataset}"
+
+    with PynseeAPISession() as session:
+        r = session.request_insee(
+            url,
+            file_format="application/json",
+            raise_if_not_ok=raise_if_not_ok,
+        )
+
+    ranges = r.json()["range"]
+
+    ranges = pd.DataFrame(ranges)
+
+    concepts = (
+        ranges["concept"]
+        .str["code"]
+        .to_frame("concept_code")
+        .join(pd.DataFrame(ranges["concept"].str["label"].values.tolist()))
+    )
+    languages = [
+        x
+        for x in concepts.columns.tolist()
+        if "_" not in x and (language == "all" or x == language)
+    ]
+
+    concepts = (
+        concepts[["concept_code"] + languages]
+        .rename(columns={x: f"concept_{x}" for x in languages})
+        .join(ranges["type"])
+    )
+
+    if include_values:
+        values = ranges.explode("values", ignore_index=False)["values"]
+        values = values.to_frame().reset_index(drop=False)
+
+        values = pd.DataFrame(
+            values["values"].tolist(), index=values.index
+        ).join(values["index"])
+
+        labels = pd.DataFrame(values["label"].tolist())
+
+        values = (
+            values.drop("label", axis=1)
+            .join(labels[languages])
+            .rename(
+                columns={
+                    x: f"value_{x}"
+                    for x in languages
+                    if x in set(labels.columns)
+                }
+            )
+        )
+
+        if "type" in values.columns:
+            ix = values[~values.type.isnull()].index
+            types = pd.DataFrame(
+                values.loc[ix, "type"].values.tolist(), index=ix
+            )[["code"] + languages]
+            types = types.rename(
+                columns={x: f"type_{x}" for x in types.columns}
+            )
+
+            values = values.drop("type", axis=1).join(types)
+
+        if "measureType" in values.columns:
+            ix = values[~values.measureType.isnull()].index
+            measure_types = pd.DataFrame(
+                values.loc[ix, "measureType"].values.tolist(), index=ix
+            )  # [["code"] + languages]
+            labels = pd.DataFrame(
+                measure_types["libelle"].tolist(), index=labels.index
+            )[languages]
+            labels = labels.rename(
+                columns={x: f"measure_type_{x}" for x in labels.columns},
+            )
+
+            measure_types = measure_types.drop("libelle", axis=1)
+            measure_types = measure_types.rename(
+                columns={x: f"measure_type_{x}" for x in measure_types.columns}
+            ).join(labels)
+
+            values = values.drop("measureType", axis=1).join(measure_types)
+
+        values = values.set_index("index")
+        ranges = concepts.join(values).drop_duplicates().reset_index(drop=True)
+
+    else:
+        ranges = concepts
+
+    return ranges
+
+
+@save_df(day_lapse_max=30)
+def get_series(
+    id_banks: str,
+    language: str = "all",
+    raise_if_not_ok: bool = True,
+    update: bool = False,
+    silent: bool = False,
+):
+    """
+    Get MELODI time series by idbank identifier(s).
+
+    Retrieves one or more series from the ``/data/series/{idbanks}``
+    endpoint. Multiple idbanks can be passed separated by ``+``.
+
+    Parameters
+    ----------
+    id_banks : str
+        One or more idbank identifiers, separated by ``+``.
+        Example: ``"010770930"`` or ``"010598544+010770930"``.
+    language : str, optional
+        If set to ``"all"``, keeps metadata labels in every available
+        language. Set to ``"fr"`` or ``"en"`` to keep only one.
+        The default is ``"all"``.
+    raise_if_not_ok : bool, optional
+        If ``True``, raises a ``RequestException`` when the response
+        status code is >= 400. The default is ``True``.
+
+    Returns
+    -------
+    pd.DataFrame
+        One row per observation across all requested series, with
+        dimensions, attributes, measures, and series metadata as columns.
+        Returns an empty DataFrame if the API returns no data, and logs a
+        warning in that case. MELODI does not validate the idbank itself,
+        so this occurs both for unknown idbanks and for idbanks that exist
+        in BDM but have no corresponding MELODI dataset yet.
+
+
+    Examples
+    --------
+    >>> get_series("010770930")
+    >>> get_series("010598544+010770930")
+    >>> get_series("010770930", language="fr")
+    """
+
+    url = f"https://api.insee.fr/melodi/data/series/{id_banks}"
+
+    with PynseeAPISession() as session:
+        r = session.request_insee(
+            url,
+            file_format="application/json",
+            raise_if_not_ok=raise_if_not_ok,
+        )
+
+    response_data = r.json()
+    if not response_data:
+        logger.warning(
+            "No data was found for idbank(s) %s. MELODI returned no series "
+            "for this identifier: this is not a pynsee error, it may mean "
+            "the idbank does not exist, or exists in BDM without a "
+            "corresponding MELODI dataset yet.",
+            id_banks,
+        )
+
+    data = []
+    for dset in response_data:
+
+        obs = pd.DataFrame(dset.pop("observations"))
+        for f in ["attributes", "dimensions", "measures"]:
+            if f not in obs.columns:
+                continue
+            unstacked = pd.DataFrame(obs[f].values.tolist())
+            if f == "measures":
+                for c in unstacked.columns:
+                    try:
+                        unstacked[c] = unstacked[c].str["value"]
+                    except KeyError:
+                        pass
+            obs = obs.drop(f, axis=1).join(unstacked)
+
+        assign = {}
+        for key, val in dset.items():
+            if isinstance(val, str):
+                assign[key] = val
+            elif isinstance(val, dict):
+                for key2, val2 in val.items():
+                    if key2 in {"en", "fr"}:
+                        if language in {
+                            "all",
+                            key2,
+                        }:  # same logic as the other "language in {'all', ...}" checks
+                            assign[f"{key}_{key2}"] = val2
+                    else:
+                        assign[f"{key}_{key2}"] = val2
+            elif isinstance(val, list):
+                assign[key] = ", ".join(val)
+
+        obs = obs.assign(**assign)
+        data.append(obs)
+
+    if data:
+        df = (
+            pd.concat(data, ignore_index=True)
+            .drop_duplicates()
+            .reset_index(drop=True)
+        )
+
+        return df
+
+    return pd.DataFrame()

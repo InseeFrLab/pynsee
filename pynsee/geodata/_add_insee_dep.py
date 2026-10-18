@@ -50,7 +50,7 @@ def _add_insee_dep_from_id_com(gdf):
                     "geometry": "insee_dep_geometry",
                     "code_insee": "code_insee_du_departement",
                 },
-                inplace=True
+                inplace=True,
             )
 
             gdf = gdf.merge(
@@ -85,7 +85,7 @@ def _add_insee_dep_region(gdf):
                 columns={
                     "geometry": "insee_dep_geometry",
                 },
-                inplace=True
+                inplace=True,
             )
 
             gdf = gdf.merge(dep, on="insee_reg", how="left")

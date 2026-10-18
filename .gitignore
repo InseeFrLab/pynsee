@@ -5,6 +5,9 @@ pynsee.egg-info
 settings.json
 .coverage
 .venv/
+uv.lock
+.vscode/
+notebooks/
 *.html
 *.pyc
 *.rtc

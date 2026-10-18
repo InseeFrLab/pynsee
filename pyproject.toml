@@ -20,7 +20,7 @@ keywords = [
     "INSEE", "IGN", "statistics", "demography", "geospatial", "France", "GIS",
     "statistique", "démographie", "géospatial", "SIG"
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dynamic = ["dependencies", "optional-dependencies", "version"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
