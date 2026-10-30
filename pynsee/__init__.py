@@ -7,4 +7,4 @@ from pynsee.metadata import *
 from pynsee.sirene import *
 from pynsee.utils import *
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"

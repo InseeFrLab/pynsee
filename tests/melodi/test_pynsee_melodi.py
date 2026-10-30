@@ -7,13 +7,18 @@ from unittest.mock import MagicMock
 
 import pandas as pd
 
-from pynsee.melodi import get_catalog, get_dataset, get_series, get_range
+from pynsee.melodi import (
+    get_melodi_catalog,
+    get_melodi_dataset,
+    get_melodi_series,
+    get_melodi_range,
+)
 from pynsee.melodi.data import _parse_dataset_observations, _parse_metadata
 
 # ---------------------------------------------------------------------------
 # Mocks: the only mocks in the pynsee tests.
 # Every other module tests internal helpers against the real API.
-# Exception here: the parsing helpers called inside get_dataset need to
+# Exception here: the parsing helpers called inside get_melodi_dataset need to
 # cover edge cases (dynamic measure keys, missing "measures" field).
 # Testing them through the real API would require downloading DS_IPC_PRINC
 # on every test run.
@@ -159,14 +164,14 @@ class TestFunction(TestCase):
         self.assertTrue(test)
 
     def test_get_catalog(self):
-        df = get_catalog(update=True)
+        df = get_melodi_catalog(update=True)
         self.assertTrue(isinstance(df, pd.DataFrame))
 
     def test_get_catalog_known_datasets_present(self):
         # dataset_identifier is not unique (one dataset can have multiple products).
         # Assert presence of stable, long-running datasets.
         test = True
-        df = get_catalog(language="fr", update=True)
+        df = get_melodi_catalog(language="fr", update=True)
         known = {"DS_IPC_PRINC", "DS_TICM_PRATIQUES", "DS_ICA"}
         test = test & isinstance(df, pd.DataFrame)
         test = test & known.issubset(set(df["dataset_identifier"]))
@@ -176,7 +181,7 @@ class TestFunction(TestCase):
         # Assert exact dimension set, not just column presence: fails
         # visibly if INSEE restructures the dataset.
         test = True
-        df = get_range("DS_TICM_PRATIQUES", language="fr", update=True)
+        df = get_melodi_range("DS_TICM_PRATIQUES", language="fr", update=True)
         test = test & isinstance(df, pd.DataFrame)
         test = test & (set(df["concept_code"]) == _TICM_CONCEPT_CODES)
         self.assertTrue(test)
@@ -185,7 +190,7 @@ class TestFunction(TestCase):
         # Assert exact measure set for TICM_MEASURE: fails visibly if
         # INSEE adds/removes one.
         test = True
-        df = get_range(
+        df = get_melodi_range(
             "DS_TICM_PRATIQUES",
             language="fr",
             include_values=True,
@@ -202,9 +207,9 @@ class TestFunction(TestCase):
         # With sex=F, age=Y45T59, time_period=2025: exactly one row per measure
         # (all other dimensions have a single "total" modality _T).
         # Measure identity is already checked in test_get_range_with_values;
-        # this test checks get_dataset's own behavior instead: filters were
+        # this test checks get_melodi_dataset's own behavior instead: filters were
         # actually applied by the API, with no duplicate/missing rows.
-        df = get_dataset(
+        df = get_melodi_dataset(
             "DS_TICM_PRATIQUES",
             language="fr",
             time_period=2025,
@@ -222,7 +227,7 @@ class TestFunction(TestCase):
     def test_get_dataset_dynamic_measures(self):
         # End-to-end regression for the dynamic measure key fix.
         # freq="M", time_period=2024: keeps it to ~1 page (full year, published).
-        df = get_dataset(
+        df = get_melodi_dataset(
             "DS_IPC_PRINC",
             language="fr",
             freq="M",
@@ -235,7 +240,7 @@ class TestFunction(TestCase):
         self.assertTrue(test)
 
     def test_get_series_1(self):
-        df = get_series("010770930", update=True)
+        df = get_melodi_series("010770930", update=True)
         self.assertTrue(isinstance(df, pd.DataFrame))
 
     def test_get_series_series_history_stable(self):
@@ -246,7 +251,7 @@ class TestFunction(TestCase):
         # 12 monthly observations, confirming the series is still updated
         # at a monthly frequency (the last, ongoing year is excluded).
         test = True
-        df = get_series("010770930", language="fr", update=True)
+        df = get_melodi_series("010770930", language="fr", update=True)
         test = test & isinstance(df, pd.DataFrame)
         test = test & (df["TIME_PERIOD"].min() == "1999-01")
         test = test & (df["idBank"] == "010770930").all()
@@ -258,26 +263,26 @@ class TestFunction(TestCase):
 
     def test_get_series_multi(self):
         # nunique == 2 confirms both series were returned, not one duplicated.
-        df = get_series("010598544+010770930", update=True)
+        df = get_melodi_series("010598544+010770930", update=True)
         test = isinstance(df, pd.DataFrame)
         test = test & (df["idBank"].nunique() == 2)
         self.assertTrue(test)
 
     def test_get_series_language_fr(self):
         # language="fr" must keep the "_fr" columns.
-        df = get_series("010770930", language="fr", update=True)
+        df = get_melodi_series("010770930", language="fr", update=True)
         test = isinstance(df, pd.DataFrame)
         test = test & any(c.endswith("_fr") for c in df.columns)
         self.assertTrue(test)
 
     def test_get_series_dead_bdm_ids(self):
         # Any unrecognized idbank returns HTTP 200 + an empty list from
-        # MELODI (no validation on the id itself) -> get_series returns an
+        # MELODI (no validation on the id itself) -> get_melodi_series returns an
         # empty df (a warning is logged, since this is expected and not a
         # pynsee error). Real-world case this covers: an idbank that exists
         # in BDM but has no corresponding MELODI dataset yet (e.g.
         # 001565530+001565531, "climat des affaires" indicators).
-        df = get_series("spam+eggs", update=True)
+        df = get_melodi_series("spam+eggs", update=True)
         test = isinstance(df, pd.DataFrame)
         test = test & df.empty
         self.assertTrue(test)
