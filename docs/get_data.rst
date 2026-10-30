@@ -101,14 +101,14 @@ Get data from INSEE files
 Get MELODI data
 ---------------
 
-.. autofunction:: pynsee.melodi.get_catalog
+.. autofunction:: pynsee.melodi.get_melodi_catalog
     :no-index:
 
-.. autofunction:: pynsee.melodi.get_dataset
+.. autofunction:: pynsee.melodi.get_melodi_dataset
     :no-index:
 
-.. autofunction:: pynsee.melodi.get_range
+.. autofunction:: pynsee.melodi.get_melodi_range
     :no-index:
 
-.. autofunction:: pynsee.melodi.get_series
+.. autofunction:: pynsee.melodi.get_melodi_series
     :no-index:

@@ -16,7 +16,7 @@ from pynsee.utils.save_df import save_df
 
 
 @save_df(day_lapse_max=30)
-def get_catalog(
+def get_melodi_catalog(
     language: str = "all", update: bool = False, silent: bool = False
 ) -> pd.DataFrame:
     """

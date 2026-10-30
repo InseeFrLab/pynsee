@@ -126,7 +126,7 @@ def _parse_dataset_observations(response: requests.Response):
 
 
 @save_df(day_lapse_max=30)
-def get_dataset(
+def get_melodi_dataset(
     id_dataset,
     language: str = "all",
     raise_if_not_ok: bool = True,
@@ -407,7 +407,7 @@ def get_dataset(
 
 
 @save_df(day_lapse_max=90)
-def get_range(
+def get_melodi_range(
     id_dataset: str,
     language: str = "all",
     include_values: bool = False,
@@ -607,7 +607,7 @@ def get_range(
 
 
 @save_df(day_lapse_max=30)
-def get_series(
+def get_melodi_series(
     id_banks: str,
     language: str = "all",
     raise_if_not_ok: bool = True,
