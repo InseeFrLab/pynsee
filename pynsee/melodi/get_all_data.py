@@ -110,7 +110,7 @@ def get_all_data(ds_name: str,
         if csv_data is None:
             raise FileNotFoundError("No file with '_data.csv' at the end")
         with archive.open(csv_data) as file_data: #permet d'ouvrir un fichier dans une archive zip
-            data = pd.read_csv(filepath_or_buffer=file_data,sep=";",decimal=".")#importer le fichier csv en DataFrame
+            data = pd.read_csv(filepath_or_buffer=file_data,sep=";",decimal=".",dtype={"GEO": "string"},low_memory=False)#importer le fichier csv en DataFrame
         
         #Chercher le fichier qui se termine par "_metadata.csv" dans la liste des fichiers de l'archive
         csv_metadata= next((name for name in file_list if name.endswith("_metadata.csv")),
