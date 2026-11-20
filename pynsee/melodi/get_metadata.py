@@ -50,7 +50,7 @@ def get_metadata(ds_name: str,
         dataset = response.json()
 
     #Gestion des erreurs réseau
-    except requests.exceptions.HTTPError as e:  # <--- CORRIGÉ (ajout de 'as e')
+    except requests.exceptions.HTTPError as e:
         status_code = (
         e.response.status_code if e.response is not None else "unknown")
         raise RuntimeError(f"HTTP Error {status_code}: The URL or resource might be incorrect:"f" {url}.")
