@@ -48,11 +48,14 @@ init_conn(sirene_key="my_sirene_key")
    Alternatively, you can make a keyword-based search with ``search_macrodata``, e.g. ``search_macrodata('GDP')``.
    Then, get the data with ``get_dataset`` or ``get_series``
 * **Local data** : use first ``get_local_metadata``, then get data with ``get_local_data``
-* **Melodi (progressively replacing Local data and Macroeconomic data)** : use first ``get_catalog``, then get data with ``get_dataset`` or ``get_series``
 * **Metadata** : e.g. function to get the classification of economic activities (Naf/Nace Rev2) ``get_activity_list``
 * **Sirene (French companies database)** : use first ``get_dimension_list``, then use ``search_sirene`` with dimensions as filtering variables
 * **Geodata** : get the list of available geographical data with ``get_geodata_list`` and then retrieve it with ``get_geodata``
-* **Files on insee.fr**: get the list of available files on insee.fr with ``get_file_list`` and then download it with ``download_file``
+* **Files on insee.fr** : get the list of available files on insee.fr with ``get_file_list`` and then download it with ``download_file``
+* **Melodi** : Access and retrieve data from Insee’s Melodi catalog
+   *  See detailed tutorials : [English](./docs/examples/example_melodi_en.ipynb), [French](./docs/examples/example_melodi_fr.ipynb)
+   *  🌐 Official resources : [Insee Melodi API Portal](https://portail-api.insee.fr/catalog/api/a890b735-159c-4c91-90b7-35159c7c9126/doc?aq=ALL#1-objet)
+   * 📊 Available Datasets : [Melodi open data catalog](https://catalogue-donnees.insee.fr/fr/catalogue/recherche)
 
 For further advice, have a look at the documentation and gallery of the [examples](https://pynsee.readthedocs.io/en/latest/examples.html).
 

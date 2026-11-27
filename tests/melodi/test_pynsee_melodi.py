@@ -1,287 +1,229 @@
 # -*- coding: utf-8 -*-
-# Copyright : INSEE, 2024
+# Copyright : INSEE, 2026
 
 import unittest
 from unittest import TestCase
-from unittest.mock import MagicMock
-
 import pandas as pd
 
-from pynsee.melodi import get_catalog, get_dataset, get_series, get_range
-from pynsee.melodi.data import _parse_dataset_observations, _parse_metadata
+from pynsee.melodi import *
 
-# ---------------------------------------------------------------------------
-# Mocks: the only mocks in the pynsee tests.
-# Every other module tests internal helpers against the real API.
-# Exception here: the parsing helpers called inside get_dataset need to
-# cover edge cases (dynamic measure keys, missing "measures" field).
-# Testing them through the real API would require downloading DS_IPC_PRINC
-# on every test run.
-# ---------------------------------------------------------------------------
+class test_pynsee_melodi(unittest.TestCase):
 
-
-def _mock_response(data):
-    r = MagicMock()
-    r.json.return_value = data
-    return r
-
-
-# The measure key varies by dataset (e.g. OBS_VALUE_NIVEAU vs
-# OBS_VALUE_INDICE_DE_PRIX for DS_IPC_PRINC) and must be extracted
-# dynamically. Second obs has value=None to verify None -> NaN (not a raw dict).
-_OBS_DYNAMIC_MEASURE = {
-    "observations": [
-        {
-            "dimensions": {"TIME_PERIOD": "2024-01", "FREQ": "M"},
-            "attributes": {"OBS_STATUS": "A"},
-            "measures": {"OBS_VALUE_INDICE_DE_PRIX": {"value": 105.3}},
-        },
-        {
-            "dimensions": {"TIME_PERIOD": "2024-02", "FREQ": "M"},
-            "attributes": {"OBS_STATUS": "A"},
-            "measures": {"OBS_VALUE_INDICE_DE_PRIX": {"value": None}},
-        },
-    ]
-}
-
-# Observations may come without a "measures" key: parsing must not crash
-# on obs.drop("measures") in that case.
-_OBS_NO_MEASURES = {
-    "observations": [
-        {
-            "dimensions": {"TIME_PERIOD": "2024"},
-            "attributes": {"OBS_STATUS": "A"},
-        }
-    ]
-}
-
-_METADATA_PAYLOAD = {
-    "title": {"fr": "Jeu de données test", "en": "Test dataset"},
-    "identifier": "DS_TEST",
-    "publisher": {
-        "id": "INSEE",
-        "label": [
-            {"lang": "fr", "content": "Institut national de la statistique"},
-            {"lang": "en", "content": "National Institute of Statistics"},
-        ],
-    },
-    "paging": {"count": 0, "isLast": True},
-    "observations": [],
-}
-
-
-# ---------------------------------------------------------------------------
-# DS_TICM_PRATIQUES = annual internet usage survey. Chosen because it is
-# small (~350 obs), stable structure, downloads in one page.
-# ---------------------------------------------------------------------------
-
-# DS_TICM_PRATIQUES's 10 dimensions.
-_TICM_CONCEPT_CODES = {
-    "OBS_STATUS",
-    "PCS_ESE",
-    "SEX",
-    "TICM_MEASURE",
-    "EMPSTA",
-    "FREQ",
-    "TIME_PERIOD",
-    "EDUC",
-    "AGE",
-    "MEASURE",
-}
-
-# DS_TICM_PRATIQUES's 16 survey measures.
-_TICM_MEASURES = {
-    "ACHA_12MOIS",
-    "ACHA_3MOIS",
-    "VENTE_3MOIS",
-    "COMPTE_BANCAIRE",
-    "WEB_12MOIS_X_EGOV",
-    "EGOV_12MOIS",
-    "QUOTIDIEN",
-    "EMAIL",
-    "RESEAUX_SOC",
-    "INFO_PRODUITS",
-    "NO_EGOV",
-    "WEB_3MOIS",
-    "TEL_PAR_INT",
-    "NO_WEB_12MOIS",
-    "LECTURE",
-    "PROFIL",
-}
-
-
-class TestFunction(TestCase):
-
-    def test_parse_metadata_all_languages(self):
-        # {"lang": "fr", "content": "..."} must be flattened to {"publisher_fr": ...}
-        meta = _parse_metadata(
-            _mock_response(_METADATA_PAYLOAD), language="all"
+    def test_get_local_data_by_com(self):
+        #Test standard
+        df_com1 = get_local_data_by_com(
+            ds_name="DS_POPULATIONS_REFERENCE", 
+            geo="69", 
+            geo_object="DEP"
         )
-        test = isinstance(meta, dict)
-        test = test & ("title_fr" in meta) & ("title_en" in meta)
-        test = test & ("publisher_fr" in meta) & ("publisher_en" in meta)
-        test = test & (meta["identifier"] == "DS_TEST")
-        self.assertTrue(test)
-
-    def test_parse_metadata_single_language(self):
-        # language="fr" must exclude _en columns
-        meta = _parse_metadata(
-            _mock_response(_METADATA_PAYLOAD), language="fr"
+        self.assertIsInstance(
+            df_com1, 
+            pd.DataFrame, 
+            "Problème format de sortie : ce n'est pas un dataframe."
         )
-        test = ("title_fr" in meta) & ("title_en" not in meta)
-        test = test & ("publisher_fr" in meta) & ("publisher_en" not in meta)
-        self.assertTrue(test)
+        self.assertGreater(df_com1.shape[0], 0, "Problème, le dataframe local par com 1 a 0 ligne.")
+        self.assertGreater(df_com1.shape[1], 0, "Problème, le dataframe local par com 1 a 0 colonne.")
 
-    def test_parse_observations_dynamic_measure_key(self):
-        # Measure key must be extracted dynamically, not hardcoded.
-        df = _parse_dataset_observations(_mock_response(_OBS_DYNAMIC_MEASURE))
-        test = isinstance(df, pd.DataFrame)
-        test = test & ("OBS_VALUE_INDICE_DE_PRIX" in df.columns)
-        test = test & ("OBS_VALUE_NIVEAU" not in df.columns)
-        test = test & (df["OBS_VALUE_INDICE_DE_PRIX"].iloc[0] == 105.3)
-        test = test & pd.isna(df["OBS_VALUE_INDICE_DE_PRIX"].iloc[1])
-        self.assertTrue(test)
+        #Test avec filtre additionnel
+        df_com2 = get_local_data_by_com(
+            ds_name="DS_POPULATIONS_REFERENCE", 
+            geo="69", 
+            geo_object="DEP", 
+            query_filter="POPREF_MEASURE=PMUN"
+        )
+        self.assertIsInstance(
+            df_com2, 
+            pd.DataFrame, 
+            "Problème format de sortie : ce n'est pas un dataframe."
+        )
+        self.assertGreater(df_com2.shape[0], 0, "Problème, le dataframe local par com 2 a 0 ligne.")
+        self.assertGreater(df_com2.shape[1], 0, "Problème, le dataframe local par com 2 a 0 colonne.")
 
-    def test_parse_observations_no_measures_column(self):
-        # Observations without "measures" must not crash.
-        df = _parse_dataset_observations(_mock_response(_OBS_NO_MEASURES))
-        test = isinstance(df, pd.DataFrame)
-        test = test & ("TIME_PERIOD" in df.columns)
-        self.assertTrue(test)
+    def test_get_local_data(self):
+        #Test standard avec géographie
+        df_local1 = get_local_data(
+            ds_name="DS_POPULATIONS_REFERENCE", 
+            geo="69", 
+            geo_object="DEP"
+        )
+        self.assertIsInstance(
+            df_local1, 
+            pd.DataFrame, 
+            "Problème format de sortie : ce n'est pas un dataframe."
+        )
+        self.assertGreater(df_local1.shape[0], 0, "Problème, le dataframe local 1 a 0 ligne.")
+        self.assertGreater(df_local1.shape[1], 0, "Problème, le dataframe local 1 a 0 colonne.")
 
-    def test_parse_observations_dimensions_flattened(self):
-        # "dimensions" and "attributes" must be unpacked into top-level columns.
-        df = _parse_dataset_observations(_mock_response(_OBS_DYNAMIC_MEASURE))
-        test = isinstance(df, pd.DataFrame)
-        test = test & ("TIME_PERIOD" in df.columns) & ("FREQ" in df.columns)
-        test = test & ("dimensions" not in df.columns)
-        test = test & ("attributes" not in df.columns)
-        self.assertTrue(test)
+        #Test avec filtre additionnel
+        df_local2 = get_local_data(
+            ds_name="DS_POPULATIONS_REFERENCE", 
+            geo="69", 
+            geo_object="DEP", 
+            query_filter="POPREF_MEASURE=PMUN"
+        )
+        self.assertIsInstance(
+            df_local2, 
+            pd.DataFrame, 
+            "Problème format de sortie : ce n'est pas un dataframe."
+        )
+        self.assertGreater(df_local2.shape[0], 0, "Problème, le dataframe local 2 a 0 ligne.")
+        self.assertGreater(df_local2.shape[1], 0, "Problème, le dataframe local 2 a 0 colonne.")
+
+    def test_get_range(self):
+        df_fr = get_range("DS_EC_DECES")
+        df_en = get_range("DS_EC_DECES", lang="en")
+        
+        #Vérification des types
+        self.assertIsInstance(df_fr, pd.DataFrame, "Problème format de sortie : ce n'est pas un dataframe.")
+        self.assertIsInstance(df_en, pd.DataFrame, "Problème format de sortie : ce n'est pas un dataframe.")
+        
+        #Vérification des dimensions
+        self.assertGreater(df_fr.shape[0], 0, "Problème, le dataframe a 0 ligne.")
+        self.assertGreater(df_fr.shape[1], 0, "Problème, le dataframe a 0 colonne.")
+        
+        #Vérification des colonnes attendues
+        expected_columns = {"DIM", "DIM_LABEL", "MOD", "MOD_LABEL"}
+        self.assertTrue(
+            expected_columns.issubset(df_fr.columns), 
+            f"Problème, les colonnes attendues {expected_columns} ne sont pas toutes présentes dans le dataframe."
+        )
+
+    def test_get_range_geo(self):
+        df_ref = get_range_geo("DS_POPULATIONS_REFERENCE")
+        df_ref_en = get_range_geo("DS_POPULATIONS_REFERENCE", lang="en")
+        df_deces = get_range_geo("DS_EC_DECES")
+        
+        #Vérification des types
+        self.assertIsInstance(df_ref, pd.DataFrame, "Problème format de sortie : ce n'est pas un dataframe.")
+        self.assertIsInstance(df_ref_en, pd.DataFrame, "Problème format de sortie : ce n'est pas un dataframe.")
+        
+        #Vérification des dimensions
+        self.assertGreater(df_ref.shape[0], 0, "Problème, le dataframe a 0 ligne.")
+        self.assertGreater(df_ref.shape[1], 0, "Problème, le dataframe a 0 colonne.")
+        
+        #Vérification des colonnes attendues
+        expected_columns = {"GEO_REF", "GEO_OBJECT", "GEO_OBJECT_LABEL", "GEO", "GEO_LABEL"}
+        self.assertTrue(
+            expected_columns.issubset(df_deces.columns), 
+            f"Problème, les colonnes attendues {expected_columns} ne sont pas toutes présentes dans le dataframe."
+        )
+
+    def test_get_metadata(self):
+        #Vérification du type de retour (en appelant la fonction une seule fois)
+        try:
+            metadata = get_metadata("DS_POPULATIONS_REFERENCE")
+        except Exception as e:
+            self.fail(f"Erreur lors de l'appel à get_metadata : {e}")
+            
+        #Vérification que le résultat est bien un dictionnaire
+        self.assertIsInstance(
+            metadata, 
+            dict, 
+            "Problème format de sortie : ce n'est pas un dictionnaire."
+        )
+
+    def test_get_file(self):
+        #Téléchargement d'un fichier Excel
+        get_file(
+            ds_name="DS_EC_DECES",
+            file_name="T1_DECES_JOUR_NAT_FR",
+            download_file_name="T1_DECES_JOUR_NAT_FR.xlsx",
+        )
+
+        #Téléchargement d'un fichier CSV / ZIP
+        get_file(
+            ds_name="DS_EC_DECES",
+            file_name="DS_EC_DECES_CSV_FR",
+            download_file_name="DS_EC_DECES_CSV_FR.zip",
+        )
+
+        #Téléchargement d'un fichier Parquet
+        get_file(ds_name="DS_BTS_SAL_EQTP_SEX_PCS")
+
+    def test_get_data(self):
+        #Test DS sans attribut
+        url_no_attr = "https://api.insee.fr/melodi/data/DS_POPULATIONS_REFERENCE?POPREF_MEASURE=PMUN&GEO=FRANCE-F"
+        df_no_attr = get_data(url_no_attr)
+        self.assertIsInstance(
+            df_no_attr, pd.DataFrame, "DS sans attribut, problème format de sortie : ce n'est pas un DataFrame."
+        )
+        self.assertGreater(df_no_attr.shape[0], 0, "DS sans attribut : le DataFrame a 0 ligne.")
+        self.assertGreater(df_no_attr.shape[1], 0, "DS sans attribut : le DataFrame a 0 colonne.")
+
+        #Test DS avec attribut
+        url_attr = "https://api.insee.fr/melodi/data/DS_EC_DECES?SEX=_T&GEO=FRANCE"
+        df_attr = get_data(url_attr)
+        self.assertIsInstance(
+            df_attr, pd.DataFrame, "DS avec attribut, problème format de sortie : ce n'est pas un DataFrame."
+        )
+        self.assertGreater(df_attr.shape[0], 0, "DS avec attribut : le DataFrame a 0 ligne.")
+        self.assertGreater(df_attr.shape[1], 0, "DS avec attribut : le DataFrame a 0 colonne.")
+
+        #Test de la limite des 10 000 lignes (avec regex sur le message d'erreur)
+        with self.assertRaisesRegex(ValueError, r"^Request over 100,000 lines not supported yet,\nplease filter your request or use get_all_data$"):
+            get_data("https://api.insee.fr/melodi/data/DS_EC_DECES?GEO=DEP")
+
+        #Test d'une autre erreur ValueError sur les paramètres
+        with self.assertRaises(ValueError):
+            get_data("https://api.insee.fr/melodi/data/DS_EC_DECES?SEX=_T&AGE=_T&DTH_PLACE=1&FREQ=A&GEO=FRANCE")
+
 
     def test_get_catalog(self):
-        df = get_catalog(update=True)
-        self.assertTrue(isinstance(df, pd.DataFrame))
-
-    def test_get_catalog_known_datasets_present(self):
-        # dataset_identifier is not unique (one dataset can have multiple products).
-        # Assert presence of stable, long-running datasets.
-        test = True
-        df = get_catalog(language="fr", update=True)
-        known = {"DS_IPC_PRINC", "DS_TICM_PRATIQUES", "DS_ICA"}
-        test = test & isinstance(df, pd.DataFrame)
-        test = test & known.issubset(set(df["dataset_identifier"]))
-        self.assertTrue(test)
-
-    def test_get_range_sparse(self):
-        # Assert exact dimension set, not just column presence: fails
-        # visibly if INSEE restructures the dataset.
-        test = True
-        df = get_range("DS_TICM_PRATIQUES", language="fr", update=True)
-        test = test & isinstance(df, pd.DataFrame)
-        test = test & (set(df["concept_code"]) == _TICM_CONCEPT_CODES)
-        self.assertTrue(test)
-
-    def test_get_range_with_values(self):
-        # Assert exact measure set for TICM_MEASURE: fails visibly if
-        # INSEE adds/removes one.
-        test = True
-        df = get_range(
-            "DS_TICM_PRATIQUES",
-            language="fr",
-            include_values=True,
-            update=True,
+    
+        #Test de la gestion d'erreur sur un paramètre de langue invalide
+        with self.assertRaises(ValueError) as test_message_erreur:
+            get_catalog(lang="français")
+        self.assertIn(
+        "lang must be 'fr' or 'en'", str(test_message_erreur.exception)
         )
-        test = test & isinstance(df, pd.DataFrame)
-        measures = set(
-            df[df["concept_code"] == "TICM_MEASURE"]["code"].dropna()
+
+        #Test de la version anglaise
+        catalog_en = get_catalog(lang="en")
+        self.assertIsInstance(
+            catalog_en, pd.DataFrame, "Problème avec la version anglaise : ce n'est pas un DataFrame."
         )
-        test = test & (measures == _TICM_MEASURES)
-        self.assertTrue(test)
+        self.assertGreater(catalog_en.shape[0], 0, "Problème avec la version anglaise : le DataFrame a 0 ligne.")
+        self.assertGreater(catalog_en.shape[1], 0, "Problème avec la version anglaise : le DataFrame a 0 colonne.")
 
-    def test_get_dataset_1(self):
-        # With sex=F, age=Y45T59, time_period=2025: exactly one row per measure
-        # (all other dimensions have a single "total" modality _T).
-        # Measure identity is already checked in test_get_range_with_values;
-        # this test checks get_dataset's own behavior instead: filters were
-        # actually applied by the API, with no duplicate/missing rows.
-        df = get_dataset(
-            "DS_TICM_PRATIQUES",
-            language="fr",
-            time_period=2025,
-            sex="F",
-            age="Y45T59",
-            update=True,
+        #Test de la version française
+        catalog_fr = get_catalog(lang="fr")
+        self.assertIsInstance(
+            catalog_fr, pd.DataFrame, "Problème avec la version française : ce n'est pas un DataFrame."
         )
-        test = isinstance(df, pd.DataFrame)
-        test = test & (df["TICM_MEASURE"].nunique() == len(df))
-        test = test & (df["SEX"] == "F").all()
-        test = test & (df["AGE"] == "Y45T59").all()
-        test = test & (df["TIME_PERIOD"].astype(str) == "2025").all()
-        self.assertTrue(test)
+        self.assertGreater(catalog_fr.shape[0], 0, "Problème avec la version française : le DataFrame a 0 ligne.")
+        self.assertGreater(catalog_fr.shape[1], 0, "Problème avec la version française : le DataFrame a 0 colonne.")
+  
+    def test_get_all_data(self):
+        # Appel unique pour récupérer les données et les métadonnées
+        data, metadata = get_all_data("DS_TICM_PRATIQUES", remove_file=False)
 
-    def test_get_dataset_dynamic_measures(self):
-        # End-to-end regression for the dynamic measure key fix.
-        # freq="M", time_period=2024: keeps it to ~1 page (full year, published).
-        df = get_dataset(
-            "DS_IPC_PRINC",
-            language="fr",
-            freq="M",
-            time_period=2024,
-            update=True,
+        # Vérifications sur le DataFrame des données (index 0)
+        self.assertIsInstance(
+            data, pd.DataFrame, "Ce n'est pas un DataFrame pour les données."
         )
-        test = isinstance(df, pd.DataFrame)
-        test = test & ("OBS_VALUE_INDICE_DE_PRIX" in df.columns)
-        test = test & df["OBS_VALUE_INDICE_DE_PRIX"].notna().any()
-        self.assertTrue(test)
+        self.assertGreater(data.shape[0], 0, "Problème, le DataFrame a 0 ligne.")
+        self.assertGreater(data.shape[1], 0, "Problème, le DataFrame a 0 colonne.")
 
-    def test_get_series_1(self):
-        df = get_series("010770930", update=True)
-        self.assertTrue(isinstance(df, pd.DataFrame))
+        # Vérifications sur le DataFrame des métadonnées (index 1)
+        self.assertIsInstance(
+            metadata, pd.DataFrame, "Ce n'est pas un DataFrame pour les métadonnées."
+        )
+        self.assertGreater(metadata.shape[0], 0, "Problème, le DataFrame a 0 ligne.")
+        self.assertGreater(metadata.shape[1], 0, "Problème, le DataFrame a 0 colonne.")
 
-    def test_get_series_series_history_stable(self):
-        # 010770930 = DS_ICA monthly series, sector 46.19A (non-food purchasing
-        # centres), base 2021. Open series: do NOT assert len (grows monthly).
-        # Start date 1999-01 is a historical fact and will not change.
-        # Instead of a fixed length, check every completed year has exactly
-        # 12 monthly observations, confirming the series is still updated
-        # at a monthly frequency (the last, ongoing year is excluded).
-        test = True
-        df = get_series("010770930", language="fr", update=True)
-        test = test & isinstance(df, pd.DataFrame)
-        test = test & (df["TIME_PERIOD"].min() == "1999-01")
-        test = test & (df["idBank"] == "010770930").all()
-        yearly_counts = df.groupby(df["TIME_PERIOD"].str[:4])[
-            "dataset"
-        ].count()
-        test = test & (yearly_counts.iloc[:-1] == 12).all()
-        self.assertTrue(test)
+if __name__ == '__main__':
+  
+#Création d'un lanceur de tests (Test Runner) textuel
+    runner = unittest.TextTestRunner()
 
-    def test_get_series_multi(self):
-        # nunique == 2 confirms both series were returned, not one duplicated.
-        df = get_series("010598544+010770930", update=True)
-        test = isinstance(df, pd.DataFrame)
-        test = test & (df["idBank"].nunique() == 2)
-        self.assertTrue(test)
+#Chargement des tests de la classe et exécution.
+#Le stockage dans 'result' permet d'analyser le compte-rendu juste après.
+    result = runner.run(
+      unittest.defaultTestLoader.loadTestsFromTestCase(test_pynsee_melodi))
 
-    def test_get_series_language_fr(self):
-        # language="fr" must keep the "_fr" columns.
-        df = get_series("010770930", language="fr", update=True)
-        test = isinstance(df, pd.DataFrame)
-        test = test & any(c.endswith("_fr") for c in df.columns)
-        self.assertTrue(test)
-
-    def test_get_series_dead_bdm_ids(self):
-        # Any unrecognized idbank returns HTTP 200 + an empty list from
-        # MELODI (no validation on the id itself) -> get_series returns an
-        # empty df (a warning is logged, since this is expected and not a
-        # pynsee error). Real-world case this covers: an idbank that exists
-        # in BDM but has no corresponding MELODI dataset yet (e.g.
-        # 001565530+001565531, "climat des affaires" indicators).
-        df = get_series("spam+eggs", update=True)
-        test = isinstance(df, pd.DataFrame)
-        test = test & df.empty
-        self.assertTrue(test)
-
-
-if __name__ == "__main__":
-    unittest.main()
+#Vérification du succès global et affichage d'un message personnalisé
+    if result.wasSuccessful():
+        print(
+        "\n✨ Félicitations ! Tous les tests du sous-module melodi sont OK !")
+    else:
+        print("\n❌ Attention, certains tests ont échoué.")
